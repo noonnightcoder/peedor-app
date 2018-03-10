@@ -5,8 +5,11 @@ return array(
     // this is used in contact page
     'adminEmail' => 'support@peedor.com',
     'sale_cancel_status' => '0', // Sale Reject
-    'sale_complete_status' => '1', // Sale Invoice
-    'sale_suspend_status' => '2', // Sale Order
+    'sale_complete_status' => '1', // Sale Order Complete - When all details are entered and no further changes are required.
+    'sale_submit_status' => '2', // Sale Order Submit For Approval - stock mark as allocated for this order
+    'sale_approve_status' => '3', // Sale Order Approved
+    'sale_reject_status' => '-3', // Sale Order Rejected
+    'sale_confirm_status' => '4', // Sale Order Confirmed by Account / Finance team - Ready to delivery
     'active_status' => '1',
     'inactive_status' => '0',
     'defaultArchived' => 'false',

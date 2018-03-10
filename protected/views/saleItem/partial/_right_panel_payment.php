@@ -139,7 +139,6 @@
                 <?php } ?>
 
 
-
                 <tr style="display:none">
                     <td><?= Yii::t('app', 'Payment Type'); ?>:</td>
                     <td>
@@ -150,7 +149,7 @@
 
                 <?php if ($count_payment == 0) { ?>
                     <tr>
-                        <td colspan="2" style='text-align:right'>
+                        <td colspan="2" style='text-align:right;display:none'>
                             <?php echo $form->textFieldControlGroup($model, 'alt_payment_amount', array(
                                 //'value' => $amount_change,
                                 'class' => 'input-small text-right payment-amount-txt',
@@ -172,7 +171,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="2" style='text-align:right'><?php
+                        <td colspan="2" style='text-align:right;display:none'><?php
                             echo TbHtml::linkButton(Yii::t('app', 'Add Payment'), array(
                                 'color' => TbHtml::BUTTON_COLOR_INFO,
                                 'size' => TbHtml::BUTTON_SIZE_MINI,

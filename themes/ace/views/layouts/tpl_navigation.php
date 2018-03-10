@@ -45,7 +45,7 @@
                         <li class="light-blue">
                             <a>
                                 <i class="glyphicon glyphicon-time"></i>
-                                <?php  echo date("H:i j M Y"); ?>
+                                <?= date("H:i j M Y"); ?>
                             </a>
                         </li>
                        

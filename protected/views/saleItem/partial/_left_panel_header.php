@@ -4,9 +4,9 @@
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app',$sale_header),'url' =>Yii::app()->createUrl('SaleItem/SaleOrder/'),'icon'=>'ace-icon fa fa-spinner fa-spin white'),
+                array('label' => Yii::t('app',$sale_header),'url' =>Yii::app()->createUrl('SaleItem/list'),'icon'=>'ace-icon fa fa-eye'),
                 array('label'=>' | '),
-                array('label' => Yii::t('app','New Item'),'url' =>Yii::app()->createUrl('Item/createImage',array('grid_cart'=>'S')),'icon'=>'ace-icon fa fa-plus white'),
+                array('label' => Yii::t('app','New Item'),'url' =>Yii::app()->createUrl('Item/create',array('grid_cart'=>'S')),'icon'=>'ace-icon fa fa-plus white'),
             ),array('color' => $color_style,'size'=>TbHtml::BUTTON_SIZE_SMALL)
         ),
     ),
@@ -40,8 +40,7 @@
                     'select'=>'js:function(event, ui) {
                             event.preventDefault();
                             $("#SaleItem_item_id").val(ui.item.id);
-                            $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
-                        }',
+                            $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: qtyScannedSuccess(ui.item.id)});                        }',
                     //'search' => 'js:function(){ $(".waiting").show(); }',
                     //'open' => 'js:function(){ $(".waiting").hide(); }',
                 ),

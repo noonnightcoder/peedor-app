@@ -15,7 +15,7 @@
     <br><br>
 
     <?php $this->widget('yiiwheels.widgets.grid.WhGridView', array(
-        'id' => 'sale-suspended-grid',
+        'id' => 'sale-order-grid',
         //'fixedHeader' => true,
         'responsiveTable' => true,
         'type' => TbHtml::GRID_TYPE_HOVER,
@@ -25,3 +25,4 @@
     )); ?>
 
 <?php $this->endWidget(); ?>
+

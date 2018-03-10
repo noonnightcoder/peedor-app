@@ -56,13 +56,13 @@ $this->widget('bootstrap.widgets.TbNav', array(
             )),
         //array('label'=>'<span class="menu-text">' . strtoupper(Yii::t('app', 'Payment')). '</span>', 'icon'=>'menu-icon fa fa-heart', 'url'=>Yii::app()->urlManager->createUrl('sale/Invoice'), 'active'=>$this->id .'/'. $this->action->id=='sale/Invoice','visible'=>Yii::app()->user->checkAccess('payment.index')),
         array('label' => '<span class="menu-text">' . sysMenuSale() . '</span>', 'icon' => sysMenuSaleIcon(),
-            'url' => Yii::app()->urlManager->createUrl('saleItem/update'),
-            'active' => $this->id . '/' . $this->action->id == 'saleItem/update',
+            'url' => Yii::app()->urlManager->createUrl('saleItem'),
+            'active' => $this->id == 'saleItem',
             'visible' => Yii::app()->user->checkAccess('sale.edit') || Yii::app()->user->checkAccess('sale.discount') || Yii::app()->user->checkAccess('sale.editprice'),
             'items' => array(
                 array('label' => sysMenuSaleAdd(), 'icon' => 'menu-icon fa fa-plus pink',
                     'url' => Yii::app()->urlManager->createUrl('saleItem/update'),
-                    'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/receive',
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/update',
                     'visible' => Yii::app()->user->checkAccess('sale.edit')
                 ),
                 array('label' => sysMenuSaleView(), 'icon' => 'menu-icon fa fa-eye pink',

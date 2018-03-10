@@ -346,6 +346,13 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
         setTimeout(function(){$('#SaleItem_item_id').focus();}, 10);
     }
 
+    // really thanks to this http://www.stefanolocati.it/blog/?p=1413
+    function qtyScannedSuccess(itemId)
+    {
+        return function (responseText, statusText, xhr, $form ) {
+            setTimeout(function(){$('#quantity_' + itemId).select();}, 10);
+        }
+    }
 </script>
 
 <script type="text/javascript" language="javascript">

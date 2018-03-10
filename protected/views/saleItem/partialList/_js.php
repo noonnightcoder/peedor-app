@@ -1,6 +1,6 @@
 <script>
     jQuery( function($){
-        $('div#sale_order_id').on('click','a.btn-order-approve',function(e) {
+        $('div#report_grid').on('click','a.btn-order-approve',function(e) {
             e.preventDefault();
             if (!confirm('Are you sure you want to APPROVE this order?')) {
                 return false;
@@ -11,12 +11,69 @@
                 beforeSend: function() { $('.waiting').show(); },
                 complete: function() { $('.waiting').hide(); },
                 success : function(data) {
-                    $.fn.yiiGridView.update('sale-suspended-grid');
+                    $.fn.yiiGridView.update('sale-order-wait-grid');
+                    $.fn.yiiGridView.update('sale-order-review-grid');
+                    $.fn.yiiGridView.update('sale-order-complete-grid');
+                    $.fn.yiiGridView.update('sale-order-grid');
                     return false;
                 }
             });
         });
 
+    });
+
+    jQuery( function($){
+        $('div#report_grid').on('click','a.btn-order-complete',function(e) {
+            e.preventDefault();
+            if (!confirm('Are you sure you want to Complete this order?')) {
+                return false;
+            }
+            var url=$(this).attr('href');
+            $.ajax({url:url,
+                type : 'post',
+                beforeSend: function() { $('.waiting').show(); },
+                complete: function() { $('.waiting').hide(); },
+                success : function(data) {
+                    $.fn.yiiGridView.update('sale-order-complete-grid');
+                    $.fn.yiiGridView.update('sale-order-grid');
+                    $.fn.yiiGridView.update('sale-order-wait-grid');
+                    $.fn.yiiGridView.update('sale-order-review-grid');
+                    return false;
+                }
+            });
+        });
+
+    });
+
+    jQuery( function($){
+        $('div#report_grid').on('click','a.btn-order-reject',function(e) {
+            e.preventDefault();
+            if (!confirm('Are you sure you want to Reject this order?')) {
+                return false;
+            }
+            var url=$(this).attr('href');
+            $.ajax({url:url,
+                type : 'post',
+                beforeSend: function() { $('.waiting').show(); },
+                complete: function() { $('.waiting').hide(); },
+                success : function(data) {
+                    $.fn.yiiGridView.update('sale-order-wait-grid');
+                    $.fn.yiiGridView.update('sale-order-complete-grid');
+                    $.fn.yiiGridView.update('sale-order-grid');
+                    $.fn.yiiGridView.update('sale-order-review-grid');
+                    return false;
+                }
+            });
+        });
+
+    });
+
+    // Every tab click refresh the grid view to make the sub detail view Ajax work
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        $.fn.yiiGridView.update('sale-order-wait-grid');
+        $.fn.yiiGridView.update('sale-order-review-grid');
+        $.fn.yiiGridView.update('sale-order-complete-grid');
+        $.fn.yiiGridView.update('sale-order-grid');
     });
 </script>
 

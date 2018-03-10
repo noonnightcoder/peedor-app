@@ -86,6 +86,88 @@ class Report extends CFormModel
         );
     }
 
+    public function saleListByStatus($status='2') {
+        $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+                      employee_name,employee_id,client_id,quantity,sub_total,
+                      discount_amount,vat_amount,total,paid,balance,status,status_f
+               FROM v_sale_invoice_2
+               WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
+               AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND status=:status
+               ORDER By sale_time desc";
+
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':from_date' => $this->from_date,
+                ':to_date' => $this->to_date,
+                ':status' => $status)
+        );
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'sale_id',
+            'sort' => array(
+                'attributes' => array(
+                    'sale_id', 'sale_time',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public function saleListAll() {
+        $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+                      employee_name,employee_id,client_id,quantity,sub_total,
+                      discount_amount,vat_amount,total,paid,balance,status,status_f
+               FROM v_sale_invoice_2
+               WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
+               AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               ORDER By sale_time desc";
+
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':from_date' => $this->from_date,
+                ':to_date' => $this->to_date,
+               )
+        );
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'sale_id',
+            'sort' => array(
+                'attributes' => array(
+                    'sale_id', 'sale_time',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public function saleCountByStatus($status='1')
+    {
+        $n_count=0;
+
+        $sql = "SELECT count(*) n_count
+               FROM sale
+               WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
+               AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND status=:status";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':from_date' => $this->from_date,
+                ':to_date' => $this->to_date,
+                ':status' => $status)
+        );
+
+        foreach ($result as $record) {
+            $n_count = $record['n_count'];
+        }
+
+        return $n_count;
+    }
+
     public function saleInvoice()
     {
 

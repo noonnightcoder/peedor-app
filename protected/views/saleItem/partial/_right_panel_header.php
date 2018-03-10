@@ -22,7 +22,7 @@
                 */?>
 
                 <?php
-                echo TbHtml::linkButton(Yii::t('app', 'Cancel Sale'), array(
+                echo TbHtml::linkButton(Yii::t('app', 'Empty Cart'), array(
                     'color' => TbHtml::BUTTON_COLOR_DANGER,
                     'size' => TbHtml::BUTTON_SIZE_SMALL,
                     'icon' => '	glyphicon-remove white',

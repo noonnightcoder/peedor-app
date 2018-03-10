@@ -178,7 +178,7 @@ class ItemController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
-        $data['create_url'] = 'CreateImage';
+        $data['create_url'] = 'Create';
 
         $data['grid_columns'] = Item::getItemColumns();
 
@@ -231,10 +231,11 @@ class ItemController extends Controller
         }
     }
 
-    public function actionCreate($grid_cart = 'N')
+    public function actionCreate($grid_cart = 'N',$sale_status='2')
     {
 
         $model = new Item;
+
         $price_tiers = PriceTier::model()->getListPriceTier();
 
         // Uncomment the following line if AJAX validation is needed
@@ -279,10 +280,10 @@ class ItemController extends Controller
                             if ($grid_cart == 'N') {
                                 Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
                                     'Item : <strong>' . $model->name . '</strong> have been saved successfully!');
-                                $this->redirect(array('createImage'));
+                                $this->redirect(array('create'));
                             } elseif ($grid_cart == 'S') {
                                 Yii::app()->shoppingCart->addItem($model->id);
-                                $this->redirect(array('saleItem/index'));
+                                $this->redirect(array('saleItem/update?tran_type=?' . $sale_status));
                             } elseif ($grid_cart == 'R') {
                                 Yii::app()->receivingCart->addItem($model->id);
                                 $this->redirect(array('receivingItem/index'));

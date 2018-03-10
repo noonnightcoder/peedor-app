@@ -31,7 +31,7 @@ class SaleItemController extends Controller
                     'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer',
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
-                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm',
+                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus',
                     'list','update',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'REST.DELETE'),
                 'users' => array('@'),
@@ -45,7 +45,6 @@ class SaleItemController extends Controller
             ),
         );
     }
-
 
     /** To remove change using CRUD name convension List, Create, Update, Delete */
     public function actionIndex($tran_type='1')
@@ -319,7 +318,7 @@ class SaleItemController extends Controller
             Yii::app()->user->setFlash('warning', 'Plz, Select Customer');
             $this->reload($data);
         } elseif (empty($data['items'])) {
-            $data['warning'] = Yii::t('app','There is no item in cart');
+            //$data['warning'] = Yii::t('app','There is no item in cart');
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
@@ -346,6 +345,12 @@ class SaleItemController extends Controller
                 Yii::app()->shoppingCart->clearAll();
             }
         }
+    }
+
+    public function actionListSuspendedSale()
+    {
+        $model = new Sale;
+        $this->render('sale_suspended', array('model' => $model));
     }
 
     public function actionSuspendSale()
@@ -400,7 +405,7 @@ class SaleItemController extends Controller
                 Yii::app()->shoppingCart->copyEntireSale($sale_id);
                 Yii::app()->shoppingCart->setSaleMode('EDIT');
                 Yii::app()->session->close(); // preventing session clearing due to page redirecting..
-                $this->redirect('index');
+                $this->redirect('update');
                 //}
             } else {
                 Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO,'Opp, sorry invoice has been paid, editing is not allowed!' );
@@ -441,12 +446,6 @@ class SaleItemController extends Controller
         
     }
 
-    public function actionListSuspendedSale()
-    {
-        $model = new Sale;
-        $this->render('sale_suspended', array('model' => $model));
-    }
-
     /*
         To remove name changing using CRUD name convension List, Create, Update, Delete
     */
@@ -482,31 +481,24 @@ class SaleItemController extends Controller
     }
 
     public function actionList()
-
     {
-        /*
-        $model = new Sale;
-        $grid_columns = Sale::getSaleOrderColumns();
-
-        $data = $this->saleTypeData();
-        $data['model'] = $model;
-        $data['sale_status'] = param('sale_suspend_status');
-        $data['box_title'] = 'Sale Order';
-        $data['color_style'] = TbHtml::BUTTON_COLOR_PRIMARY;
-        $data['sale_header_icon'] = sysMenuSaleIcon();
-        $data['grid_columns'] = $grid_columns;
-
-
-        $this->render('list', $data);
-        */
-
         $grid_id = 'sale-order-grid';
         $title = 'Sale Order';
 
         $data = $this->commonData($grid_id,$title,'show');
 
         $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
-        $data['data_provider'] = $data['report']->saleInvoice();
+        $data['data_provider'] = $data['report']->saleListAll();
+        $data['data_provider2'] = $data['report']->saleListByStatus('2');
+        $data['data_provider3'] = $data['report']->saleListByStatus('3');
+        $data['data_provider1'] = $data['report']->saleListByStatus('1');
+        $data['grid_id'] = $grid_id;
+        $data['grid_id2'] = 'sale-order-wait-grid';
+        $data['grid_id3'] = 'sale-order-review-grid';
+        $data['grid_id1'] = 'sale-order-complete-grid';
+        $data['sale_submit_n'] = $data['report']->saleCountByStatus('2');
+        $data['sale_approve_n'] = $data['report']->saleCountByStatus('3');
+        $data['sale_complete_n'] = $data['report']->saleCountByStatus('1');
 
         loadview('report',$data);
 
@@ -570,11 +562,23 @@ class SaleItemController extends Controller
         }
     }
 
+    /*
+     * Update sale status see the status in config/params.php
+     */
+    public function actionSaleUpdateStatus($sale_id,$status) {
+
+        ajaxRequest();
+        Sale::model()-> updateSaleStatus($sale_id,$status);
+        $this->reload();
+
+    }
+
     public function actionSaleApprove($sale_id,$status,$customer_id,$total) {
 
         ajaxRequest();
 
         $payment_received=0;
+
         // Transaction Date for Inventory, Payment and sale trans date
         $trans_date = date('Y-m-d H:i:s');
         $date_paid = $trans_date;
@@ -582,7 +586,6 @@ class SaleItemController extends Controller
         $trans_code = 'CHSALE';
         $trans_status = '';
         $employee_id = getEmployeeId();
-
 
         // Getting Customer Account Info
         $account = Account::model()->getAccountInfo($customer_id);
@@ -596,7 +599,6 @@ class SaleItemController extends Controller
         AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $sale_id, $total,$trans_date,$comment, $trans_code, $trans_status);
 
         $this->reload();
-        //return 'ok';
     }
 
     private function reload($data=array())
@@ -662,7 +664,7 @@ class SaleItemController extends Controller
         $data['receipt_footer_view'] = null;*/
 
         $data['tran_type'] = getTransType();
-        $data['sale_header'] = $data['tran_type']=='1'? sysMenuInvoice():sysMenuSale();
+        $data['sale_header'] = $data['tran_type']=='1'? 'View Sale Invoice':'View Sale Order';
         $data['sale_header_icon'] = $data['tran_type']=='1'? sysMenuInvoiceIcon():sysMenuSaleIcon();
         $data['sale_save_url'] = $data['tran_type']=='1'? 'saleItem/CompleteSale':'saleItem/CompleteSale';
         $data['sale_redirect_url'] = $data['tran_type']=='1'? 'saleItem/SaleInvoice':'saleItem/SaleOrder';
