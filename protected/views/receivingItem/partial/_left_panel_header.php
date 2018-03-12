@@ -5,7 +5,7 @@
         'headerButtons' => array(
             TbHtml::buttonGroup(
                 array(
-                    array('label' => Yii::t('app','New Item'),'url' =>Yii::app()->createUrl('Item/createImage',array('grid_cart'=>'R')),'icon'=>'glyphicon-plus white'),
+                    array('label' => Yii::t('app','New Item'),'url' =>Yii::app()->createUrl('Item/create',array('grid_cart'=>'R')),'icon'=>'glyphicon-plus white'),
                 ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
             ),
         )
