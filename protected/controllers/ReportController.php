@@ -64,6 +64,7 @@ class ReportController extends Controller
                     'ProfitByInvoice',
                     'SaleInvoiceDetail',
                     'SaleWeeklyByCustomer',
+                    'BalanceByCustomerId',
                 ),
                 'users' => array('@'),
             ),
@@ -702,11 +703,29 @@ class ReportController extends Controller
         $this->renderView($data);
     }
 
-    /**
-     * @param $data
-     * @param $view_name
-     * @throws CException
-     */
+    public function actionBalanceByCustomerId($client_id,$balance)
+    {
+
+        $model = new SalePayment;
+
+        $cs = Yii::app()->clientScript;
+        $cs->scriptMap = array(
+            'jquery.js' => false,
+            'bootstrap.js' => false,
+            'jquery.min.js' => false,
+            'bootstrap.notify.js' => false,
+        );
+
+        echo CJSON::encode(array(
+            'status' => 'render',
+            'div' => $this->renderPartial('//salePayment/partial/_invoice_his', array(
+                'model' => $model,
+                'client_id' => $client_id,
+                'balance' => $balance,
+            ), true, true),
+        ));
+    }
+
     protected function renderView($data, $view_name='index')
     {
         if (Yii::app()->request->isAjaxRequest && !isset($_GET['ajax']) ) {

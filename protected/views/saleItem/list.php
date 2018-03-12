@@ -20,5 +20,4 @@ $this->breadcrumbs=array(
 
 </div>
 
-
 <?php $this->renderPartial('partialList/_js'); ?>

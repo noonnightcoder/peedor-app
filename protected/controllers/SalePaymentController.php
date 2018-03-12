@@ -57,11 +57,6 @@ class SalePaymentController extends Controller
         ));
     }
 
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
     public function actionDelete($id)
     {
         if (Yii::app()->request->isPostRequest) {
@@ -94,13 +89,6 @@ class SalePaymentController extends Controller
         ));
     }
 
-    /**
-     * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer $id the ID of the model to be loaded
-     * @return SalePayment the loaded model
-     * @throws CHttpException
-     */
     public function loadModel($id)
     {
         $model = SalePayment::model()->findByPk($id);

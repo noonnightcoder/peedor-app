@@ -965,9 +965,19 @@ class ReportColumn extends CModel
                 'value' => '$data["sale_time"]',
             ),
             array(
+                'name' => 'employee_name',
+                'header' => Yii::t('app', 'Sale Rep Name'),
+                'value' => '$data["employee_name"]',
+            ),
+            array(
                 'name' => 'customer_name',
                 'header' => Yii::t('app', 'Customer Name'),
                 'value' => '$data["client_name"]',
+            ),
+            array(
+                'name' => 'payment_term',
+                'header' => Yii::t('app', 'Payment Term'),
+                'value' => '$data["payment_term"]',
             ),
             array(
                 'name' => 'sub_total',
@@ -982,7 +992,18 @@ class ReportColumn extends CModel
             array(
                 'name' => 'current_balance',
                 'header' => Yii::t('app', 'Previous Balance'),
-                'value' => 'number_format($data["current_balance"],Common::getDecimalPlace())',
+                'value' => 'TbHtml::linkButton(number_format($data["current_balance"]), array(
+                        "color" => TbHtml::BUTTON_COLOR_PRIMARY,
+                        "size" => TbHtml::BUTTON_SIZE_MINI,
+                        "url" => Yii::app()->createUrl("report/BalanceByCustomerId",array(
+                                "client_id" => $data["client_id"],
+                                "balance" => $data["current_balance"]
+                            )
+                        ),
+                        "class" => "update-dialog-open-link",
+                        "data-update-dialog-title" => "Outstanding Balance History",
+                 ))',
+                'type' => 'raw'
             ),
             array(
                 'name' => 'balance',
@@ -995,7 +1016,7 @@ class ReportColumn extends CModel
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => 'Action',
-                'template' => '<div class="btn-group">{edit}{reject}{approve}{complete}</div>',
+                'template' => '<div class="btn-group">{edit}{reject}{approve}{complete}{print}{printdo}</div>',
                 'buttons' => array(
                     'edit' => array(
                         'label' => 'Detail',
@@ -1048,6 +1069,28 @@ class ReportColumn extends CModel
                             'class' => 'btn-order-complete btn btn-xs btn-success',
                         ),
                         'visible' => '$data["status"]=="3"',
+                    ),
+                    'print' => array(
+                        'label' => 'print',
+                        'icon' => 'fa fa-print',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"]))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                        //'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                    ),
+                    'printdo' => array(
+                        'label' => 'print',
+                        'icon' => 'fa fa-book',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"]))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'DO Printing'),
+                            'class' => 'btn btn-xs btn-primary',
+                        ),
+                        //'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
                     ),
                 ),
             ),
