@@ -31,7 +31,7 @@ class SaleItemController extends Controller
                     'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer',
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
-                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus',
+                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','PrintDO',
                     'list','update',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'REST.DELETE'),
                 'users' => array('@'),
@@ -439,7 +439,7 @@ class SaleItemController extends Controller
            //$this->render('//receipt/index', $data);
             $this->renderRecipe($data);
             //$this->render('//receipt/'. $data['receipt_folder'] .'index', $data);
-            Yii::app()->shoppingCart->clearAll();
+            //Yii::app()->shoppingCart->clearAll();
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
@@ -599,6 +599,28 @@ class SaleItemController extends Controller
         AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $sale_id, $total,$trans_date,$comment, $trans_code, $trans_status);
 
         $this->reload();
+    }
+
+    public function actionPrintDO($sale_id)
+    {
+        //if (Yii::app()->request->isPostRequest) {
+
+            $this->layout = '//layouts/column_receipt';
+            Yii::app()->shoppingCart->setInvoiceFormat('format_do');
+            Yii::app()->shoppingCart->clearAll();
+            Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+            $data=$this->sessionInfo();
+
+            $data['sale_id'] = $sale_id;
+
+            if (count($data['items']) == 0) {
+                $data['error_message'] = 'Sale Transaction Failed';
+            }
+
+            $this->renderRecipe($data);
+            Yii::app()->shoppingCart->clearAll();
+        //}
     }
 
     private function reload($data=array())

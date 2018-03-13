@@ -212,7 +212,7 @@
             </table>
 
             <?php $this->renderPartial('partial/_right_panel_complete',array(
-                    'count_check' => $count_payment,
+                    'count_check' => $count_item,
                     'sale_save_url' => $sale_save_url,
                     'color_style' => $color_style
             )); ?>
