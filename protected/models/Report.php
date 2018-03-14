@@ -94,6 +94,7 @@ class Report extends CFormModel
                WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
                AND status=:status
+               AND printeddo_by is null
                ORDER By sale_time desc";
 
 
@@ -123,6 +124,7 @@ class Report extends CFormModel
                FROM v_sale_invoice_2
                WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND printeddo_by is null
                ORDER By sale_time desc";
 
 

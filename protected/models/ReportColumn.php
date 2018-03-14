@@ -1073,7 +1073,12 @@ class ReportColumn extends CModel
                     'print' => array(
                         'label' => 'print',
                         'icon' => 'fa fa-print',
-                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"]))',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "status" => param("sale_print_status"),
+                                    "format"=>"format_hf",
+                                )
+                         )',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'Invoice Printing'),
@@ -1084,7 +1089,12 @@ class ReportColumn extends CModel
                     'printdo' => array(
                         'label' => 'print',
                         'icon' => 'fa fa-book',
-                        'url' => 'Yii::app()->createUrl("saleItem/printDO", array("sale_id"=>$data["sale_id"]))',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "status" => param("sale_do_status"),
+                                    "format"=>"format_do",
+                                )
+                         )',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'DO Printing'),

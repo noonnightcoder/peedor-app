@@ -31,7 +31,7 @@ class SaleItemController extends Controller
                     'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer',
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
-                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','PrintDO',
+                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
                     'list','update',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'REST.DELETE'),
                 'users' => array('@'),
@@ -601,18 +601,20 @@ class SaleItemController extends Controller
         $this->reload();
     }
 
-    public function actionPrintDO($sale_id)
+    public function actionPrinting($sale_id,$status,$format)
     {
         //if (Yii::app()->request->isPostRequest) {
 
             $this->layout = '//layouts/column_receipt';
-            Yii::app()->shoppingCart->setInvoiceFormat('format_do');
+            Yii::app()->shoppingCart->setInvoiceFormat($format);
             Yii::app()->shoppingCart->clearAll();
             Yii::app()->shoppingCart->copyEntireSale($sale_id);
 
             $data=$this->sessionInfo();
 
             $data['sale_id'] = $sale_id;
+
+            Sale::model()->updatePrinter($sale_id,$status);
 
             if (count($data['items']) == 0) {
                 $data['error_message'] = 'Sale Transaction Failed';

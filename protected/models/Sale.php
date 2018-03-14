@@ -59,11 +59,11 @@ class Sale extends CActiveRecord
         // will receive user inputs.
         return array(
             //array('sale_time', 'required'),
-            array('client_id, employee_id', 'numerical', 'integerOnly' => true),
+            array('client_id, employee_id, created_by, updated_by, printeddo_by,printed_by', 'numerical', 'integerOnly' => true),
             array('sub_total, discount_amount', 'numerical'),
             array('status', 'length', 'max' => 25),
             array('payment_type', 'length', 'max' => 255),
-            array('sale_time', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => true, 'on' => 'insert'),
+            array('sale_time,created_at', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => true, 'on' => 'insert'),
             array('remark, sale_time, discount_type', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
@@ -182,6 +182,7 @@ class Sale extends CActiveRecord
             $model->salerep_id = $sale_rep_id;
             $model->new_id = $new_id;
             $model->payment_term = $cust_term; // Add on 01-Mar-2018 HomeFood's feedback
+            $model->created_by = $employee_id;
 
             if ($model->save()) {
                 $sale_id = $model->id;
@@ -644,7 +645,7 @@ class Sale extends CActiveRecord
 
     //Create new Sale Id every 1st day of year add on 13 Feb 2018 14:00 for yearly invoice number resetting
     protected function createSequence($interval) {
-        $id=0;
+        $id = 0;
         $ord = new Ord;
         $ord->intervals=$interval;
 
@@ -657,6 +658,21 @@ class Sale extends CActiveRecord
 
     public function updateSaleStatus($sale_id,$sale_status) {
         Sale::model()->updateByPk((int)$sale_id,array('status' => $sale_status));
+        $this->updatePrinter($sale_id,$sale_status);
     }
+
+    public function updatePrinter($sale_id,$sale_status) {
+        if ($sale_status=='3') {
+            Sale::model()->updateByPk((int)$sale_id,array('checked_by' => getEmployeeId()));
+        } elseif ($sale_status=='1') {
+            Sale::model()->updateByPk((int)$sale_id,array('reviewed_by' => getEmployeeId()));
+        } elseif ($sale_status=='5') {
+            Sale::model()->updateByPk((int)$sale_id,array('printeddo_by' => getEmployeeId()));
+        }  elseif ($sale_status=='6') {
+            Sale::model()->updateByPk((int)$sale_id,array('printed_by' => getEmployeeId()));
+        }
+
+    }
+
 
 }

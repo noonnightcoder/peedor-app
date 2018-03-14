@@ -171,4 +171,8 @@ return array(
     'To' => 'ដល់',
     'Start Date' => 'ពីថ្ងៃ',
     'End Date' => 'ដល់ថ្ងៃ',
+    'Customer Name' => 'ឈ្មោះ​អតិថិជន',
+    'Telephone Number' => 'លេខទូរស័ព្ទ',
+    'DATE' => 'កាលបរិច្ឆេទ',
+    'Payment Day' => 'ថ្ងៃទូទាត់',
 );

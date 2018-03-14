@@ -10,6 +10,8 @@ return array(
     'sale_approve_status' => '3', // Sale Order Approved
     'sale_reject_status' => '-3', // Sale Order Rejected
     'sale_confirm_status' => '4', // Sale Order Confirmed by Account / Finance team - Ready to delivery
+    'sale_do_status' => '5', // Print Delivery Note
+    'sale_print_status' => '6', // Print / Reprint Invoice
     'active_status' => '1',
     'inactive_status' => '0',
     'defaultArchived' => 'false',
