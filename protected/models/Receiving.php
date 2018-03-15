@@ -377,19 +377,19 @@ class Receiving extends CActiveRecord
     {
         if (Yii::app()->receivingCart->getMode() === 'receive') //+Quantity
         {
-            $data['trans_header'] = 'Receive from Supplier';
+            $data['trans_header'] = sysMenuPurchaseReceive();
         } elseif (Yii::app()->receivingCart->getMode() === 'return') //-Quantity
         {
-            $data['trans_header'] = 'Return to Supplier';
+            $data['trans_header'] = sysMenuPurchaseReturn();
         } elseif (Yii::app()->receivingCart->getMode() === 'adjustment_in') //+Quantity
         {
-            $data['trans_header'] = 'Adjustment In';
+            $data['trans_header'] = sysMenuInventoryAdd();
         } elseif (Yii::app()->receivingCart->getMode() === 'adjustment_out') // -Quantity
         {
-            $data['trans_header'] = 'Adjustment Out';
+            $data['trans_header'] = sysMenuInventoryMinus();
         } elseif (Yii::app()->receivingCart->getMode() === 'physical_count') // Physical count
         {
-            $data['trans_header'] = 'Physical Count';
+            $data['trans_header'] = sysMenuInventoryCount();
         }
 
         return $data['trans_header'];

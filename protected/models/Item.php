@@ -633,7 +633,7 @@ class Item extends CActiveRecord
                     ),
                     'delete' => array(
                         'label' => Yii::t('app', 'Delete Item'),
-                        'icon' => 'bigger-120 glyphicon-trash',
+                        'icon' => 'bigger-120 fa fa-trash',
                         'options' => array(
                             'class' => 'btn btn-xs btn-danger',
                         ),

@@ -1,7 +1,7 @@
 <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
     'id' => 'supplier_form',
     'method' => 'post',
-    'action' => Yii::app()->createUrl('receivingItem/selectSupplier/'),
+    //'action' => Yii::app()->createUrl('receivingItem/selectSupplier/'),
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 )); ?>
 

@@ -11,6 +11,8 @@
                 beforeSend: function() { $('.waiting').show(); },
                 complete: function() { $('.waiting').hide(); },
                 success : function(data) {
+                    //$("#report_grid").html(data); // To check and fix Ajax load view from view/partialList/_grid of //layout/report/_grid
+                    $('.nav-tabs a[href="#tab_3"]').tab('show');
                     $.fn.yiiGridView.update('sale-order-wait-grid');
                     $.fn.yiiGridView.update('sale-order-review-grid');
                     $.fn.yiiGridView.update('sale-order-complete-grid');
@@ -34,6 +36,8 @@
                 beforeSend: function() { $('.waiting').show(); },
                 complete: function() { $('.waiting').hide(); },
                 success : function(data) {
+                    //$("#report_grid").html(data);
+                    $('.nav-tabs a[href="#tab_4"]').tab('show');
                     $.fn.yiiGridView.update('sale-order-complete-grid');
                     $.fn.yiiGridView.update('sale-order-grid');
                     $.fn.yiiGridView.update('sale-order-wait-grid');
@@ -70,6 +74,12 @@
 
     // Every tab click refresh the grid view to make the sub detail view Ajax work
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        //var target = e.target.attributes.href.value;
+        //var tab_number = target.substr(target.indexOf('_')+1,1) + 1;
+        //var next_tab = '#tab_' + tab_number;
+        //console.log(next_tab);
+        //$('.nav-tabs a[href=next_tab]').tab('show');
+        // $('.nav-tabs > .active').next('li').find('a').trigger('click'); // Next tab
         $.fn.yiiGridView.update('sale-order-wait-grid');
         $.fn.yiiGridView.update('sale-order-review-grid');
         $.fn.yiiGridView.update('sale-order-complete-grid');
