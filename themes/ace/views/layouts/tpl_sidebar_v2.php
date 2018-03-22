@@ -24,7 +24,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'visible' => Yii::app()->user->checkAccess('item.index')
                 ),
                 array('label' => sysMenuItemImpExp(), 'icon' => 'menu-icon fa fa-cog pink',
-                    'url' => Yii::app()->urlManager->createUrl('item/admin'),
+                    'url' => Yii::app()->urlManager->createUrl('item/testExcel'),
                     'active' => $this->id . '/' . $this->action->id == 'item/utilities',
                     'visible' => Yii::app()->user->checkAccess('item.index')
                 ),

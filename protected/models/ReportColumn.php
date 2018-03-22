@@ -974,11 +974,11 @@ class ReportColumn extends CModel
                 'header' => Yii::t('app', 'Customer Name'),
                 'value' => '$data["client_name"]',
             ),
-            array(
-                'name' => 'payment_term',
-                'header' => Yii::t('app', 'Payment Term'),
-                'value' => '$data["payment_term"]',
-            ),
+            // array(
+            //     'name' => 'payment_term',
+            //     'header' => Yii::t('app', 'Payment Term'),
+            //     'value' => '$data["payment_term"]',
+            // ),
             array(
                 'name' => 'sub_total',
                 'header' => Yii::t('app', 'Sub Total'),
