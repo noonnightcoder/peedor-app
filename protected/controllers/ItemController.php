@@ -106,8 +106,9 @@ class ItemController extends Controller
                 }else{
                     $message=array('message'=>'Failed to import data');
                 }
-                $this->render('readExcel',$message);
+                
             }
+            $this->render('readExcel',$message);
         }
     }
     /**

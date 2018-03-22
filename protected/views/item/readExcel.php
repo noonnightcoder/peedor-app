@@ -19,6 +19,6 @@
 //     }
 // echo "</table>";
 // }
-	echo $message;
+	echo @$message;
 
 ?>
