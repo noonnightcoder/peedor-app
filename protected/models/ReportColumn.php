@@ -1047,7 +1047,9 @@ class ReportColumn extends CModel
                     'approve' => array(
                         'label' => 'approve',
                         'icon' => 'fa fa-pencil',
-                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array("sale_id"=>$data["sale_id"], "status" => param("sale_approve_status")))',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
+                                    "sale_id"=>$data["sale_id"], 
+                                    "status" => param("sale_approve_status")))',
                         'options' => array(
                             'title' => Yii::t('app', 'Approve'),
                             'class' => 'btn-order-approve btn btn-xs btn-success',
@@ -1062,7 +1064,7 @@ class ReportColumn extends CModel
                                     "sale_id"=>$data["sale_id"], 
                                     "status" => param("sale_complete_status"),
                                     "customer_id" => $data["client_id"],
-                                    "total" => $data["total"],
+                                    "total" => number_format($data["total"],Common::getDecimalPlace()),
                                     ))',
                         'options' => array(
                             'title' => Yii::t('app', 'Complete'),
@@ -1074,9 +1076,9 @@ class ReportColumn extends CModel
                         'label' => 'print',
                         'icon' => 'fa fa-print',
                         'url' => 'Yii::app()->createUrl("saleItem/printing", array(
-                                    "sale_id"=>$data["sale_id"],
+                                    "sale_id" => $data["sale_id"],
                                     "status" => param("sale_print_status"),
-                                    "format"=>"format_hf",
+                                    "format" => "format_hf",
                                 )
                          )',
                         'options' => array(
@@ -1084,7 +1086,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Invoice Printing'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => '$data["status"]=="1"',
+                        'visible' => '$data["status"] == "1"',
                     ),
                     'printdo' => array(
                         'label' => 'print',
@@ -1100,7 +1102,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'DO Printing'),
                             'class' => 'btn btn-xs btn-primary',
                         ),
-                        'visible' => '$data["status"]=="1"',
+                        'visible' => '$data["status"] == "1"',
                     ),
                 ),
             ),

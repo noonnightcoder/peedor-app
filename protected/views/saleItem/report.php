@@ -70,6 +70,6 @@ $this->breadcrumbs = array(
 
 </div>
 
-<?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-
 <?php $this->renderPartial('partialList/_js',array()); ?>
+
+<?php $this->widget( 'ext.modaldlg.EModalDlg' ); ?>

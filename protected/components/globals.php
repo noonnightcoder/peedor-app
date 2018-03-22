@@ -96,7 +96,7 @@ function ckacc($permission) {
     return Yii::app()->user->checkAccess($permission);
 }
 
-function loadview($view_name,$data) {
+function loadview($view_name,$partial_view='_grid',$data) {
     if (Yii::app()->request->isAjaxRequest) {
 
         //Yii::app()->clientScript->scriptMap['*.js'] = false;
@@ -114,7 +114,7 @@ function loadview($view_name,$data) {
 
         Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
         Yii::app()->clientScript->scriptMap['box.css'] = false;
-        Yii::app()->controller->renderPartial($view_name, $data, false, true);
+        Yii::app()->controller->renderPartial($partial_view, $data, false, true);
 
     } else {
         Yii::app()->controller->render($view_name, $data);

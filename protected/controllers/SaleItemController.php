@@ -500,7 +500,7 @@ class SaleItemController extends Controller
         $data['sale_approve_n'] = $data['report']->saleCountByStatus('3');
         $data['sale_complete_n'] = $data['report']->saleCountByStatus('1');
 
-        loadview('report',$data);
+        loadview('report','partialList/_grid',$data);
 
     }
 
@@ -642,7 +642,7 @@ class SaleItemController extends Controller
         $model->total_discount= $data['total_discount'];
         $model->total_gst= $data['total_gst'];
 
-        loadview('index',$data);
+        loadview('index','index',$data);
 
         /*
         if (Yii::app()->request->isAjaxRequest) {
