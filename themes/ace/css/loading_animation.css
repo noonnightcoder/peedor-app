@@ -2,13 +2,15 @@
     background: white url('images/loading.gif') right center no-repeat;
 }
 
+
+/* Credit to StackOverflow https://goo.gl/AHsQ7W */
 .waiting {
     display:    none;
     position:   fixed;
     z-index:    1000;
     top:        0;
     left:       0;
-    height:     100%;
+    height:     10%;
     width:      100%;
     background: rgba( 255, 255, 255, .8 ) 
                 url('images/loading.gif') 
@@ -28,7 +30,7 @@ body.loading .waiting {
     display: block;
 }
 
-/* Many thanksk to this https://github.com/twbs/bootstrap/issues/9939
+/* Many thanks to this https://github.com/twbs/bootstrap/issues/9939
 */
 /*
 .btn-group {

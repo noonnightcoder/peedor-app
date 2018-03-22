@@ -30,8 +30,8 @@ Yii::app()->clientScript->registerScript( 'addPayment', "
                 var payment_amount=$('#payment_amount_id').val();
                 $.ajax({url:url,
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         data : {payment_id : payment_id, payment_amount : payment_amount},
                         success : function(data) {
                               $('#register_container').html(data);
@@ -56,8 +56,8 @@ Yii::app()->clientScript->registerScript( 'enterPayment', "
                     var payment_amount=$(this).val();
                     $.ajax({url:url,
                             type : 'post',
-                            beforeSend: function() { $('.waiting').slideDown(); },
-                            complete: function() { $('.waiting').slideUp(); },
+                            beforeSend: function() { $('.waiting').show(); },
+                            complete: function() { $('.waiting').hide(); },
                             data : {payment_id : payment_id, payment_amount : payment_amount},
                             success : function(data) {
                                   $('#register_container').html(data);
@@ -79,8 +79,8 @@ Yii::app()->clientScript->registerScript( 'deletePayment', "
                 var url=$(this).attr('href');
                 $.ajax({url:url,
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                             $('#register_container').html(data);
                           }
@@ -100,8 +100,8 @@ Yii::app()->clientScript->registerScript( 'setComment', "
                         url: 'SetComment',
                         data : {comment : comment},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                             $('#register_container').html(data);
                        }
@@ -200,8 +200,8 @@ Yii::app()->clientScript->registerScript( 'priceTierOption', "
                 $.ajax({url : 'SetPriceTier',
                         data : {price_tier_id : pricetierId},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                            $('#register_container').html(data);
                         }
@@ -212,7 +212,7 @@ Yii::app()->clientScript->registerScript( 'priceTierOption', "
 ?>
 
 <?php
-Yii::app()->clientScript->registerScript('paymentTermOption', "
+Yii::app()->clientScript->registerScript( 'paymentTermOption', "
         jQuery( function($){
             $('div#client_cart').on('change','#payment_term_id',function(e) {
                 e.preventDefault();
@@ -220,8 +220,8 @@ Yii::app()->clientScript->registerScript('paymentTermOption', "
                 $.ajax({url : 'SetPaymentTerm',
                         data : {payment_term_id : Id},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                            $('#register_container').html(data);
                         }
@@ -241,8 +241,8 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
                 $.ajax({url: 'SelectCustomer',
                         data : {customer_id : customer_id},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                             $('#register_container').html(data);
                         }
@@ -287,7 +287,7 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
     $(document).ready(function()
     {
         //Here just in case the loader doesn't go away for some reason
-        $('.waiting').slideUp();
+        $('.waiting').hide();
 
         // ajaxForm to ensure is submitting as Ajax even user press enter key
         $('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
@@ -305,14 +305,14 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
 
         $('#cancel_cart').on('click','a.suspend-sale',function(e) {
             e.preventDefault();
-            if (confirm("<?= Yii::t('app','Are you sure you want to suspend this sale?'); ?>")){
+            if (confirm("<?php echo Yii::t('app','Are you sure you want to suspend this sale?'); ?>")){
                 $('#suspend_sale_form').submit();
             }
         });
 
         $('#cancel_cart').on('click','a.cancel-sale',function(e) {
             e.preventDefault();
-            if (confirm("<?= Yii::t('app','Are you sure you want to clear this sale? All items will cleared.'); ?>")){
+            if (confirm("<?php echo Yii::t('app','Are you sure you want to clear this sale? All items will cleared.'); ?>")){
                 $('#suspend_sale_form').attr('action', '<?php echo Yii::app()->createUrl('saleItem/cancelSale/'); ?>');
                 $('#suspend_sale_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
             }
@@ -337,7 +337,7 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
             return false;
         }
         submitting = true;
-        $('.waiting').slideDown();
+        $('.waiting').show();
     }
 
     function itemScannedSuccess(responseText, statusText, xhr, $form)
@@ -382,8 +382,8 @@ Yii::app()->clientScript->registerScript( 'saleRepOption', "
                 $.ajax({url: 'setSaleRep',
                         data : {id : Id},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                            $('#register_container').html(data);
                         }
@@ -402,8 +402,8 @@ Yii::app()->clientScript->registerScript( 'invoiceOption', "
                 $.ajax({url: 'setInvoiceFormat',
                         data : {id : Id},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                            console.log(Id);
                            $('#register_container').html(data);
@@ -427,8 +427,8 @@ Yii::app()->clientScript->registerScript( 'addPayment', "
                 var alt_payment_amount=$('#alt_payment_amount_id').val();
                 $.ajax({url:url,
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         data : {payment_id : payment_id, payment_amount : payment_amount, alt_payment_amount : alt_payment_amount},
                         success : function(data) {
                               $('#register_container').html(data);
@@ -454,8 +454,8 @@ Yii::app()->clientScript->registerScript( 'enterPayment', "
                     var alt_payment_amount=$('#alt_payment_amount_id').val();
                     $.ajax({url:url,
                             type : 'post',
-                            beforeSend: function() { $('.waiting').slideDown(); },
-                            complete: function() { $('.waiting').slideUp(); },
+                            beforeSend: function() { $('.waiting').show(); },
+                            complete: function() { $('.waiting').hide(); },
                             data : {payment_id : payment_id, payment_amount : payment_amount, alt_payment_amount : alt_payment_amount},
                             success : function(data) {
                                   $('#register_container').html(data);
@@ -477,8 +477,8 @@ Yii::app()->clientScript->registerScript( 'deletePayment', "
                 var url=$(this).attr('href');
                 $.ajax({url:url,
                         type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
+                        beforeSend: function() { $('.waiting').show(); },
+                        complete: function() { $('.waiting').hide(); },
                         success : function(data) {
                             $('#register_container').html(data);
                           }

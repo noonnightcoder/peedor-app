@@ -56,8 +56,8 @@
                 var url=$(this).attr('href');
                 $.ajax({url:url,
                         type : 'post',
-                        beforeSend: function() { $('.waiting').show(); },
-                        complete: function() { $('.waiting').hide(); },
+                        beforeSend: function() { $('.waiting').slideDown(); },
+                        complete: function() { $('.waiting').slideUp(); },
                         success : function(data) {
                             $('#register_container').html(data);
                           }
@@ -78,8 +78,8 @@ Yii::app()->clientScript->registerScript( 'setComment', "
                         dataType : 'json',
                         data : {comment : comment},
                         type : 'post',
-                        beforeSend: function() { $('.waiting').show(); },
-                        complete: function() { $('.waiting').hide(); },
+                        beforeSend: function() { $('.waiting').slideDown(); },
+                        complete: function() { $('.waiting').slideUp(); },
                         success : function(data) {
                                 if (data.status==='success')
                                 {
@@ -105,7 +105,7 @@ var submitting = false;
 $(document).ready(function()
 {   
     //Here just in case the loader doesn't go away for some reason
-    $('.waiting').hide();
+    $('.waiting').slideUp();
     
     // ajaxForm to ensure is submitting as Ajax even user press enter key
     $('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: receivingsBeforeSubmit, success: itemScannedSuccess});
@@ -147,7 +147,7 @@ function receivingsBeforeSubmit(formData, jqForm, options)
         return false;
     }
     submitting = true;
-    $('.waiting').show();
+    $('.waiting').slideDown();
 }
 
 function itemScannedSuccess(itemId)

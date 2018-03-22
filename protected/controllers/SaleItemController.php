@@ -569,9 +569,11 @@ class SaleItemController extends Controller
 
         ajaxRequest();
         Sale::model()-> updateSaleStatus($sale_id,$status);
-        $this->reload();
+        $this->actionList();
 
     }
+
+    // To be delete change to saleUpdate status function
 
     public function actionSaleApprove($sale_id,$status,$customer_id,$total) {
 
@@ -598,8 +600,9 @@ class SaleItemController extends Controller
         //Saving Account Receivable for Sale transaction code = 'CHSALE'
         AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $sale_id, $total,$trans_date,$comment, $trans_code, $trans_status);
 
-        $this->reload();
+        $this->actionList();
     }
+
 
     public function actionPrinting($sale_id,$status,$format)
     {

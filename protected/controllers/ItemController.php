@@ -80,11 +80,13 @@ class ItemController extends Controller
             'model' => $this->loadModel($id),
         ));
     }
+
     public function actionTestExcel()
     {
         $model=new Item();
         $this->render('readExcel',array('model'=>$model));
     }
+
     public function actionUploadFile()
     {
         $model=new TestExcel();
@@ -111,11 +113,7 @@ class ItemController extends Controller
             $this->render('readExcel',$message);
         }
     }
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
+
     public function actionDelete($id)
     {
         if (Yii::app()->user->checkAccess('item.delete')) {
@@ -422,10 +420,6 @@ class ItemController extends Controller
         Yii::app()->end();
     }
 
-    /** Lookup Client for selet 2
-     *
-     * @throws CHttpException
-     */
     public function actionGetItem()
     {
         if (isset($_GET['term'])) {
