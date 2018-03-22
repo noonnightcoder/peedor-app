@@ -1073,24 +1073,34 @@ class ReportColumn extends CModel
                     'print' => array(
                         'label' => 'print',
                         'icon' => 'fa fa-print',
-                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"]))',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "status" => param("sale_print_status"),
+                                    "format"=>"format_hf",
+                                )
+                         )',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'Invoice Printing'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        //'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                        'visible' => '$data["status"]=="1"',
                     ),
                     'printdo' => array(
                         'label' => 'print',
                         'icon' => 'fa fa-book',
-                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"]))',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "status" => param("sale_do_status"),
+                                    "format"=>"format_do",
+                                )
+                         )',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'DO Printing'),
                             'class' => 'btn btn-xs btn-primary',
                         ),
-                        //'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                        'visible' => '$data["status"]=="1"',
                     ),
                 ),
             ),

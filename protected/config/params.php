@@ -10,6 +10,8 @@ return array(
     'sale_approve_status' => '3', // Sale Order Approved
     'sale_reject_status' => '-3', // Sale Order Rejected
     'sale_confirm_status' => '4', // Sale Order Confirmed by Account / Finance team - Ready to delivery
+    'sale_do_status' => '5', // Print Delivery Note
+    'sale_print_status' => '6', // Print / Reprint Invoice
     'active_status' => '1',
     'inactive_status' => '0',
     'defaultArchived' => 'false',
@@ -37,8 +39,8 @@ return array(
     'menu_item_markup_price' => 'Markup Price Update',
     'menu_inventory' => 'inventory',
     'menu_inventory_count' => 'physical count',
-    'menu_inventory_add' => 'add stock',
-    'menu_inventory_minus' => 'minus stock',
+    'menu_inventory_add' => 'in stock',
+    'menu_inventory_minus' => 'out stock',
     'menu_purchase' => 'purchase',
     'menu_purchase_receive' => 'receive from supplier',
     'menu_purchase_return' => 'return to supplier',

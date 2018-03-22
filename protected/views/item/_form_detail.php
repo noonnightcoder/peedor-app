@@ -5,7 +5,7 @@
 <?php echo $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>100)); ?>
 
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="Item_category"><?php echo Yii::t('app','Category') ?></label>
+    <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
     <div class="col-sm-9">
         <?php
         $this->widget('yiiwheels.widgets.select2.WhSelect2', array(
@@ -65,7 +65,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-sm-3 control-label" for="Item_unit_measurable"><?php echo Yii::t('app','Unit Of Measurable') ?></label>
+    <label class="col-sm-3 control-label" for="Item_unit_measurable"><?= Yii::t('app','Unit Of Measurable') ?></label>
     <div class="col-sm-9">
         <?php
         $this->widget('yiiwheels.widgets.select2.WhSelect2', array(

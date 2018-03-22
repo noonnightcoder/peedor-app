@@ -24,6 +24,7 @@
             'trans_mode' => $trans_mode,
             'discount_amount' => $discount_amount,
             'total' => $total,
+            'trans_header' => $trans_header,
         )); ?>
     <!--/right.panel-->
 

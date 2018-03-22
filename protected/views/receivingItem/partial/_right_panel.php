@@ -45,9 +45,9 @@
     <div class="row">
         <div class="sidebar-nav" id="supplier_cart">
             <?php
-            if ($trans_mode == 'physical_count') {
+            if ($trans_mode == 'physical_count' || $trans_mode = 'adjustment_out' || $trans_mode ='adjustment_iut') {
                 $this->widget('yiiwheels.widgets.box.WhBox', array(
-                    'title' => Yii::t('app', 'Count By') . ' : ' . ucwords(Yii::app()->session['emp_fullname']),
+                    'title' => Yii::t('app', $trans_header) . ' By : ' . ucwords(Yii::app()->session['emp_fullname']),
                     'headerIcon' => 'menu-icon fa fa-users',
                     'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
                     'content' => $this->renderPartial('partial/_employee',

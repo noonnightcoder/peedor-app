@@ -5,7 +5,7 @@
 ));?>
 
 
-    <?php echo TbHtml::linkButton(Yii::t('app', 'Create ' . $box_title), array(
+    <?= TbHtml::linkButton(Yii::t('app', 'Create ' . $box_title), array(
         'color' => $color_style,
         'size' => TbHtml::BUTTON_SIZE_SMALL,
         'icon' => 'ace-icon fa fa-plus white',
