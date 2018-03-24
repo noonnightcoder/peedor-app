@@ -1054,7 +1054,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Approve'),
                             'class' => 'btn-order-approve btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]=="2"',
+                        'visible' => '$data["status"]=="2" && ckacc("sale.approve")',
                     ),
                     'complete' => array(
                         'label' => 'cancel',

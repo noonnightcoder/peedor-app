@@ -116,22 +116,21 @@ class ItemController extends Controller
 
     public function actionDelete($id)
     {
-        if (Yii::app()->user->checkAccess('item.delete')) {
-            if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
-                // we only allow deletion via POST request
-                //$this->loadModel($id)->delete();
-                Item::model()->deleteItem($id);
+        authorized('item.delete');
 
-                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-                if (!isset($_GET['ajax'])) {
-                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-                }
-            } else {
-                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+        if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
+            // we only allow deletion via POST request
+            //$this->loadModel($id)->delete();
+            Item::model()->deleteItem($id);
+
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
             }
         } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
         }
+
     }
 
     /**
@@ -172,12 +171,17 @@ class ItemController extends Controller
      */
     public function actionAdmin()
     {
+
+        authorized('item.read');
+
         $model = new Item('search');
 
-        if (!Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.index') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.create') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.update') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.delete')) {
+        /*
+        if (!ckacc(strtolower(get_class($model)) . '.read') || !ckacc(strtolower(get_class($model)) . '.create') || !ckacc(strtolower(get_class($model)) . '.update') || !ckacc(strtolower(get_class($model)) . '.delete')) {
             //throw new CHttpException(403, 'You are not authorized to perform this action');
             $this->redirect(array('site/ErrorException', 'err_no' => 403));
         }
+        */
 
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Item'])) {

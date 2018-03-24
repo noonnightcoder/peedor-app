@@ -44,18 +44,13 @@ class DashboardController extends Controller
 		);
 	}
 
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
 	public function actionView()
 	{        
-            if ( Yii::app()->user->checkAccess('report.index') ) {
-                $report=new Dashboard;
-                $this->render('index',array('report'=>$report));
-            } else {
-                throw new CHttpException(403, 'You are not authorized to perform this action');
-            }
+	    authorized('dashboard.read');
+
+        $report=new Dashboard;
+        $this->render('index',array('report'=>$report));
+
 	}
 
     public function actionAjaxRefresh()

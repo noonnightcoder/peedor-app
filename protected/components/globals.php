@@ -126,3 +126,10 @@ function ajaxRequest() {
         throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
     }
 }
+
+function authorized($permission)
+{
+    if (!ckacc($permission)) {
+        Yii::app()->controller->redirect(array('site/ErrorException', 'err_no' => 403));
+    }
+}

@@ -173,7 +173,8 @@ class ReportController extends Controller
 
     public function actionSaleDaily()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
 
         $grid_id = 'rpt-sale-daily-grid';
@@ -189,7 +190,8 @@ class ReportController extends Controller
 
     public function actionSaleHourly()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
         $grid_id = 'rpt-sale-hourly-grid';
         $title = 'Sale Hourly';
@@ -204,8 +206,8 @@ class ReportController extends Controller
 
     public function actionSaleSummary()
     {
-
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
         $grid_id = 'rpt-sale-summary-grid';
         $title = 'Sale Summary';
@@ -220,7 +222,8 @@ class ReportController extends Controller
 
     public function actionSaleSumBySaleRep()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
         $grid_id = 'rpt-sale-by-sale-rep-grid';
         $title = 'Sale Summary By Sale Rep';
@@ -236,7 +239,8 @@ class ReportController extends Controller
 
     public function actionSaleWeeklyByCustomer()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale.analytic');
 
 
         $grid_id = 'rpt-sale-weekly-by-customer-grid';
@@ -295,7 +299,8 @@ class ReportController extends Controller
 
     public function actionTransaction()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.stock');
 
         $report = new Report;
         $report->unsetAttributes();  // clear any default values
@@ -362,7 +367,8 @@ class ReportController extends Controller
 
     public function actionPayment()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.accounting');
 
         $report = new Report;
         $report->unsetAttributes();  // clear any default values
@@ -398,7 +404,8 @@ class ReportController extends Controller
 
     public function actionPaymentReceiveByEmployee()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.accounting');
 
         $grid_id = 'rpt-payment-by-employee-grid';
         $title = 'Payment Receive By Employee';
@@ -414,7 +421,8 @@ class ReportController extends Controller
 
     public function actionProfitDailySum()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.accounting');
 
         $grid_id = 'rpt-profit-daily-sum-grid';
         $title = 'Profit Daily Sum';
@@ -429,7 +437,8 @@ class ReportController extends Controller
 
     public function actionProfitByInvoice($id)
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.accounting');
 
         $report = new Report;
 
@@ -452,9 +461,7 @@ class ReportController extends Controller
 
     public function actionTopItem()
     {
-        if (!Yii::app()->user->checkAccess('report.index')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('report.stock');
 
         $grid_id = 'rpt-top-item-grid';
         $title = 'Top Item';
@@ -469,7 +476,8 @@ class ReportController extends Controller
 
     public function actionItemExpiry($filter = '1')
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.stock');
 
         $grid_id = 'rpt-item-expiry-grid';
         $title = 'Item Expiry';
@@ -487,7 +495,8 @@ class ReportController extends Controller
 
     public function actionInventory($filter = 'all')
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.stock');
 
         $grid_id = 'rpt-inventory-grid';
         $title = 'Inventory';
@@ -506,7 +515,8 @@ class ReportController extends Controller
     
     public function actionStockCount($filter = 1)
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.stock');
 
         $report = new Report;
         $report->unsetAttributes();  // clear any default values
@@ -535,7 +545,8 @@ class ReportController extends Controller
     
     public function actionStockCountPrint()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.stock');
        
         $report = new Report;
         $data['report'] = $report;
@@ -557,7 +568,9 @@ class ReportController extends Controller
 
     public function actionItemInactive($mfilter = '1')
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+
+        authorized('report.stock');
 
         $report = new Report;
         $report->unsetAttributes();  // clear any default values
@@ -589,7 +602,8 @@ class ReportController extends Controller
 
     public function actionSaleItemSummary()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
         $grid_id = 'rpt-sale-item-summary-grid';
         $title = 'Sale Item Summary';
@@ -667,7 +681,8 @@ class ReportController extends Controller
 
     public function actionOutStandingInvoice()
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.accounting');
 
         $grid_id = 'rpt-outstanding-inv-grid';
         $title = 'Outstanding Balance';
@@ -683,7 +698,8 @@ class ReportController extends Controller
 
 	public function actionSaleItemSumbyCust($period = 'today')
     {
-        $this->canViewReport();
+        //$this->canViewReport();
+        authorized('report.sale');
 
         $report = new Report;
         //$report->unsetAttributes();  // clear any default values
@@ -756,14 +772,6 @@ class ReportController extends Controller
         }
     }
 
-    /**
-     * @param $grid_id
-     * @param $title
-     * @param $advance_search :  to indicate whether there is an advance search text box
-     * @param $header_view
-     * @param $grid_view
-     * @return mixed
-     */
     protected function commonData($grid_id,$title,$advance_search=null,$header_view='_header',$grid_view='_grid')
     {
         $report = new Report;

@@ -51,10 +51,11 @@ class EmployeeController extends Controller
     public function actionAdmin()
     {
         $model = new Employee('search');
-
+        
         if (!Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.index') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.create') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.update') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.delete')) {
             $this->redirect(array('site/ErrorException','err_no'=>403));
         }
+
 
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Item'])) {

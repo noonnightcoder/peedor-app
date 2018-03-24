@@ -51,7 +51,7 @@ class SaleItemController extends Controller
     {
         Yii::app()->shoppingCart->setMode($tran_type);
 
-        if (ckacc('sale.edit') || ckacc('sale.discount') || ckacc('sale.editprice')) {
+        if (ckacc('sale.create') || ckacc('sale.read') || ckacc('sale.update') || ckacc('sale.delete')) {
 
             $this->reload();
         } else {
@@ -63,12 +63,9 @@ class SaleItemController extends Controller
     {
         Yii::app()->shoppingCart->setMode($tran_type);
 
-        if (ckacc('sale.edit') || ckacc('sale.discount') || ckacc('sale.editprice')) {
+        authorized('sale.create');
 
-            $this->reload();
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        $this->reload();
     }
 
     public function actionAdd()
