@@ -28,6 +28,9 @@ class RbacController extends Controller
         $auth->createOperation('purchase.review', 'review a purchase order');
         $auth->createOperation('purchase.approve', 'approve a purchase order');
 
+        // Add "Purchase Payment" permission
+        $auth->createOperation('purchase.payment', 'payment a purchase invoice');
+
         // add "Inventory" permission
         $auth->createOperation('stock.in', 'in stock');
         $auth->createOperation('stock.out', 'out stock');

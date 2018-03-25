@@ -9,7 +9,7 @@ $this->breadcrumbs = array(
 
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
             'title' => Yii::t('app', 'List of ' . ucfirst(get_class($model))),
-            'headerIcon' => 'ace-icon fa fa-list',
+            'headerIcon' => sysMenuItemIcon(),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
         )); ?>
             <!-- Admin Header layouts.admin._header -->
