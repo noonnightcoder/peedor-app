@@ -132,9 +132,7 @@ class ReportController extends Controller
 
     public function actionSaleInvoice()
     {
-        if (!Yii::app()->user->checkAccess('invoice.index') || !Yii::app()->user->checkAccess('invoice.print') || !Yii::app()->user->checkAccess('invoice.delete') || !Yii::app()->user->checkAccess('invoice.update')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('report.sale');
 
         $grid_id = 'rpt-sale-invoice-grid';
         $title = 'Sale Invoice';
@@ -150,9 +148,7 @@ class ReportController extends Controller
 
     public function actionSaleInvoiceDetail($id)
     {
-        if (!Yii::app()->user->checkAccess('invoice.index')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+       authorized('report.sale');
 
         $report = new Report;
 
@@ -421,7 +417,6 @@ class ReportController extends Controller
 
     public function actionProfitDailySum()
     {
-        //$this->canViewReport();
         authorized('report.accounting');
 
         $grid_id = 'rpt-profit-daily-sum-grid';
@@ -461,7 +456,7 @@ class ReportController extends Controller
 
     public function actionTopItem()
     {
-        authorized('report.stock');
+        authorized('report.sale');
 
         $grid_id = 'rpt-top-item-grid';
         $title = 'Top Item';

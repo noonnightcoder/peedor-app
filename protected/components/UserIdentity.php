@@ -60,7 +60,7 @@ class UserIdentity extends CUserIdentity
             
             //Saving User Login & out timing
             Yii::app()->session['unique_id'] = uniqid();
-            $login_time= Date('Y-m-d H:i:s');
+            $login_time = Date('Y-m-d H:i:s');
             UserLog::model()->saveUserlog(Yii::app()->session['unique_id'], Yii::app()->session->sessionID,Yii::app()->session['userid'],$employeeId,$user->user_name,$login_time);
         }
         return !$this->errorCode;

@@ -188,7 +188,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' =>  'menu-icon fa fa-calendar-times-o',
                     'url' => url('report/itemExpiry'),
                     'active' => $this->id . '/' . $this->action->id == 'report/itemExpiry',
-                    'visible' => ckacc('report.stock') || Yii::app()->settings->get('item', 'itemExpireDate') == '1'
+                    'visible' => ckacc('report.stock')
                 ),
                 array('label' => Yii::t('app', 'Inventory'),
                     'icon' => sysMenuReportStockIcon(),

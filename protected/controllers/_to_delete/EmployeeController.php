@@ -32,7 +32,7 @@ class EmployeeController extends Controller
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'create', 'update', 'admin', 'delete', 'undodelete', 'UploadImage'),
+                'actions' => array('index','create', 'update', 'admin', 'delete', 'undodelete', 'UploadImage'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -45,12 +45,15 @@ class EmployeeController extends Controller
         );
     }
 
+    /**
+     * Manages all models.
+     */
     public function actionAdmin()
     {
         $model = new Employee('search');
-
+        
         if (!Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.index') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.create') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.update') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.delete')) {
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
+            $this->redirect(array('site/ErrorException','err_no'=>403));
         }
 
 
@@ -102,7 +105,7 @@ class EmployeeController extends Controller
             ),
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
-                'header' => Yii::t('app', 'Action'),
+                'header' => Yii::t('app','Action'),
                 'template' => '<div class="btn-group">{view}{update}{delete}{undeleted}</div>',
                 'htmlOptions' => array('class' => 'nowrap'),
                 'buttons' => array(
@@ -142,9 +145,13 @@ class EmployeeController extends Controller
         $this->render('admin', $data);
     }
 
+    /**
+     * Displays a particular model.
+     * @param integer $id the ID of the model to be displayed
+     */
     public function actionView($id)
     {
-        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int) $id));
 
         $this->render('view', array(
             'model' => $this->loadModel($id),
@@ -152,148 +159,184 @@ class EmployeeController extends Controller
         ));
     }
 
+    /**
+     * Creates a new model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     */
     public function actionCreate()
     {
-        authorized('employee.create');
-
         $model = new Employee;
         $user = new RbacUser;
-        $auth_assignment = new Authassignment;
-        $disabled = "";
+        $disabled = ""; 
+     
+        // Uncomment the following line if AJAX validation is needed
+        // $this->performAjaxValidation($model);
 
+        if (Yii::app()->user->checkAccess('employee.create')) {
 
-        if (isset($_POST['Employee'])) {
-            $model->attributes = $_POST['Employee'];
-            $user->attributes = $_POST['RbacUser'];
-            //$location_id = $_POST['Employee']['location'];
-            $role_name = $_POST['RbacUser']['role_name'];
+            if (isset($_POST['Employee'])) {
+                $model->attributes = $_POST['Employee'];
+                $user->attributes = $_POST['RbacUser'];
+                //$location_id = $_POST['Employee']['location'];
 
-            if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
-                $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
-                $model->dob = $dob;
-            }
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
+          
+                // validate BOTH $a and $b
+                $valid = $model->validate();
+                $valid = $user->validate() && $valid;
 
-            // validate BOTH $a and $b
-            $valid = $model->validate();
-            $valid = $user->validate() && $valid;
+                if ($valid) {
+                    $transaction = $model->dbConnection->beginTransaction();
+                    try {
+                        if ($model->save()) {
+                            $user->employee_id = $model->id;
+                            
+                            if ($user->save()) {
 
-            if ($valid) {
-                $transaction = $model->dbConnection->beginTransaction();
-                try {
-                    if ($model->save()) {
-                        $user->employee_id = $model->id;
+                                $assignitems = $this->authItemPermission();
 
-                        if ($user->save()) {
+                                foreach ($assignitems as $assignitem) {
+                                    if (!empty($_POST['RbacUser'][$assignitem])) {
+                                        foreach ($_POST['RbacUser'][$assignitem] as $itemId) {
+                                            $authassigment = new Authassignment;
+                                            $authassigment->userid = $user->id;
+                                            $authassigment->itemname = $itemId;
 
-                            $auth_assignment->itemname = $role_name;
-                            $auth_assignment->userid = $user->id;
+                                            if (!$authassigment->save()) {
+                                                $transaction->rollback();
+                                                print_r($authassigment->errors);
+                                            }
+                                        }
+                                    }
+                                }
 
-                            if (!$auth_assignment->save()) {
-                                $transaction->rollback();
-                                print_r($auth_assignment->errors);
+                                $transaction->commit();
+                                Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
+                                //$this->redirect(array('view', 'id' => $model->id));
+                                $this->redirect(array('admin'));
+                            } else {
+                                Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                             }
-
-                            $transaction->commit();
-                            Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
-                            $this->redirect(array('admin'));
-                        } else {
-                            Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                         }
+                    } catch (Exception $e) {
+                        $transaction->rollback();
+                        Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.' . $e);
                     }
-                } catch (Exception $e) {
-                    $transaction->rollback();
-                    Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.' . $e);
                 }
             }
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
         }
 
-
-        $this->render('create', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
+        $this->render('create', array('model' => $model, 'user' => $user, 'disabled' => $disabled ));
     }
 
-
+    /**
+     * Updates a particular model.
+     * If update is successful, the browser will be redirected to the 'view' page.
+     * @param integer $id the ID of the model to be updated
+     */
     public function actionUpdate($id)
     {
-        authorized('employee.update');
-
         $disabled = "";
+        if (Yii::app()->user->checkAccess('employee.update')) {
 
-        $model = $this->loadModel($id);
-        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+            $model = $this->loadModel($id);
+            $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int) $id));
+        
+            $criteria = new CDbCriteria;
+            $criteria->condition = 'userid=:userId';
+            $criteria->select = 'itemname';
+            $criteria->params = array(':userId' => $user->id);
+            $authassigment = Authassignment::model()->findAll($criteria);
 
-        $criteria = new CDbCriteria;
-        $criteria->condition = 'userid=:userId';
-        $criteria->select = 'itemname';
-        $criteria->params = array(':userId' => $user->id);
-        $auth_assignment = Authassignment::model()->findAll($criteria);
-
-        $auth_items = array();
-        foreach ($auth_assignment as $auth_item) {
-            $auth_items[] = $auth_item->itemname;
-        }
-
-        $user->role_name = $auth_items;
-
-        if (isset($_POST['Employee'])) {
-            $model->attributes = $_POST['Employee'];
-            $user->attributes = $_POST['RbacUser'];
-            $role_name = $_POST['RbacUser']['role_name'];
-
-            if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
-                $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
-                $model->dob = $dob;
+            $auth_items = array();
+            foreach ($authassigment as $auth_item) {
+                $auth_items[] = $auth_item->itemname;
             }
 
-            // validate BOTH $a and $b
-            $valid = $model->validate();
-            $valid = $user->validate() && $valid;
+            $user->items = $auth_items;
+            $user->sales = $auth_items;
+            $user->employees = $auth_items;
+            $user->customers = $auth_items;
+            $user->store = $auth_items;
+            $user->suppliers = $auth_items;
+            $user->receivings = $auth_items;
+            $user->reports = $auth_items;
+            $user->invoices = $auth_items;
+            $user->payments = $auth_items;
+            $user->rptprofits = $auth_items;
+            $user->categories = $auth_items;
 
-            if ($valid) {
-                $transaction = $model->dbConnection->beginTransaction();
-                try {
-                    if ($model->save()) {
+            // Uncomment the following line if AJAX validation is needed
+            // $this->performAjaxValidation($model);
 
-                        if ($user->save()) {
-                            // Delete all existing granted module
-                            Authassignment::model()->deleteAuthassignment($user->id);
+            if (isset($_POST['Employee'])) {
+                $model->attributes = $_POST['Employee'];
+                $user->attributes=$_POST['RbacUser'];
 
-                            $auth_assignment = new Authassignment;
+                if ( $_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "" ) {
+                    $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
+                    $model->dob = $dob;
+                }
+                
+                // validate BOTH $a and $b
+                $valid = $model->validate();
+                $valid=$user->validate() && $valid;
 
-                            $auth_assignment->itemname = $role_name;
-                            $auth_assignment->userid = $user->id;
+                if ($valid) {
+                    $transaction = $model->dbConnection->beginTransaction();
+                    try {
+                        if ($model->save()) {
+                            
+                            if ($user->save()) {
+                                // Delete all existing granted module 
+                                Authassignment::model()->deleteAuthassignment($user->id);
 
-                            if (!$auth_assignment->save()) {
-                                $transaction->rollback();
-                                print_r($auth_assignment->errors);
+                                $assignitems = $this->authItemPermission();
+
+                                foreach ($assignitems as $assignitem) {
+                                    if (!empty($_POST['RbacUser'][$assignitem])) {
+                                        foreach ($_POST['RbacUser'][$assignitem] as $itemId) {
+                                            $authassigment = new Authassignment;
+                                            $authassigment->userid = $user->id;
+                                            $authassigment->itemname = $itemId;
+                                            $authassigment->save();
+                                        }
+                                    }
+                                }
+                          
+                                $transaction->commit();
+                                Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,'Employee : <strong>' . ucwords($model->last_name . ' ' .$model->first_name) . '</strong> have been saved successfully!' );
+                                $this->redirect(array('admin'));
+                            } else {
+                               Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                             }
-
-
-                            $transaction->commit();
-                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS, 'Employee : <strong>' . ucwords($model->last_name . ' ' . $model->first_name) . '</strong> have been saved successfully!');
-                            $this->redirect(array('admin'));
-                        } else {
-                            Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                         }
+                    } catch (Exception $e) {
+                        $transaction->rollback();
+                        Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.' . $e);
                     }
-                } catch (Exception $e) {
-                    $transaction->rollback();
-                    Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.' . $e);
                 }
             }
+        } else {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
         }
-
+        
         if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
-            $disabled = "true";
+             $disabled = "true";
         }
 
         $this->render('update', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
     }
 
-    public
-    function actionInlineUpdate()
+    public function actionInlineUpdate()
     {
         if (Yii::app()->user->checkAccess('employee.update')) {
-            $model = $this->loadModel((int)$_POST['pk']);
+            $model = $this->loadModel((int) $_POST['pk']);
             $attribute = $_POST['name'];
             $model->$attribute = $_POST['value'];
             try {
@@ -311,13 +354,12 @@ class EmployeeController extends Controller
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
-    public
-    function actionDelete($id)
+    public function actionDelete($id)
     {
         if (Yii::app()->user->checkAccess('employee.delete')) {
             if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
-
-                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+                
+                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int) $id));
 
                 if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
                     throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
@@ -329,26 +371,26 @@ class EmployeeController extends Controller
                 if (!isset($_GET['ajax'])) {
                     $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
                 }
-            } else {
+            }
+            else {
                 throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
             }
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
     }
-
+    
     /**
      * Deletes a particular model.
      * If deletion is successful, the browser will be redirected to the 'admin' page.
      * @param integer $id the ID of the model to be deleted
      */
-    public
-    function actionundoDelete($id)
+    public function actionundoDelete($id)
     {
         if (Yii::app()->user->checkAccess('employee.delete')) {
             if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
-
-                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+                
+                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int) $id));
 
                 if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
                     throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
@@ -360,7 +402,8 @@ class EmployeeController extends Controller
                 if (!isset($_GET['ajax'])) {
                     $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
                 }
-            } else {
+            }
+            else {
                 throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
             }
         } else {
@@ -371,11 +414,10 @@ class EmployeeController extends Controller
     /**
      * Lists all models.
      */
-    public
-    function actionIndex()
+    public function actionIndex()
     {
         if (Yii::app()->user->checkAccess('employee.index')) {
-
+        
             $dataProvider = new CActiveDataProvider('Employee');
             $this->render('index', array(
                 'dataProvider' => $dataProvider,
@@ -390,8 +432,7 @@ class EmployeeController extends Controller
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer the ID of the model to be loaded
      */
-    public
-    function loadModel($id)
+    public function loadModel($id)
     {
         $model = Employee::model()->findByPk($id);
         if ($model === null)
@@ -403,8 +444,7 @@ class EmployeeController extends Controller
      * Performs the AJAX validation.
      * @param CModel the model to be validated
      */
-    protected
-    function performAjaxValidation($model)
+    protected function performAjaxValidation($model)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'employee-form') {
             echo CActiveForm::validate($model);
@@ -412,18 +452,16 @@ class EmployeeController extends Controller
         }
     }
 
-    protected
-    function gridLoginIDColumn($data, $row)
+    protected function gridLoginIDColumn($data, $row)
     {
         $model = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => $data->id));
 
         echo ucwords($model->user_name);
     }
 
-    public
-    function actionUploadImage($employee_id)
+    public function actionUploadImage($employee_id)
     {
-
+        
         $model = new Employee;
         $image_model = EmployeeImage::model()->find('employee_id=:employee_id', array(':employee_id' => (int)$employee_id));
 
@@ -448,7 +486,7 @@ class EmployeeController extends Controller
             }
 
             $file->saveAs($name);  // image will uplode to rootDirectory/ximages/{ModelName}/{Model->id}
-
+           
             $image = Yii::app()->image->load($name);
             $image->resize(160, 160);
             $image->save();
@@ -462,16 +500,15 @@ class EmployeeController extends Controller
                 $transaction->rollback();
                 print_r($image_model->errors);
             }
-             *
+             * 
             */
         }
     }
 
 
-    protected function authItemPermission()
-    {
-        return array('items', 'sales', 'employees', 'customers', 'suppliers', 'store', 'receivings', 'reports', 'invoices', 'payments', 'rptprofits', 'categories');
+    protected function authItemPermission() {
+        return array('items', 'sales', 'employees', 'customers', 'suppliers', 'store', 'receivings', 'reports', 'invoices', 'payments','rptprofits','categories');
     }
-
+   
 
 }

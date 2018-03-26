@@ -3,7 +3,7 @@
 <head>
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" charset="UTF-8" /> 
    <meta charset="utf-8" />
-   <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+   <title><?= CHtml::encode($this->pageTitle); ?></title>
     <meta name="description" content="overview &amp; stats" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <?php
@@ -60,7 +60,7 @@
         $cs->registerScriptFile($baseUrl.'/js/jquery-ui.min.js',CClientScript::POS_END);
     ?>
     
-    <?php 
+    <?php /*
         if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
                 jQuery("body").ajaxComplete(
@@ -72,7 +72,7 @@
                 );
             ');
         }
-    ?>
+    */?>
 </head>
 
 <body class="no-skin">

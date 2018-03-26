@@ -48,7 +48,6 @@ class RbacController extends Controller
         // add "Dashboard" permission
         $auth->createOperation('dashboard.read', 'view all dashboard');
 
-
         // add "Item" permission
         $auth->createOperation('item.create', 'create an item');
         $auth->createOperation('item.read', 'read an item');
@@ -57,6 +56,12 @@ class RbacController extends Controller
 
         // add "Item Setting" permission
         $auth->createOperation('item.price.update', 'update an item price');
+
+        // add "Employee" permission
+        $auth->createOperation('employee.create', 'create an customer');
+        $auth->createOperation('employee.read', 'read an customer');
+        $auth->createOperation('employee.update', 'update an customer');
+        $auth->createOperation('employee.delete', 'delete an customer');
 
         // add "Customer" permission
         $auth->createOperation('customer.create', 'create an customer');
@@ -81,7 +86,6 @@ class RbacController extends Controller
         $task = $auth->createTask('readOwnSale', 'read a sale by salesperson himself', $bizRule);
         $task->addChild('sale.read');
 
-
         $role = $auth->createRole('stockclerk','stock clerk role');
         $role->addChild('item.read');
         $role->addChild('stock.in');
@@ -104,7 +108,6 @@ class RbacController extends Controller
         $role->addChild('dashboard.read');
         $role->addChild('report.sale.analytic');
 
-
         $role = $auth->createRole('accountant','accountant role');
         $role->addChild('salesperson');
         $role->addChild('sale.approve');
@@ -126,10 +129,17 @@ class RbacController extends Controller
         $role->addChild('report.accounting');
         $role->addChild('report.customer');
 
+        $role = $auth->createRole('hr','human resource role');
+        $role->addChild('employee.create');
+        $role->addChild('employee.read');
+        $role->addChild('employee.update');
+        $role->addChild('employee.delete');
+
         $role = $auth->createRole('admin','admin role');
         $role->addChild('stockclerk');
         $role->addChild('salesmanager');
         $role->addChild('accountant');
+        $role->addChild('hr');
 
         $auth->assign('salesmanager', '4');
         $auth->assign('admin', '3');

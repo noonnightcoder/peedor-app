@@ -110,17 +110,12 @@ class SalePaymentController extends Controller
         }
     }
 
-    /**
-     * Lists all models.
-     */
     public function actionIndex()
     {
-        if (Yii::app()->user->checkAccess('payment.index')) {
-            $this->reload();
-        } else {
-            //throw new CHttpException(403, 'You are not authorized to perform this action');
-            $this->redirect(array('site/ErrorException','err_no'=>403));
-        }
+        authorized('sale.payment');
+
+        $this->reload();
+
     }
 
     public function actionInvoicePayment($sale_id,$balance) {

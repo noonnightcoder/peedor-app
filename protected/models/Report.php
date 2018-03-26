@@ -407,10 +407,10 @@ class Report extends CFormModel
 
     public function saleHourly()
     {
-        $sql = "SELECT DATE_FORMAT(s.`sale_time`,'%H') hours,sum(quantity) qty,
+        $sql = "SELECT DATE_FORMAT(s.`sale_time`,'%H') hours,sum(si.quantity) qty,
                   sum(case 
-                    when si.discount_type='%' then (quantity*price-(quantity*price*si.discount_amount)/100) 
-                    else (quantity*price)-si.discount_amount
+                    when si.discount_type='%' then (si.quantity*price-(si.quantity*price*si.discount_amount)/100) 
+                    else (si.quantity*price)-si.discount_amount
                   end) amount  
                   FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id AND IFNULL(s.status,'1')='1'
                             AND DATE_FORMAT(sale_time,'%d-%m-%Y')=str_to_date(:to_date,'%d-%m-%Y')

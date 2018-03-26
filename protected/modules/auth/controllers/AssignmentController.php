@@ -12,6 +12,7 @@
  */
 class AssignmentController extends AuthController
 {
+
     /**
      * Displays the a list of all the assignments.
      */
