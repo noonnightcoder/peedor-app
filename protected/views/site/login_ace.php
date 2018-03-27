@@ -8,7 +8,7 @@
                     <span class="red"><?= Yii::t('app', companyName()); ?></span>
                     <span class="white" id="id-text2"><?= Yii::t('app','APP'); ?></span>
                 </h1>
-                <h4 class="blue" id="id-company-text">&copy; <?= Yii::t('app',bizNameFirstUpper() . ' Solution'); ?></h4>
+                <h4 class="blue" id="id-company-text">&copy; <?= bizNameFirstUpper() . ' ' . bizTitleUcWord() ?></h4>
             </div>
            
             <div class="space-6"></div>

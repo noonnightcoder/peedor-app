@@ -1,7 +1,7 @@
 <?php
 
 $this->breadcrumbs = array(
-    Yii::t('app','Price Tier') => array('admin'),
+    sysMenuPriceTier() => array('admin'),
     Yii::t('app','Manage'),
 );
 ?>

@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs = array(
-    Yii::t('app', 'Client') => array('admin'),
+    Yii::t('app', sysMenuCustomer()) => array('admin'),
     Yii::t('app', 'Manage'),
 );
 ?>

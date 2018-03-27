@@ -7,7 +7,12 @@ function bizName()
 
 function bizNameFirstUpper()
 {
-    return ucfirst(param('biz_name'));
+    return t(ucfirst(param('biz_name')),'app');
+}
+
+function bizTitleUcWord()
+{
+    return t(ucwords(param('biz_title')),'app');
 }
 
 function bizWebsite()
@@ -42,7 +47,7 @@ function companySlogan()
 
 function companySloganUcwords()
 {
-    return ucwords(param('company_slogan'));
+    return t(ucwords(param('company_slogan')),'app');
 }
 
 function ddmonyyyy()
@@ -255,6 +260,41 @@ function sysMenuAboutUS()
     return ucwords(t(param('menu_about_us'), 'app'));
 }
 
+function sysMenuCustomer()
+{
+    return ucwords(t(param('menu_customer'), 'app'));
+}
+
+function sysMenuEmployee()
+{
+    return ucwords(t(param('menu_employee'), 'app'));
+}
+
+function sysMenuSupplier()
+{
+    return ucwords(t(param('menu_supplier'), 'app'));
+}
+
+function sysMenuAuthorization()
+{
+    return ucwords(t(param('menu_authorization'), 'app'));
+}
+
+function sysMenuSetting()
+{
+    return strtoupper(t(param('menu_setting'), 'app'));
+}
+
+function sysMenuCategory()
+{
+    return ucwords(t(param('menu_category'), 'app'));
+}
+
+function sysMenuPriceTier()
+{
+    return ucwords(t(param('menu_price_tier'), 'app'));
+}
+
 function sysMenuSaleIcon()
 {
     return 'menu-icon fa fa-usd';
@@ -353,6 +393,41 @@ function sysMenuReportAccountIcon()
 function sysMenuReportStockIcon()
 {
     return 'menu-icon fa fa-cubes';
+}
+
+function sysMenuCustomerIcon()
+{
+    return 'menu-icon fa fa-user';
+}
+
+function sysMenuEmployeeIcon()
+{
+    return 'menu-icon fa fa-user';
+}
+
+function sysMenuSupplierIcon()
+{
+    return 'menu-icon fa fa-user';
+}
+
+function sysMenuAuthorizationIcon()
+{
+    return 'menu-icon fa fa-tasks';
+}
+
+function sysMenuSettingIcon()
+{
+    return 'menu-icon fa fa-cogs';
+}
+
+function sysMenuCategoryIcon()
+{
+    return 'menu-icon fa fa-list';
+}
+
+function sysMenuPriceTierIcon()
+{
+    return 'menu-icon fa fa-adjust';
 }
 
 function getTransType()

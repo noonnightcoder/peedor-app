@@ -15,9 +15,10 @@ return array(
     'active_status' => '1',
     'inactive_status' => '0',
     'defaultArchived' => 'false',
-    'biz_name' => 'Peedor',
+    'biz_name' => 'peedor',
+    'biz_title' => 'smart inventory system',
     // this is displayed in the header section
-	'title'=>'Simply The Best',
+	'title' => 'Simply The Best',
 	// number of posts displayed per page
 	'postsPerPage'=>10,
 	// maximum number of comments that can be displayed in recent comments portlet
@@ -30,7 +31,7 @@ return array(
 	'copyrightInfo'=>'Copyright &copy; 2009 by My Company.',
     // Company Name
     'company_name' => 'Try Me',
-    'company_slogan' => 'camera of your biz',
+    'company_slogan' => 'simply the best',
     'menu_dashboard' => 'dashboard',
     'menu_item' => 'item',
     'menu_item_add' => 'add item',
@@ -56,5 +57,12 @@ return array(
     'menu_report_sale_daily' => 'sale daily',
     'menu_report_sale_hourly' => 'sale hourly',
     'menu_report_sale_summary' => 'sale summary',
+    'menu_customer' => 'customer',
+    'menu_employee' => 'employee',
+    'menu_supplier' => 'supplier',
+    'menu_setting' => 'setting',
+    'menu_category' => 'category',
+    'menu_price_tier' => 'price tier',
+    'menu_authorization' => 'authorization',
     'menu_about_us' => 'about us',
 );

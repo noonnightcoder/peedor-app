@@ -24,8 +24,9 @@
                     <!-- #section:basics/navbar.layout.brand -->
                     <a href="#" class="navbar-brand">
                         <small>
-                                <i class="fa fa-leaf"></i>
-                                <?= bizName() ?>
+                            <!--<img src="/images/peedor_logo.png" width="20px">-->
+                            <i class="fa fa-leaf"></i>
+                            <?= bizNameFirstUpper() ?>
                         </small>
                     </a>
                     <!-- /section:basics/navbar.layout.brand -->

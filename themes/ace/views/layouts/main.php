@@ -3,7 +3,7 @@
 <head>
    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" charset="UTF-8" /> 
    <meta charset="utf-8" />
-   <title><?= CHtml::encode($this->pageTitle); ?></title>
+   <title><?= bizNameFirstUpper() . ' ' . bizTitleUcWord() . ' - ' . companySloganUcwords() ?></title>
     <meta name="description" content="overview &amp; stats" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
     <?php
