@@ -47,12 +47,9 @@ class EmployeeController extends Controller
 
     public function actionAdmin()
     {
+        authorized('employee.read');
+
         $model = new Employee('search');
-
-        if (!Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.index') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.create') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.update') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.delete')) {
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
-        }
-
 
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Item'])) {
@@ -144,6 +141,8 @@ class EmployeeController extends Controller
 
     public function actionView($id)
     {
+        authorized('employee.read');
+
         $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
 
         $this->render('view', array(
@@ -210,7 +209,6 @@ class EmployeeController extends Controller
 
         $this->render('create', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
     }
-
 
     public function actionUpdate($id)
     {
@@ -289,8 +287,7 @@ class EmployeeController extends Controller
         $this->render('update', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
     }
 
-    public
-    function actionInlineUpdate()
+    public function actionInlineUpdate()
     {
         if (Yii::app()->user->checkAccess('employee.update')) {
             $model = $this->loadModel((int)$_POST['pk']);
@@ -306,92 +303,65 @@ class EmployeeController extends Controller
         }
     }
 
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
-    public
-    function actionDelete($id)
+    public function actionDelete($id)
     {
-        if (Yii::app()->user->checkAccess('employee.delete')) {
-            if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
+        authorized('employee.delete');
 
-                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+        if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
 
-                if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
-                    throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
-                } else {
-                    Employee::model()->deleteEmployee($id);
-                }
+            $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
 
-                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-                if (!isset($_GET['ajax'])) {
-                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-                }
+            if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
+                throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
             } else {
-                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+                Employee::model()->deleteEmployee($id);
+            }
+
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
             }
         } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
         }
+
     }
 
-    /**
-     * Deletes a particular model.
-     * If deletion is successful, the browser will be redirected to the 'admin' page.
-     * @param integer $id the ID of the model to be deleted
-     */
-    public
-    function actionundoDelete($id)
+    public function actionundoDelete($id)
     {
-        if (Yii::app()->user->checkAccess('employee.delete')) {
-            if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
+        authorized('employee.delete');
 
-                $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
+        if (Yii::app()->request->isPostRequest) { // we only allow deletion via POST request
 
-                if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
-                    throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
-                } else {
-                    Employee::model()->undodeleteEmployee($id);
-                }
+            $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
 
-                // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-                if (!isset($_GET['ajax'])) {
-                    $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
-                }
+            if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
+                throw new CHttpException(400, 'Cannot delete owner user system. Please do not repeat this request again.');
             } else {
-                throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+                Employee::model()->undodeleteEmployee($id);
+            }
+
+            // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+            if (!isset($_GET['ajax'])) {
+                $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
             }
         } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
         }
     }
 
-    /**
-     * Lists all models.
-     */
-    public
-    function actionIndex()
+    public function actionIndex()
     {
-        if (Yii::app()->user->checkAccess('employee.index')) {
+        authorized('employee.read');
 
-            $dataProvider = new CActiveDataProvider('Employee');
-            $this->render('index', array(
-                'dataProvider' => $dataProvider,
-            ));
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        $dataProvider = new CActiveDataProvider('Employee');
+        $this->render('index', array(
+            'dataProvider' => $dataProvider,
+        ));
+
     }
 
-    /**
-     * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer the ID of the model to be loaded
-     */
-    public
-    function loadModel($id)
+    public function loadModel($id)
     {
         $model = Employee::model()->findByPk($id);
         if ($model === null)
@@ -399,12 +369,7 @@ class EmployeeController extends Controller
         return $model;
     }
 
-    /**
-     * Performs the AJAX validation.
-     * @param CModel the model to be validated
-     */
-    protected
-    function performAjaxValidation($model)
+    protected function performAjaxValidation($model)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'employee-form') {
             echo CActiveForm::validate($model);
@@ -412,16 +377,14 @@ class EmployeeController extends Controller
         }
     }
 
-    protected
-    function gridLoginIDColumn($data, $row)
+    protected function gridLoginIDColumn($data, $row)
     {
         $model = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => $data->id));
 
         echo ucwords($model->user_name);
     }
 
-    public
-    function actionUploadImage($employee_id)
+    public function actionUploadImage($employee_id)
     {
 
         $model = new Employee;
@@ -466,7 +429,6 @@ class EmployeeController extends Controller
             */
         }
     }
-
 
     protected function authItemPermission()
     {

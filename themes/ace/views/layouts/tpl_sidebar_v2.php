@@ -215,20 +215,20 @@ $this->widget('bootstrap.widgets.TbNav', array(
             )),
         array('label' => '<span class="menu-text">' . strtoupper(Yii::t('app', 'PIM')) . '</span>', 'icon' => 'menu-icon fa fa-group', 'url' => url('client/admin'),
             'active' => $this->id == 'employee' || $this->id == 'supplier' || $this->id == 'client' || $this->id == 'publisher',
-            'visible' => ckacc('store.update') || ckacc('employee.index') || ckacc('client.index'),
+            'visible' => ckacc('customer.read') || ckacc('supplier.read') || ckacc('employee.read'),
             'items' => array(
                 array('label' => Yii::t('app', 'Customer'), 'icon' => TbHtml::ICON_USER, 'url' => url('client/admin'),
                     'active' => $this->id == 'client',
-                    'visible' => ckacc('client.index') || ckacc('client.create') || ckacc('client.update') || ckacc('client.delete')
+                    'visible' => ckacc('customer.read') || ckacc('customer.create') || ckacc('customer.update') || ckacc('client.delete')
                 ),
                 array('label' => Yii::t('app', 'Employee'), 'icon' => TbHtml::ICON_USER, 'url' => url('employee/admin'),
                     'active' => $this->id == 'employee', //'active'=>$this->id .'/'. $this->action->id=='employee/admin',
-                    'visible' => ckacc('employee.index') || ckacc('employee.create') || ckacc('employee.update') || ckacc('employee.delete')
+                    'visible' => ckacc('employee.read') || ckacc('employee.create') || ckacc('employee.update') || ckacc('employee.delete')
                 ),
                 //array('label'=>Yii::t('app', 'Publisher'), 'icon'=> TbHtml::ICON_USER, 'url'=>url('publisher/admin'), 'active'=>$this->id .'/'. $this->action->id=='publisher/admin','visible'=>ckacc('supplier.index')),
                 array('label' => Yii::t('app', 'Supplier'), 'icon' => TbHtml::ICON_USER, 'url' => url('supplier/admin'),
                     'active' => $this->id == 'supplier',
-                    'visible' => ckacc('supplier.index') || ckacc('supplier.create') || ckacc('supplier.update') || ckacc('supplier.delete')
+                    'visible' => ckacc('supplier.read') || ckacc('supplier.create') || ckacc('supplier.update') || ckacc('supplier.delete')
                 ),
             )),
         array('label' => '<span class="menu-text">' . strtoupper(Yii::t('app', 'Setting')) . '</span>', 'icon' => 'menu-icon fa fa-cogs',

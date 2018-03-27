@@ -202,4 +202,67 @@ class Supplier extends CActiveRecord
 		}
 		return $suggest;
 	}
+
+    public static function getSupplierColumns()
+    {
+        return array(
+            array(
+                'name' => 'company_name',
+                'value' => 'CHtml::link($data->company_name, Yii::app()->createUrl("supplier/update",array("id"=>$data->primaryKey)))',
+                'type' => 'raw',
+            ),
+            'first_name',
+            'last_name',
+            array(
+                'name' => 'mobile_no',
+            ),
+            array(
+                'name' => 'address1',
+            ),
+            array(
+                'name' => 'status',
+                'type' => 'raw',
+                'value' => '$data->status=="1" ? TbHtml::labelTb("Active", array("color" => TbHtml::LABEL_COLOR_SUCCESS)) : TbHtml::labelTb("Inactive", array("color" => TbHtml::LABEL_COLOR_DEFAULT))',
+            ),
+            array(
+                'class' => 'bootstrap.widgets.TbButtonColumn',
+                'header' => Yii::t('app', 'Action'),
+                'template' => '<div class="hidden-sm hidden-xs btn-group">{view}{update}{delete}{undeleted}</div>',
+                'htmlOptions' => array('class' => 'nowrap'),
+                'buttons' => array(
+                    'view' => array(
+                        'click' => 'updateDialogOpen',
+                        'url' => 'Yii::app()->createUrl("supplier/view/",array("id"=>$data->id))',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-success',
+                            'data-update-dialog-title' => Yii::t('app', 'View Supplier'),
+                        ),
+                    ),
+                    'update' => array(
+                        'icon' => 'ace-icon fa fa-edit',
+                        'label' => Yii::t('app', 'Update'),
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                    ),
+                    'delete' => array(
+                        'label' => Yii::t('app', 'Delete'),
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("supplier.delete")',
+                    ),
+                    'undeleted' => array(
+                        'label' => Yii::t('app', 'Undo Delete Item'),
+                        'url' => 'Yii::app()->createUrl("Supplier/UndoDelete", array("id"=>$data->id))',
+                        'icon' => 'bigger-120 glyphicon-refresh',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-warning btn-undodelete',
+                        ),
+                        'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("supplier.delete")',
+                    ),
+                ),
+            )
+        );
+    }
 }
