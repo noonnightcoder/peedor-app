@@ -26,8 +26,9 @@ $this->breadcrumbs = array(
         'placement' => 'above',
         'id' => 'tabs',
         'tabs' => array(
-            array('label' => '<i class="pink ace-icon fa fa-home bigger-120"></i>' . t('All ','app'),
+            array('label' =>  t('All ','app'),
                 'id' => 'tab_1',
+                'icon' => 'fa fa-home pink bigger-120',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
                         'report' => $report,
                         'data_provider' => $data_provider,
@@ -36,8 +37,9 @@ $this->breadcrumbs = array(
                         'title' => $title),true),
                 'active' => true,
             ),
-            array('label' => '<i class="purple ace-icon fa fa-pencil bigger-120"></i>' . t('Waiting for Approval ','app') . '<span class="badge badge-danger">' . $sale_submit_n . '</span>',
+            array('label' => t('Waiting for Approval ','app') . '<span class="badge badge-danger">' . $sale_submit_n . '</span>',
                 'id' => 'tab_2',
+                'icon' => 'fa fa-pencil bigger-120 purple',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view ,array(
                         'report' => $report,
                         'data_provider' => $data_provider2,
@@ -46,8 +48,9 @@ $this->breadcrumbs = array(
                         'title' => $title),true,false),
                 'visible' => ckacc('sale.review')
             ),
-            array('label' => '<i class="green ace-icon fa fa-smile-o bigger-120"></i>' . t( 'Review & Complete ','app') . '<span class="badge badge-info">' . $sale_approve_n .'</span>',
+            array('label' => t( 'Review & Complete ','app') . '<span class="badge badge-info">' . $sale_approve_n .'</span>',
                 'id' => 'tab_3',
+                'icon' => 'fa fa-smile-o bigger-120 green',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
                         'report' => $report,
                         'data_provider' => $data_provider3,
@@ -56,8 +59,9 @@ $this->breadcrumbs = array(
                         'title' => $title),true),
                 'visible' => ckacc('sale.approve')
             ),
-            array('label' => '<i class="green ace-icon fa fa-truck bigger-120"></i>'  . t('Ready to Deliver ','app') . '<span class="badge badge-info">' . $sale_complete_n .'</span>',
+            array('label' => t('Ready to Deliver ','app') . '<span class="badge badge-info">' . $sale_complete_n .'</span>',
                 'id' => 'tab_4',
+                'icon' => 'fa fa-truck bigger-120 green',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
                         'report' => $report,
                         'data_provider' => $data_provider1,

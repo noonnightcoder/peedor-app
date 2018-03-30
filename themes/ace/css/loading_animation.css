@@ -2,7 +2,6 @@
     background: white url('images/loading.gif') right center no-repeat;
 }
 
-
 /* Credit to StackOverflow https://goo.gl/AHsQ7W */
 .waiting {
     display:    none;
@@ -18,17 +17,21 @@
                 no-repeat;
 }
 
+
 /* When the body has the loading class, we turn
    the scrollbar off with overflow:hidden */
+
 body.loading {
     overflow: hidden;   
 }
 
 /* Anytime the body has the loading class, our
    modal element will be visible */
+
 body.loading .waiting {
     display: block;
 }
+
 
 /* Many thanks to this https://github.com/twbs/bootstrap/issues/9939
 */

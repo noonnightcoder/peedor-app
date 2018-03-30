@@ -31,14 +31,14 @@
             <?= Yii::t('app','អាសយដ្ឋាន') . " : ". TbHtml::encode(Yii::app()->settings->get('site', 'companyAddressNative')); ?> <br>
             <?= Yii::t('app','Address') . " : ". TbHtml::encode(Yii::app()->settings->get('site', 'companyAddress')); ?> <br>
             <?= Yii::t('app','City/District/Khan') . " : "; ?> <br>
-            <?= 'អ៊ីម៉ែល' . " : ". TbHtml::encode(Yii::app()->settings->get('site', 'email')); ?> <br>
+            <?= 'អ៊ីម៉ែល' . " : ". Yii::app()->settings->get('site', 'email'); ?> <br>
         </p>
     </div>
 
     <div class="col-xs-3">
         <p>
             <?= '' ?> <br>
-            <?= 'ផ្លូវ' . " : ". '២៦១'; ?> <br>
+            <?= 'ផ្លូវ' . " : ". Yii::app()->settings->get('site', 'companyAddressHouseNative'); ?> <br>
             <?= Yii::t('app','Street') . " : " . '261' ?> <br>
             <?= Yii::t('app','Province/City') . " : ". 'Phnom Penh'; ?> <br>
         </p>
@@ -46,7 +46,7 @@
 
     <div class="col-xs-3 col-xs-offset-1 text-right">
         <p>
-            <?= '' ?> <br>
+            <?= 'វិកយបត្រអាករ' ?> <br>
             <?= 'ឃុំ / សង្កាត់' . " : " . 'បឹងសាឡាង'; ?> <br>
             <?= Yii::t('app','Commune/Sangkat') . " : " . 'Boengsalang'; ?> <br>
             <?= Yii::t('app','Tel') . " : ". TbHtml::encode(Yii::app()->settings->get('site', 'companyPhone')); ?> <br>
@@ -57,7 +57,7 @@
 
 <div class="container text-center">
     <div class="col-lg-4 col-lg-offset-4">
-        <h4><u>វិក័យប័ត្រអាករ</u></h4>
+        <h4><u>វិកយបត្រអាករ</u></h4>
     </div>
     <div class="col-lg-4 col-lg-offset-4">
         <h4><u>TAX INVOICE</u></h4>

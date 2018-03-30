@@ -1,4 +1,4 @@
-    <?php /*$box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
+<?php /*$box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
               'title' => 'Price History of <span class="text-info">' . $item->name .'</span>',
               'headerIcon' => 'icon-info-sign',
 )); */?>

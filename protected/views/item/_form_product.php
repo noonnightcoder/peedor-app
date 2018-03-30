@@ -7,9 +7,10 @@
         'tabs' => array(
             array('label' => '<i class="pink ace-icon fa fa-info-circle bigger-120"></i>' . t('Detail ','app'),
                 'id' => 'tab_1',
-                'content' => $this->renderPartial('partial/_detail',$model),
+                'content' => $this->renderPartial('partial/_detail',array('model' => $model)),
                 'active' => true,
             ),
+            /*
             array('label' => '<i class="purple ace-icon fa fa-area-chart bigger-120"></i>' . t('Inventory ','app'),
                 'id' => 'tab_2',
                 'content' => ' Tab 2',
@@ -45,6 +46,7 @@
                 'content' => ' Tab 2',
                 'visible' => ckacc('sale.review')
             )
+            */
         ),
         //'events' => array('shown'=>'js:test')
     ));

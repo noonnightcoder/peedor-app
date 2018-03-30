@@ -17,8 +17,8 @@
 
     <div class="col-sm-5">
 
-        <h4 class="header blue"><i
-                    class="ace-icon fa fa-info-circle blue"></i><?= Yii::t('app', 'Employee Basic Information') ?>
+        <h4 class="header blue">
+            <i class="ace-icon fa fa-info-circle blue"></i><?= Yii::t('app', 'Employee Basic Information') ?>
         </h4>
         <p class="help-block"><?= Yii::t('app', 'Fields with'); ?> <span
                     class="required">*</span> <?= Yii::t('app', 'are required'); ?></p>

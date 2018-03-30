@@ -209,7 +209,6 @@ class ItemController extends Controller
 
     public function actionCreate($grid_cart = 'N',$sale_status='2')
     {
-
         $model = new Item;
 
         $price_tiers = PriceTier::model()->getListPriceTier();
@@ -280,14 +279,16 @@ class ItemController extends Controller
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
 
-        $this->render('create_image', $data);
+        $this->render('create', $data);
 
     }
+
     public function actionCreate2(){
-        $model=new Product();
+        $model=new Item();
         $data['model']=$model;
         $this->render('_form_product',$data);
     }
+
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
         if ($item_number_flag == '0') {
