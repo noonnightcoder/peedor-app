@@ -30,6 +30,11 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id == 'item/utilities',
                     'visible' => ckacc('item.index')
                 ),
+                 array('label' => sysMenuItemAdd2(), 'icon' => 'menu-icon fa fa-cog pink',
+                    'url' => url('item/create2'),
+                    'active' => $this->id . '/' . $this->action->id == 'item/create2',
+                    'visible' => ckacc('item.create2')
+                ),
                 array('label' => sysMenuItemMarkupPrice(), 'icon' => 'menu-icon fa fa-euro pink',
                     'url' => url('item/admin'),
                     'active' => $this->id . '/' . $this->action->id == 'item/markup',

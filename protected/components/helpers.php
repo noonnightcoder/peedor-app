@@ -175,6 +175,11 @@ function sysMenuItemImpExp()
     return ucwords(t(param('menu_item_imp_exp'), 'app'));
 }
 
+function sysMenuItemAdd2()
+{
+    return ucwords(t(param('menu_item_add2'), 'app'));
+}
+
 function sysMenuItemMarkupPrice()
 {
     return ucwords(t(param('menu_item_markup_price'), 'app'));
