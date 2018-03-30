@@ -26,13 +26,16 @@
                 ));
           ?>
 
+    <?php if (ckacc('customer.create')) { ?>
           <?php echo TbHtml::linkButton(Yii::t( 'app', 'New' ),array(
                 'color'=>TbHtml::BUTTON_COLOR_INFO,
                 'size'=>TbHtml::BUTTON_SIZE_SMALL,
                 'icon'=>'glyphicon-plus white',
                 'url'=>$this->createUrl('Client/Create/',array('sale_mode'=>'Y')),
+
           )); ?> 
         </p>
+    <?php } ?>
        
         <?php if (PriceTier::model()->checkExists()<>0) { ?>
             <p>
