@@ -692,7 +692,7 @@ class SaleItemController extends Controller
         $data['sale_header_icon'] = $data['tran_type']=='1'? sysMenuInvoiceIcon():sysMenuSaleIcon();
         $data['sale_save_url'] = $data['tran_type']=='1'? 'saleItem/CompleteSale':'saleItem/CompleteSale';
         $data['sale_redirect_url'] = $data['tran_type']=='1'? 'saleItem/SaleInvoice':'saleItem/SaleOrder';
-        $data['color_style'] = $data['tran_type']=='1'? TbHtml::BUTTON_COLOR_PRIMARY:TbHtml::BUTTON_COLOR_SUCCESS;
+        $data['color_style'] = $data['tran_type']=='1'? TbHtml::BUTTON_COLOR_SUCCESS:TbHtml::BUTTON_COLOR_PRIMARY;
 
         $data['items'] = Yii::app()->shoppingCart->getCart();
         $data['count_item'] = Yii::app()->shoppingCart->getQuantityTotal();
