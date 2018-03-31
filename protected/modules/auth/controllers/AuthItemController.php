@@ -33,9 +33,6 @@ abstract class AuthItemController extends AuthController
         );
     }
 
-    /**
-     * Displays a form for creating a new item of the given type.
-     */
     public function actionCreate()
     {
         $model = new AuthItemForm('create');
@@ -67,11 +64,6 @@ abstract class AuthItemController extends AuthController
         );
     }
 
-    /**
-     * Displays a form for updating the item with the given name.
-     * @param string $name name of the item.
-     * @throws CHttpException if the authorization item is not found.
-     */
     public function actionUpdate($name)
     {
         /* @var $am CAuthManager|AuthBehavior */

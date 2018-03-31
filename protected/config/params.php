@@ -48,7 +48,7 @@ return array(
     'menu_purchase_receive' => 'receive from supplier',
     'menu_purchase_return' => 'return to supplier',
     'menu_purchase_payment' => 'supplier payment',
-    'menu_sale' => 'sale order',
+    'menu_sale' => 'sale',
     'menu_sale_add' => 'add sale order',
     'menu_sale_view' => 'view sale order',
     'menu_sale_payment' => 'payment',

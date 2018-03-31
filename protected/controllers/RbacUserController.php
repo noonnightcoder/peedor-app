@@ -31,7 +31,7 @@ class RbacUserController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete'),
+				'actions'=>array('create','update','admin','delete','permission'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -183,4 +183,8 @@ class RbacUserController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+    public function actionPermission(){
+        echo "Hello World";
+    }
 }

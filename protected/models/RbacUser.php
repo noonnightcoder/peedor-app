@@ -21,49 +21,49 @@
  */
 class RbacUser extends CActiveRecord
 {
-	// holds the password confirmation word
-        public $PasswordConfirm;
-        public $PasswordOld;
-        
-        //will hold the encrypted password for update actions.
-        public $Password;
-        public $ResetPassword;
-        
-        public $customers;
-        public $items;
-        public $sales;
-        public $employees;
-        public $store;
-        public $suppliers;
-        public $receivings;
-        public $reports;
-        public $invoices;
-        public $payments;
-        public $rptprofits;
-        public $categories;
-        public $role_name;
+    // holds the password confirmation word
+    public $PasswordConfirm;
+    public $PasswordOld;
 
-        /**
-	 * Returns the static model of the specified AR class.
-	 * @param string $className active record class name.
-	 * @return RbacUser the static model class
-	 */
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    //will hold the encrypted password for update actions.
+    public $Password;
+    public $ResetPassword;
 
-	/**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'rbac_user';
-	}
+    public $customers;
+    public $items;
+    public $sales;
+    public $employees;
+    public $store;
+    public $suppliers;
+    public $receivings;
+    public $reports;
+    public $invoices;
+    public $payments;
+    public $rptprofits;
+    public $categories;
+    public $role_name;
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
+    /**
+     * Returns the static model of the specified AR class.
+     * @param string $className active record class name.
+     * @return RbacUser the static model class
+     */
+    public static function model($className = __CLASS__)
+    {
+        return parent::model($className);
+    }
+
+    /**
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'rbac_user';
+    }
+
+    /**
+     * @return array validation rules for model attributes.
+     */
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -109,23 +109,23 @@ class RbacUser extends CActiveRecord
         );
     }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'employee' => array(self::BELONGS_TO, 'Employee', 'employee_id'),
-			'group' => array(self::BELONGS_TO, 'RbacGroup', 'group_id'),
-                        //'categories' => array(self::MANY_MANY, 'Category', 'post_category(post_id, category_id)','index'=>'id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'employee' => array(self::BELONGS_TO, 'Employee', 'employee_id'),
+            'group' => array(self::BELONGS_TO, 'RbacGroup', 'group_id'),
+            //'categories' => array(self::MANY_MANY, 'Category', 'post_category(post_id, category_id)','index'=>'id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
     public function attributeLabels()
     {
         return array(
@@ -154,51 +154,50 @@ class RbacUser extends CActiveRecord
         );
     }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
-	public function search()
-	{
-		// Warning: Please modify the following code to remove attributes that
-		// should not be searched.
+    /**
+     * Retrieves a list of models based on the current search/filter conditions.
+     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+     */
+    public function search()
+    {
+        // Warning: Please modify the following code to remove attributes that
+        // should not be searched.
 
-		$criteria=new CDbCriteria;
+        $criteria = new CDbCriteria;
 
-		//$criteria->compare('id',$this->id);
-		$criteria->compare('user_name',$this->user_name,true);
-		$criteria->compare('group_id',$this->group_id);
-		$criteria->compare('employee_id',$this->employee_id);
-		$criteria->compare('user_password',$this->user_password,true);
-		//$criteria->compare('deleted',$this->deleted);
-		//$criteria->compare('status',$this->status);
-		//$criteria->compare('date_entered',$this->date_entered,true);
-		//$criteria->compare('modified_date',$this->modified_date,true);
-		//$criteria->compare('created_by',$this->created_by);
+        //$criteria->compare('id',$this->id);
+        $criteria->compare('user_name', $this->user_name, true);
+        $criteria->compare('group_id', $this->group_id);
+        $criteria->compare('employee_id', $this->employee_id);
+        $criteria->compare('user_password', $this->user_password, true);
+        //$criteria->compare('deleted',$this->deleted);
+        //$criteria->compare('status',$this->status);
+        //$criteria->compare('date_entered',$this->date_entered,true);
+        //$criteria->compare('modified_date',$this->modified_date,true);
+        //$criteria->compare('created_by',$this->created_by);
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
-        
-        public function beforeSave()
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+        ));
+    }
+
+    public function beforeSave()
+    {
+        $ph = new PasswordHash(Yii::app()->params['phpass']['iteration_count_log2'], Yii::app()->params['phpass']['portable_hashes']);
+
+        //add the password hash if it's a new record
+        if ($this->getIsNewRecord()) {
+            $this->user_password = $ph->hashPassword($this->Password);
+        } elseif (!empty($this->Password) && !empty($this->PasswordConfirm) && ($this->Password === $this->PasswordConfirm)) //if it's not a new password, save the password only if it not empty and the two passwords match
         {
-            $ph=new PasswordHash(Yii::app()->params['phpass']['iteration_count_log2'], Yii::app()->params['phpass']['portable_hashes']);
-            
-            //add the password hash if it's a new record
-            if ($this->getIsNewRecord())
-            {
-                $this->user_password = $ph->hashPassword($this->Password);                         
-            } elseif (!empty($this->Password) && !empty($this->PasswordConfirm) && ($this->Password===$this->PasswordConfirm) ) 
-            //if it's not a new password, save the password only if it not empty and the two passwords match
-            {
-                $this->user_password = $ph->hashPassword($this->Password);
-            } elseif (!empty($this->ResetPassword)) {
-                $this->user_password = $ph->hashPassword($this->ResetPassword);
-            }
-            
-            //$this->items = implode(', ', $this->items);
-            return parent::beforeSave();
+            $this->user_password = $ph->hashPassword($this->Password);
+        } elseif (!empty($this->ResetPassword)) {
+            $this->user_password = $ph->hashPassword($this->ResetPassword);
         }
-        
+
+        //$this->items = implode(', ', $this->items);
+        return parent::beforeSave();
+    }
+
+
 }
