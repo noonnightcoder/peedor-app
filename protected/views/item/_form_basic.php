@@ -8,9 +8,9 @@
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
         <?= Yii::t('app', 'are required'); ?></p>
 
-    <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255)); ?>
+    <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255,'id'=>'txt-item-number')); ?>
 
-    <?= $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>100)); ?>
+    <?= $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>100,'id'=>'txt-item-name')); ?>
 
     <div class="form-group">
         <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
@@ -132,11 +132,11 @@
         </div>
     </div>
 
-    <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3')); ?>
+    <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3','id'=>'txt-recorder-level')); ?>
 
-    <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3','maxlength'=>20)); ?>
+    <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3','maxlength'=>20,'id'=>'txt-location')); ?>
 
-    <?= $form->textAreaControlGroup($model,'description',array('rows'=>2, 'cols'=>10, 'class'=>'span3')); ?>
+    <?= $form->textAreaControlGroup($model,'description',array('rows'=>2, 'cols'=>10, 'class'=>'span3','id'=>'txt-description')); ?>
 
 </div>
 <div class="col-sm-7">

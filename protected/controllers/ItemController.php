@@ -210,6 +210,7 @@ class ItemController extends Controller
     public function actionCreate($grid_cart = 'N',$sale_status='2')
     {
         $model = new Item;
+        $price_quantity_range=new PriceQuantityRange;
 
         $price_tiers = PriceTier::model()->getListPriceTier();
 
@@ -278,11 +279,45 @@ class ItemController extends Controller
 
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
+        $data['price_quantity_range'] = $price_quantity_range;
 
         $this->render('create', $data);
 
     }
-
+    public function actionSaveItem(){
+        $model=new Item;
+        $price_quantity_range=new PriceQuantityRange;
+        
+        $model->name=$_POST['name'];
+        $model->item_number=$_POST['item_number'];
+        // $model->category_id=1;
+        // $model->unit_measurable_id=1;
+        $model->cost_price=1;
+        $model->unit_price=2;
+        $model->quantity=10;
+        $model->reorder_level=$_POST['recorder_level'];
+        $model->location=$_POST['location'];
+        $model->description=$_POST['description'];
+        $model->save();
+        print Yii::app()->db->getLastInsertID();
+        $connection=Yii::app()->db; 
+        if($model->id>0){
+            foreach($_POST['data'] as $key=>$value){
+                // $price_quantity_range->item_id=1;
+                // $price_quantity_range->from_quantity = $value['from_quantity'];
+                // $price_quantity_range->to_quantity = $value['to_quantity'];
+                // $price_quantity_range->price = $value['price'];
+                // $price_quantity_range->start_date = $value['start_date'];
+                // $price_quantity_range->end_date = $value['end_date'];
+                // $price_quantity_range->save();
+                $sql="insert into price_quantity_range(item_id,from_quantity,to_quantity,price,start_date,end_date) values(".$model->id.",'".$value['from_quantity']."','".$value['to_quantity']."','".$value['price']."','".$value['start_date']."','".$value['end_date']."')";
+                $command=$connection->createCommand($sql);
+                $insert=$command->execute(); // execute the non-query SQL 
+                //var_dump($value);
+            }
+        }
+        
+    }
     public function actionCreate2(){
         $model=new Item();
         $data['model']=$model;

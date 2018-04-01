@@ -15,4 +15,5 @@
         'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
         //'size'=>TbHtml::BUTTON_SIZE_SMALL,
     )); ?>
+    <button type="submit" class="btn btn-primary" onClick="saveItem()">Save</button>
 </div>

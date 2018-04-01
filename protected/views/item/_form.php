@@ -22,6 +22,7 @@
                     'content' => $this->renderPartial('_form_basic' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
+                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Basic'),true),
                     'active' => true,
@@ -32,6 +33,7 @@
                     'content' => $this->renderPartial('_form_pricing' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
+                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => sysMenuSale()),true),
                     'visible' => ckacc('sale.review')
@@ -42,6 +44,7 @@
                     'content' => $this->renderPartial('_form_inventory' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
+                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Purchase'),true),
                     'visible' => ckacc('sale.review')
@@ -52,6 +55,7 @@
                     'content' => $this->renderPartial('_form_inventory' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
+                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Transaction'),true),
                     'visible' => ckacc('sale.review')
