@@ -71,8 +71,13 @@
 		id=id+1;
 		
 	}
-	function removePriceRange(id){
-		$('#range-'+id).html('');
+	function removePriceRange(rid){
+		$('#range-'+rid).html('');
+		price_range.forEach(function(v,i){
+			if(price_range[i].arrID==rid){
+				price_range.splice(i,1);
+			}
+		})
 	}
 	function getValue(rid=''){
 		price_range.forEach(function(v,i){
