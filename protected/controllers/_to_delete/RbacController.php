@@ -7,16 +7,16 @@ class RbacController extends Controller
         $auth = Yii::app()->authManager;
 
         // add "Sale Order" permission
-        $auth->createOperation('sale.create', 'create a sale order');
-        $auth->createOperation('sale.read', 'read a sale order');
-        $auth->createOperation('sale.read.all', 'read all sale order');
-        $auth->createOperation('sale.update', 'update a sale order');
+        $auth->createOperation('sale.create', 'create sale order');
+        $auth->createOperation('sale.read', 'view sale order');
+        $auth->createOperation('sale.read.all', 'view all sale order');
+        $auth->createOperation('sale.update', 'update sale order');
         $auth->createOperation('sale.delete', 'delete a sale order');
         $auth->createOperation('sale.review', 'review a sale order');
         $auth->createOperation('sale.approve', 'approve a sale order');
 
         // Add "Sale Payment" permission
-        $auth->createOperation('sale.payment', 'payment a sale invoice');
+        $auth->createOperation('payment.sale', 'payment a sale invoice');
 
         // add "Purchase Order" permission
         $auth->createOperation('purchase.create', 'create a purchase order');
@@ -58,10 +58,10 @@ class RbacController extends Controller
         $auth->createOperation('item.price.update', 'update an item price');
 
         // add "Employee" permission
-        $auth->createOperation('employee.create', 'create an employee');
-        $auth->createOperation('employee.read', 'read an employee');
-        $auth->createOperation('employee.update', 'update an employee');
-        $auth->createOperation('employee.delete', 'delete an employee');
+        $auth->createOperation('employee.create', 'create an customer');
+        $auth->createOperation('employee.read', 'read an customer');
+        $auth->createOperation('employee.update', 'update an customer');
+        $auth->createOperation('employee.delete', 'delete an customer');
 
         // add "Customer" permission
         $auth->createOperation('customer.create', 'create an customer');
@@ -94,27 +94,19 @@ class RbacController extends Controller
         $role->addChild('stock.transfer');
         $role->addChild('report.stock');
 
-        $role = $auth->createRole('salesperson','sales person role');
+        $role = $auth->createRole('salesperson','salesperson role');
         $role->addChild('sale.create');
         $role->addChild('sale.read');
         $role->addChild('sale.update');
         $role->addChild('sale.delete');
         $role->addChild('report.sale');
-        $role->addChild('customer.create');
-        $role->addChild('customer.read');
-        $role->addChild('customer.update');
-        $role->addChild('customer.delete');
 
-        $role = $auth->createRole('salessupervisor','sale supervisor role');
+        $role = $auth->createRole('salesmanager','sale manager role');
         $role->addChild('salesperson');
         $role->addChild('sale.read.all');
         $role->addChild('sale.review');
         $role->addChild('dashboard.read');
         $role->addChild('report.sale.analytic');
-
-
-        $role = $auth->createRole('salesmanager','sale manager role');
-        $role->addChild('salessupervisor');
 
         $role = $auth->createRole('accountant','accountant role');
         $role->addChild('salesperson');

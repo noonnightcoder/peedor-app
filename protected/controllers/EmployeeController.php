@@ -186,11 +186,30 @@ class EmployeeController extends Controller
 
                             $auth_assignment->itemname = $role_name;
                             $auth_assignment->userid = $user->id;
-
                             if (!$auth_assignment->save()) {
                                 $transaction->rollback();
                                 print_r($auth_assignment->errors);
                             }
+
+                            /*
+                            $assignitems = $this->authItemPermission();
+
+                            foreach ($assignitems as $assignitem) {
+                                if (!empty($_POST['RbacUser'][$assignitem])) {
+                                    foreach ($_POST['RbacUser'][$assignitem] as $itemId) {
+                                        $authassigment = new Authassignment;
+                                        $authassigment->userid = $user->id;
+                                        $authassigment->itemname = $itemId;
+
+                                        if (!$authassigment->save()) {
+                                            $transaction->rollback();
+                                            print_r($authassigment->errors);
+                                        }
+                                    }
+                                }
+
+                            }
+                            */
 
                             $transaction->commit();
                             Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
@@ -206,8 +225,11 @@ class EmployeeController extends Controller
             }
         }
 
+        $data['model'] = $model;
+        $data['user'] = $user;
+        $data['disabled'] = $disabled;
 
-        $this->render('create', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
+        $this->render('create', $data);
     }
 
     public function actionUpdate($id)
@@ -284,7 +306,12 @@ class EmployeeController extends Controller
             $disabled = "true";
         }
 
-        $this->render('update', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
+        $data['model'] = $model;
+        $data['user'] = $user;
+        $data['disabled'] = $disabled;
+        //$data['auth_items'] = $auth_items;
+
+        $this->render('update', $data);
     }
 
     public function actionInlineUpdate()

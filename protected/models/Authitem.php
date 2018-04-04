@@ -258,7 +258,6 @@ class Authitem extends CActiveRecord
         return $list;
     }
 
-
     public function getAuthItemSetting($match = 'setting')
     {
         $match = addcslashes($match, '%_'); // escape LIKE's special characters
@@ -294,7 +293,7 @@ class Authitem extends CActiveRecord
         $match = addcslashes($match, '%_'); // escape LIKE's special characters
 
         $q = new CDbCriteria(array(
-            'condition' => "name LIKE :match and type=0",         // no quotes around :match
+            'condition' => "name LIKE :match and type=0", // no quotes around :match
             'params' => array(':match' => "$match%"),
             'order' => "sort_order",
         ));

@@ -13,7 +13,12 @@ $this->breadcrumbs=array(
               'title' => Yii::t('app','Update Employee') . ' : ' . '<span class="text-success bigger-120">' . $fullname .'</span>',
               'headerIcon' => 'ace-icon fa fa-user',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-              'content' => $this->renderPartial('_form', array('model'=>$model,'user'=>$user, 'disabled' => $disabled), true),
+              'content' => $this->renderPartial('_form', array(
+                  'model'=>$model,
+                  'user'=>$user,
+                  'disabled' => $disabled,
+                  //'auth_items' => $auth_items,
+              ),true),
  )); ?>  
 
 <?php $this->endWidget(); ?>

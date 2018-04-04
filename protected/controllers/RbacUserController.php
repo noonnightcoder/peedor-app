@@ -2,15 +2,9 @@
 
 class RbacUserController extends Controller
 {
-	/**
-	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-	 * using two-column layout. See 'protected/views/layouts/column2.php'.
-	 */
 	public $layout='//layouts/column1';
 
-	/**
-	 * @return array action filters
-	 */
+
 	public function filters()
 	{
 		return array(
@@ -18,11 +12,6 @@ class RbacUserController extends Controller
 		);
 	}
 
-	/**
-	 * Specifies the access control rules.
-	 * This method is used by the 'accessControl' filter.
-	 * @return array access control rules
-	 */
 	public function accessRules()
 	{
 		return array(
@@ -44,10 +33,6 @@ class RbacUserController extends Controller
 		);
 	}
 
-	/**
-	 * Displays a particular model.
-	 * @param integer $id the ID of the model to be displayed
-	 */
 	public function actionView($id)
 	{
 		$this->render('view',array(
@@ -55,10 +40,6 @@ class RbacUserController extends Controller
 		));
 	}
 
-	/**
-	 * Creates a new model.
-	 * If creation is successful, the browser will be redirected to the 'view' page.
-	 */
 	public function actionCreate()
 	{
 		$model=new RbacUser;
@@ -78,11 +59,6 @@ class RbacUserController extends Controller
 		));
 	}
 
-	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);
@@ -112,11 +88,6 @@ class RbacUserController extends Controller
 		));
 	}
 
-	/**
-	 * Deletes a particular model.
-	 * If deletion is successful, the browser will be redirected to the 'admin' page.
-	 * @param integer $id the ID of the model to be deleted
-	 */
 	public function actionDelete($id)
 	{
 		if(Yii::app()->request->isPostRequest)
@@ -158,11 +129,6 @@ class RbacUserController extends Controller
 		));
 	}
 
-	/**
-	 * Returns the data model based on the primary key given in the GET variable.
-	 * If the data model is not found, an HTTP exception will be raised.
-	 * @param integer the ID of the model to be loaded
-	 */
 	public function loadModel($id)
 	{
 		$model=RbacUser::model()->findByPk($id);
@@ -184,7 +150,21 @@ class RbacUserController extends Controller
 		}
 	}
 
-    public function actionPermission(){
-        echo "Hello World";
+    public function actionPermission()
+    {
+        $role_name = $_POST['RbacUser']['role_name'];
+
+        $data['grid_columns'] = array(
+            array('name' => 'description',
+                'header' => Yii::t('app', 'description'),
+                'value' => '$data["description"]'
+            )
+        );
+
+        $data['data_provider'] = Authassignment::model()->rolePermission($role_name);
+        $data['grid_id'] = 'permission_id';
+
+        $this->renderPartial('_permission_table',$data);
+
     }
 }

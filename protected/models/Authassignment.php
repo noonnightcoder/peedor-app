@@ -111,4 +111,29 @@ class Authassignment extends CActiveRecord
         $command->bindParam(":user_id", $user_id, PDO::PARAM_INT);
         $command->execute();
     }
+
+    public function rolePermission($name)
+    {
+       $sql = "select t1.name,t2.child,
+                  (select ts.description from AuthItem ts where ts.name = t2.child) description
+                from AuthItem t1 join AuthItemChild t2
+                 on t2.parent=t1.name
+                where t1.name=:name and
+                t1.type='2'
+                order by t2.child";
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'name',
+            'sort' => array(
+                'attributes' => array(
+                    'name',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider;
+    }
 }

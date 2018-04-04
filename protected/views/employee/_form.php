@@ -23,43 +23,21 @@
         <p class="help-block"><?= Yii::t('app', 'Fields with'); ?> <span
                     class="required">*</span> <?= Yii::t('app', 'are required'); ?></p>
 
-        <?php //echo $form->errorSummary($model); ?>
+        <?php $this->renderPartial('_basic', array(
+                'model' => $model,
+                'form' => $form,
+            )
+        )
+        ?>
 
-        <?= $form->textFieldControlGroup($model, 'first_name', array('class' => 'span10', 'maxlength' => 50, 'data-required' => 'true')); ?>
+        <?php $this->renderPartial('_address', array(
+                'model' => $model,
+                'form' => $form,
+            )
+        )
+        ?>
 
-        <?= $form->textFieldControlGroup($model, 'last_name', array('class' => 'span10', 'maxlength' => 50, 'data-required' => 'true')); ?>
 
-        <?= $form->textFieldControlGroup($model, 'mobile_no', array('class' => 'span10', 'maxlength' => 15)); ?>
-
-        <div class="form-group">
-
-            <label class="col-sm-3 control-label"
-                   for="Employee_dob"><?= Yii::t('app', 'Date of Birth') ?></label>
-
-            <div class="col-sm-9">
-
-                <?= CHtml::activeDropDownList($model, 'day', Employee::itemAlias('day'), array('prompt' => yii::t('app', 'Day'))); ?>
-
-                <?= CHtml::activeDropDownList($model, 'month', Employee::itemAlias('month'), array('prompt' => yii::t('app', 'Month'))); ?>
-
-                <?= CHtml::activeDropDownList($model, 'year', Employee::itemAlias('year'), array('prompt' => yii::t('app', 'Year'))); ?>
-
-                <span class="help-block"> <?= $form->error($model, 'dob'); ?> </span>
-            </div>
-
-        </div>
-
-        <?= $form->textFieldControlGroup($model, 'adddress1', array('class' => 'span10', 'maxlength' => 60)); ?>
-
-        <?= $form->textFieldControlGroup($model, 'address2', array('class' => 'span10', 'maxlength' => 60)); ?>
-
-        <?php //echo $form->textFieldControlGroup($model,'city_id',array('class'=>'span10')); ?>
-
-        <?= $form->textFieldControlGroup($model, 'country_code', array('class' => 'span10', 'maxlength' => 2)); ?>
-
-        <?= $form->textFieldControlGroup($model, 'email', array('class' => 'span10', 'maxlength' => 30, 'data-type' => 'email')); ?>
-
-        <?= $form->textAreaControlGroup($model, 'notes', array('rows' => 2, 'cols' => 20, 'class' => 'span10')); ?>
     </div>
 
     <div class="col-sm-7">
@@ -81,6 +59,7 @@
         <?php $this->renderPartial('//rbacUser/_role_form', array(
             'form' => $form,
             'user' => $user,
+            //'auth_items' => $auth_items,
         )); ?>
 
         <div class="form-actions">
