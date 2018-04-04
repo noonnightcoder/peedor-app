@@ -216,66 +216,69 @@ class ItemController extends Controller
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
-
-        if (Yii::app()->user->checkAccess('item.create')) {
-            if (isset($_POST['Item'])) {
-                $model->attributes = $_POST['Item'];
-                $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-                $model->quantity = $qty;
-
-                //$publisher_name=$_POST['Item']['publisher_id'];
-                $category_name = $_POST['Item']['category_id'];
-                $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
-
-                //Saving new category to `category` table
-                $category_id = Category::model()->saveCategory($category_name);
-                $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
-
-                if ($category_id !== null) {
-                    $model->category_id = $category_id;
-                }
-
-                if ($unit_measurable_id !== null) {
-                    $model->unit_measurable_id = $unit_measurable_id;
-                }
-
-                if ($model->validate()) {
-                    $transaction = Yii::app()->db->beginTransaction();
-                    try {
-                        if ($model->save()) {
-
-                            if (isset($_POST['Item']['count_interval'])) {
-                                Item::model()->saveItemCounSchedule($model->id);
-                            }
-
-                            // Saving Item Price Tier to `item_price_tier`
-                            ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
-                            $this->addImages($model, $transaction);
-                            $transaction->commit();
-
-                            if ($grid_cart == 'N') {
-                                Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-                                    'Item : <strong>' . $model->name . '</strong> have been saved successfully!');
-                                $this->redirect(array('create'));
-                            } elseif ($grid_cart == 'S') {
-                                Yii::app()->shoppingCart->addItem($model->id);
-                                $this->redirect(array('saleItem/update?tran_type=?' . $sale_status));
-                            } elseif ($grid_cart == 'R') {
-                                Yii::app()->receivingCart->addItem($model->id);
-                                $this->redirect(array('receivingItem/index'));
-                            }
-
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollback();
-                        Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
-                    }
-                }
-            }
-        } else {
-            //throw new CHttpException(403, 'You are not authorized to perform this action');
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
+        if(Yii::app()->request->isAjaxRequest){
+            //Yii::app()->response->format='json';
+            $model->attributes = $_POST['Item'];
+           // return $model->validate();
         }
+        // if (Yii::app()->user->checkAccess('item.create')) {
+        //     if (isset($_POST['Item'])) {
+        //         $model->attributes = $_POST['Item'];
+        //         $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
+        //         $model->quantity = $qty;
+        //         //$publisher_name=$_POST['Item']['publisher_id'];
+        //         $category_name = $_POST['Item']['category_id'];
+        //         $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
+
+        //         //Saving new category to `category` table
+        //         $category_id = Category::model()->saveCategory($category_name);
+        //         $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
+
+        //         if ($category_id !== null) {
+        //             $model->category_id = $category_id;
+        //         }
+
+        //         if ($unit_measurable_id !== null) {
+        //             $model->unit_measurable_id = $unit_measurable_id;
+        //         }
+
+        //         if ($model->validate()) {
+        //             $transaction = Yii::app()->db->beginTransaction();
+        //             try {
+        //                 if ($model->save()) {
+
+        //                     if (isset($_POST['Item']['count_interval'])) {
+        //                         Item::model()->saveItemCounSchedule($model->id);
+        //                     }
+
+        //                     // Saving Item Price Tier to `item_price_tier`
+        //                     ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
+        //                     $this->addImages($model, $transaction);
+        //                     $transaction->commit();
+
+        //                     if ($grid_cart == 'N') {
+        //                         Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+        //                             'Item : <strong>' . $model->name . '</strong> have been saved successfully!');
+        //                         $this->redirect(array('create'));
+        //                     } elseif ($grid_cart == 'S') {
+        //                         Yii::app()->shoppingCart->addItem($model->id);
+        //                         $this->redirect(array('saleItem/update?tran_type=?' . $sale_status));
+        //                     } elseif ($grid_cart == 'R') {
+        //                         Yii::app()->receivingCart->addItem($model->id);
+        //                         $this->redirect(array('receivingItem/index'));
+        //                     }
+
+        //                 }
+        //             } catch (Exception $e) {
+        //                 $transaction->rollback();
+        //                 Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
+        //             }
+        //         }
+        //     }
+        // } else {
+        //     //throw new CHttpException(403, 'You are not authorized to perform this action');
+        //     $this->redirect(array('site/ErrorException', 'err_no' => 403));
+        // }
 
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
@@ -287,35 +290,48 @@ class ItemController extends Controller
     public function actionSaveItem(){
         $model=new Item;
         $price_quantity_range=new PriceQuantityRange;
-        
-        $model->name=$_POST['name'];
-        $model->item_number=$_POST['item_number'];
-        // $model->category_id=1;
-        // $model->unit_measurable_id=1;
-        $model->cost_price=1;
-        $model->unit_price=2;
-        $model->quantity=10;
-        $model->reorder_level=$_POST['recorder_level'];
-        $model->location=$_POST['location'];
-        $model->description=$_POST['description'];
-        $model->save();
-        print Yii::app()->db->getLastInsertID();
-        $connection=Yii::app()->db; 
-        if($model->id>0){
-            foreach($_POST['data'] as $key=>$value){
-                // $price_quantity_range->item_id=1;
-                // $price_quantity_range->from_quantity = $value['from_quantity'];
-                // $price_quantity_range->to_quantity = $value['to_quantity'];
-                // $price_quantity_range->price = $value['price'];
-                // $price_quantity_range->start_date = $value['start_date'];
-                // $price_quantity_range->end_date = $value['end_date'];
-                // $price_quantity_range->save();
-                $sql="insert into price_quantity_range(item_id,from_quantity,to_quantity,price,start_date,end_date) values(".$model->id.",'".$value['from_quantity']."','".$value['to_quantity']."','".$value['price']."','".$value['start_date']."','".$value['end_date']."')";
-                $command=$connection->createCommand($sql);
-                $insert=$command->execute(); // execute the non-query SQL 
-                //var_dump($value);
-            }
-        }
+        // $model->attributes = $_POST['item'];
+        // $valid=$model->validate();
+
+        $this->performAjaxValidation($model);
+        //var_dump($_POST['PriceQuantityRange']);
+        if(isset($_POST['Item']))
+        {
+                $model->attributes=$_POST['Item'];
+                $valid=$model->validate();
+                if($valid){
+                //var_dump($_POST['Item']);
+                     $model->name=$_POST['Item']['name'];
+                     $model->item_number=$_POST['Item']['item_number'];
+                     // $model->category_id=1;
+                     // $model->unit_measurable_id=1;
+                     $model->cost_price=1;
+                     $model->unit_price=2;
+                     $model->quantity=10;
+                     $model->reorder_level=$_POST['Item']['reorder_level'];
+                     $model->location=$_POST['Item']['location'];
+                     $model->description=$_POST['Item']['description'];
+                     $model->save();
+                     $connection=Yii::app()->db;
+                     if($model->id>0){
+                         foreach($_POST['data'] as $key=>$value){
+                             $start_date=$value['start_date'] ? $value['start_date'] : date('Y-m-d');
+                             $end_date=$value['end_date'] ? $value['end_date'] : date('Y-m-d');
+                             $sql="insert into price_quantity_range(item_id,from_quantity,to_quantity,price,start_date,end_date) values(".$model->id.",'".$value['from_quantity']."','".$value['to_quantity']."','".$value['price']."','".$start_date."','".$end_date."')";
+                             $command=$connection->createCommand($sql);
+                             $insert=$command->execute(); // execute the non-query SQL
+                             //var_dump($value);
+                         }
+                     }
+                    Yii::app()->end();
+                }
+                else{
+                    $error = CActiveForm::validate($model);
+                    if($error!='[]')
+                       echo  $error;
+                    Yii::app()->end();
+                }
+       }
         
     }
     public function actionCreate2(){

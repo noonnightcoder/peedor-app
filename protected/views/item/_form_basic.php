@@ -1,17 +1,15 @@
 
 <div class="col-sm-5">
-
+    <div class="errorMessage" id="formResult"></div>
     <h4 class="header blue">
         <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Basic Information') ?>
     </h4>
 
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
         <?= Yii::t('app', 'are required'); ?></p>
-
-    <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255,'id'=>'txt-item-number')); ?>
-
-    <?= $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>100,'id'=>'txt-item-name')); ?>
-
+    <?= $form->textFieldControlGroup($model,'item_number',array('size'=>60,'maxlength'=>500,'class'=>'span3 txt-item-number',)); ?>
+    <?= $form->textFieldControlGroup($model,'name',array('size'=>60,'maxlength'=>500,'class'=>'span3 txt-item-name',)); ?>
+    <span class="item-name-error"></span>
     <div class="form-group">
         <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
         <div class="col-sm-9">
@@ -132,11 +130,11 @@
         </div>
     </div>
 
-    <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3','id'=>'txt-recorder-level')); ?>
+    <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3 txt-reorder-level',)); ?>
 
-    <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3','maxlength'=>20,'id'=>'txt-location')); ?>
+    <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3 txt-location','maxlength'=>20)); ?>
 
-    <?= $form->textAreaControlGroup($model,'description',array('rows'=>2, 'cols'=>10, 'class'=>'span3','id'=>'txt-description')); ?>
+    <?= $form->textAreaControlGroup($model,'description',array('rows'=>2, 'cols'=>10, 'class'=>'span3 txt-description')); ?>
 
 </div>
 <div class="col-sm-7">
@@ -144,8 +142,4 @@
         <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Stock Information') ?>
     </h4>
 </div>
-
-
-
-
 
