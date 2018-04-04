@@ -11,9 +11,9 @@
         array('id' => 'price-qty', 'label' => 'Price Quantity',
             'content' => $this->renderPartial('_form_price_qty', array(
                 'model' => $model,
-                'price_quantity_range' => $price_quantity_range,
+                'item_price_quantity' => $item_price_quantity,
                 'form' => $form,
-                'title' => 'Basic'), true)
+                'title' => 'Sale'), true)
         ),
     )
 ));

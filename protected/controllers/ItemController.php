@@ -127,7 +127,6 @@ class ItemController extends Controller
 
     }
 
-
     public function actionUndoDelete($id)
     {
         if (Yii::app()->user->checkAccess('item.delete')) {
@@ -242,26 +241,18 @@ class ItemController extends Controller
         authorized('item.create');
 
         $model = new Item;
-        $price_quantity_range = new PriceQuantityRange;
+        $item_price_quantity = new ItemPriceQuantity();
 
         $price_tiers = PriceTier::model()->getListPriceTier();
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
-        /*
-        if(Yii::app()->request->isAjaxRequest){
-            //Yii::app()->response->format='json';
-            $model->attributes = $_POST['Item'];
-           // return $model->validate();
-        }
-        */
-
         if (isset($_POST['Item'])) {
             $model->attributes = $_POST['Item'];
-            $qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-            $model->quantity = $qty;
-            //$publisher_name=$_POST['Item']['publisher_id'];
+            //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
+            //$model->quantity = 0;
+
             $category_name = $_POST['Item']['category_id'];
             $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
 
@@ -313,7 +304,7 @@ class ItemController extends Controller
 
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
-        $data['price_quantity_range'] = $price_quantity_range;
+        $data['item_price_quantity'] = $item_price_quantity;
 
         $this->render('create', $data);
 
@@ -328,6 +319,7 @@ class ItemController extends Controller
 
         $this->performAjaxValidation($model);
         //var_dump($_POST['PriceQuantityRange']);
+
         if (isset($_POST['Item'])) {
             $model->attributes = $_POST['Item'];
             $valid = $model->validate();
@@ -465,10 +457,6 @@ class ItemController extends Controller
         }
     }
 
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
     public function actionInventory($item_id)
     {
         $model = $this->loadModel($item_id);

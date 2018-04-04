@@ -257,6 +257,16 @@
             // regular checks and submit the form here
         }
     });
+</script>script>
+    $("form").submit(function () {
+        if ($(this).data("allreadyInput")) {
+            return false;
+        } else {
+            $("input[type=submit]", this).hide();
+            $(this).data("allreadyInput", true);
+            // regular checks and submit the form here
+        }
+    });
 </script>
 
 <script type="text/javascript">

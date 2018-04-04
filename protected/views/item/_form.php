@@ -31,7 +31,7 @@
                     'content' => $this->renderPartial('_tab_basic' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
-                        'price_quantity_range' => $price_quantity_range,
+                        //'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Basic'),true),
                     'active' => true,
@@ -42,52 +42,37 @@
                     'content' => $this->renderPartial('_tab_sale' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
-                        'price_quantity_range' => $price_quantity_range,
+                        'item_price_quantity' => $item_price_quantity,
                         'form' => $form,
                         'title' => sysMenuSale()),true),
-                    'visible' => ckacc('sale.review')
+                    //'visible' => ckacc('sale.review')
                 ),
+                /*
                 array('label' => t('Purchase ','app'),
-                    'id' => 'tab_2',
+                    'id' => 'tab_3',
                     'icon' => sysMenuPurchaseIcon(),
                     'content' => $this->renderPartial('_form_inventory' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
-                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Purchase'),true),
-                    'visible' => ckacc('sale.review')
+                    //'visible' => ckacc('sale.review')
                 ),
                 array('label' => t('Transaction ','app'),
-                    'id' => 'tab_2',
+                    'id' => 'tab_4',
                     'icon' => sysMenuInventoryIcon(),
                     'content' => $this->renderPartial('_form_inventory' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
-                        'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Transaction'),true),
-                    'visible' => ckacc('sale.review')
+                    //'visible' => ckacc('sale.review')
                 ),
+                */
             ),
         ));
         ?>
 
     </div>
 
-    <!--<div class="col-sm-6">
-        <h4 class="header blue"><i
-                class="ace-icon fa fa-info-circle blue"></i><?/*= t('Basic Information','app') */?>
-        </h4>
-
-        <?php /*$this->renderPartial('_form_basic', array('model' => $model, 'price_tiers' => $price_tiers, 'form' => $form)); */?>
-    </div>
-
-    <div class="col-sm-6">
-
-    </div>
-
-    <div class="col-sm-12">
-
-    </div>-->
 <?php $this->endWidget(); ?>

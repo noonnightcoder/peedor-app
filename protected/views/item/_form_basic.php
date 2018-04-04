@@ -7,7 +7,7 @@
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
         <?= Yii::t('app', 'are required'); ?></p>
 
-    <?php echo $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255)); ?>
+    <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255)); ?>
 
     <?= $form->textFieldControlGroup($model,'name',array('size'=>60,'maxlength'=>500,'class'=>'span3',)); ?>
 
