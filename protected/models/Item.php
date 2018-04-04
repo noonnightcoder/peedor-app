@@ -41,7 +41,7 @@ class Item extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name,item_number', 'required'),
+            array('name, cost_price, unit_price', 'required'),
             array(
                 'item_number',
                 'unique',

@@ -1,4 +1,3 @@
-
 <div class="col-sm-5">
     <div class="errorMessage" id="formResult"></div>
     <h4 class="header blue">
@@ -7,9 +6,15 @@
 
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
         <?= Yii::t('app', 'are required'); ?></p>
-    <?= $form->textFieldControlGroup($model,'item_number',array('size'=>60,'maxlength'=>500,'class'=>'span3 txt-item-number',)); ?>
-    <?= $form->textFieldControlGroup($model,'name',array('size'=>60,'maxlength'=>500,'class'=>'span3 txt-item-name',)); ?>
-    <span class="item-name-error"></span>
+
+    <?php echo $form->textFieldControlGroup($model,'item_number',array('class'=>'span3','maxlength'=>255)); ?>
+
+    <?= $form->textFieldControlGroup($model,'name',array('size'=>60,'maxlength'=>500,'class'=>'span3',)); ?>
+
+    <?php echo $form->textFieldControlGroup($model, 'cost_price', array('class' => 'span3')); ?>
+
+    <?php echo $form->textFieldControlGroup($model, 'unit_price', array('class' => 'span3')); ?>
+
     <div class="form-group">
         <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
         <div class="col-sm-9">
@@ -30,41 +35,41 @@
                         'dataType' => 'json',
                         'cache'=>true,
                         'data' => 'js:function(term,page) {
-                                            return {
-                                                term: term,
-                                                page_limit: 10,
-                                                quietMillis: 100,
-                                                apikey: "e5mnmyr86jzb9dhae3ksgd73"
-                                            };
-                                        }',
+                                                return {
+                                                    term: term,
+                                                    page_limit: 10,
+                                                    quietMillis: 100,
+                                                    apikey: "e5mnmyr86jzb9dhae3ksgd73"
+                                                };
+                                            }',
                         'results' => 'js:function(data,page){
-                                    return { results: data.results };
-                                 }',
+                                        return { results: data.results };
+                                     }',
                     ),
                     'initSelection' => "js:function (element, callback) {
-                                    var id=$(element).val();
-                                    if (id!=='') {
-                                        $.ajax('".$this->createUrl('/category/initCategory')."', {
-                                            dataType: 'json',
-                                            data: { id: id }
-                                        }).done(function(data) {callback(data);}); //http://www.eha.ee/labs/yiiplay/index.php/en/site/extension?view=select2
-                                    }
-                            }",
+                                        var id=$(element).val();
+                                        if (id!=='') {
+                                            $.ajax('".$this->createUrl('/category/initCategory')."', {
+                                                dataType: 'json',
+                                                data: { id: id }
+                                            }).done(function(data) {callback(data);}); //http://www.eha.ee/labs/yiiplay/index.php/en/site/extension?view=select2
+                                        }
+                                }",
                     'createSearchChoice' => 'js:function(term, data) {
-                                if ($(data).filter(function() {
-                                    return this.text.localeCompare(term) === 0;
-                                }).length === 0) {
-                                    return {id:term, text: term, isNew: true};
-                                }
-                            }',
+                                    if ($(data).filter(function() {
+                                        return this.text.localeCompare(term) === 0;
+                                    }).length === 0) {
+                                        return {id:term, text: term, isNew: true};
+                                    }
+                                }',
                     'formatResult' => 'js:function(term) {
-                                if (term.isNew) {
-                                    return "<span class=\"label label-important\">New</span> " + term.text;
-                                }
-                                else {
-                                    return term.text;
-                                }
-                            }',
+                                    if (term.isNew) {
+                                        return "<span class=\"label label-important\">New</span> " + term.text;
+                                    }
+                                    else {
+                                        return term.text;
+                                    }
+                                }',
                 )));
             ?>
         </div>
@@ -90,41 +95,41 @@
                         'dataType' => 'json',
                         'cache'=>true,
                         'data' => 'js:function(term,page) {
-                                            return {
-                                                term: term,
-                                                page_limit: 10,
-                                                quietMillis: 100,
-                                                apikey: "e5mnmyr86jzb9dhae3ksgd73"
-                                            };
-                                        }',
+                                                return {
+                                                    term: term,
+                                                    page_limit: 10,
+                                                    quietMillis: 100,
+                                                    apikey: "e5mnmyr86jzb9dhae3ksgd73"
+                                                };
+                                            }',
                         'results' => 'js:function(data,page){
-                                    return { results: data.results };
-                                 }',
+                                        return { results: data.results };
+                                     }',
                     ),
                     'initSelection' => "js:function (element, callback) {
-                                    var id=$(element).val();
-                                    if (id!=='') {
-                                        $.ajax('".$this->createUrl('/unitMeasurable/InitUnitMeasurable')."', {
-                                            dataType: 'json',
-                                            data: { id: id }
-                                        }).done(function(data) {callback(data);});
-                                    }
-                            }",
+                                        var id=$(element).val();
+                                        if (id!=='') {
+                                            $.ajax('".$this->createUrl('/unitMeasurable/InitUnitMeasurable')."', {
+                                                dataType: 'json',
+                                                data: { id: id }
+                                            }).done(function(data) {callback(data);});
+                                        }
+                                }",
                     'createSearchChoice' => 'js:function(term, data) {
-                                if ($(data).filter(function() {
-                                    return this.text.localeCompare(term) === 0;
-                                }).length === 0) {
-                                    return {id:term, text: term, isNew: true};
-                                }
-                            }',
+                                    if ($(data).filter(function() {
+                                        return this.text.localeCompare(term) === 0;
+                                    }).length === 0) {
+                                        return {id:term, text: term, isNew: true};
+                                    }
+                                }',
                     'formatResult' => 'js:function(term) {
-                                if (term.isNew) {
-                                    return "<span class=\"label label-important\">New</span> " + term.text;
-                                }
-                                else {
-                                    return term.text;
-                                }
-                            }',
+                                    if (term.isNew) {
+                                        return "<span class=\"label label-important\">New</span> " + term.text;
+                                    }
+                                    else {
+                                        return term.text;
+                                    }
+                                }',
                 )));
             ?>
         </div>
@@ -142,4 +147,3 @@
         <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Stock Information') ?>
     </h4>
 </div>
-

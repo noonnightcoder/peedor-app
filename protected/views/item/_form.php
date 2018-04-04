@@ -1,11 +1,9 @@
-<?php $this->renderPartial('_header', array('model' => $model)) ?>
-
 <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'item-form',
     'enableAjaxValidation'=>true,
-    'action'=>$this->createUrl('Item/SaveItem'),
+    //'action'=>$this->createUrl('Item/SaveItem'),
     'enableClientValidation'=>true,
     'clientOptions' => array(
         'validateOnSubmit'=>true,
@@ -15,32 +13,12 @@
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
     'htmlOptions'=>array('enctype' => 'multipart/form-data'),
 )); ?>
-<?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
-    'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-    //'size'=>TbHtml::BUTTON_SIZE_SMALL,
-)); ?>
-<?php //echo CHtml::ajaxSubmitButton('Save',CHtml::normalizeUrl(array('Item/SaveItem','render'=>true)),
-// array(
-//        'dataType'=>'json',
-//        'type'=>'post',
-//     'success'=>'function(data) {
-//         $("#AjaxLoader").hide();
-//        if(data.status=="success"){
-//         $("#formResult").html("form submitted successfully.");
-//         $("#item-form")[0].reset();
-//        }
-//         else{
-//        $.each(data, function(key, val) {
-//        $("#item-form #"+key+"_em_").html(val);
-//        $("#item-form #"+key+"_em_").show();
-//        });
-//        }
-//    }',
-//     'beforeSend'=>'function(){
-//           $("#AjaxLoader").show();
-//      }'
-//     ),array('id'=>'mybtn','class'=>'btn btn-primary'));
-//?>
+
+<?php $this->renderPartial('_header', array('model' => $model)) ?>
+
+
+<br> <br>
+
     <div id="report_grid" class="tabbable">
         <?php $this->widget('bootstrap.widgets.TbTabs', array(
             'type' => 'tabs',
@@ -50,7 +28,7 @@
                 array('label' =>  t('Basic','app'),
                     'id' => 'tab_1',
                     'icon' => sysMenuItemIcon(),
-                    'content' => $this->renderPartial('_form_basic' ,array(
+                    'content' => $this->renderPartial('_tab_basic' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
                         'price_quantity_range' => $price_quantity_range,
@@ -61,7 +39,7 @@
                 array('label' => sysMenuSale(),
                     'id' => 'tab_2',
                     'icon' => sysMenuSaleIcon(),
-                    'content' => $this->renderPartial('partialList/_saleTab' ,array(
+                    'content' => $this->renderPartial('_tab_sale' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
                         'price_quantity_range' => $price_quantity_range,
