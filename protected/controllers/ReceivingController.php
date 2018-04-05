@@ -61,7 +61,9 @@ class ReceivingController extends Controller
 	 */
 	public function actionCreate()
 	{
-		$model=new Receiving;
+		authorized('purchase.create');
+
+	    $model=new Receiving;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
@@ -78,11 +80,7 @@ class ReceivingController extends Controller
 		));
 	}
 
-	/**
-	 * Updates a particular model.
-	 * If update is successful, the browser will be redirected to the 'view' page.
-	 * @param integer $id the ID of the model to be updated
-	 */
+
 	public function actionUpdate($id)
 	{
 		$model=$this->loadModel($id);

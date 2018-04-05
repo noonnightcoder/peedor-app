@@ -106,7 +106,16 @@ class RbacController extends Controller
         $role->addChild('customer.delete');
 
         $role = $auth->createRole('salessupervisor','sale supervisor role');
-        $role->addChild('salesperson');
+        //$role->addChild('salesperson'); // I could not find the how to do recursive loop to get all permissions from role
+        $role->addChild('sale.create');
+        $role->addChild('sale.read');
+        $role->addChild('sale.update');
+        $role->addChild('sale.delete');
+        $role->addChild('report.sale');
+        $role->addChild('customer.create');
+        $role->addChild('customer.read');
+        $role->addChild('customer.update');
+        $role->addChild('customer.delete');
         $role->addChild('sale.read.all');
         $role->addChild('sale.review');
         $role->addChild('dashboard.read');
@@ -114,24 +123,49 @@ class RbacController extends Controller
 
 
         $role = $auth->createRole('salesmanager','sale manager role');
-        $role->addChild('salessupervisor');
+        //$role->addChild('salessupervisor');
+        $role->addChild('sale.create');
+        $role->addChild('sale.read');
+        $role->addChild('sale.update');
+        $role->addChild('sale.delete');
+        $role->addChild('report.sale');
+        $role->addChild('customer.create');
+        $role->addChild('customer.read');
+        $role->addChild('customer.update');
+        $role->addChild('customer.delete');
+        $role->addChild('sale.read.all');
+        $role->addChild('sale.review');
+        $role->addChild('dashboard.read');
+        $role->addChild('report.sale.analytic');
 
         $role = $auth->createRole('accountant','accountant role');
-        $role->addChild('salesperson');
+        $role->addChild('sale.create');
+        $role->addChild('sale.read');
+        $role->addChild('sale.update');
+        $role->addChild('sale.delete');
+        $role->addChild('report.sale');
+        $role->addChild('customer.create');
+        $role->addChild('customer.read');
+        $role->addChild('customer.update');
+        $role->addChild('customer.delete');
         $role->addChild('sale.approve');
         $role->addChild('item.create');
         $role->addChild('item.read');
         $role->addChild('item.update');
         $role->addChild('item.delete');
         $role->addChild('item.price.update');
-        $role->addChild('customer.create');
-        $role->addChild('customer.read');
-        $role->addChild('customer.update');
-        $role->addChild('customer.delete');
         $role->addChild('supplier.create');
         $role->addChild('supplier.read');
         $role->addChild('supplier.update');
         $role->addChild('supplier.delete');
+        $role->addChild('purchase.create');
+        $role->addChild('purchase.read');
+        $role->addChild('purchase.update');
+        $role->addChild('purchase.delete');
+        $role->addChild('purchase.receive');
+        $role->addChild('purchase.return');
+        $role->addChild('purchase.review');
+        $role->addChild('purchase.approve');
         $role->addChild('sale.payment');
         $role->addChild('dashboard.read');
         $role->addChild('report.accounting');

@@ -46,7 +46,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
             'icon' => sysMenuInventoryIcon(),
             //'url' => url('receivingItem/index'),
             'active' => $this->id . '/' . $this->action->id == 'receivingItem/index',
-            'visible' => ckacc('transaction.receive') || ckacc('transaction.return') || ckacc('transaction.adjustin') || ckacc('transaction.adjustout') || ckacc('transaction.count'),
+            'visible' => ckacc('stock.in') || ckacc('stock.out') || ckacc('stock.count') || ckacc('stock.count'),
             'items' => array(
                 array('label' => sysMenuInventoryAdd(),
                     'icon' => sysMenuInventoryAddIcon(),
@@ -63,11 +63,11 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'url' => url('receivingItem/index', array('trans_mode' => 'physical_count')),
                     'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/physical_count',
                     'visible' => ckacc('stock.count')),
-                array('label' => sysMenuInventoryTransfer(),
+                /*array('label' => sysMenuInventoryTransfer(),
                     'icon' => sysMenuInventoryTransferIcon(),
                     'url' => url('receivingItem/index', array('trans_mode' => 'transfer')),
                     'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/transfer',
-                    'visible' => ckacc('stock.transfer')),
+                    'visible' => ckacc('stock.transfer')),*/
             )),
         array('label' => '<span class="menu-text">' . sysMenuPurchase() . '</span>',
             'icon' => sysMenuPurchaseIcon(),
@@ -102,7 +102,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' => sysMenuSaleViewIcon(),
                     'url' => url('saleItem/list'),
                     'active' => $this->id . '/' . $this->action->id == 'saleItem/list',
-                    'visible' => ckacc('sale.read.all')
+                    'visible' => ckacc('sale.read.all') || ckacc('sale.read')
                 ),
             ),
         ),

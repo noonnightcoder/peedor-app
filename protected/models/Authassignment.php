@@ -126,11 +126,6 @@ class Authassignment extends CActiveRecord
 
         $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField' => 'name',
-            'sort' => array(
-                'attributes' => array(
-                    'name',
-                ),
-            ),
             'pagination' => false,
         ));
 

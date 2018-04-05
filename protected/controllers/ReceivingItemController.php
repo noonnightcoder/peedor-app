@@ -40,15 +40,15 @@ class ReceivingItemController extends Controller
         Yii::app()->receivingCart->setMode($trans_mode);
         
         /* To check on performance issue here */
-        if ( Yii::app()->user->checkAccess('transaction.receive') && Yii::app()->receivingCart->getMode()=='receive' )  {
+        if ( Yii::app()->user->checkAccess('purchase.receive') && Yii::app()->receivingCart->getMode()=='receive' )  {
             $this->reload(); 
-        } else if (Yii::app()->user->checkAccess('transaction.return') && Yii::app()->receivingCart->getMode()=='return') {
+        } else if (Yii::app()->user->checkAccess('purchase.return') && Yii::app()->receivingCart->getMode()=='return') {
             $this->reload(); 
-        } elseif (Yii::app()->user->checkAccess('transaction.adjustin') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
+        } elseif (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
             $this->reload(); 
-        } elseif (Yii::app()->user->checkAccess('transaction.adjustout') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
+        } elseif (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
             $this->reload();    
-        } elseif (Yii::app()->user->checkAccess('transaction.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
             $this->reload(); 
         }  else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
@@ -59,15 +59,15 @@ class ReceivingItemController extends Controller
     {   
         //$data=array();
         $item_id = $_POST['ReceivingItem']['item_id'];
-        if (Yii::app()->user->checkAccess('transaction.receive') && Yii::app()->receivingCart->getMode()=='receive') {    
+        if (Yii::app()->user->checkAccess('purchase.receive') && Yii::app()->receivingCart->getMode()=='receive') {
             $data['warning']=$this->addItemtoCart($item_id);
-        } else if (Yii::app()->user->checkAccess('transaction.return') && Yii::app()->receivingCart->getMode()=='return') {
+        } else if (Yii::app()->user->checkAccess('purchase.return') && Yii::app()->receivingCart->getMode()=='return') {
            $data['warning']=$this->addItemtoCart($item_id);
-        } else if (Yii::app()->user->checkAccess('transaction.adjustin') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
+        } else if (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
            $data['warning']=$this->addItemtoCart($item_id);  
-        } else if (Yii::app()->user->checkAccess('transaction.adjustout') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
+        } else if (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
            $data['warning']=$this->addItemtoCart($item_id);   
-        } else if (Yii::app()->user->checkAccess('transaction.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        } else if (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
             $data['warning']=$this->addItemtoCart($item_id);     
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
@@ -87,21 +87,21 @@ class ReceivingItemController extends Controller
 
     public function actionIndexPara($item_id)
     {
-        if (Yii::app()->user->checkAccess('transaction.receive') && Yii::app()->receivingCart->getMode()=='receive') {
+        if (Yii::app()->user->checkAccess('purchase.receive') && Yii::app()->receivingCart->getMode()=='receive') {
             //$recv_mode = Yii::app()->receivingCart->getMode();
             //$quantity = $recv_mode=="receive" ? 1:1; // Change as immongo we will place minus or plus when saving to database
             Yii::app()->receivingCart->addItem($item_id);
             $this->reload($item_id);
-        } else if (Yii::app()->user->checkAccess('transaction.return') && Yii::app()->receivingCart->getMode()=='return') {
+        } else if (Yii::app()->user->checkAccess('purchase.return') && Yii::app()->receivingCart->getMode()=='return') {
             Yii::app()->receivingCart->addItem($item_id);
             $this->reload($item_id);
-        } else if (Yii::app()->user->checkAccess('transaction.adjustin') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
+        } else if (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
             Yii::app()->receivingCart->addItem($item_id);
             $this->reload($item_id);
-        } else if (Yii::app()->user->checkAccess('transaction.adjustout') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
+        } else if (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
             Yii::app()->receivingCart->addItem($item_id);
             $this->reload($item_id);  
-        } else if (Yii::app()->user->checkAccess('transaction.count') && Yii::app()->receivingCart->getMode()=='physical_count') { 
+        } else if (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
             Yii::app()->receivingCart->addItem($item_id);
             $this->reload($item_id);
         } else {

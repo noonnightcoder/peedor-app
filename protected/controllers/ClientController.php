@@ -306,13 +306,9 @@ class ClientController extends Controller
 
     public function actionAdmin($client_id = null)
     {
-        authorized('customer.read');
+        authorized('customer.read') || authorized('customer.create') || authorized('customer.update');
 
         $model = new Client('search');
-
-        /*if (!Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.index') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.create') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.update') || !Yii::app()->user->checkAccess(strtolower(get_class($model)) . '.delete')) {
-            $this->redirect(array('site/ErrorException','err_no'=>403));
-        }*/
 
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Item'])) {
@@ -343,6 +339,7 @@ class ClientController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
+        $data['create_permission'] = 'customer.create';
 
         $data['grid_columns'] = array(
             array(

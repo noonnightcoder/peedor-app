@@ -2,7 +2,7 @@
 
 class RbacUserController extends Controller
 {
-	public $layout='//layouts/column1';
+	public $layout='//layouts/column2';
 
 
 	public function filters()
@@ -155,16 +155,48 @@ class RbacUserController extends Controller
         $role_name = $_POST['RbacUser']['role_name'];
 
         $data['grid_columns'] = array(
+            array('name' => 'name',
+                'header' => Yii::t('app', 'Name'),
+                'value' => '$data["name"]',
+                //'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
+                //'url' => Yii::app()->createUrl('PermissionSub'),
+            ),
             array('name' => 'description',
-                'header' => Yii::t('app', 'description'),
-                'value' => '$data["description"]'
-            )
+                'header' => Yii::t('app', 'Description'),
+                'value' => '$data["description"]',
+            ),
         );
 
         $data['data_provider'] = Authassignment::model()->rolePermission($role_name);
         $data['grid_id'] = 'permission_id';
 
-        $this->renderPartial('_permission_table',$data);
+        $this->renderPartial('_permission_table',$data,false,true);
 
     }
+
+    public function actionPermissionSub()
+    {
+        $role_name = $_POST['RbacUser']['role_name'];
+
+        $data['grid_columns'] = array(
+            array('name' => 'name',
+                'header' => Yii::t('app', 'Name'),
+                'value' => '$data["name"]',
+                //'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
+                //'url' => Yii::app()->createUrl('Auth/saleInvoiceDetail'),
+            ),
+            array('name' => 'description',
+                'header' => Yii::t('app', 'Description'),
+                'value' => '$data["description"]',
+            ),
+        );
+
+        $data['data_provider'] = Authassignment::model()->rolePermission($role_name);
+        $data['grid_id'] = 'permission_id';
+
+        $this->renderPartial('_permission_table',$data,false,true);
+
+    }
+
+
 }
