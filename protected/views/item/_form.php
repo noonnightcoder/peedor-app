@@ -3,7 +3,7 @@
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'item-form',
     'enableAjaxValidation'=>true,
-    //'action'=>$this->createUrl('Item/SaveItem'),
+    //'action'=>$this->createUrl('Item/Create'),
     'enableClientValidation'=>true,
     'clientOptions' => array(
         'validateOnSubmit'=>true,

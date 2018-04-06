@@ -49,6 +49,7 @@ class ItemController extends Controller
                     'LowStock',
                     'OutStock',
                     'loadImage',
+                    'SaveItem',
                 ),
                 'users' => array('@'),
             ),
@@ -276,7 +277,19 @@ class ItemController extends Controller
                         if (isset($_POST['Item']['count_interval'])) {
                             Item::model()->saveItemCounSchedule($model->id);
                         }
-
+                        //save price quantity range
+                        if($model->id>0){//check if item id exist after saved to table
+                            $connection = Yii::app()->db;//initial connection to run raw sql
+                            foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
+                                if($value['from_quantity']>0){
+                                    $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
+                                    $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
+                                    $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                                    $command = $connection->createCommand($sql);
+                                    $insert = $command->execute(); // execute the non-query SQL
+                                }
+                            }
+                        }
                         // Saving Item Price Tier to `item_price_tier`
                         ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         $this->addImages($model, $transaction);
@@ -293,7 +306,6 @@ class ItemController extends Controller
                             Yii::app()->receivingCart->addItem($model->id);
                             $this->redirect(array('receivingItem/index'));
                         }
-
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -312,8 +324,9 @@ class ItemController extends Controller
 
     public function actionSaveItem()
     {
+        authorized('item.create');
         $model = new Item;
-        $price_quantity_range = new PriceQuantityRange;
+        $price_quantity_range = new ItemPriceQuantity;
         // $model->attributes = $_POST['item'];
         // $valid=$model->validate();
 
