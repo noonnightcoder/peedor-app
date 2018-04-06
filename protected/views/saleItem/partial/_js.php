@@ -364,12 +364,19 @@ Yii::app()->clientScript->registerScript( 'selectCustomer', "
         if ( mycode === 112) {
             $('#payment_amount_id').focus();
             $('#payment_amount_id').select();
+            alert('F1');
         }
+
+        /*if ( mycode === 27 && $("#SaleItem_client_id").is(':focus')) {
+            $("#finish_sale_button").focus();
+            alert('ESC client focus')
+        }*/
 
         //ESC
         if ( mycode === 27) {
-            $("#cancel_sale_button").focus();
+            $("#SaleItem_client_id").focus();
         }
+
     });
 </script>
 

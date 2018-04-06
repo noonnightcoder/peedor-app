@@ -127,6 +127,12 @@ function ajaxRequest() {
     }
 }
 
+function ajaxRequestPost() {
+    if (!Yii::app()->request->isAjaxRequest && !Yii::app()->request->isPostRequest) {
+        throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+    }
+}
+
 function authorized($permission)
 {
     if (!ckacc($permission)) {

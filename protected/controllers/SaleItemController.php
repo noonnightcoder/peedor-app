@@ -102,113 +102,99 @@ class SaleItemController extends Controller
 
     public function actionDeleteItem($item_id)
     {
-        if ( Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest ) {
-            Yii::app()->shoppingCart->deleteItem($item_id);
-            $this->reload();
-        } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }
+        ajaxRequestPost();
+        Yii::app()->shoppingCart->deleteItem($item_id);
+        $this->reload();
     }
 
     public function actionEditItem($item_id)
     {
-        
-        if ( Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest ) {
-            $data= array();
-            $model = new SaleItem;
-            $quantity = isset($_POST['SaleItem']['quantity']) ? $_POST['SaleItem']['quantity'] : null;
-            $price =isset($_POST['SaleItem']['price']) ? $_POST['SaleItem']['price'] : null;
-            $discount =isset($_POST['SaleItem']['discount']) ? $_POST['SaleItem']['discount'] : null;
-            $description = 'test';
+        ajaxRequestPost();
 
-            $model->quantity=$quantity;
-            $model->price=$price;
-            $model->discount=$discount;
-            
-            if ($model->validate()) {
-                Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
-            } else {
-                $error=CActiveForm::validate($model);
-                $errors = explode(":", $error);
-                //$data['warning']=  str_replace("}","",$errors[1]);
-                //$data['warning'] = Yii::t('app','Input data type is invalid');
-                Yii::app()->user->setFlash('warning', 'Input data type is invalid');
-            }
+        $data = array();
+        $model = new SaleItem;
+        $quantity = isset($_POST['SaleItem']['quantity']) ? $_POST['SaleItem']['quantity'] : null;
+        $price = isset($_POST['SaleItem']['price']) ? $_POST['SaleItem']['price'] : null;
+        $discount = isset($_POST['SaleItem']['discount']) ? $_POST['SaleItem']['discount'] : null;
+        $description = 'test';
 
-            $this->reload($data);
+        $model->quantity = $quantity;
+        $model->price = $price;
+        $model->discount = $discount;
+
+        if ($model->validate()) {
+            Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
         } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+            $error = CActiveForm::validate($model);
+            $errors = explode(":", $error);
+            //$data['warning']=  str_replace("}","",$errors[1]);
+            //$data['warning'] = Yii::t('app','Input data type is invalid');
+            Yii::app()->user->setFlash('warning', 'Input data type is invalid');
         }
-       
+
+        $this->reload($data);
+
     }
 
     public function actionAddPayment()
     {
-        if (Yii::app()->request->isPostRequest) {
-            if (Yii::app()->request->isAjaxRequest) {
-                $data= array();
-                $alt_payment_amount_to_base=0; // KHR amount convert to base currency USD here
-                $payment_amount = trim($_POST['payment_amount']) == "" ? 0 : $_POST['payment_amount'];
-                $alt_payment_amount = trim($_POST['alt_payment_amount']) == "" ? 0 : $_POST['alt_payment_amount'];
-                
-                if (trim($_POST['alt_payment_amount']) !== "") {
-                    // round two decimal place down 1.268 or 1.264 will round to 1.26
-                    $alt_payment_amount_to_base =  floor($alt_payment_amount / Yii::app()->settings->get('exchange_rate', 'USD2KHR')*100)/100; 
-                }
-                
-                if ( "" == trim($_POST['payment_amount']) && "" == trim($_POST['alt_payment_amount']) ) {
-                    //$data['warning']=Yii::t('app',"Please enter value in payment amount");
-                    Yii::app()->user->setFlash('warning', 'Please enter value in payment amount');
-                } else {
-                    $payment_id = $_POST['payment_id'];
-                    $payment_amount_total = $payment_amount + $alt_payment_amount_to_base;
-                    $payment_note = Yii::app()->settings->get('site', 'currencySymbol') . $payment_amount . ';' . '៛' . $alt_payment_amount . ';' . Yii::app()->settings->get('site', 'currencySymbol') . $payment_amount_total . ';' . Yii::app()->settings->get('exchange_rate', 'USD2KHR');
-                    Yii::app()->shoppingCart->setPaymentNote($payment_note);
-                    Yii::app()->shoppingCart->addPayment($payment_id, $payment_amount_total);
-                }
-                $this->reload($data);
-            }
+        ajaxRequestPost();
+
+        $data= array();
+        $alt_payment_amount_to_base=0; // KHR amount convert to base currency USD here
+        $payment_amount = trim($_POST['payment_amount']) == "" ? 0 : $_POST['payment_amount'];
+        $alt_payment_amount = trim($_POST['alt_payment_amount']) == "" ? 0 : $_POST['alt_payment_amount'];
+
+        if (trim($_POST['alt_payment_amount']) !== "") {
+            // round two decimal place down 1.268 or 1.264 will round to 1.26
+            $alt_payment_amount_to_base =  floor($alt_payment_amount / Yii::app()->settings->get('exchange_rate', 'USD2KHR')*100)/100;
+        }
+
+        if ( "" == trim($_POST['payment_amount']) && "" == trim($_POST['alt_payment_amount']) ) {
+            //$data['warning']=Yii::t('app',"Please enter value in payment amount");
+            Yii::app()->user->setFlash('warning', 'Please enter value in payment amount');
         } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }    
+            $payment_id = $_POST['payment_id'];
+            $payment_amount_total = $payment_amount + $alt_payment_amount_to_base;
+            $payment_note = Yii::app()->settings->get('site', 'currencySymbol') . $payment_amount . ';' . '៛' . $alt_payment_amount . ';' . Yii::app()->settings->get('site', 'currencySymbol') . $payment_amount_total . ';' . Yii::app()->settings->get('exchange_rate', 'USD2KHR');
+            Yii::app()->shoppingCart->setPaymentNote($payment_note);
+            Yii::app()->shoppingCart->addPayment($payment_id, $payment_amount_total);
+        }
+        $this->reload($data);
     }
 
     public function actionDeletePayment($payment_id)
     {
-        if (Yii::app()->request->isPostRequest) {
-            Yii::app()->shoppingCart->deletePayment($payment_id);
-            $this->reload();
-        } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }
+        ajaxRequestPost();
+
+        Yii::app()->shoppingCart->deletePayment($payment_id);
+        $this->reload();
     }
 
     public function actionSelectCustomer()
     {
-        if ( Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest ) {
-            $client_id = $_POST['SaleItem']['client_id'];
-            $client = Client::model()->findByPk($client_id);
-            Yii::app()->shoppingCart->setCustomer($client_id);
-            Yii::app()->shoppingCart->setPriceTier($client->price_tier_id);
-            $this->reload();
-        } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }
+        ajaxRequestPost();
+
+        $client_id = $_POST['SaleItem']['client_id'];
+        $client = Client::model()->findByPk($client_id);
+        Yii::app()->shoppingCart->setCustomer($client_id);
+        Yii::app()->shoppingCart->setPriceTier($client->price_tier_id);
+        $this->reload();
     }
 
     public function actionRemoveCustomer()
     {
-        if ( Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest ) {
-            Yii::app()->shoppingCart->removeCustomer();
-            Yii::app()->shoppingCart->clearPriceTier();
-            $this->reload();
-        } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }
+        ajaxRequestPost();
+
+        Yii::app()->shoppingCart->removeCustomer();
+        Yii::app()->shoppingCart->clearPriceTier();
+        $this->reload();
     }
 
     public function actionSetComment()
     {
+        ajaxRequestPost();
+
         Yii::app()->shoppingCart->setComment($_POST['comment']);
         echo CJSON::encode(array(
             'status' => 'success',
@@ -218,24 +204,25 @@ class SaleItemController extends Controller
     
     public function actionSetTotalDiscount()
     {
-        if (Yii::app()->request->isPostRequest) {
-            $data= array();
-            $model = new SaleItem;
-            $total_discount =$_POST['SaleItem']['total_discount'];
-            $model->total_discount=$total_discount;
+        ajaxRequestPost();
 
-            if ($model->validate()) {
-                Yii::app()->shoppingCart->setTotalDiscount($total_discount);
-            } else {
-                $error=CActiveForm::validate($model);
-                $errors = explode(":", $error);
-                $data['warning']=  str_replace("}","",$errors[1]);
-                Yii::app()->user->setFlash('warning',  $data['warning']);
+        $data= array();
+        $model = new SaleItem;
+        $total_discount =$_POST['SaleItem']['total_discount'];
+        $model->total_discount=$total_discount;
 
-            }
+        if ($model->validate()) {
+            Yii::app()->shoppingCart->setTotalDiscount($total_discount);
+        } else {
+            $error=CActiveForm::validate($model);
+            $errors = explode(":", $error);
+            $data['warning']=  str_replace("}","",$errors[1]);
+            Yii::app()->user->setFlash('warning',  $data['warning']);
 
-            $this->reload($data);
         }
+
+        $this->reload($data);
+
     }
 
     public function actionSetGST()
@@ -272,11 +259,11 @@ class SaleItemController extends Controller
 
     public function actionSetPaymentTerm()
     {
-        if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
-            $id = $_POST['payment_term_id'];
-            Yii::app()->shoppingCart->setPaymentTerm($id);
-            $this->reload();
-        }
+        ajaxRequestPost();
+
+        $id = $_POST['payment_term_id'];
+        Yii::app()->shoppingCart->setPaymentTerm($id);
+        $this->reload();
     }
 
     public function actionSetSaleRep()
@@ -290,12 +277,10 @@ class SaleItemController extends Controller
 
     public function actionCancelSale()
     {
-        if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
-            Yii::app()->shoppingCart->clearAll();
-            $this->reload();
-        } else {
-            throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-        }
+        ajaxRequestPost();
+
+        Yii::app()->shoppingCart->clearAll();
+        $this->reload();
     }
 
     public function actionCompleteSale()
@@ -335,6 +320,7 @@ class SaleItemController extends Controller
             if (substr($data['sale_id'], 0, 2) == '-1') {
                 $data['warning'] = $data['sale_id'];
                 Yii::app()->user->setFlash('warning', $data['sale_id']);
+                $this->redirect(Yii::app()->user->returnUrl);
                 $this->reload($data);
             } else {
                 //$this->render('//receipt/index', $data);
@@ -352,35 +338,32 @@ class SaleItemController extends Controller
 
     public function actionSuspendSale()
     {
-       if (Yii::app()->request->isAjaxRequest) {
-            $data=$this->sessionInfo();
+        ajaxRequestPost();
 
-            //Save transaction to db
-           //$data['sale_id'] = 'POS ' . Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'], $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['comment'], Yii::app()->params['sale_suspend_status'], $data['total_discount']);
-           $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
-               $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
-               $data['comment'], param('sale_suspend_status'), $data['discount_amt'],$data['discount_symbol'],
-               $data['total_gst'],$data['salerep_id'],$data['qtytotal']);
+        $data=$this->sessionInfo();
 
-           //$customer = $this->customerInfo($data['customer_id']);
-            //$data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
+        //Save transaction to db
+       //$data['sale_id'] = 'POS ' . Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'], $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['comment'], Yii::app()->params['sale_suspend_status'], $data['total_discount']);
+       $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
+           $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
+           $data['comment'], param('sale_suspend_status'), $data['discount_amt'],$data['discount_symbol'],
+           $data['total_gst'],$data['salerep_id'],$data['qtytotal']);
 
-            if ($data['sale_id'] == 'POS -1') {
-                echo "NOK";
-                Yii::app()->user->setFlash('warning', $data['sale_id']);
-                Yii::app()->end();
-            } else if (Yii::app()->settings->get('sale', 'receiptPrintDraftSale') == '1') {
-                $this->layout = '//layouts/column_receipt';
-                $this->render('_receipt_suspend', $data);
-                Yii::app()->shoppingCart->clearAll();
-            } else {
-                Yii::app()->shoppingCart->clearAll();
-            }
-        
-            $this->reload();
-       } else {
-           throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
-       }
+       //$customer = $this->customerInfo($data['customer_id']);
+        //$data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
+
+        if ($data['sale_id'] == 'POS -1') {
+            echo "NOK";
+            Yii::app()->user->setFlash('warning', $data['sale_id']);
+            Yii::app()->end();
+        } else if (Yii::app()->settings->get('sale', 'receiptPrintDraftSale') == '1') {
+            $this->layout = '//layouts/column_receipt';
+            $this->render('_receipt_suspend', $data);
+            Yii::app()->shoppingCart->clearAll();
+        } else {
+            Yii::app()->shoppingCart->clearAll();
+        }
+        $this->reload();
     }
 
     public function actionUnSuspendSale($sale_id)
@@ -392,25 +375,24 @@ class SaleItemController extends Controller
         exit;
     }
 
-    public function actionEditSale($sale_id,$customer_id,$paid_amount)
+    public function actionEditSale($sale_id, $customer_id, $paid_amount)
     {
-        if (Yii::app()->user->checkAccess('invoice.update')) {
-            if ($paid_amount==0 || $customer_id == "") {
-                //if(Yii::app()->request->isPostRequest)
-                //{
-                Yii::app()->shoppingCart->clearAll();
-                Yii::app()->shoppingCart->copyEntireSale($sale_id);
-                Yii::app()->shoppingCart->setSaleMode('EDIT');
-                Yii::app()->session->close(); // preventing session clearing due to page redirecting..
-                $this->redirect('update');
-                //}
-            } else {
-                Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO,'Opp, sorry invoice has been paid, editing is not allowed!' );
-                $this->redirect(array('report/SaleInvoice'));
-            }
+        authorized('sale.update') || authorized('sale.create') ;
+
+        if ($paid_amount == 0 || $customer_id == "") {
+            //if(Yii::app()->request->isPostRequest)
+            //{
+            Yii::app()->shoppingCart->clearAll();
+            Yii::app()->shoppingCart->copyEntireSale($sale_id);
+            Yii::app()->shoppingCart->setSaleMode('EDIT');
+            Yii::app()->session->close(); // preventing session clearing due to page redirecting..
+            $this->redirect('update');
+            //}
         } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO, 'Opp, sorry invoice has been paid, editing is not allowed!');
+            $this->redirect(array('report/SaleInvoice'));
         }
+
     }
 
     public function actionReceipt($sale_id)
@@ -547,16 +529,16 @@ class SaleItemController extends Controller
 
     public function actionSetInvoiceFormat()
     {
-        if (Yii::app()->request->isPostRequest) {
-            $invoice_format = $_POST['id'];
-            Yii::app()->shoppingCart->setInvoiceFormat($invoice_format);
+        ajaxRequestPost();
 
-            if ($invoice_format=='format3') {
-                Yii::app()->shoppingCart->setTotalGST(10);
-            }
+        $invoice_format = $_POST['id'];
+        Yii::app()->shoppingCart->setInvoiceFormat($invoice_format);
 
-            $this->reload();
+        if ($invoice_format=='format3') {
+            Yii::app()->shoppingCart->setTotalGST(10);
         }
+
+        $this->reload();
     }
 
     /*
@@ -565,6 +547,7 @@ class SaleItemController extends Controller
     public function actionSaleUpdateStatus($sale_id,$status) {
 
         ajaxRequest();
+
         Sale::model()-> updateSaleStatus($sale_id,$status);
         $this->actionList();
 
@@ -599,7 +582,6 @@ class SaleItemController extends Controller
 
         $this->actionList();
     }
-
 
     public function actionPrinting($sale_id,$status,$format)
     {
@@ -826,14 +808,6 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    /**
-     * @param $grid_id
-     * @param $title
-     * @param $advance_search :  to indicate whether there is an advance search text box
-     * @param $header_view
-     * @param $grid_view
-     * @return mixed
-     */
     protected function commonData($grid_id,$title,$advance_search=null,$header_view='_header',$grid_view='_grid')
     {
         $report = new Report;

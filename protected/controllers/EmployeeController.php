@@ -237,6 +237,7 @@ class EmployeeController extends Controller
         authorized('employee.update');
 
         $disabled = "";
+        $role_name = "";
 
         $model = $this->loadModel($id);
         $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
@@ -250,6 +251,7 @@ class EmployeeController extends Controller
         $auth_items = array();
         foreach ($auth_assignment as $auth_item) {
             $auth_items[] = $auth_item->itemname;
+            $role_name = $auth_item->itemname;
         }
 
         $user->role_name = $auth_items;
@@ -305,6 +307,8 @@ class EmployeeController extends Controller
         if (strtolower($user->user_name) == strtolower('admin') || strtolower($user->user_name) == strtolower('super')) {
             $disabled = "true";
         }
+
+        $data = RbacUser::model()->permissionData($role_name);
 
         $data['model'] = $model;
         $data['user'] = $user;

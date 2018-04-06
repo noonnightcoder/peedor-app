@@ -154,21 +154,7 @@ class RbacUserController extends Controller
     {
         $role_name = $_POST['RbacUser']['role_name'];
 
-        $data['grid_columns'] = array(
-            array('name' => 'name',
-                'header' => Yii::t('app', 'Name'),
-                'value' => '$data["name"]',
-                //'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
-                //'url' => Yii::app()->createUrl('PermissionSub'),
-            ),
-            array('name' => 'description',
-                'header' => Yii::t('app', 'Description'),
-                'value' => '$data["description"]',
-            ),
-        );
-
-        $data['data_provider'] = Authassignment::model()->rolePermission($role_name);
-        $data['grid_id'] = 'permission_id';
+        $data = RbacUser::model()->permissionData($role_name);
 
         $this->renderPartial('_permission_table',$data,false,true);
 

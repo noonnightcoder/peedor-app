@@ -18,6 +18,9 @@ $this->breadcrumbs=array(
                   'user'=>$user,
                   'disabled' => $disabled,
                   //'auth_items' => $auth_items,
+                  'grid_id' => $grid_id,
+                  'data_provider' => $data_provider,
+                  'grid_columns' => $grid_columns,
               ),true),
  )); ?>  
 
