@@ -7,12 +7,12 @@
         'url' => $this->createUrl('saleItem/update'),
     )); ?>
 
-    <?= TbHtml::linkButton(Yii::t('app',  'Add Invoice'), array(
+    <?php /* echo  TbHtml::linkButton(Yii::t('app',  'Add Invoice'), array(
         'color' => TbHtml::BUTTON_COLOR_PRIMARY,
         'size' => TbHtml::BUTTON_SIZE_SMALL,
         'icon' => 'ace-icon fa fa-plus white',
         'url' => $this->createUrl('saleItem/update',array('tran_type' => '1')),
-    )); ?>
+    )); */?>
 
 <?php } ?>
 

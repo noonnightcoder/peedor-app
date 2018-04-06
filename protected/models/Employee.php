@@ -49,7 +49,7 @@ class Employee extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('first_name, last_name', 'required'),
-			array('city_id', 'numerical', 'integerOnly'=>true),
+			array('city_id, report_to', 'numerical', 'integerOnly'=>true),
 			array('first_name, last_name', 'length', 'max'=>50),
 			array('mobile_no', 'length', 'max'=>15),
 			array('adddress1, address2', 'length', 'max'=>60),

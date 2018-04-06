@@ -4,6 +4,12 @@
 
 <?= $form->textFieldControlGroup($model, 'mobile_no', array('class' => 'span10', 'maxlength' => 15)); ?>
 
+<?= $form->dropDownListControlGroup($model, 'report_to', Employee::model()->getEmployee(), array(
+        'class' => 'span3',
+        'empty' => Yii::t('app', 'Select Supervisor'),
+    )
+); ?>
+
 <div class="form-group">
 
     <label class="col-sm-3 control-label"

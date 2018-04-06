@@ -33,7 +33,7 @@ class SaleItemController extends Controller
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
                     'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
                     'list','update',// UNLEASED name convenstion it's all about CRUD
-                    'REST.GET', 'REST.PUT', 'REST.POST', 'REST.DELETE'),
+                    'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -459,6 +459,34 @@ class SaleItemController extends Controller
 
     }
 
+    public function actionReview()
+    {
+        $grid_id = 'sale-order-grid';
+        $title = 'Sale Order Review List';
+
+        $data = $this->commonData($grid_id,$title,'show');
+
+        $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
+        $data['data_provider'] = $data['report']->saleListByStatusUser(param('sale_submit_status'), getEmployeeId());
+        $data['grid_id'] = 'sale-order-grid';
+        loadview('review','partialList/_grid_one',$data);
+
+    }
+
+    public function actionApprove()
+    {
+        $grid_id = 'sale-order-grid';
+        $title = 'Sale Order Approval List';
+
+        $data = $this->commonData($grid_id,$title,'show');
+
+        $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
+        $data['data_provider'] = $data['report']->saleListByStatus(param('sale_approve_status'));
+        $data['grid_id'] = 'sale-order-grid';
+        loadview('review','partialList/_grid_one',$data);
+
+    }
+
     public function actionList()
     {
         $grid_id = 'sale-order-grid';
@@ -468,9 +496,9 @@ class SaleItemController extends Controller
 
         $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
         $data['data_provider'] = $data['report']->saleListAll();
-        $data['data_provider2'] = $data['report']->saleListByStatus('2');
-        $data['data_provider3'] = $data['report']->saleListByStatus('3');
-        $data['data_provider1'] = $data['report']->saleListByStatus('1');
+        $data['data_provider2'] = $data['report']->saleListByStatusUser(param('sale_submit_status'), getEmployeeId());
+        $data['data_provider3'] = $data['report']->saleListByStatus(param('sale_approve_status'));
+        $data['data_provider1'] = $data['report']->saleListByStatus(param('sale_complete_status'));
         $data['grid_id'] = $grid_id;
         $data['grid_id2'] = 'sale-order-wait-grid';
         $data['grid_id3'] = 'sale-order-review-grid';
@@ -547,10 +575,7 @@ class SaleItemController extends Controller
     public function actionSaleUpdateStatus($sale_id,$status) {
 
         ajaxRequest();
-
         Sale::model()-> updateSaleStatus($sale_id,$status);
-        $this->actionList();
-
     }
 
     // To be delete change to saleUpdate status function
@@ -772,15 +797,6 @@ class SaleItemController extends Controller
         
         return $model;
     }
-
-    /* protected function customerInfo($customer_id)
-    {
-        $model=null;
-        if ($customer_id != null) {
-            $model = Client::model()->findbyPk($customer_id);
-        }
-        return $model;
-    }*/
 
     protected function renderRecipe($data)
     {

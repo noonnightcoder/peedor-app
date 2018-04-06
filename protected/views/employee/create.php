@@ -13,6 +13,9 @@ $this->breadcrumbs=array(
                   'model'=>$model,
                   'user'=>$user,
                   'disabled' => $disabled,
+                  'grid_id' => $grid_id,
+                  'data_provider' => $data_provider,
+                  'grid_columns' => $grid_columns,
               ), true),
  )); ?>  
 

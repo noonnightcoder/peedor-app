@@ -26,18 +26,7 @@ $this->breadcrumbs = array(
         'placement' => 'above',
         'id' => 'tabs',
         'tabs' => array(
-            array('label' =>  t('All ','app'),
-                'id' => 'tab_1',
-                'icon' => 'fa fa-home pink bigger-120',
-                'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
-                        'report' => $report,
-                        'data_provider' => $data_provider,
-                        'grid_columns' => $grid_columns,
-                        'grid_id' => $grid_id,
-                        'title' => $title),true),
-                'active' => true,
-            ),
-            array('label' => t('Waiting for Approval ','app') . '<span class="badge badge-danger">' . $sale_submit_n . '</span>',
+            array('label' => t('Waiting for Review ','app') . '<span class="badge badge-danger">' . $sale_submit_n . '</span>',
                 'id' => 'tab_2',
                 'icon' => 'fa fa-pencil bigger-120 purple',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view ,array(
@@ -46,9 +35,10 @@ $this->breadcrumbs = array(
                         'grid_columns' => $grid_columns,
                         'grid_id' => $grid_id2,
                         'title' => $title),true,false),
-                'visible' => ckacc('sale.review')
+                'active' => true,
+                'visible' => ckacc('sale.review')   || ckacc('sale.create') || ckacc('sale.update')
             ),
-            array('label' => t( 'Review & Complete ','app') . '<span class="badge badge-info">' . $sale_approve_n .'</span>',
+            array('label' => t( 'Approval ','app') . '<span class="badge badge-info">' . $sale_approve_n .'</span>',
                 'id' => 'tab_3',
                 'icon' => 'fa fa-smile-o bigger-120 green',
                 'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
@@ -69,6 +59,17 @@ $this->breadcrumbs = array(
                         'grid_id' => $grid_id1,
                         'title' => $title),true),
                 'visible' => ckacc('report.stock')
+            ),
+            array('label' =>  t('All ','app'),
+                'id' => 'tab_1',
+                'icon' => 'fa fa-home pink bigger-120',
+                'content' => $this->renderPartial('//layouts/report/' . $grid_view,array(
+                    'report' => $report,
+                    'data_provider' => $data_provider,
+                    'grid_columns' => $grid_columns,
+                    'grid_id' => $grid_id,
+                    'title' => $title),true),
+                'visible' => ckacc('admin') || ckacc('accountant')
             ),
         ),
         //'events' => array('shown'=>'js:test')

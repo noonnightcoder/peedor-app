@@ -245,6 +245,11 @@ function sysMenuSaleView()
     return ucwords(t(param('menu_sale_view'), 'app'));
 }
 
+function sysMenuSaleApprove()
+{
+    return ucwords(t(param('menu_sale_approve'), 'app'));
+}
+
 function sysMenuSalePayment()
 {
     return ucwords(t(param('menu_sale_payment'), 'app'));

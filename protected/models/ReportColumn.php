@@ -1042,7 +1042,18 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Reject'),
                             'class' => 'btn-order-reject btn btn-xs btn-danger',
                         ),
-                        'visible' => '$data["status"] == "2"',
+                        'visible' => '$data["status"] == "2" && ckacc("sale.review")',
+                    ),
+                    'reject' => array(
+                        'label' => 'reject',
+                        'icon' => 'fa fa-ban',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array("sale_id"=>$data["sale_id"], "status" => param("sale_reject_status")))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Reject'),
+                            'class' => 'btn-order-reject btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["status"] == "3" && ckacc("sale.approve")',
                     ),
                     'approve' => array(
                         'label' => 'approve',
@@ -1054,7 +1065,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Approve'),
                             'class' => 'btn-order-approve btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]=="2" && ckacc("sale.approve")',
+                        'visible' => '$data["status"]=="2" && ckacc("sale.review")',
                     ),
                     'complete' => array(
                         'label' => 'cancel',
@@ -1070,7 +1081,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Complete'),
                             'class' => 'btn-order-complete btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]=="3"',
+                        'visible' => '$data["status"]=="3" && ckacc("sale.approve")',
                     ),
                     'print' => array(
                         'label' => 'print',

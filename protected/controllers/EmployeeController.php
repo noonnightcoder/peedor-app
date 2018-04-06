@@ -159,6 +159,7 @@ class EmployeeController extends Controller
         $user = new RbacUser;
         $auth_assignment = new Authassignment;
         $disabled = "";
+        $role_name = "";
 
 
         if (isset($_POST['Employee'])) {
@@ -224,6 +225,8 @@ class EmployeeController extends Controller
                 }
             }
         }
+
+        $data = RbacUser::model()->permissionData($role_name);
 
         $data['model'] = $model;
         $data['user'] = $user;

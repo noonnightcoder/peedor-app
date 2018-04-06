@@ -100,9 +100,15 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 ),
                 array('label' => sysMenuSaleView(),
                     'icon' => sysMenuSaleViewIcon(),
-                    'url' => url('saleItem/list'),
-                    'active' => $this->id . '/' . $this->action->id == 'saleItem/list',
+                    'url' => url('saleItem/review'),
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/review',
                     'visible' => ckacc('sale.read.all') || ckacc('sale.read')
+                ),
+                array('label' => sysMenuSaleApprove(),
+                    'icon' => sysMenuSaleViewIcon(),
+                    'url' => url('saleItem/approve'),
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
+                    'visible' => ckacc('sale.approve')
                 ),
             ),
         ),

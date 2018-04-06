@@ -43,4 +43,3 @@
     ),
     //'events' => array('shown'=>'js:test')
 ));
-?>
