@@ -235,6 +235,26 @@ function sysMenuSale()
     return ucwords(t(param('menu_sale'), 'app'));
 }
 
+function sysMenuOrders()
+{
+    return ucwords(t(param('menu_orders'), 'app'));
+}
+
+function sysMenuInvoicing()
+{
+    return ucwords(t(param('menu_invoicing'), 'app'));
+}
+
+function sysMenuOrderToInvoice()
+{
+    return ucwords(t(param('menu_order_to_invoice'), 'app'));
+}
+
+function sysMenuOrderToDeliver()
+{
+    return ucwords(t(param('menu_order_to_deliver'), 'app'));
+}
+
 function sysMenuSaleAdd()
 {
     return ucwords(t(param('menu_sale_add'), 'app'));
@@ -438,6 +458,11 @@ function sysMenuCategoryIcon()
 function sysMenuPriceTierIcon()
 {
     return 'menu-icon fa fa-adjust';
+}
+
+function sysMenuOrderToDeliverIcon()
+{
+    return 'menu-icon fa fa-truck';
 }
 
 function getTransType()

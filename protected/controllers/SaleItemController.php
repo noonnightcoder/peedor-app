@@ -487,6 +487,27 @@ class SaleItemController extends Controller
 
     }
 
+    public function actionList($status,$user_id=null)
+    {
+        $grid_id = 'sale-order-grid';
+        $title = 'Order To Invoice';
+
+        $data = $this->commonData($grid_id,$title,'show');
+
+        $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
+
+        if ($user_id !==null) {
+            $data['data_provider'] = $data['report']->saleListByStatusUser($status, $user_id);
+        } else {
+            $data['data_provider'] = $data['report']->saleListByStatus($status);
+        }
+
+        $data['grid_id'] = 'sale-order-grid';
+        loadview('review','partialList/_grid_one',$data);
+    }
+
+    // Old one to be delete too complicated to do process base or wizard form here
+    /*
     public function actionList()
     {
         $grid_id = 'sale-order-grid';
@@ -510,6 +531,7 @@ class SaleItemController extends Controller
         loadview('report','partialList/_grid',$data);
 
     }
+    */
 
     public function actionSaleInvoice()
     {
@@ -569,9 +591,6 @@ class SaleItemController extends Controller
         $this->reload();
     }
 
-    /*
-     * Update sale status see the status in config/params.php
-     */
     public function actionSaleUpdateStatus($sale_id,$status) {
 
         ajaxRequest();
@@ -579,7 +598,6 @@ class SaleItemController extends Controller
     }
 
     // To be delete change to saleUpdate status function
-
     public function actionSaleApprove($sale_id,$status,$customer_id,$total) {
 
         ajaxRequest();

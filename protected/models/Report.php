@@ -76,6 +76,7 @@ class Report extends CFormModel
     }
 
     public function saleListByStatusUser($status='2',$user_id) {
+
         $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
                       discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
@@ -119,6 +120,7 @@ class Report extends CFormModel
     }
 
     public function saleListByStatus($status='2') {
+
         $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
                       discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
@@ -128,7 +130,6 @@ class Report extends CFormModel
                AND status=:status
                AND printeddo_by is null
                ORDER By sale_time desc";
-
 
         $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':from_date' => $this->from_date,

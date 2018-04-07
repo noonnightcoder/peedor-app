@@ -15,6 +15,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
             'url' => url('item/admin'),
             'active' => $this->id == 'item',
             'visible' => ckacc('item.create') || ckacc('item.read') || ckacc('item.update') || ckacc('item.delete'),
+            /*
             'items' => array(
                 array('label' => sysMenuItemAdd(), 'icon' => 'menu-icon fa fa-plus pink',
                     'url' => url('item/create'),
@@ -41,6 +42,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'visible' => ckacc('item.index')
                 ),
             ),
+           */
         ),
         array('label' => '<span class="menu-text">' . sysMenuInventory() . '</span>',
             'icon' => sysMenuInventoryIcon(),
@@ -85,12 +87,13 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'url' => url('receivingItem/index', array('trans_mode' => 'return')), 'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/return',
                     'visible' => ckacc('purchase.return')),
             )),
-        array('label' => '<span class="menu-text">' . sysMenuSale() . '</span>',
+        array('label' => '<span class="menu-text">' . sysMenuOrders() . '</span>',
             'icon' => sysMenuSaleIcon(),
-            'url' => url('saleItem'),
+            'url' => url('saleItem/list', array('status' => param('sale_submit_status'), 'user_id' => getEmployeeId())),
             'active' => $this->id == 'saleItem',
             'visible' => ckacc('sale.create') || ckacc('sale.read') || ckacc('sale.read.all') || ckacc('sale.update') || ckacc('sale.delete'),
                 //ckacc('sale.edit') || ckacc('sale.discount') || ckacc('sale.editprice'),
+            /*
             'items' => array(
                 array('label' => sysMenuSaleAdd(),
                     'icon' => sysMenuSaleAddIcon(),
@@ -106,6 +109,28 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 ),
                 array('label' => sysMenuSaleApprove(),
                     'icon' => sysMenuSaleViewIcon(),
+                    'url' => url('saleItem/approve'),
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
+                    'visible' => ckacc('sale.approve')
+                ),
+            ),
+            */
+        ),
+        array('label' => '<span class="menu-text">' . sysMenuInvoicing() . '</span>',
+            'icon' => sysMenuSaleIcon(),
+            'url' => url('saleItem'),
+            'active' => $this->id == 'saleItem',
+            'visible' => ckacc('sale.create') || ckacc('sale.read') || ckacc('sale.read.all') || ckacc('sale.update') || ckacc('sale.delete'),
+            //ckacc('sale.edit') || ckacc('sale.discount') || ckacc('sale.editprice'),
+            'items' => array(
+                array('label' => sysMenuOrderToInvoice(),
+                    'icon' => sysMenuSaleViewIcon(),
+                    'url' => url('saleItem/approve'),
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
+                    'visible' => ckacc('sale.approve')
+                ),
+                array('label' => sysMenuOrderToDeliver(),
+                    'icon' => sysMenuOrderToDeliverIcon(),
                     'url' => url('saleItem/approve'),
                     'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
                     'visible' => ckacc('sale.approve')

@@ -4,10 +4,10 @@
 return array(
     // this is used in contact page
     'adminEmail' => 'support@peedor.com',
-    'sale_cancel_status' => '0', // Sale Reject
+    'sale_cancel_status' => '0', // Sale Cancel/Deleted
     'sale_complete_status' => '1', // Sale Order Complete - When all details are entered and no further changes are required.
-    'sale_submit_status' => '2', // Sale Order Submit For Approval - stock mark as allocated for this order
-    'sale_approve_status' => '3', // Sale Order Approved
+    'sale_submit_status' => '2', // Sale Order Submit For Validate/Review - stock mark as allocated for this order
+    'sale_approve_status' => '3', // Order to Invoice or Checked & Approval by Accountant
     'sale_reject_status' => '-3', // Sale Order Rejected
     'sale_confirm_status' => '4', // Sale Order Confirmed by Account / Finance team - Ready to delivery
     'sale_do_status' => '5', // Print Delivery Note
@@ -53,7 +53,10 @@ return array(
     'menu_sale_view' => 'review sale order',
     'menu_sale_approve' => 'approve sale order',
     'menu_sale_payment' => 'payment',
-    'menu_invoice' => 'invoice',
+    'menu_orders' => 'orders', // Sale Orders
+    'menu_invoicing' => 'invoicing',
+    'menu_order_to_invoice' => 'order to invoice',
+    'menu_order_to_deliver' => 'invoice to deliver',
     'menu_report' => 'report',
     'menu_report_sale_invoice' => 'sale invoice',
     'menu_report_sale_daily' => 'sale daily',
