@@ -2,6 +2,7 @@
     <div id="price-range">
 		<?php foreach($item_price_quantity as $k=>$item_price):?>
 			<div class="range-<?php echo $item_price['id'] ?>">
+			<div class="row">
 				<hr style="width:90%; margin-left:0px;">
 			    <div class="col-sm-2">
 	                <div class="form-group col-sm-12">
@@ -30,10 +31,11 @@
 	            </div>
 	            <div class="col-sm-2"><input type="button" value="X" class="btn btn-danger" onClick="removePriceRange(<?php echo $item_price['id'] ?>)"></div>
 	        </div>
+	        </div>
 		<?php endforeach;?>
 	</div>
 	<div class="form-group col-sm-10">
-        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-primary pull-right','onClick'=>'addPriceRange()'))?>
+        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-primary pull-right','onClick'=>'addPriceRange('.$item_price["id"].')'))?>
     </div>
 </div>
 <?php $this->renderPartial('partialList/_js'); ?>
