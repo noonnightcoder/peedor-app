@@ -281,7 +281,7 @@ class ItemController extends Controller
                         if($model->id>0){//check if item id exist after saved to table
                             $connection = Yii::app()->db;//initial connection to run raw sql
                             foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
-                                if($value['from_quantity']>0){
+                                if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
                                     $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
                                     $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
                                     $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
@@ -322,55 +322,6 @@ class ItemController extends Controller
 
     }
 
-    public function actionSaveItem()
-    {
-        authorized('item.create');
-        $model = new Item;
-        $price_quantity_range = new ItemPriceQuantity;
-        // $model->attributes = $_POST['item'];
-        // $valid=$model->validate();
-
-        $this->performAjaxValidation($model);
-        //var_dump($_POST['PriceQuantityRange']);
-
-        if (isset($_POST['Item'])) {
-            $model->attributes = $_POST['Item'];
-            $valid = $model->validate();
-            if ($valid) {
-                //var_dump($_POST['Item']);
-                $model->name = $_POST['Item']['name'];
-                $model->item_number = $_POST['Item']['item_number'];
-                // $model->category_id=1;
-                // $model->unit_measurable_id=1;
-                $model->cost_price = 1;
-                $model->unit_price = 2;
-                $model->quantity = 10;
-                $model->reorder_level = $_POST['Item']['reorder_level'];
-                $model->location = $_POST['Item']['location'];
-                $model->description = $_POST['Item']['description'];
-                $model->save();
-                $connection = Yii::app()->db;
-                if ($model->id > 0) {
-                    foreach ($_POST['data'] as $key => $value) {
-                        $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
-                        $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
-                        $sql = "insert into price_quantity_range(item_id,from_quantity,to_quantity,price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['price'] . "','" . $start_date . "','" . $end_date . "')";
-                        $command = $connection->createCommand($sql);
-                        $insert = $command->execute(); // execute the non-query SQL
-                        //var_dump($value);
-                    }
-                }
-                Yii::app()->end();
-            } else {
-                $error = CActiveForm::validate($model);
-                if ($error != '[]')
-                    echo $error;
-                Yii::app()->end();
-            }
-        }
-
-    }
-
     public function actionCreate2()
     {
         $model = new Item();
@@ -385,8 +336,8 @@ class ItemController extends Controller
         } else {
             $model = Item::model()->find('item_number=:item_number', array(':item_number' => $id));
         }
-
         $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
+        $item_price_quantity=ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
 
         // Uncomment the following line if AJAX validation is needed
         // $this->performAjaxValidation($model);
@@ -423,6 +374,22 @@ class ItemController extends Controller
                             ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                             // Product Price (retail price) history
                             ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
+                            if(isset($_POST['price_quantity'])){
+                                var_dump($_POST['price_quantity']);
+                                //save price quantity range
+                                $connection = Yii::app()->db;//initial connection to run raw sql
+                                $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
+                                $delete = $command->execute(); // execute the non-query SQL
+                                foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
+                                    if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
+                                        $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
+                                        $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
+                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                                        $command = $connection->createCommand($sql);
+                                        $insert = $command->execute(); // execute the non-query SQL
+                                    }
+                                }
+                            }
 
                             $this->addImages($model);
                             $transaction->commit();
@@ -442,7 +409,7 @@ class ItemController extends Controller
             $this->redirect(array('site/ErrorException', 'err_no' => 403));
         }
 
-        $this->render('update_image', array('model' => $model, 'price_tiers' => $price_tiers));
+        $this->render('_form_update_item', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
     }
 
     public function actionAutocompleteItem()

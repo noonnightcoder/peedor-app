@@ -1,3 +1,13 @@
+<?php 
+    $_form=''; 
+    if(isset($_GET['id']) && $_GET['id'] >0){
+        $_form='_form_price_qty_update';
+    }
+    else
+    {
+        $_form='_form_price_qty';
+    }
+?>
 <?php $this->widget('bootstrap.widgets.TbTabs', array(
     'id' => 'tabs-price',
     'type' => 'tabs',
@@ -9,7 +19,7 @@
                 ), true),
             'active' => true),
         array('id' => 'price-qty', 'label' => 'Price Quantity',
-            'content' => $this->renderPartial('_form_price_qty', array(
+                'content' => $this->renderPartial($_form, array(
                 'model' => $model,
                 'item_price_quantity' => $item_price_quantity,
                 'form' => $form,

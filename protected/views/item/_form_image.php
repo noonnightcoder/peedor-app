@@ -49,6 +49,7 @@
             </div>
         </div>
     <?php endforeach; ?>
+    
 
     <?php //echo $form->textFieldControlGroup($model,'quantity',array('class'=>'span3')); ?>
 
@@ -248,16 +249,6 @@
 </div>
 
 <script>
-    $("form").submit(function () {
-        if ($(this).data("allreadyInput")) {
-            return false;
-        } else {
-            $("input[type=submit]", this).hide();
-            $(this).data("allreadyInput", true);
-            // regular checks and submit the form here
-        }
-    });
-</script>script>
     $("form").submit(function () {
         if ($(this).data("allreadyInput")) {
             return false;

@@ -98,6 +98,18 @@ class ItemPriceQuantity extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+    public function getListItemPriceQuantityUpdate($item_id)
+    {
+        $sql = "SELECT id,from_quantity,to_quantity,unit_price,start_date,end_date
+                FROM item_price_quantity
+                where item_id=:item_id
+                order by id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':item_id' => $item_id));
+
+        return $result;
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.

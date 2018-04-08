@@ -13,7 +13,7 @@ $this->breadcrumbs=array(
               'title' => Yii::t('app','Update Item'),
               'headerIcon' => 'ace-icon fa fa-coffee',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-              'content' => $this->renderPartial('_form_image', array('model'=>$model,'price_tiers'=>$price_tiers), true),
+              'content' => $this->renderPartial('_form_image', array('model'=>$model,'price_tiers'=>$price_tiers,'item_price_quantity'=>$item_price_quantity), true),
               'headerButtons' => array(
                     TbHtml::buttonGroup(
                         array(
