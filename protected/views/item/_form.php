@@ -6,9 +6,9 @@
     //'action'=>$this->createUrl('Item/Create'),
     'enableClientValidation'=>true,
     'clientOptions' => array(
-        'validateOnSubmit'=>true,
+        'validateOnSubmit'=>false,
         'validateOnChange'=>true,
-        'validateOnType'=>false,
+        'validateOnType'=>true,
     ),
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
     'htmlOptions'=>array('enctype' => 'multipart/form-data'),

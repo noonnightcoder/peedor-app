@@ -81,7 +81,13 @@
             $('.btn-add').prop('disabled',false);
         }
     }
+function buttondisable(form,data,hasError)
+{
+    
 
+       alert('data')
+        
+}
     //$('#price_quantity'-form').submit(function(e){
     //     e.preventDefault();
     //     $.ajax({

@@ -409,7 +409,7 @@ class ItemController extends Controller
             $this->redirect(array('site/ErrorException', 'err_no' => 403));
         }
 
-        $this->render('_form_update_item', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
+        $this->render('_form', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
     }
 
     public function actionAutocompleteItem()
