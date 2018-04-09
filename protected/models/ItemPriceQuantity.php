@@ -31,13 +31,13 @@ class ItemPriceQuantity extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			//array('item_id, from_quantity, to_quantity', 'required'),
-			array('item_id, from_quantity, to_quantity', 'numerical', 'integerOnly'=>true),
-			array('unit_price', 'numerical'),
-			array('start_date, end_date', 'safe'),
-            array('start_date, end_date', 'date', 'format'=>array('dd/MM/yyyy')),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, item_id, from_quantity, to_quantity, unit_price, start_date, end_date', 'safe', 'on'=>'search'),
+			// array('item_id, from_quantity, to_quantity', 'numerical', 'integerOnly'=>true),
+			// array('unit_price', 'numerical'),
+			// array('start_date, end_date', 'safe'),
+   //          array('start_date, end_date', 'date', 'format'=>array('dd/MM/yyyy')),
+			// // The following rule is used by search().
+			// // @todo Please remove those attributes that should not be searched.
+			// array('id, item_id, from_quantity, to_quantity, unit_price, start_date, end_date', 'safe', 'on'=>'search'),
 		);
 	}
 

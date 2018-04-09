@@ -242,7 +242,7 @@ class ItemController extends Controller
         authorized('item.create');
 
         $model = new Item;
-        $item_price_quantity = new ItemPriceQuantity();
+        $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(0);
 
         $price_tiers = PriceTier::model()->getListPriceTier();
 
@@ -280,10 +280,10 @@ class ItemController extends Controller
                         //save price quantity range
                         if($model->id>0){//check if item id exist after saved to table
                             $connection = Yii::app()->db;//initial connection to run raw sql
-                            foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
+                            foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
                                 if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
-                                    $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
-                                    $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d',strtotime('+30 days'));
+                                    $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
+                                    $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
                                     $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                     $command = $connection->createCommand($sql);
                                     $insert = $command->execute(); // execute the non-query SQL
@@ -374,16 +374,16 @@ class ItemController extends Controller
                             ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                             // Product Price (retail price) history
                             ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
-                            if(isset($_POST['price_quantity'])){
-                                var_dump($_POST['price_quantity']);
+                            if(isset($_POST['priceQuantity'])){
+                                var_dump($_POST['priceQuantity']);
                                 //save price quantity range
                                 $connection = Yii::app()->db;//initial connection to run raw sql
                                 $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
                                 $delete = $command->execute(); // execute the non-query SQL
-                                foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
+                                foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
                                     if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
-                                        $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
-                                        $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d',strtotime('+30 days'));
+                                        $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
+                                    $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+15 years'));
                                         $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                         $command = $connection->createCommand($sql);
                                         $insert = $command->execute(); // execute the non-query SQL

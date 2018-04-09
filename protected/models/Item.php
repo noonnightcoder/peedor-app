@@ -55,6 +55,7 @@ class Item extends CActiveRecord
                 'integerOnly' => true
             ),
             array('cost_price, unit_price, quantity, reorder_level, items_add_minus, promo_price', 'numerical'),
+            //array('unit_price','compare','compareAttribute'=>'cost_price','operator'=>'>=','message'=>'Buy Price must be less than or equal to Sale Price'),
             array('name', 'length', 'max' => 100),
             array('item_number', 'length', 'max' => 255),
             array('location', 'length', 'max' => 20),
