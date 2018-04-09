@@ -6,9 +6,10 @@
     //'action'=>$this->createUrl('Item/Create'),
     'enableClientValidation'=>true,
     'clientOptions' => array(
-        'validateOnSubmit'=>false,
+        'validateOnSubmit'=>true,
         'validateOnChange'=>true,
         'validateOnType'=>true,
+        'beforeValidate'=>"js:beforeValidate()",
     ),
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
     'htmlOptions'=>array('enctype' => 'multipart/form-data'),
@@ -76,3 +77,13 @@
     </div>
 
 <?php $this->endWidget(); ?>
+<script>
+    function beforeValidate() {
+    var form = $(this);
+    if(form.find('.has-error').length) {
+            return false;
+    }else{
+        return true;
+    }
+}
+</script>

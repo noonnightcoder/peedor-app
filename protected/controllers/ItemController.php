@@ -49,7 +49,7 @@ class ItemController extends Controller
                     'LowStock',
                     'OutStock',
                     'loadImage',
-                    'SaveItem',
+                    'AssembliesCreate',
                 ),
                 'users' => array('@'),
             ),
@@ -279,17 +279,20 @@ class ItemController extends Controller
                         }
                         //save price quantity range
                         if($model->id>0){//check if item id exist after saved to table
-                            $connection = Yii::app()->db;//initial connection to run raw sql
-                            foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
-                                if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
-                                    $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                                    $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
-                                    $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
-                                    $command = $connection->createCommand($sql);
-                                    $insert = $command->execute(); // execute the non-query SQL
+                            $connection = Yii::app()->db;//initial connection to run raw sql 
+                            if(isset($_POST['priceQuantity'])){
+                                foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
+                                    if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
+                                        $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
+                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
+                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                                        $command = $connection->createCommand($sql);
+                                        $insert = $command->execute(); // execute the non-query SQL
+                                    }
                                 }
                             }
                         }
+                        
                         // Saving Item Price Tier to `item_price_tier`
                         ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         $this->addImages($model, $transaction);
@@ -320,13 +323,6 @@ class ItemController extends Controller
 
         $this->render('create', $data);
 
-    }
-
-    public function actionCreate2()
-    {
-        $model = new Item();
-        $data['model'] = $model;
-        $this->render('_form_product', $data);
     }
 
     public function actionUpdateImage($id, $item_number_flag = '0')
@@ -380,16 +376,18 @@ class ItemController extends Controller
                                 $connection = Yii::app()->db;//initial connection to run raw sql
                                 $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
                                 $delete = $command->execute(); // execute the non-query SQL
+                                if(isset($_POST['priceQuantity'])){
                                 foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
                                     if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
                                         $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                                    $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+15 years'));
-                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
+                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                         $command = $connection->createCommand($sql);
                                         $insert = $command->execute(); // execute the non-query SQL
                                     }
                                 }
                             }
+                        }
 
                             $this->addImages($model);
                             $transaction->commit();
@@ -411,7 +409,11 @@ class ItemController extends Controller
 
         $this->render('_form', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
     }
-
+    public function actionAssembliesCreate()
+    {
+        $item_price_quantity=ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(81);
+        $this->render('_form_item_assembly',array('item_price_quantity'=>$item_price_quantity));
+    }
     public function actionAutocompleteItem()
     {
         $res = array();

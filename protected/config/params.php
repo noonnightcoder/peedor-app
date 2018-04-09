@@ -35,7 +35,7 @@ return array(
     'menu_dashboard' => 'dashboard',
     'menu_item' => 'item',
     'menu_item_add' => 'add item',
-    'menu_item_add2' => 'add item 2',
+    'menu_asseblies_add'=>'add assemblies',
     'menu_item_view' => 'view items',
     'menu_item_imp_exp' => 'Import/Export',
     'menu_item_markup_price' => 'Markup Price Update',

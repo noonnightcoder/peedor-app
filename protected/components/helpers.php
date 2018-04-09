@@ -165,6 +165,11 @@ function sysMenuItemAdd()
     return ucwords(t(param('menu_item_add'), 'app'));
 }
 
+function sysMenuAssembliesAdd()
+{
+    return ucwords(t(param('menu_asseblies_add'), 'app'));
+}
+
 function sysMenuItemView()
 {
     return ucwords(t(param('menu_item_view'), 'app'));
