@@ -283,7 +283,7 @@ class ItemController extends Controller
                             foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
                                 if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
                                     $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
-                                    $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
+                                    $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d',strtotime('+30 days'));
                                     $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                     $command = $connection->createCommand($sql);
                                     $insert = $command->execute(); // execute the non-query SQL
@@ -383,7 +383,7 @@ class ItemController extends Controller
                                 foreach($_POST['price_quantity'] as $key=>$value){//loop data from price quantity
                                     if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
                                         $start_date = $value['start_date'] ? $value['start_date'] : date('Y-m-d');
-                                        $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d');
+                                        $end_date = $value['end_date'] ? $value['end_date'] : date('Y-m-d',strtotime('+30 days'));
                                         $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                         $command = $connection->createCommand($sql);
                                         $insert = $command->execute(); // execute the non-query SQL
