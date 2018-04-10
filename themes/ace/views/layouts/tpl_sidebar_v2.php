@@ -16,7 +16,8 @@ $this->widget('bootstrap.widgets.TbNav', array(
             'active' => $this->id == 'item',
             'visible' => ckacc('item.create') || ckacc('item.read') || ckacc('item.update') || ckacc('item.delete'),
             'items' => array(
-                array('label' => sysMenuItemAdd(), 'icon' => 'menu-icon fa fa-plus pink',
+                array('label' => sysMenuItemAdd(),
+                    'icon' => 'menu-icon fa fa-plus pink',
                     'url' => url('item/create'),
                     'active' => $this->id . '/' . $this->action->id == 'item/create',
                     'visible' => ckacc('item.create')),
@@ -25,9 +26,10 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id == 'item/admin',
                     'visible' => ckacc('item.read')
                 ),
-                array('label' => sysMenuAssembliesAdd(), 'icon' => 'menu-icon fa fa-cog pink',
+                array('label' => sysMenuAssembliesAdd(),
+                    'icon' => 'menu-icon fa fa-chain pink',
                     'url' => url('item/assembliescreate'),
-                    'active' => $this->id . '/' . $this->action->id == 'item/create',
+                    'active' => $this->id . '/' . $this->action->id == 'item/assembliescreate',
                     'visible' => ckacc('item.create')
                 ),
             ),

@@ -9,7 +9,7 @@ $this->breadcrumbs=array(
 	<div class="col-xs-12 col-sm-10 widget-container-col">
 		<?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox',array(
 		        'title'         =>  Yii::t('app','Search Product'),
-		        'headerIcon'    => 'ace-icon fa fa-cloud-download',
+		        'headerIcon'    => 'ace-icon fa fa-chain',
 		        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
 		        'headerButtons' => array(
 		            TbHtml::buttonGroup(
