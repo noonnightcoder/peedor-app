@@ -37,7 +37,7 @@ $this->breadcrumbs=array(
 		<?php $this->endWidget()?>
 	</div>
     <div id="price-range">
-		<?php foreach($item_price_quantity as $k=>$item_price):?>
+		<?php $id=0; foreach($item_price_quantity as $k=>$item_price):?>
 			<div class="range-<?php echo $item_price['id'] ?>">
 			<div class="row">
 				<hr style="width:90%; margin-left:0px;">
@@ -61,10 +61,10 @@ $this->breadcrumbs=array(
 	            </div>
 	        </div>
 	        </div>
-		<?php endforeach;?>
+		<?php $id=$item_price["id"]; endforeach;?>
 	</div>
 	<div class="form-group col-sm-10">
-        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-primary pull-right','onClick'=>'addPriceRange('.$item_price["id"].')'))?>
+        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-primary pull-right','onClick'=>'addPriceRange('.$id.')'))?>
     </div>
 </div>
 <?php $this->renderPartial('partialList/_js'); ?>
