@@ -1,3 +1,10 @@
+<?php
+$this->breadcrumbs=array(
+    'Sales' => array('create'),
+    'Create',
+);
+?>
+
 <div id="register_container">
 
     <?/*= $sale_save_url */?>

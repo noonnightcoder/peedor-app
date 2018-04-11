@@ -47,6 +47,7 @@ class SiteController extends Controller
                 'actions' => array(
                     'about',
                     'logout',
+                    'home'
                 ),
                 'users' => array('@'),
             ),
@@ -93,9 +94,12 @@ class SiteController extends Controller
         $this->render('about');
     }
 
-    /**
-     * This is the action to handle external exceptions.
-     */
+    public function actionHome()
+    {
+        $this->layout = '//layouts/column_sale';
+        $this->render('home');
+    }
+
     public function actionError()
     {
         if ($error = Yii::app()->errorHandler->error) {
@@ -106,9 +110,7 @@ class SiteController extends Controller
         }
     }
 
-    /**
-     * Displays the contact page
-     */
+
     public function actionContact()
     {
         $model = new ContactForm;
@@ -130,9 +132,7 @@ class SiteController extends Controller
         $this->render('contact', array('model' => $model));
     }
 
-    /**
-     * Displays the login page
-     */
+
     public function actionLogin()
     {
 
@@ -158,18 +158,18 @@ class SiteController extends Controller
             $this->layout = '//layouts/column3';
             $this->render('login_ace', array('model' => $model));
         } else {
+            $this->redirect(array('site/home'));
+            /*
             if (Yii::app()->user->checkAccess('report.accounting')) {
                 $this->redirect(array('dashboard/view'));
             } else {
-                $this->redirect(array('saleItem/update'));
+                $this->redirect(array('site/home'));
             }
+            */
 
         }
     }
 
-    /**
-     * Logs out the current user and redirect to homepage.
-     */
     public function actionLogout()
     {
         UserLog::model()->saveUserLogOut(Yii::app()->session['unique_id'], Date('Y-m-d H:i:s'));

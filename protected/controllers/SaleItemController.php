@@ -32,7 +32,7 @@ class SaleItemController extends Controller
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
                     'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
-                    'list','update',// UNLEASED name convenstion it's all about CRUD
+                    'list','update','create',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve'),
                 'users' => array('@'),
             ),
@@ -57,6 +57,15 @@ class SaleItemController extends Controller
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
+    }
+
+    public function actionCreate($tran_type='2')
+    {
+        Yii::app()->shoppingCart->setMode($tran_type);
+
+        authorized('sale.create');
+
+        $this->reload();
     }
 
     public function actionUpdate($tran_type='2')
@@ -667,30 +676,6 @@ class SaleItemController extends Controller
 
         loadview('index','index',$data);
 
-        /*
-        if (Yii::app()->request->isAjaxRequest) {
-
-            //Yii::app()->clientScript->scriptMap['*.js'] = false;
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-                'bootstrap.min.js' => false,
-                'jquery-ui.min.js' => false,
-                //'EModalDlg.js'=>false,
-            );
-
-            Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false;
-            Yii::app()->clientScript->scriptMap['box.css'] = false;
-            $this->renderPartial('index', $data, false, true);
-
-        } else {
-            $this->render('index', $data);
-        }
-        */
     }
 
     protected function sessionInfo($data=array()) 

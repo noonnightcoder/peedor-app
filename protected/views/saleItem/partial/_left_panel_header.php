@@ -4,7 +4,9 @@
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app',$sale_header),'url' =>Yii::app()->createUrl('SaleItem/list'),'icon'=>'ace-icon fa fa-eye'),
+                    /*array('label' => Yii::t('app',$sale_header),
+                        'url' =>Yii::app()->createUrl('SaleItem/list'),
+                        'icon'=>'ace-icon fa fa-eye'),*/
                 //array('label'=>' | '),
                 array('label' => Yii::t('app','New Item'),
                     'url' =>Yii::app()->createUrl('Item/create',array('grid_cart'=>'S')),

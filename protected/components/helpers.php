@@ -150,6 +150,12 @@ function invNumPrefix()
     return Yii::app()->settings->get('site', 'invoicePrefix') . date('y') . '-00000';
 }
 
+
+function sysMenuHome()
+{
+    return strtoupper(t(param('menu_home'), 'app'));
+}
+
 function sysMenuDashboard()
 {
     return strtoupper(t(param('menu_dashboard'), 'app'));
@@ -297,7 +303,7 @@ function sysMenuSalePayment()
 
 function sysMenuInvoice()
 {
-    return ucwords(t(param('menu_invoice'), 'app'));
+    return ucwords(t(param('menu_invoicing'), 'app'));
 }
 
 function sysMenuReport()
@@ -347,157 +353,162 @@ function sysMenuPriceTier()
 
 function sysMenuSaleIcon()
 {
-    return 'menu-icon fa fa-usd';
+    return 'fa fa-usd';
 }
 
 function sysMenuSaleAddIcon()
 {
-    return 'menu-icon fa fa-plus pink';
+    return 'fa fa-plus pink';
 }
 
 function sysMenuSaleViewIcon()
 {
-    return 'menu-icon fa fa-eye pink';
+    return 'fa fa-eye pink';
 }
 
 function sysMenuSalePaymentIcon()
 {
-    return 'menu-icon fa fa-heart';
+    return 'fa fa-heart';
 }
 
 function sysMenuInvoiceIcon()
 {
-    return 'menu-icon fa fa-usd';
+    return 'fa fa-usd';
 }
 
 function sysMenuItemIcon()
 {
-    return 'menu-icon fa fa-coffee';
+    return 'fa fa-coffee';
+}
+
+function sysMenuHomeIcon()
+{
+    return 'fa fa-home';
 }
 
 function sysMenuDashboardIcon()
 {
-    return 'menu-icon fa fa-tachometer';
+    return 'fa fa-tachometer';
 }
 
 function sysMenuInventoryIcon()
 {
-    return 'menu-icon fa fa-desktop';
+    return 'fa fa-desktop';
 }
 
 function sysMenuInventoryAddIcon()
 {
-    return 'menu-icon fa fa-plus pink';
+    return 'fa fa-plus pink';
 }
 
 function sysMenuInventoryMinusIcon()
 {
-    return 'menu-icon fa fa-minus';
+    return 'fa fa-minus';
 }
 
 function sysMenuInventoryCountIcon()
 {
-    return 'menu-icon fa fa-list-ol purple';
+    return 'fa fa-list-ol purple';
 }
 
 function sysMenuInventoryTransferIcon()
 {
-    return 'menu-icon fa fa-exchange';
+    return 'fa fa-exchange';
 }
 
 function sysMenuPurchaseIcon()
 {
-    return 'menu-icon fa fa-money';
+    return 'fa fa-money';
 }
 
 function sysMenuPurchaseReceiveIcon()
 {
-    return 'menu-icon fa fa-plus pink';
+    return 'fa fa-plus pink';
 }
 
 function sysMenuPurchaseReturnIcon()
 {
-    return 'menu-icon fa fa-minus';
+    return 'fa fa-minus';
 }
 
 function sysMenuPurchasePaymentIcon()
 {
-    return 'menu-icon fa fa-credit-card';
+    return 'fa fa-credit-card';
 }
 
 function sysMenuReportIcon()
 {
-    return 'menu-icon fa fa-signal';
+    return 'fa fa-signal';
 }
 
 function sysMenuReportSaleIcon()
 {
-    return 'menu-icon fa fa-eur green';
+    return 'fa fa-eur green';
 }
 
 function sysMenuReportAccountIcon()
 {
-    return 'menu-icon fa fa-balance-scale';
+    return 'fa fa-balance-scale';
 }
 
 function sysMenuReportStockIcon()
 {
-    return 'menu-icon fa fa-cubes';
+    return 'fa fa-cubes';
 }
 
 function sysMenuCustomerIcon()
 {
-    return 'menu-icon fa fa-user';
+    return 'fa fa-user';
 }
 
 function sysMenuEmployeeIcon()
 {
-    return 'menu-icon fa fa-user';
+    return 'fa fa-user';
 }
 
 function sysMenuSupplierIcon()
 {
-    return 'menu-icon fa fa-user';
+    return 'fa fa-user';
 }
 
 function sysMenuAuthorizationIcon()
 {
-    return 'menu-icon fa fa-tasks';
+    return 'fa fa-tasks';
 }
 
 function sysMenuSettingIcon()
 {
-    return 'menu-icon fa fa-cogs';
+    return 'fa fa-cogs';
 }
 
 function sysMenuCategoryIcon()
 {
-    return 'menu-icon fa fa-list';
+    return 'fa fa-list';
 }
 
 function sysMenuPriceTierIcon()
 {
-    return 'menu-icon fa fa-adjust';
+    return 'fa fa-adjust';
 }
 
 function sysMenuSaleOrderToDeliverIcon()
 {
-    return 'menu-icon fa fa-truck';
+    return 'fa fa-truck';
 }
 
 function sysMenuSaleOrderIcon()
 {
-    return 'menu-icon fa fa-cart-arrow-down';
+    return 'fa fa-cart-arrow-down';
 }
 
 function sysMenuSaleOrderToValidateIcon()
 {
-    return 'menu-icon fa fa-check-square-o';
+    return 'fa fa-check-square-o';
 }
 
 function sysMenuSaleOrderInvoiceIcon()
 {
-    return 'menu-icon fa fa-paper-plane-o';
+    return 'fa fa-paper-plane-o';
 }
 
 function getTransType()

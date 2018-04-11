@@ -33,11 +33,12 @@ return array(
     // Company Name
     'company_name' => 'Try Me',
     'company_slogan' => 'simply the best',
+    'menu_home' => 'home',
     'menu_dashboard' => 'dashboard',
     'menu_item' => 'item',
     'menu_item_add' => 'add item',
     'menu_asseblies_add'=>'add assemblies',
-    'menu_item_view' => 'view items',
+    'menu_item_view' => 'view item',
     'menu_item_imp_exp' => 'Import/Export',
     'menu_item_markup_price' => 'Markup Price Update',
     'menu_inventory' => 'inventory',
