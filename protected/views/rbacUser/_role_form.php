@@ -15,7 +15,7 @@
 ?>
 
 <div id="permission_view">
-    <?php $this->renderPartial('//RbacUser/_permission_table',array(
+    <?php $this->renderPartial('//rbacUser/_permission_table',array(
         'grid_id' => $grid_id,
         'data_provider' => $data_provider,
         'grid_columns' => $grid_columns,

@@ -1,6 +1,6 @@
 <div class="col-xs-6">
     <h3 class="header smaller lighter green">🍌MANAGE YOUR PRODUCT</h3>
-    <?php /*if (ckacc('item.create') || ckacc('item.update') ) { */?>
+    <?php if (ckacc('item.create') || ckacc('item.update') ) { ?>
         <?php echo TbHtml::linkButton(sysMenuItemAdd(), array(
             'class' => 'btn btn-app btn-sm btn-purple',
             'icon' => 'ace-icon '. sysMenuItemIcon() . ' bigger-200',
@@ -13,14 +13,14 @@
             'url' => $this->createUrl('item/admin'),
             'title' => sysMenuItemView(),
         )); ?>
-    <?php /*} */?>
+    <?php } ?>
 </div>
 
 
 <div class="col-xs-6">
     <h3 class="header smaller lighter green">🚠MANAGE YOUR INVENTORY</h3>
 
-    <?php /*if (ckacc('stock.in') || ckacc('stock.out') ) { */?>
+    <?php if (ckacc('stock.in') || ckacc('stock.out') ) { ?>
 
         <?php echo TbHtml::linkButton('Count', array(
             //'color' => TbHtml::BUTTON_COLOR_LINK,
@@ -45,6 +45,6 @@
             'title' => sysMenuInventoryMinus(),
         )); ?>
 
-    <?php /*} */?>
+    <?php } ?>
 
 </div>

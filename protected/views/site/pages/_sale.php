@@ -45,10 +45,12 @@
 
     <?php } ?>
 
-    <?php echo TbHtml::linkButton('Revenue', array(
-        'color' => TbHtml::BUTTON_COLOR_SUCCESS,
-        'class' => 'btn btn-app btn-sm',
-        'icon' => 'ace-icon '. sysMenuInvoiceIcon() . ' bigger-200',
-        'url' => $this->createUrl('report/profitDailySum'),
-    )); ?>
+    <?php if (ckacc('report.accounting')) { ?>
+        <?php echo TbHtml::linkButton('Revenue', array(
+            'color' => TbHtml::BUTTON_COLOR_SUCCESS,
+            'class' => 'btn btn-app btn-sm',
+            'icon' => 'ace-icon '. sysMenuInvoiceIcon() . ' bigger-200',
+            'url' => $this->createUrl('report/profitDailySum'),
+        )); ?>
+    <?php } ?>
 </div>
