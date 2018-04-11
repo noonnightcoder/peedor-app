@@ -82,31 +82,46 @@
             $('.btn-add').prop('disabled',false);
         }
     }
-    //$('#priceQuantity'-form').submit(function(e){
-    //     e.preventDefault();
-    //     $.ajax({
-    //         type:'post',
-    //         url:'<?php //echo Yii::app()->createUrl('priceQuantity'/Create')?>//',
-    //        data:{
-    //            priceQuantity':
-    //                {
-    //                    item_number:$('.txt-priceQuantity'-number').val(),
-    //                    name:$('.txt-priceQuantity'-name').val(),
-    //                    reorder_level:$('.txt-reorder-level').val(),
-    //                    location:$('.txt-location').val(),
-    //                    description:$('.txt-description').val(),
-    //                    category_id:$('#s2id_autogen2_search').val()
-    //                },
-    //            data:price_range
-    //        },
-    //        beforeSend:function(data){
-    //            $('.waiting').slideDown();
-    //        },
-    //        success:function(data){
-    //            $('.waiting').slideUp();
-    //        }
-    //    })
-    //});
+    function addAssembly(iid=0){
+        if(id==1){
+            id=iid+1;
+        }
+        $('#assembly-item').append('\
+            <div class="item-'+id+'">\
+            <div class="row">\
+                <hr style="width:90%; margin-left:0px;">\
+                <div class="col-sm-5">\
+                    <div class="form-group">\
+                        <label class="control-label">Assembly Name</label>\
+                        <input type="text" name="assembly_item[item'+id+'][assembly_name]" id="AssemblyItem_assembly_name" class="txt-assembly-name'+id+' form-control" placeholder="Assembly Name">\
+                    </div>\
+                </div>\
+                <div class="col-sm-2">\
+                    <div class="form-group">\
+                        <label class="control-label">Quantity</label>\
+                        <input type="number" name="assembly_item[item'+id+'][quantity]" id="AssemblyItem_quantity" class="txt-qty'+id+' form-control" placeholder="Quantity">\
+                    </div>\
+                </div>\
+                <div class="col-sm-2">\
+                    <div class="form-group">\
+                        <label class="control-label">Unit Price</label>\
+                        <input type="number" step="0.01" name="assembly_item[item'+id+'][unit_price]" id="AssemblyItem_assembly_unit_price" class="txt-price'+id+' form-control" placeholder="Price">\
+                    </div>\
+                </div>\
+                <div class="col-sm-2"><input type="button" value="X" class="btn btn-danger" onClick="removeAssembly('+id+')" style="margin-top: 23px;"></div>\
+                </div>\
+                <p class="msg-'+id+'" style="color:#ff0000;"></p>\
+            </div>\
+            ');
+        price_range.push({arrID:id,from_quantity:'',to_quantity:'',price:0,start_date:'',end_date:''});
+        console.log(price_range);
+        id=id+1;
+        $('.btn-save,.btn-add').prop('disabled',true);
+    }
+    function removeAssembly(rid){
+        $('.item-'+rid).html('');
+        $('.btn-add').prop('disabled',false);
+    }
     $(document).ready(function()
     {
         $('.input-mask-date').mask('99/99/9999');

@@ -654,4 +654,16 @@ class Item extends CActiveRecord
             ),
         );
     }
+    public static function getProduct2($name = '')
+    {
+
+        // Recommended: Secure Way to Write SQL in Yii
+        $sql = "SELECT id ,name AS text 
+                    FROM item 
+                    WHERE (name LIKE :name)";
+
+        $name = '%' . $name . '%';
+        return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
+
+    }
 }

@@ -50,6 +50,7 @@ class ItemController extends Controller
                     'OutStock',
                     'loadImage',
                     'AssembliesCreate',
+                    'GetProduct2'
                 ),
                 'users' => array('@'),
             ),
@@ -411,8 +412,36 @@ class ItemController extends Controller
     }
     public function actionAssembliesCreate()
     {
-        $item_price_quantity=ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(81);
-        $this->render('_form_item_assembly',array('item_price_quantity'=>$item_price_quantity));
+        authorized('AssemblyItem.create');
+        $model=new AssemblyItem;
+        $assembly_item=AssemblyItem::model()->getListAssemblyItemUpdate(0);
+        if ($model->validate()) {
+            $transaction = $model->dbConnection->beginTransaction();
+                //$transaction = Yii::app()->db->beginTransaction();
+                try {
+                    //save price quantity range
+                    $connection = Yii::app()->db;//initial connection to run raw sql 
+                    if(isset($_POST['assembly_item'])){
+                        $item_id=$_POST['AssemblyItem']['item_id'];
+                        foreach($_POST['assembly_item'] as $key=>$value){//loop data from price quantity
+
+                            $sql = "insert into assembly_item(item_id,assembly_name,quantity,unit_price) values(" .$item_id. ",'" . $value['assembly_name'] . "'," . $value['quantity'] . "," . $value['unit_price'] . ")";
+                            $command = $connection->createCommand($sql);
+                            $insert = $command->execute(); // execute the non-query SQL
+                        }
+                        $transaction->commit();
+                        Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+                                'Assemblies have been saved successfully!');
+                            $this->redirect(array('AssembliesCreate'));
+                    }
+
+                    
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
+                }
+            }
+        $this->render('_form_item_assembly',array('model'=>$model,'assembly_item'=>$assembly_item));
     }
     public function actionAutocompleteItem()
     {
@@ -522,7 +551,16 @@ class ItemController extends Controller
             $this->render('_inventory', array('model' => $model));
         }
     }
+    public function actionGetProduct2()
+    {
+        if (isset($_GET['term'])) {
+            $term = trim($_GET['term']);
+            $ret['results'] = Item::getProduct2($term); //PHP Example · ivaynberg/select2  http://bit.ly/10FNaXD got stuck serveral hoursss :|
+            echo CJSON::encode($ret);
+            Yii::app()->end();
 
+        }
+    }
     public function actionSelectItem()
     {
         $model = new Item('search');
