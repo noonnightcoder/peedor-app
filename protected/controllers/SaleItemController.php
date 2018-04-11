@@ -487,10 +487,11 @@ class SaleItemController extends Controller
 
     }
 
-    public function actionList($status,$user_id=null)
+    public function actionList($status,$user_id=null,$title='Sale Order')
     {
         $grid_id = 'sale-order-grid';
-        $title = 'Order To Invoice';
+       //$title = 'Order To Invoice';
+        $title = $title;
 
         $data = $this->commonData($grid_id,$title,'show');
 
@@ -842,7 +843,7 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    protected function commonData($grid_id,$title,$advance_search=null,$header_view='_header',$grid_view='_grid')
+    protected function commonData($grid_id,$title,$title_icon,$advance_search=null,$header_view='_header',$grid_view='_grid')
     {
         $report = new Report;
 

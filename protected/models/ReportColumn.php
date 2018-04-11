@@ -1016,10 +1016,10 @@ class ReportColumn extends CModel
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => 'Action',
-                'template' => '<div class="btn-group">{edit}{reject}{approve}{complete}{print}{printdo}</div>',
+                'template' => '<div class="btn-group">{edit}{invalid}{validate}{reject}{complete}{print}{printdo}</div>',
                 'buttons' => array(
                     'edit' => array(
-                        'label' => 'Detail',
+                        'label' => 'Edit',
                         'icon' => 'fa fa-edit',
                         'url' => 'Yii::app()->createUrl("saleItem/EditSale",array(
                                    "sale_id" => $data["sale_id"],
@@ -1031,55 +1031,62 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Update Invoice'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => '$data["status"]!=="1"',
+                        'visible' => '$data["status"] !== param("sale_complete_status")',
                     ),
-                    'reject' => array(
-                        'label' => 'reject',
-                        'icon' => 'fa fa-ban',
-                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array("sale_id"=>$data["sale_id"], "status" => param("sale_reject_status")))',
+                    'invalid' => array(
+                        'label' => 'Invoice Invalid',
+                        'icon' => 'fa fa-times',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
+                            "sale_id" => $data["sale_id"], 
+                            "status" => param("sale_reject_status")))',
                         'options' => array(
                             'target' => '_blank',
-                            'title' => Yii::t('app', 'Reject'),
-                            'class' => 'btn-order-reject btn btn-xs btn-danger',
+                            'title' => Yii::t('app', 'Invalid'),
+                            'class' => 'btn-order btn-order-invalid btn btn-xs btn-danger',
                         ),
-                        'visible' => '$data["status"] == "2" && ckacc("sale.review")',
+                        'visible' => '$data["status"] == param("sale_submit_status") && ckacc("sale.review")',
                     ),
-                    'reject' => array(
-                        'label' => 'reject',
-                        'icon' => 'fa fa-ban',
-                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array("sale_id"=>$data["sale_id"], "status" => param("sale_reject_status")))',
-                        'options' => array(
-                            'target' => '_blank',
-                            'title' => Yii::t('app', 'Reject'),
-                            'class' => 'btn-order-reject btn btn-xs btn-danger',
-                        ),
-                        'visible' => '$data["status"] == "3" && ckacc("sale.approve")',
-                    ),
-                    'approve' => array(
-                        'label' => 'approve',
-                        'icon' => 'fa fa-pencil',
+                    'validate' => array(
+                        'label' => 'Validate',
+                        'icon' => sysMenuSaleOrderToValidateIcon(),
                         'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
-                                    "status" => param("sale_approve_status")))',
+                                    "status" => param("sale_validate_status")))',
                         'options' => array(
-                            'title' => Yii::t('app', 'Approve'),
-                            'class' => 'btn-order-approve btn btn-xs btn-success',
+                            'title' => Yii::t('app', 'Validate'),
+                            'class' => 'btn-order btn-order-approve btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]=="2" && ckacc("sale.review")',
+                        'visible' => '$data["status"]== param("sale_submit_status") && ckacc("sale.review")',
+                    ),
+                    'reject' => array(
+                        'label' => 'reject',
+                        'icon' => 'fa fa-ban',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
+                            "sale_id"=>$data["sale_id"], 
+                            "status" => param("sale_reject_status")))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Reject'),
+                            'class' => 'btn-order btn-order-reject btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["status"] == param("sale_validate_status") && ckacc("sale.approve")',
                     ),
                     'complete' => array(
                         'label' => 'cancel',
-                        'icon' => 'fa fa-check',
-                        //'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array("sale_id"=>$data["sale_id"], "status" => param("sale_complete_status")))',
-                        'url' => 'Yii::app()->createUrl("saleItem/saleApprove", array(
+                        'icon' => sysMenuSaleOrderInvoiceIcon(),
+                        'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array(
+                                    "sale_id"=>$data["sale_id"], 
+                                    "status" => param("sale_complete_status")))',
+                        /*'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
                                     "status" => param("sale_complete_status"),
                                     "customer_id" => $data["client_id"],
                                     "total" => number_format($data["total"],Common::getDecimalPlace()),
                                     ))',
+                        */
                         'options' => array(
                             'title' => Yii::t('app', 'Complete'),
-                            'class' => 'btn-order-complete btn btn-xs btn-success',
+                            'class' => 'btn-order btn-order-complete btn btn-xs btn-success',
                         ),
                         'visible' => '$data["status"]=="3" && ckacc("sale.approve")',
                     ),

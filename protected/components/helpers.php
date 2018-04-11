@@ -240,9 +240,19 @@ function sysMenuSale()
     return ucwords(t(param('menu_sale'), 'app'));
 }
 
-function sysMenuOrders()
+function sysMenuSaleOrder()
 {
-    return ucwords(t(param('menu_orders'), 'app'));
+    return ucwords(t(param('menu_sale_order'), 'app'));
+}
+
+function sysMenuSaleOrderAdd()
+{
+    return ucwords(t(param('menu_sale_order_add'), 'app'));
+}
+
+function sysMenuSaleOrderView()
+{
+    return ucwords(t(param('menu_sale_order_view'), 'app'));
 }
 
 function sysMenuInvoicing()
@@ -250,14 +260,19 @@ function sysMenuInvoicing()
     return ucwords(t(param('menu_invoicing'), 'app'));
 }
 
-function sysMenuOrderToInvoice()
+function sysMenuSaleOrderToValidate()
 {
-    return ucwords(t(param('menu_order_to_invoice'), 'app'));
+    return ucwords(t(param('menu_sale_order_to_validate'), 'app'));
 }
 
-function sysMenuOrderToDeliver()
+function sysMenuSaleOrderToInvoice()
 {
-    return ucwords(t(param('menu_order_to_deliver'), 'app'));
+    return ucwords(t(param('menu_sale_order_to_invoice'), 'app'));
+}
+
+function sysMenuSaleOrderToDeliver()
+{
+    return ucwords(t(param('menu_sale_order_to_deliver'), 'app'));
 }
 
 function sysMenuSaleAdd()
@@ -465,9 +480,24 @@ function sysMenuPriceTierIcon()
     return 'menu-icon fa fa-adjust';
 }
 
-function sysMenuOrderToDeliverIcon()
+function sysMenuSaleOrderToDeliverIcon()
 {
     return 'menu-icon fa fa-truck';
+}
+
+function sysMenuSaleOrderIcon()
+{
+    return 'menu-icon fa fa-cart-arrow-down';
+}
+
+function sysMenuSaleOrderToValidateIcon()
+{
+    return 'menu-icon fa fa-check-square-o';
+}
+
+function sysMenuSaleOrderInvoiceIcon()
+{
+    return 'menu-icon fa fa-paper-plane-o';
 }
 
 function getTransType()

@@ -7,7 +7,8 @@ return array(
     'sale_cancel_status' => '0', // Sale Cancel/Deleted
     'sale_complete_status' => '1', // Sale Order Complete - When all details are entered and no further changes are required.
     'sale_submit_status' => '2', // Sale Order Submit For Validate/Review - stock mark as allocated for this order
-    'sale_approve_status' => '3', // Order to Invoice or Checked & Approval by Accountant
+    'sale_invalid_status' => '-2', // Sale Order Invalid
+    'sale_validate_status' => '3', // Sale order Validated by Sale person (Sale manager or supervisor) after validate sale cannot be change byt hem
     'sale_reject_status' => '-3', // Sale Order Rejected
     'sale_confirm_status' => '4', // Sale Order Confirmed by Account / Finance team - Ready to delivery
     'sale_do_status' => '5', // Print Delivery Note
@@ -53,10 +54,13 @@ return array(
     'menu_sale_view' => 'review sale order',
     'menu_sale_approve' => 'approve sale order',
     'menu_sale_payment' => 'payment',
-    'menu_orders' => 'orders', // Sale Orders
+    'menu_sale_order' => 'order', // sale order shot cut to order we continuous main menu Sale
+    'menu_sale_order_add' => 'order add', // sale order add => order ad
+    'menu_sale_order_view' =>  'order view', // sale order view => order view
     'menu_invoicing' => 'invoicing',
-    'menu_order_to_invoice' => 'order to invoice',
-    'menu_order_to_deliver' => 'invoice to deliver',
+    'menu_sale_order_to_validate' => 'order to validate',
+    'menu_sale_order_to_invoice' => 'order to invoice',
+    'menu_sale_order_to_deliver' => 'order to deliver',
     'menu_report' => 'report',
     'menu_report_sale_invoice' => 'sale invoice',
     'menu_report_sale_daily' => 'sale daily',

@@ -1,4 +1,6 @@
 <script>
+
+    /*
     jQuery(function ($) {
         $('div#report_grid').on('click', 'a.btn-order-approve', function (e) {
             e.preventDefault();
@@ -86,6 +88,7 @@
         });
 
     });
+    */
 
     // Every tab click refresh the grid view to make the sub detail view Ajax work
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -99,6 +102,30 @@
         $.fn.yiiGridView.update('sale-order-review-grid');
         $.fn.yiiGridView.update('sale-order-complete-grid');
         $.fn.yiiGridView.update('sale-order-grid');
+    });
+
+    jQuery(function ($) {
+        $('div#report_grid').on('click', 'a.btn-order', function (e) {
+            e.preventDefault();
+            if (!confirm('Are you sure you want to Update this order?')) {
+                return false;
+            }
+            var url = $(this).attr('href');
+            $.ajax({
+                url: url,
+                type: 'post',
+                beforeSend: function () {
+                    $('.waiting').show();
+                },
+                complete: function () {
+                    $('.waiting').hide();
+                },
+                success: function (data) {
+                    return false;
+                }
+            });
+        });
+
     });
 </script>
 

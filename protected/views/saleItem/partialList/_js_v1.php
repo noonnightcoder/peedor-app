@@ -1,8 +1,8 @@
 <script>
     jQuery(function ($) {
-        $('div#report_grid').on('click', 'a.btn-order-approve', function (e) {
+        $('div#report_grid').on('click', 'a.btn-order', function (e) {
             e.preventDefault();
-            if (!confirm('Are you sure you want to Confirm this order?')) {
+            if (!confirm('Are you sure you want to Update this order?')) {
                 return false;
             }
             var url = $(this).attr('href');

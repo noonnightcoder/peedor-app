@@ -6,5 +6,3 @@ $this->renderPartial('//layouts/report/' . $grid_view ,array(
     'grid_columns' => $grid_columns,
     'grid_id' => $grid_id,
     'title' => $title));
-
-?>
