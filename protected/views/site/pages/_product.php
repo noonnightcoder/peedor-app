@@ -1,5 +1,5 @@
 <div class="col-xs-6">
-    <h3 class="header smaller lighter green">🍌MANAGE YOUR PRODUCT</h3>
+    <h3 class="header smaller lighter green">🍌គ្រប់គ្រងផលិតផលរបស់អ្នក MANAGE YOUR PRODUCT</h3>
     <?php if (ckacc('item.create') || ckacc('item.update') ) { ?>
         <?php echo TbHtml::linkButton(sysMenuItemAdd(), array(
             'class' => 'btn btn-app btn-sm btn-purple',
@@ -18,7 +18,7 @@
 
 
 <div class="col-xs-6">
-    <h3 class="header smaller lighter green">🚠MANAGE YOUR INVENTORY</h3>
+    <h3 class="header smaller lighter green">🚠គ្រប់គ្រងបញ្ជីសារពើភណ្ឌរបស់អ្នក MANAGE YOUR INVENTORY</h3>
 
     <?php if (ckacc('stock.in') || ckacc('stock.out') ) { ?>
 
