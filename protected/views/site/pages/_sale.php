@@ -1,5 +1,5 @@
 <div class="col-xs-6">
-    <h3 class="header smaller lighter green">🚀BOOST YOUR SALES</h3>
+    <h3 class="header smaller lighter green">🚀បង្កើនការលក់របស់អ្នក BOOST YOUR SALES</h3>
 
     <?php if (ckacc('sale.create') || ckacc('sale.update') ) { ?>
 
@@ -32,7 +32,7 @@
 
 <div class="col-xs-6">
 
-    <h3 class="header smaller lighter green">💵MANAGE YOUR FINANCE</h3>
+    <h3 class="header smaller lighter green">💵គ្រប់គ្រងវិក័យប័ត្ររបស់អ្នក MANAGE YOUR INVOICE</h3>
 
     <?php if (ckacc('sale.create') || ckacc('sale.update') ) { ?>
 

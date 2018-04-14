@@ -1,5 +1,5 @@
 <div class="col-xs-6">
-    <h3 class="header smaller lighter green">👨‍👩‍👦‍👦TAKING CARE YOU CUSTOMER</h3>
+    <h3 class="header smaller lighter green">👨‍👩‍👦‍👦ថែរក្សាអតិថិជនរបស់អ្នក TAKING CARE YOU CUSTOMER</h3>
     <?php if (ckacc('report.sale.analytic') || ckacc('stock.out') ) { ?>
         <?php echo TbHtml::linkButton('CRM', array(
             //'color' => TbHtml::BUTTON_COLOR_LINK,
