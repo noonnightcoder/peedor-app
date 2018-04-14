@@ -49,6 +49,7 @@ class ItemController extends Controller
                     'LowStock',
                     'OutStock',
                     'loadImage',
+                    'Assemblies',
                     'AssembliesCreate',
                     'GetProduct2'
                 ),
@@ -409,6 +410,48 @@ class ItemController extends Controller
         }
 
         $this->render('_form', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
+    }
+    public function actionAssemblies()
+    {
+        authorized('assemblyitem.read');
+
+        $model = new AssemblyItem('search');
+        //$model=AssemblyItem::model()->getAssemblyProduct();
+        /*
+        if (!ckacc(strtolower(get_class($model)) . '.read') || !ckacc(strtolower(get_class($model)) . '.create') || !ckacc(strtolower(get_class($model)) . '.update') || !ckacc(strtolower(get_class($model)) . '.delete')) {
+            //throw new CHttpException(403, 'You are not authorized to perform this action');
+            $this->redirect(array('site/ErrorException', 'err_no' => 403));
+        }
+        */
+
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['AssemblyItem'])) {
+            $model->attributes = $_GET['AssemblyItem'];
+        }
+
+        if (isset($_GET['pageSize'])) {
+            Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
+            unset($_GET['pageSize']);
+        }
+
+        $page_size = CHtml::dropDownList(
+            'pageSize',
+            Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
+            Common::arrayFactory('page_size'),
+            array('class' => 'change-pagesize')
+        );
+
+
+        $data['model'] = $model;
+        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+        $data['page_size'] = $page_size;
+        $data['create_url'] = 'AssembliesCreate';
+
+        $data['grid_columns'] = AssemblyItem::getItemColumns();
+
+        $data['data_provider'] = $model->search();
+        $this->render('assemblies',$data);
     }
     public function actionAssembliesCreate()
     {

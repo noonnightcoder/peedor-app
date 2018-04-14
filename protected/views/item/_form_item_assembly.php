@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    sysMenuItem() =>array('admin'),
+    sysMenuAssembliesView() =>array('assemblies'),
     'Create',
 );
 ?>
@@ -16,14 +16,7 @@ $this->breadcrumbs=array(
 			<?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox',array(
 			        'title'         =>  Yii::t('app','Search Product'),
 			        'headerIcon'    => 'ace-icon fa fa-chain',
-			        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-			        'headerButtons' => array(
-			            TbHtml::buttonGroup(
-			                array(
-			                    array('label' => Yii::t('app','Search'),'url' => Yii::app()->createUrl('Item/search',array('grid_cart'=>'R')),'icon'=>'fa fa-search white'),
-			                ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
-			            ),
-			        )
+			        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small')
 			));?>	
 			
 	        <div class="col-sm-12">

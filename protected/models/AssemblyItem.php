@@ -1,5 +1,6 @@
 <?php
 	class AssemblyItem extends CActiveRecord{
+		public $search;
 		/**
 	 * @return string the associated database table name
 		 */
@@ -35,6 +36,7 @@
 			// NOTE: you may need to adjust the relation name and the related
 			// class name for the relations automatically generated below.
 			return array(
+				'assemblies'=>array(self::BELONGS_TO,'Item','id')
 			);
 		}
 
@@ -71,8 +73,8 @@
 			$criteria=new CDbCriteria;
 
 			$criteria->compare('id',$this->id);
-			$criteria->compare('item_id',$this->item_id);
-			$criteria->compare('quantity',$this->quatity);
+			$criteria->compare('assembly_name',$this->assembly_name);
+			$criteria->compare('quantity',$this->quantity);
 			$criteria->compare('unit_price',$this->unit_price);
 
 			return new CActiveDataProvider($this, array(
@@ -91,7 +93,80 @@
 
 	        return $result;
 	    }
+	    public static function getAssemblyProduct()
+	    {
+	    	// Recommended: Secure Way to Write SQL in Yii
+	        $sql = "SELECT id ,assembly_name AS text 
+	                    FROM assembly_item 
+	                    WHERE (assembly_name LIKE :name)";
 
+	        $name = '%' . $name . '%';
+	        return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
+	    }
+	    public static function getItemColumns() {
+        return array(
+            array(
+                'name' => 'assembly_name',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'quantity',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'unit_price',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            // array(
+            //     'class' => 'bootstrap.widgets.TbButtonColumn',
+            //     'header' => Yii::t('app','Action'),
+            //     'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}</div>',
+            //     'buttons' => array(
+            //         'detail' => array(
+            //             'click' => 'updateDialogOpen',
+            //             'label' => Yii::t('app', 'Stock'),
+            //             'url' => 'Yii::app()->createUrl("Inventory/admin", array("item_id"=>$data->id))',
+            //             'options' => array(
+            //                 'data-toggle' => 'tooltip',
+            //                 'data-update-dialog-title' => 'Stock History',
+            //                 'class' => 'btn btn-xs btn-pink',
+            //                 'title' => 'Stock History',
+            //             ),
+            //         ),
+            //         'cost' => array(
+            //             'click' => 'updateDialogOpen',
+            //             'label' => Yii::t('app', 'Cost'),
+            //             'url' => 'Yii::app()->createUrl("Item/CostHistory", array("item_id"=>$data->id))',
+            //             'options' => array(
+            //                 'data-update-dialog-title' => Yii::t('app', 'Cost History'),
+            //                 'class' => 'btn btn-xs btn-info',
+            //                 'title' => 'Cost History',
+            //             ),
+            //         ),
+            //         'delete' => array(
+            //             'label' => Yii::t('app', 'Delete Item'),
+            //             'icon' => 'bigger-120 fa fa-trash',
+            //             'options' => array(
+            //                 'class' => 'btn btn-xs btn-danger',
+            //             ),
+            //             'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
+            //         ),
+            //         'undeleted' => array(
+            //             'label' => Yii::t('app', 'Restore Item'),
+            //             'url' => 'Yii::app()->createUrl("Item/UndoDelete", array("id"=>$data->id))',
+            //             'icon' => 'bigger-120 glyphicon-refresh',
+            //             'options' => array(
+            //                 'class' => 'btn btn-xs btn-warning btn-undodelete',
+            //             ),
+            //             'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
+            //         ),
+            //     ),
+            // ),
+        );
+    }
 		/**
 		 * Returns the static model of the specified AR class.
 		 * Please note that you should have this exact method in all your CActiveRecord descendants!
