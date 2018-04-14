@@ -27,13 +27,15 @@
             <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 
             <!-- Grid Table Filterable layouts.admin._grid_filter -->
-            <?php $this->renderPartial('//layouts/admin/_grid', array(
+            <?php $this->renderPartial('//layouts/admin/_subgrid', array(
                 'model' => $model,
                 'data_provider' => $data_provider ,
-                'grid_id' => $grid_id,
-                'page_size' => $page_size,
+                'url' => $this->createUrl('item/admin'),
+                'value' => '"test-subgrid"',
                 'grid_columns' => $grid_columns,
             )); ?>
+
+            
 
         <?php $this->endWidget(); ?>
 
