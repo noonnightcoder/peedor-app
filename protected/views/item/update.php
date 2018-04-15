@@ -27,13 +27,14 @@ $this->breadcrumbs=array(
                             'id' => $model->id)
                     ),
                     'icon'=>'ace-icon fa fa-arrow-left icon-on-left"',
+                    'htmlOptions' => array('disabled' => $previous_disable),
                 ),
                 array('label' => Yii::t('app','Next'),
                     'url' =>Yii::app()->createUrl('item/NextId', array(
                             'id' => $model->id )
                     ),
                     'icon'=>'ace-icon fa fa-arrow-right icon-on-right"',
-                    'htmlOptions' => array('disabled' => $next_previous_disable)
+                    'htmlOptions' => array('disabled' => $next_disable)
                 ),
             ),
             array('color'=>TbHtml::BUTTON_COLOR_INVERSE,'size'=>TbHtml::BUTTON_SIZE_SMALL)

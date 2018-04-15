@@ -343,7 +343,9 @@ class ItemController extends Controller
         $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
         $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
         $next_id = Item::model()->getNextId($id);
-        $next_previous_disable = $next_id === null ? 'disabled' : '';
+        $previous_id = Item::model()->getPreviousId($id);
+        $next_disable = $next_id === null ? 'disabled' : '';
+        $previous_disable = $previous_id === null ? 'disabled' : '';
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
@@ -420,7 +422,8 @@ class ItemController extends Controller
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
         $data['item_price_quantity'] = $item_price_quantity;
-        $data['next_previous_disable'] = $next_previous_disable;
+        $data['next_disable'] = $next_disable;
+        $data['previous_disable'] = $previous_disable;
 
         $this->render('update', $data);
     }
