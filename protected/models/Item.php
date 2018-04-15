@@ -656,7 +656,6 @@ class Item extends CActiveRecord
     }
     public static function getProduct2($name = '')
     {
-
         // Recommended: Secure Way to Write SQL in Yii
         $sql = "SELECT id ,name AS text 
                     FROM item 
@@ -664,6 +663,32 @@ class Item extends CActiveRecord
 
         $name = '%' . $name . '%';
         return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
-
     }
+
+    public function getNextId($id)
+    {
+        $record = self::model()->find(array(
+            'condition' => 'id>:current_id',
+            'order' => 'id ASC',
+            'limit' => 1,
+            'params' => array(':current_id' => $id),
+        ));
+        if ($record !== null)
+            return $record->id;
+        return null;
+    }
+
+    public function getPreviousId($id)
+    {
+        $record = self::model()->find(array(
+            'condition' => 'id<:current_id',
+            'order' => 'id DESC',
+            'limit' => 1,
+            'params' => array(':current_id' => $id),
+        ));
+        if ($record !== null)
+            return $record->id;
+        return null;
+    }
+
 }

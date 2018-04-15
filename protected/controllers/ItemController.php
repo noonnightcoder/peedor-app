@@ -51,7 +51,9 @@ class ItemController extends Controller
                     'loadImage',
                     'Assemblies',
                     'AssembliesCreate',
-                    'GetProduct2'
+                    'GetProduct2',
+                    'NextId',
+                    'PreviousId',
                 ),
                 'users' => array('@'),
             ),
@@ -329,60 +331,70 @@ class ItemController extends Controller
 
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
+
+        authorized('item.update');
+
         if ($item_number_flag == '0') {
             $model = $this->loadModel($id);
         } else {
             $model = Item::model()->find('item_number=:item_number', array(':item_number' => $id));
         }
+
         $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
-        $item_price_quantity=ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
+        $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
+        $next_id = Item::model()->getNextId($id);
+        $next_previous_disable = $next_id === null ? 'disabled' : '';
 
         // Uncomment the following line if AJAX validation is needed
-        // $this->performAjaxValidation($model);
-        if (Yii::app()->user->checkAccess('item.update')) {
-            if (isset($_POST['Item'])) {
-                $old_price = $model->unit_price;
-                $model->attributes = $_POST['Item'];
-                //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-                //$model->quantity = $qty;  A buggy was not noticed every update reset item to zero EM EUY
-                $category_name = $_POST['Item']['category_id'];
-                $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
+        $this->performAjaxValidation($model);
 
-                //Saving new category to `category` table
-                $category_id = Category::model()->saveCategory($category_name);
-                $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
 
-                if ($category_id !== null) {
-                    $model->category_id = $category_id;
-                }
+        if (isset($_POST['Item'])) {
+            $old_price = $model->unit_price;
+            $model->attributes = $_POST['Item'];
+            //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
+            //$model->quantity = $qty;  A buggy was not noticed every update reset item to zero EM EUY
+            $category_name = $_POST['Item']['category_id'];
+            $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
 
-                if ($unit_measurable_id !== null) {
-                    $model->unit_measurable_id = $unit_measurable_id;
-                }
+            //Saving new category to `category` table
+            $category_id = Category::model()->saveCategory($category_name);
+            $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
 
-                if ($model->validate()) {
-                    $transaction = Yii::app()->db->beginTransaction();
-                    try {
-                        if ($model->save()) {
+            if ($category_id !== null) {
+                $model->category_id = $category_id;
+            }
 
-                            if (isset($_POST['Item']['count_interval'])) {
-                                Item::model()->saveItemCounSchedule($model->id);
-                            }
+            if ($unit_measurable_id !== null) {
+                $model->unit_measurable_id = $unit_measurable_id;
+            }
 
-                            ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
-                            // Product Price (retail price) history
-                            ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
-                            if(isset($_POST['priceQuantity'])){
-                                var_dump($_POST['priceQuantity']);
-                                //save price quantity range
-                                $connection = Yii::app()->db;//initial connection to run raw sql
-                                $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
-                                $delete = $command->execute(); // execute the non-query SQL
-                                if(isset($_POST['priceQuantity'])){
-                                foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
-                                    if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
+            if ($model->validate()) {
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    if ($model->save()) {
+
+                        if (isset($_POST['Item']['count_interval'])) {
+                            Item::model()->saveItemCounSchedule($model->id);
+                        }
+
+                        ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
+                        // Product Price (retail price) history
+                        ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
+                        if (isset($_POST['priceQuantity'])) {
+
+                            var_dump($_POST['priceQuantity']);
+
+                            //save price quantity range
+                            $connection = Yii::app()->db;//initial connection to run raw sql
+                            $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
+                            $delete = $command->execute(); // execute the non-query SQL
+
+                            if (isset($_POST['priceQuantity'])) {
+                                foreach ($_POST['priceQuantity'] as $key => $value) {//loop data from price quantity
+                                    if ($value['from_quantity'] > 0 and $value['to_quantity'] > $value['from_quantity'] and $value['unit_price'] > 0) {
                                         $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
+                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d', strtotime('+10950 days'));
                                         $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
                                         $command = $connection->createCommand($sql);
                                         $insert = $command->execute(); // execute the non-query SQL
@@ -391,25 +403,26 @@ class ItemController extends Controller
                             }
                         }
 
-                            $this->addImages($model);
-                            $transaction->commit();
-                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-                                'Item Id : <strong>' . $model->name . '</strong> have been saved successfully!');
-                            $this->redirect(array('admin'));
-                        }
-                    } catch (Exception $e) {
-                        $transaction->rollback();
-                        //print_r($e);
-                        Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
+                        $this->addImages($model);
+                        $transaction->commit();
+                        Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+                            'Item Id : <strong>' . $model->name . '</strong> have been saved successfully!');
+                        $this->redirect(array('admin'));
                     }
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    //print_r($e);
+                    Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
                 }
             }
-        } else {
-            //throw new CHttpException(403, 'You are not authorized to perform this action');
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
         }
 
-        $this->render('_form', array('model' => $model, 'price_tiers' => $price_tiers,'item_price_quantity'=>$item_price_quantity));
+        $data['model'] = $model;
+        $data['price_tiers'] = $price_tiers;
+        $data['item_price_quantity'] = $item_price_quantity;
+        $data['next_previous_disable'] = $next_previous_disable;
+
+        $this->render('update', $data);
     }
     public function actionAssemblies()
     {
@@ -917,6 +930,18 @@ class ItemController extends Controller
                 CHtml::image(Yii::app()->baseUrl . $model->path . '/' . $model->filename, 'Product Image') .
                 '</a>';
         }
+    }
+
+    public function actionNextId($id)
+    {
+        $item_id = Item::model()->getNextId($id);
+        $this->actionUpdateImage($item_id,'0');
+    }
+
+    public function actionPreviousId($id)
+    {
+        $item_id = Item::model()->getPreviousId($id);
+        $this->actionUpdateImage($item_id,'0');
     }
 
 }
