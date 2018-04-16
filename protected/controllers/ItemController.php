@@ -52,12 +52,9 @@ class ItemController extends Controller
                     'Assemblies',
                     'AssembliesCreate',
                     'GetProduct2',
-<<<<<<< HEAD
-                    'GetItemMain'
-=======
+                    'GetItemMain',
                     'NextId',
                     'PreviousId',
->>>>>>> 1c376f9e42f5ed2bc036ab7ed8f9e9b3a1eee805
                 ),
                 'users' => array('@'),
             ),
