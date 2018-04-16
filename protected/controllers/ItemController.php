@@ -51,7 +51,8 @@ class ItemController extends Controller
                     'loadImage',
                     'Assemblies',
                     'AssembliesCreate',
-                    'GetProduct2'
+                    'GetProduct2',
+                    'GetItemMain'
                 ),
                 'users' => array('@'),
             ),
@@ -485,6 +486,19 @@ class ItemController extends Controller
                 }
             }
         $this->render('_form_item_assembly',array('model'=>$model,'assembly_item'=>$assembly_item));
+    }
+    public function actionGetItemMain()
+    {
+        $res = array();
+        //if (isset($_GET['term'])) {
+            // http://www.yiiframework.com/doc/guide/database.dao
+            $qtxt = "SELECT name AS text FROM item";
+            $command = Yii::app()->db->createCommand($qtxt);
+            $res = $command->queryColumn();
+        //}
+
+        echo CJSON::encode($res);
+        Yii::app()->end();
     }
     public function actionAutocompleteItem()
     {

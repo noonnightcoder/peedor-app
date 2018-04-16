@@ -5,7 +5,7 @@ $this->breadcrumbs=array(
 );
 ?>
 <div class="container">
-	<div class="col-sm-12">
+	<!-- <div class="col-sm-12">
 		<?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 		<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
 			'id'=>'assembly-form',
@@ -21,47 +21,23 @@ $this->breadcrumbs=array(
 			
 	        <div class="col-sm-12">
 	        	<div class="form-group">
-		            <?php
-			            $this->widget('yiiwheels.widgets.select2.WhSelect2', array(
-			                'asDropDownList' => false,
-			                'model'=> $model,
-			                'attribute'=>'item_id',
-			                'pluginOptions' => array(
-			                    'placeholder' => Yii::t('app','Select Product You want to add its assembly'),
-			                    'multiple'=>false,
-			                    'onchange'=>'enableBtn()',
-			                    'width' => '100%',
-			                    //'tokenSeparators' => array(',', ' '),
-			                    'allowClear'=>true,
-			                    //'minimumInputLength'=>1,
-			                    'ajax' => array(
-			                        'url' => Yii::app()->createUrl('item/getProduct2/'),
-			                        'dataType' => 'json',
-			                        'cache'=>true,
-			                        'data' => 'js:function(term,page) {
-			                                                return {
-			                                                    term: term,
-			                                                    page_limit: 10,
-			                                                    quietMillis: 100,
-			                                                    apikey: "e5mnmyr86jzb9dhae3ksgd73"
-			                                                };
-			                                            }',
-			                        'results' => 'js:function(data,page){
-			                                        return { results: data.results };
-
-			                                     }',
-			                    ),
-			                    'formatResult' => 'js:function(term) {
-			                                    if (term.isNew) {
-			                                        return "<span class=\"label label-important\">New</span> " + term.text;
-			                                    }
-			                                    else {
-			                                        return term.text;
-
-			                                    }
-			                                }',
-			                )));
-			            ?>
+				    <?php
+				        $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
+				            'model'=>$model,
+				            'attribute'=>'[product]item_id',
+				            'source'=>$this->createUrl('request/suggestItem'),
+				            'htmlOptions'=>array(
+				                'size'=>'35'
+				            ),
+				            'options'=>array(
+				                'showAnim'=>'fold',
+				                'minLength'=>'1',
+				                'delay' => 10,
+				                'autoFocus'=> false,
+				                'select'=>'js:function(event, ui) {}'
+				            ),
+				        ));
+		            ?>
 	        	</div>
 	        </div>
 			<?php $this->endWidget()?>
@@ -105,6 +81,115 @@ $this->breadcrumbs=array(
 		    </div>
 		</div>
     <?php $this->endWidget()?>
+	</div> -->
+	<div class="col-sm-5">
+	    <h4 class="header blue">
+	        <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Assembly Information') ?>
+	    </h4>
+	    <div class="row">
+		    <div class="col-sm-12">
+                <div class="form-group">
+                	<?php echo CHtml::label('Assembly Name', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                	<?php echo CHtml::label('Quantity', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::NumberField('AssemblyItem','',array('class'=>'form-control')); ?>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                	<?php echo CHtml::label('Unit Price', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::NumberField('AssemblyItem','',array('class'=>'form-control','step'=>'0.01')); ?>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                	<?php echo CHtml::label('Mark', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                	<?php echo CHtml::label('Country', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+                </div>
+            </div>
+	    </div>
+	</div>
+	<div class="col-sm-6">
+	    <h4 class="header blue">
+	        <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Part Of Product Information') ?>
+	    </h4>
+	    <div class="row">
+	    	<div id="assembly-item">
+	    		<?php if(empty($assembly_item)):?>
+	    			<div class="row">
+						<div class="col-sm-6">
+			                <div class="form-group">
+			                	<?php echo CHtml::label('Product Name', 1, array('class' => 'control-label')); ?>
+			                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+			                </div>
+			            </div>
+			            <div class="col-sm-6">
+			                <div class="form-group">
+			                	<?php echo CHtml::label('Category', 1, array('class' => 'control-label')); ?>
+			                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+			                </div>
+			            </div>
+			            <div class="col-sm-6">
+			                <div class="form-group">
+			                	<?php echo CHtml::label('Brand', 1, array('class' => 'control-label')); ?>
+			                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+			                </div>
+			            </div>
+			            <div class="col-sm-6">
+			                <div class="form-group">
+			                	<?php echo CHtml::label('Series', 1, array('class' => 'control-label')); ?>
+			                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+			                </div>
+			            </div>
+					</div>
+	    		<?php else:?>
+		    		<?php $id=0; foreach($assembly_item as $k=>$item):?>
+						<div class="item-<?php echo $item['id'] ?>">
+							<div class="row">
+								<div class="col-sm-6">
+					                <div class="form-group">
+					                	<?php echo CHtml::label('Product Name', 1, array('class' => 'control-label')); ?>
+					                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+					                </div>
+					            </div>
+					            <div class="col-sm-6">
+					                <div class="form-group">
+					                	<?php echo CHtml::label('Category', 1, array('class' => 'control-label')); ?>
+					                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+					                </div>
+					            </div>
+					            <div class="col-sm-6">
+					                <div class="form-group">
+					                	<?php echo CHtml::label('Brand', 1, array('class' => 'control-label')); ?>
+					                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+					                </div>
+					            </div>
+					            <div class="col-sm-6">
+					                <div class="form-group">
+					                	<?php echo CHtml::label('Series', 1, array('class' => 'control-label')); ?>
+					                    <?php echo CHtml::TextField('AssemblyItem','',array('class'=>'form-control')); ?>
+					                </div>
+					            </div>
+							</div>
+						</div>
+					<?php $id=$item['id']; endforeach;?>
+				<?php endif;?>
+	    	</div>
+	    	<div class="form-group col-sm-12">
+				<?php echo CHtml::Button('Add',array('class'=>'btn btn-primary pull-right','onClick'=>'addAssembly('.$id.')'))?>
+		    </div>
+	    </div>
 	</div>
 </div>
+
 <?php $this->renderPartial('partialList/_js'); ?>
