@@ -29,13 +29,15 @@
                         <?php echo CHtml::TextField('priceQuantity[price_qty'.$item_price["id"].'][end_date]', $item_price["end_date"] !== null ? $item_price["end_date"] : $item_price["end_date"], array('class'=>'form-control dt-end-date'.$item_price["id"],'placeholder'=>'yyyy/mm/dd','title'=>'End Date','onkeyUp'=>'getValue(0)')); ?>
                     </div>
                 </div> -->
-                <div class="col-sm-2"><input type="button" value="X" class="btn btn-danger" onClick="removePriceRange(<?php echo $item_price['id'] ?>)"></div>
+                <div class="col-sm-2">
+                    <input type="button" value="X" class="btn btn-small btn-danger" onClick="removePriceRange(<?php echo $item_price['id'] ?>)">
+                </div>
             </div>
             </div>
         <?php $id=$item_price['id']; endforeach;?>
     </div>
     <div class="form-group col-sm-7">
-        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-primary pull-right','onClick'=>'addPriceRange('.$id.')'))?>
+        <?php echo CHtml::Button('Add Range',array('class'=>'btn btn-sm btn-primary pull-right','onClick'=>'addPriceRange('.$id.')'))?>
     </div>
 </div>
 <?php $this->renderPartial('partialList/_js'); ?>

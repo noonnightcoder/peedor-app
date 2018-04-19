@@ -2,6 +2,7 @@
 
     var id=1;
     var price_range=[{arrID:'',from_quantity:'',to_quantity:'',price:0,start_date:'',end_date:''}];
+
     function addPriceRange(iid=0){
         if(id==1){
             id=iid+1;
@@ -35,7 +36,7 @@
     				    <input type="text" name="priceQuantity[price_qty'+id+'][end_date]" id="ItemPriceQuantity_end_date" class="input-grid input-mask-date dt-end-date'+id+' form-control" placeholder="dd/mm/yyyy" title="End Date" onChange="getValue('+id+')">\
     				</div>\
     			</div>-->\
-    			<div class="col-sm-2"><input type="button" value="X" class="btn btn-danger" onClick="removePriceRange('+id+')"></div>\
+    			<div class="col-sm-2"><input type="button" value="X" class="btn btn-sm btn-danger" onClick="removePriceRange('+id+')"></div>\
                 </div>\
                 <p class="msg-'+id+'" style="color:#ff0000;"></p>\
 		    </div>\
@@ -82,6 +83,7 @@
             $('.btn-add').prop('disabled',false);
         }
     }
+
     function addAssembly(iid=0){
         if(id==1){
             id=iid+1;
