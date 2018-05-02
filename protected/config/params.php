@@ -43,6 +43,7 @@ return array(
     'menu_item_markup_price' => 'Markup Price Update',
     'menu_inventory' => 'inventory',
     'menu_inventory_count' => 'physical count',
+    'menu_inventory_count2' => 'physical count2',
     'menu_inventory_add' => 'in stock',
     'menu_inventory_minus' => 'out stock',
     'menu_inventory_transfer' => 'transfer stock',

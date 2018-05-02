@@ -216,6 +216,11 @@ function sysMenuInventoryCount()
     return ucwords(t(param('menu_inventory_count'), 'app'));
 }
 
+function sysMenuInventoryCount2()
+{
+    return ucwords(t(param('menu_inventory_count2'), 'app'));
+}
+
 function sysMenuInventoryTransfer()
 {
     return ucwords(t(param('menu_inventory_transfer'), 'app'));

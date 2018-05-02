@@ -55,6 +55,7 @@ class ItemController extends Controller
                     'GetItemMain',
                     'NextId',
                     'PreviousId',
+                    'AddPriceQty'
                 ),
                 'users' => array('@'),
             ),
@@ -249,6 +250,11 @@ class ItemController extends Controller
         $model = new Item;
         $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(0);
 
+        $this->setSession(Yii::app()->session);
+
+        $priceRange=$this->session['priceQty'];
+
+
         $price_tiers = PriceTier::model()->getListPriceTier();
 
         // Uncomment the following line if AJAX validation is needed
@@ -325,11 +331,23 @@ class ItemController extends Controller
         $data['model'] = $model;
         $data['price_tiers'] = $price_tiers;
         $data['item_price_quantity'] = $item_price_quantity;
+        $data['priceQty'] = $priceRange;
 
         $this->render('create', $data);
 
     }
-
+    public function actionAddPriceQty()
+    {
+        $this->setSession(Yii::app()->session);
+        
+        //$data[]=$this->setCart($data,'priceQty');
+        $data=$this->session['priceQty'];
+        $data[]=array('From'=>$_POST['from'],'To'=>$_POST['to'],'Price'=>$_POST['price']);
+        $id=0;
+        $this->session['priceQty']=$data;
+        //unset($_SESSION['priceQty'][0]); 
+        //return $this->render('_form_price_qty');
+    }
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
 
@@ -340,7 +358,9 @@ class ItemController extends Controller
         } else {
             $model = Item::model()->find('item_number=:item_number', array(':item_number' => $id));
         }
+        $this->setSession(Yii::app()->session);
 
+        $priceRange=$this->session['priceQty'.$id];
         $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
         $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
         $next_id = Item::model()->getNextId($id);
@@ -425,7 +445,7 @@ class ItemController extends Controller
         $data['item_price_quantity'] = $item_price_quantity;
         $data['next_disable'] = $next_disable;
         $data['previous_disable'] = $previous_disable;
-
+        $data['priceQty'] = $priceRange;
         $this->render('update', $data);
     }
     public function actionAssemblies()
@@ -433,13 +453,6 @@ class ItemController extends Controller
         authorized('assemblyitem.read');
 
         $model = new AssemblyItem('search');
-        //$model=AssemblyItem::model()->getAssemblyProduct();
-        /*
-        if (!ckacc(strtolower(get_class($model)) . '.read') || !ckacc(strtolower(get_class($model)) . '.create') || !ckacc(strtolower(get_class($model)) . '.update') || !ckacc(strtolower(get_class($model)) . '.delete')) {
-            //throw new CHttpException(403, 'You are not authorized to perform this action');
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
-        }
-        */
 
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['AssemblyItem'])) {
@@ -960,5 +973,15 @@ class ItemController extends Controller
         $item_id = Item::model()->getPreviousId($id);
         $this->actionUpdateImage($item_id,'0');
     }
-
+    public function setCart($cart_data,$session_name)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session[$session_name] = $cart_data;
+        //$session=Yii::app()->session;
+        //$session['cartRecv']=$cart_data;
+    }
+    public function setSession($value)
+    {
+        $this->session = $value;
+    }
 }

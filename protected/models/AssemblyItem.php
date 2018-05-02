@@ -120,51 +120,6 @@
                 'type' => 'raw',
                 'filter' => '',
             ),
-            // array(
-            //     'class' => 'bootstrap.widgets.TbButtonColumn',
-            //     'header' => Yii::t('app','Action'),
-            //     'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}</div>',
-            //     'buttons' => array(
-            //         'detail' => array(
-            //             'click' => 'updateDialogOpen',
-            //             'label' => Yii::t('app', 'Stock'),
-            //             'url' => 'Yii::app()->createUrl("Inventory/admin", array("item_id"=>$data->id))',
-            //             'options' => array(
-            //                 'data-toggle' => 'tooltip',
-            //                 'data-update-dialog-title' => 'Stock History',
-            //                 'class' => 'btn btn-xs btn-pink',
-            //                 'title' => 'Stock History',
-            //             ),
-            //         ),
-            //         'cost' => array(
-            //             'click' => 'updateDialogOpen',
-            //             'label' => Yii::t('app', 'Cost'),
-            //             'url' => 'Yii::app()->createUrl("Item/CostHistory", array("item_id"=>$data->id))',
-            //             'options' => array(
-            //                 'data-update-dialog-title' => Yii::t('app', 'Cost History'),
-            //                 'class' => 'btn btn-xs btn-info',
-            //                 'title' => 'Cost History',
-            //             ),
-            //         ),
-            //         'delete' => array(
-            //             'label' => Yii::t('app', 'Delete Item'),
-            //             'icon' => 'bigger-120 fa fa-trash',
-            //             'options' => array(
-            //                 'class' => 'btn btn-xs btn-danger',
-            //             ),
-            //             'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
-            //         ),
-            //         'undeleted' => array(
-            //             'label' => Yii::t('app', 'Restore Item'),
-            //             'url' => 'Yii::app()->createUrl("Item/UndoDelete", array("id"=>$data->id))',
-            //             'icon' => 'bigger-120 glyphicon-refresh',
-            //             'options' => array(
-            //                 'class' => 'btn btn-xs btn-warning btn-undodelete',
-            //             ),
-            //             'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
-            //         ),
-            //     ),
-            // ),
         );
     }
 		/**

@@ -193,3 +193,25 @@
     });
   } );
 </script>
+
+
+<?php 
+    Yii::app()->clientScript->registerScript( 'addPriceQty', "
+        jQuery( function($){
+            $('.btn-add-qty').on('click',function(e) {
+                e.preventDefault();
+                var url='addPriceQty';
+                $.ajax({url:url,
+                        type : 'post',
+                        data:{from:15,to:30,price:9},
+                        beforeSend: function() { $('.waiting').slideDown(); },
+                        complete: function() { $('.waiting').slideUp(); },
+                        success : function(data) {
+                            //$('#price-range').html(data);
+                            console.log(data)
+                          }
+                    });
+                });
+        });
+      ");
+ ?>

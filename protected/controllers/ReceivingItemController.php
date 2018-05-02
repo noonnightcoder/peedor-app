@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -50,9 +50,161 @@ class ReceivingItemController extends Controller
             $this->reload();    
         } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
             $this->reload(); 
-        }  else {
+        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count2') {
+            //$this->reload(); 
+            authorized('inventorycount.read');
+
+            $model = new InventoryCount('search');
+
+            $model->unsetAttributes();  // clear any default values
+            if (isset($_GET['InventoryCount'])) {
+                $model->attributes = $_GET['InventoryCount'];
+            }
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            $page_size = CHtml::dropDownList(
+                'pageSize',
+                Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
+                Common::arrayFactory('page_size'),
+                array('class' => 'change-pagesize')
+            );
+
+
+            $data['model'] = $model;
+            $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+            $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+            $data['page_size'] = $page_size;
+            $data['create_url'] = 'InventoryCountCreate';
+
+            $data['grid_columns'] = InventoryCount::getItemColumns();
+
+            $data['data_provider'] = $model->search();
+            $this->render('_list',$data);
+        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='count_detail'){
+            echo $_GET['id'];
+        } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
+    }
+    public function actionInventoryCountCreate(){
+        //$invcount=new InventoryCount;
+        $model = new InventoryCount('search');
+        $item = new Item('search');
+        $receiveItem = new ReceivingItem;
+
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['InventoryCount'])) {
+            $model->attributes = $_GET['InventoryCount'];
+        }
+
+        if (isset($_GET['pageSize'])) {
+            Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
+            unset($_GET['pageSize']);
+        }
+
+        $page_size = CHtml::dropDownList(
+            'pageSize',
+            Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
+            Common::arrayFactory('page_size'),
+            array('class' => 'change-pagesize')
+        );
+
+
+        $data['model'] = $model;
+        $data['receiveItem'] = $receiveItem;
+        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+        $data['page_size'] = $page_size;
+        $data['create_url'] = 'InventoryCountCreate';
+
+        $data['grid_columns'] = InventoryCount::getItemColumns();
+
+        $data['data_provider'] = $model->search();
+        $this->render('create',$data);
+    }
+
+    public function actionGetItemInfo(){
+        $item_id = $_POST['ReceivingItem']['item_id'];
+        $model = Item::model()->findbyPk($item_id);
+        var_dump($model);
+
+    }
+
+    public function actionAddCount(){
+        
+        $this->setSession(Yii::app()->session);
+        $data=$this->session['latestCount'];//initail data from session
+        $exist="";
+        if($_POST['opt']==1){
+            
+            if(!empty($data)){//check if data is not empty
+
+                foreach($data as $k=>$v){
+                    $exist=array_search($_POST['name'],$data[$k]);//search array by proName
+                    if($v['proName']==$_POST['name']){//update number of quantity count when item already counted
+                        $data[$k]['countNum']+=$_POST['countNum'];//update array data
+                    }
+                }
+
+            }
+            
+            if($exist==""){
+                $data[]=array('itemId'=>$_POST['itemId'],'proName'=>$_POST['name'],'countNum'=>$_POST['countNum']);
+            }
+            $this->session['latestCount']=$data;//after update or add item to data then update the session
+            
+        }elseif($_POST['opt']==2){//remove counted item
+            unset($_SESSION['latestCount'][$_POST['idx']]); 
+        }elseif($_POST['opt']==3){
+
+            if(!empty($data)){//check if data is not empty
+
+                foreach($data as $k=>$v){
+                    if($v['itemId']==$_POST['itemId']){//update number of quantity count when item already counted
+                        $data[$k]['countNum']=$_POST['newCount'];//update array data
+                    }
+                }
+
+            }
+            $this->session['latestCount']=$data;//after update or add item to data then update the session
+
+        }
+        $latest=$this->session['latestCount'];
+        //refresh list 
+            echo '
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Item ID</th>
+                        <th>Name</th>
+                        <th>Counted</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>';
+            foreach($latest as $key=>$value){
+                
+                echo'
+                <tr>
+                    <td>'.$value['itemId'].'</td>
+                    <td>'.$value['proName'].'</td>
+                    <td><input type="number" onblur="updateCount('.$value['itemId'].')" class="txt-counted" value="'.$value['countNum'].'"></td>
+                    <td>
+                        <input type="button" value="Remove" class="btn btn-danger pull-right" onClick="inventoryCount(2,'.$key.')">
+                    </td>
+                </tr>
+                ';
+                            
+            }
+        echo '
+            </tbody>
+        </table>
+        ';
+        
     }
 
     public function actionAdd()
@@ -409,6 +561,11 @@ class ReceivingItemController extends Controller
         
       
         return $data;
+    }
+
+    public function setSession($value)
+    {
+        $this->session = $value;
     }
 
 }

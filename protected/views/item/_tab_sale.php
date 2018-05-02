@@ -12,6 +12,7 @@
                 'content' => $this->renderPartial('_form_price_qty', array(
                 'model' => $model,
                 'item_price_quantity' => $item_price_quantity,
+                'priceQty'=>$priceQty,
                 'form' => $form,
                 'title' => 'Sale'), true)
         ),
