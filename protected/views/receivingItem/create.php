@@ -6,9 +6,16 @@ $this->breadcrumbs=array(
 ?>
 
 <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-    'title' => Yii::t('app','New Item'),
+    'title' => Yii::t('app','Count Inventory'),
     'headerIcon' => sysMenuItemIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
+    'headerButtons' => array(
+        TbHtml::buttonGroup(
+            array(
+                array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/CountReview'),'icon'=>'fa fa-check-square  white'),
+            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+        ),
+    ),
     'content' => $this->renderPartial('_form', array(
             'model'=>$model,
             'receiveItem'=>$receiveItem,

@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -135,7 +135,8 @@ class ReceivingItemController extends Controller
     }
 
     public function actionAddCount(){
-        
+        $info=Item::model()->findbyPk($_POST['itemId']);
+        // var_dump($info['quantity']);
         $this->setSession(Yii::app()->session);
         $data=$this->session['latestCount'];//initail data from session
         $exist="";
@@ -153,7 +154,7 @@ class ReceivingItemController extends Controller
             }
             
             if($exist==""){
-                $data[]=array('itemId'=>$_POST['itemId'],'proName'=>$_POST['name'],'countNum'=>$_POST['countNum']);
+                $data[]=array('itemId'=>$_POST['itemId'],'proName'=>$_POST['name'],'expected'=>$info['quantity'],'cost'=>$info['cost_price'],'countNum'=>$_POST['countNum']);
             }
             $this->session['latestCount']=$data;//after update or add item to data then update the session
             
@@ -179,7 +180,7 @@ class ReceivingItemController extends Controller
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Item ID</th>
+                        <th>ID</th>
                         <th>Name</th>
                         <th>Counted</th>
                         <th style="text-align: right;">Action</th>
@@ -190,11 +191,14 @@ class ReceivingItemController extends Controller
                 
                 echo'
                 <tr>
-                    <td>'.$value['itemId'].'</td>
+                    <td width="30">'.$value['itemId'].'</td>
                     <td>'.$value['proName'].'</td>
-                    <td><input type="number" onblur="updateCount('.$value['itemId'].')" class="txt-counted" value="'.$value['countNum'].'"></td>
-                    <td>
-                        <input type="button" value="Remove" class="btn btn-danger pull-right" onClick="inventoryCount(2,'.$key.')">
+                    <td width="100">
+                        <div class="col-sm-12">
+                            <input type="number" onblur="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
+                        </div>
+                    <td width="80">
+                        <input type="button" value="Remove" class="btn btn-danger" onClick="inventoryCount(2,'.$key.')">
                     </td>
                 </tr>
                 ';
@@ -205,6 +209,18 @@ class ReceivingItemController extends Controller
         </table>
         ';
         
+    }
+    
+    public function actionCountReview(){
+        $this->setSession(Yii::app()->session);
+        $data['items']=$this->session['latestCount'];//initail data from session
+        $this->render('_count_review',$data);
+    }
+
+    public function actionSaveCount(){
+        $this->setSession(Yii::app()->session);
+        $data=$this->session['latestCount'];//initail data from session
+        var_dump($data);
     }
 
     public function actionAdd()
