@@ -62,7 +62,8 @@
 							?>
 						</td>
 						<td>
-							<?=$unit*$value['cost']?>
+							<?php $cost=$unit*$value['cost']?>
+							<?=$cost?>
 						</td>
 					</tr>
 					<?php

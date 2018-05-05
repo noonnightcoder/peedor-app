@@ -56,7 +56,7 @@
 								$totalExpected+=$value['expected'];
 								$totalCounted+=$value['counted'];
 								$totalUnit+=$value['unit'];
-								$totalCost+=($value['unit']*$value['cost']);
+								$totalCost+=$value['cost'];
 							?>
 						<?php endforeach;?>
 					</tbody>

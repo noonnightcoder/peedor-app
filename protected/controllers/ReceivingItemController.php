@@ -283,7 +283,7 @@ class ReceivingItemController extends Controller
             $cost=$qty_b4_trans*$value['cost'];
             $invSql="insert into inventory_count_detail
             (item_id,count_id,expected,counted,unit,cost)
-            values(".$value['itemId'].",".$inventoryCount->id.",".$value['expected'].",".$value['countNum'].",".$qty_b4_trans.",".$value['cost'].")";
+            values(".$value['itemId'].",".$inventoryCount->id.",".$value['expected'].",".$value['countNum'].",".$qty_b4_trans.",".$cost.")";
             $command = $connection->createCommand($invSql);
             $insert = $command->execute(); // execute the non-query SQL
 
@@ -296,7 +296,7 @@ class ReceivingItemController extends Controller
             $insert1 = $command1->execute(); // execute the non-query SQL
 
             //update item quantity
-            $updateSql="update item set quantity=".$qty_af_trans." where id=".$value['itemId'];
+            $updateSql="update item set quantity=".$value['countNum']." where id=".$value['itemId'];
             $command2 = $connection->createCommand($updateSql);
             $insert2 = $command2->execute(); // execute the non-query SQL
         }
