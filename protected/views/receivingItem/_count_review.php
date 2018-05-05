@@ -16,6 +16,10 @@
         ),
     ),
 )); ?>
+	<h2>
+		<?=$header['name']?>
+	</h2>
+	<hr>
 	<table class="table">
 		<thead>
 			<tr>
@@ -32,48 +36,51 @@
 				$totalCounted=0;
 				$totalUnit=0;
 				$totalCost=0;
-				foreach($items as $key=>$value):?>
-				<tr>
-					<td>
-						<?=$value['proName']?>
-					</td>
-					<td>
-						<?=$value['expected']?>
-					</td>
-					<td>
-						<?=$value['countNum']?>
-					</td>
-					<td>
-						<?php
-							$unit=0;
-							if($value['expected']<0){
-								$unit=-1*($value['expected'])-$value['countNum'];
-								$unit=-1*$unit;
-							}else{
-								$unit=$value['expected']-$value['countNum'];
-							}
-							echo $unit;
-						?>
-					</td>
-					<td>
-						<?=$unit*$value['cost']?>
-					</td>
-				</tr>
-				<?php
-					$totalExpected+=$value['expected'];
-					$totalCounted+=$value['countNum'];
-					$totalUnit+=$unit;
-					$totalCost+=($unit*$value['cost']);
-				?>
-			<?php endforeach;?>
+			?>
+			<?php if($items):?>
+				<?php foreach($items as $key=>$value):?>
+					<tr>
+						<td>
+							<?=$value['name']?>
+						</td>
+						<td>
+							<?=$value['expected']?>
+						</td>
+						<td>
+							<?=$value['countNum']?>
+						</td>
+						<td>
+							<?php
+								$unit=0;
+								if($value['expected']<0){
+									$unit=-1*($value['countNum'])-$value['expected'];
+									$unit=-1*$unit;
+								}else{
+									$unit=$value['countNum']-$value['expected'];
+								}
+								echo $unit;
+							?>
+						</td>
+						<td>
+							<?=$unit*$value['cost']?>
+						</td>
+					</tr>
+					<?php
+						$totalExpected+=$value['expected'];
+						$totalCounted+=$value['countNum'];
+						$totalUnit+=$unit;
+						$totalCost+=($unit*$value['cost']);
+					?>
+				<?php endforeach;?>
+			<?php endif;?>
 		</tbody>
 		<tfoot>
 			<tr>
-				<td>Total:</td>
-				<td><?=$totalExpected?></td>
-				<td><?=$totalCounted?></td>
-				<td><?=$totalUnit?></td>
-				<td><?=$totalCost?></td>
+				<th>Total:</th>
+				<th><?=$totalExpected?></th>
+				<th><?=$totalCounted?></th>
+				<th><?=$totalUnit?></th>
+				<th><?=$totalCost?></th>
 			</tr>
 		</tfoot>
 	</table>

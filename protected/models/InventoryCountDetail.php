@@ -1,6 +1,6 @@
 <?php
 
-class InventoryCount extends CActiveRecord
+class InventoryCountDetail extends CActiveRecord
 {
     public $item_id;
     public $name;
@@ -25,7 +25,7 @@ class InventoryCount extends CActiveRecord
      */
     public function tableName()
     {
-        return 'inventory_count';
+        return 'inventory_count_detail';
     }
 
     /**
@@ -36,15 +36,14 @@ class InventoryCount extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('name, created_date','required'),
-            // array('name', 'unique'),
+            array('count_id,item_id, expected, counted,unit,cost','required'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array(
-                'name, search',
-                'safe',
-                'on' => 'search'
-            ),
+            // array(
+            //     'name, search',
+            //     'safe',
+            //     'on' => 'search'
+            // ),
         );
     }
 
@@ -56,7 +55,7 @@ class InventoryCount extends CActiveRecord
             // NOTE: you may need to adjust the relation name and the related
             // class name for the relations automatically generated below.
             return array(
-                'assemblies'=>array(self::BELONGS_TO,'Item','id')
+                'inventory_count_detail'=>array(self::BELONGS_TO,'inventory_count','id')
             );
         }
 
@@ -66,11 +65,7 @@ class InventoryCount extends CActiveRecord
         public function attributeLabels()
         {
             return array(
-                'id' => 'ID',
-                'item_id' => 'Item',
-                'name' => 'Name',
-                'expected' => 'Expected',
-                'counted' => 'Counted'
+                
             );
         }
 
@@ -114,21 +109,20 @@ class InventoryCount extends CActiveRecord
             return $result;
         }
 
-        public static function getInventoryCount()
+        public static function getInventoryCountDetail($count_id)
         {
             // Recommended: Secure Way to Write SQL in Yii
-            $sql = "SELECT id ,name AS text 
-                        FROM inventory_count
-                        WHERE (name LIKE :name)";
-
-            $name = '%' . $name . '%';
-            return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
+            $sql = "SELECT i.name,expected,counted,unit,cost
+                        FROM inventory_count_detail inv join item i on inv.item_id=i.id
+                        WHERE (inv.count_id = :count_id)";
+            
+            return Yii::app()->db->createCommand($sql)->queryAll(true, array(':count_id' => $count_id));
         }
         public static function getItemColumns() {
         return array(
             array(
                 'name' => 'name',
-                'value' => 'CHtml::link($data->name, Yii::app()->createUrl("receivingItem/index?trans_mode=count_detail&id=$data->primaryKey&name=$data->name",array())) ',
+                'value' => 'CHtml::link($data->name, Yii::app()->createUrl("receivingItem/index?trans_mode=count_detail&id=$data->primaryKey",array())) ',
                 'type' => 'raw',
                 'filter' => '',
             ),

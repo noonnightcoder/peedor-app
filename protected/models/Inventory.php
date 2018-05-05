@@ -84,6 +84,19 @@ class Inventory extends CActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
+	public function search2()
+    {
+        // @todo Please modify the following code to remove attributes that should not be searched.
+
+        $criteria=new CDbCriteria;
+
+        $criteria->compare('types','InvCount');
+        // $criteria['distinct']=true;
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+        ));
+    }
+
 	public function search($item_id)
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
@@ -98,16 +111,52 @@ class Inventory extends CActiveRecord
 		$criteria->compare('trans_inventory',$this->trans_inventory);
 		$criteria->compare('trans_qty',$this->trans_qty);
 		$criteria->compare('qty_b4_trans',$this->qty_b4_trans);
-                $criteria->compare('qty_af_trans',$this->qty_af_trans);
-                
-                $criteria->condition="trans_items=:trans_items";
-                $criteria->params = array(':trans_items' => $item_id);
+        $criteria->compare('qty_af_trans',$this->qty_af_trans);
+        
+        $criteria->condition="trans_items=:trans_items";
+        $criteria->params = array(':trans_items' => $item_id);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
                         'sort'=>array( 'defaultOrder'=>'trans_date desc')
 		));
 	}
+
+	public static function getInventoryCount()
+        {
+            // Recommended: Secure Way to Write SQL in Yii
+            $sql = "SELECT id ,name AS text 
+                        FROM inventory
+                        WHERE (trans_comment LIKE :name)";
+
+            $name = '%' . $name . '%';
+            return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
+        }
+	public static function getItemColumns() {
+        return array(
+            array(
+                'name' => 'name',
+                'value' => 'CHtml::link($data->trans_comment, Yii::app()->createUrl("receivingItem/index?trans_mode=count_detail&id=$data->trans_comment",array())) ',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'trans_date',
+                'type' => 'raw',
+                'filter' => '',
+            )
+        );
+    }
+
+    public static function getItemDetailColumns() {
+        return array(
+            array(
+                'name' => 'count_name',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+        );
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.

@@ -85,7 +85,41 @@ class ReceivingItemController extends Controller
             $data['data_provider'] = $model->search();
             $this->render('_list',$data);
         } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='count_detail'){
-            echo $_GET['id'];
+
+            authorized('inventorycountdetail.read');
+
+            $model = InventoryCountDetail::getInventoryCountDetail($_GET['id']);
+
+            //$model->unsetAttributes();  // clear any default values
+            if (isset($_GET['InventoryCountDetail'])) {
+                $model->attributes = $_GET['InventoryCountDetail'];
+            }
+
+            if (isset($_GET['pageSize'])) {
+                Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
+                unset($_GET['pageSize']);
+            }
+
+            $page_size = CHtml::dropDownList(
+                'pageSize',
+                Yii::app()->user->getState(strtolower('InventoryCountDetail') . '_page_size', Common::defaultPageSize()),
+                Common::arrayFactory('page_size'),
+                array('class' => 'change-pagesize')
+            );
+
+
+            $data['model'] = $model;
+            $data['grid_id'] = strtolower('InventoryCountDetail') . '-grid';
+            $data['main_div_id'] = strtolower('InventoryCountDetail') . '_cart';
+            $data['page_size'] = $page_size;
+            $data['create_url'] = 'InventoryCountCreate';
+
+            $data['grid_columns'] = InventoryCountDetail::getItemColumns();
+
+            $data['data_provider'] = $model;
+            $data['count_title']=$_GET['name'];
+
+            $this->render('_detail',$data);
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
@@ -138,23 +172,29 @@ class ReceivingItemController extends Controller
         $info=Item::model()->findbyPk($_POST['itemId']);
         // var_dump($info['quantity']);
         $this->setSession(Yii::app()->session);
+        
         $data=$this->session['latestCount'];//initail data from session
         $exist="";
         if($_POST['opt']==1){
-            
+            $itemId=$_POST['itemId'];
+            $itemName=$_POST['name'];
+            $countNum=$_POST['countNum'];
+            $countDate=$_POST['countDate'];
+            $countTime=$_POST['countTime'] ? $_POST['countTime'] : date('H:i:s');
+            $countName=$_POST['countName'];
+            $this->session['countheader']=array('name'=>$countName.' '.$countTime,'created_date'=>$countDate.' '.$countTime);
             if(!empty($data)){//check if data is not empty
 
                 foreach($data as $k=>$v){
-                    $exist=array_search($_POST['name'],$data[$k]);//search array by proName
-                    if($v['proName']==$_POST['name']){//update number of quantity count when item already counted
-                        $data[$k]['countNum']+=$_POST['countNum'];//update array data
+                    $exist=array_search($itemName,$data[$k]);//search array by proName
+                    if($v['name']==$itemName){//update number of quantity count when item already counted
+                        $data[$k]['countNum']+=$countNum;//update array data
                     }
                 }
 
             }
-            
             if($exist==""){
-                $data[]=array('itemId'=>$_POST['itemId'],'proName'=>$_POST['name'],'expected'=>$info['quantity'],'cost'=>$info['cost_price'],'countNum'=>$_POST['countNum']);
+                $data[]=array('itemId'=>$itemId,'name'=>$itemName,'expected'=>$info['quantity'],'cost'=>$info['cost_price'],'countNum'=>$countNum);
             }
             $this->session['latestCount']=$data;//after update or add item to data then update the session
             
@@ -192,10 +232,10 @@ class ReceivingItemController extends Controller
                 echo'
                 <tr>
                     <td width="30">'.$value['itemId'].'</td>
-                    <td>'.$value['proName'].'</td>
+                    <td>'.$value['name'].'</td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onblur="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
+                            <input type="number" onkeypress="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
                         </div>
                     <td width="80">
                         <input type="button" value="Remove" class="btn btn-danger" onClick="inventoryCount(2,'.$key.')">
@@ -214,13 +254,55 @@ class ReceivingItemController extends Controller
     public function actionCountReview(){
         $this->setSession(Yii::app()->session);
         $data['items']=$this->session['latestCount'];//initail data from session
+        $data['header']=$this->session['countheader'];
         $this->render('_count_review',$data);
     }
 
     public function actionSaveCount(){
         $this->setSession(Yii::app()->session);
         $data=$this->session['latestCount'];//initail data from session
-        var_dump($data);
+        $header=$this->session['countheader'];//initail data from session
+        $employeeid=Yii::app()->session['employeeid'];
+
+        //save inventory count
+        $inventoryCount=new InventoryCount;
+        $inventoryCount->name=$header['name'];
+        $inventoryCount->created_date=$header['created_date'];
+        $inventoryCount->save();
+
+        //save detail and history
+        $connection = Yii::app()->db;
+        foreach($data as $key=>$value){
+            if($value['expected']<0){
+                $qty_b4_trans=(-1)*($value['countNum'])-$value['expected'];
+                $qty_b4_trans=(-1)*$qty_b4_trans;
+            }else{
+                $qty_b4_trans=$value['countNum']-$value['expected'];
+            }
+            $qty_af_trans=$qty_b4_trans+$value['expected'];
+            $cost=$qty_b4_trans*$value['cost'];
+            $invSql="insert into inventory_count_detail
+            (item_id,count_id,expected,counted,unit,cost)
+            values(".$value['itemId'].",".$inventoryCount->id.",".$value['expected'].",".$value['countNum'].",".$qty_b4_trans.",".$value['cost'].")";
+            $command = $connection->createCommand($invSql);
+            $insert = $command->execute(); // execute the non-query SQL
+
+
+            //save to inventory
+            $sql = "insert into inventory
+            (trans_items,trans_user,trans_date,trans_comment,trans_inventory,trans_qty,qty_b4_trans,qty_af_trans) 
+            values(" .$value['itemId']. ",'".$employeeid."','" .$header['created_date']. "','" .$header['name']. "','".$value['expected']."','".$value['countNum']."','" .$qty_b4_trans. "','".$qty_af_trans."')";
+            $command1 = $connection->createCommand($sql);
+            $insert1 = $command1->execute(); // execute the non-query SQL
+
+            //update item quantity
+            $updateSql="update item set quantity=".$qty_af_trans." where id=".$value['itemId'];
+            $command2 = $connection->createCommand($updateSql);
+            $insert2 = $command2->execute(); // execute the non-query SQL
+        }
+        unset(Yii::app()->session['latestCount']);
+        unset(Yii::app()->session['countheader']);
+        $this->redirect(array('receivingItem/index?trans_mode=physical_count2'));
     }
 
     public function actionAdd()

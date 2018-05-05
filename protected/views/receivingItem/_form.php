@@ -20,29 +20,31 @@
     <hr> 
     <div class="container">
         <div class="row">
-            <div class="col-sm-3 margin-3">
+            <h5 style="color: #f00">You must fill in these below field to continue!!</h5>
+            <div class="col-sm-11 col-md-3">
                 <div class="form-group">
                     <?php echo CHtml::label('Start Date', 1, array('class' => 'control-label')); ?>
                     <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
-                            'attribute' => 'count_date',
+                            'attribute' => 'created_date',
                             'model' => $model,
                             'pluginOptions' => array(
-                                'format' => 'dd-mm-yyyy'
-                            )
+                                'format' => 'yyyy-mm-dd',
+                            ),
+                            'htmlOptions'=>array('value'=>date('Y-m-d'))
                         ));
                     ?>
                 </div>
             </div>
-            <div class="col-sm-3 margin-3">
+            <div class="col-sm-11 col-md-3">
                 <div class="form-group">
-                    <?php echo CHtml::label('Time', 1, array('class' => 'control-label input-mask-date')); ?>
-                    <?php echo CHtml::TextField('InventoryCount','',array('class'=>'form-control')); ?>
+                    <?php echo CHtml::label('Time', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::TextField('InventoryCount',date('H:i:s'),array('class'=>'form-control input-mask-date','id'=>'InventoryCount_count_time','value'=>date('H:i:s'))); ?>
                 </div>
             </div>
-            <div class="col-sm-5 margin-3">
+            <div class="col-sm-11 col-md-6 margin-3">
                 <div class="form-group">
                     <?php echo CHtml::label('Count Name', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('InventoryCount','',array('class'=>'form-control')); ?>
+                    <?php echo CHtml::TextField('InventoryCount','InventoryCount'.date('Y-m-d'),array('class'=>'form-control','id'=>'InventoryCount_count_name')); ?>
                 </div>
             </div>
         </div>
@@ -117,7 +119,7 @@
                                         <?php foreach($_SESSION['latestCount'] as $key=>$value):?>
                                             <tr>
                                                 <td width="30"><?=$value['itemId']?></td>
-                                                <td><?=$value['proName']?></td>
+                                                <td><?=$value['name']?></td>
                                                 <td width="100">
                                                     <div class="col-sm-12">
                                                         <input type="number" onkeypress="updateCount(<?=$value['itemId']?>)" class="txt-counted<?=$value['itemId']?> form-control" value="<?=$value['countNum']?>">
@@ -152,14 +154,30 @@
 </style>
 
 <script type="text/javascript">
+    
     $(document).ready(function()
     {
-        $('.input-mask-date').mask('99/99/9999');
+        $('.input-mask-date').mask('99:99:99');
         $('.btn-count').prop('disabled',true);
         $('.txt-pro-name').keyup(function(e){
             $('.btn-count').prop('disabled',true);
         })
-        $('.txt-count').keypress(function(e){
+        // $('#btn-review').attr('disabled',true); 
+        $('#InventoryCount_count_name').keypress(function(){
+            var countDate=$('#InventoryCount_count_date').val();
+            var countTime=$('#InventoryCount_count_time').val();
+            var countName=$('#InventoryCount_count_name').val();
+            if(countDate=='' || countTime=='' || countName==''){
+                $('#btn-review').attr('disabled',true);    
+                  
+            }else{
+                $('#btn-review').removeAttr('disabled');    
+            }
+        })
+        
+        
+        var itemId=$('.txt-pro-id').val();
+        $('.txt-count'+itemId).keypress(function(e){
             if(e.which == 13) {
                 inventoryCount(1,"");
                 $('.txt-pro-name').focus();
@@ -168,6 +186,9 @@
     });
     function inventoryCount(opt,idx){
         var url='addCount';
+        var countDate=$('#InventoryCount_created_date').val();
+        var countTime=$('#InventoryCount_count_time').val();
+        var countName=$('#InventoryCount_count_name').val();
         var itemId=$('.txt-pro-id').val();
         var proName=$('.txt-pro-name').val();
         var countNum=$('.txt-count').val();
@@ -176,12 +197,15 @@
         }else{
             $.ajax({url:url,
                 type : 'post',
-                data:{opt:opt,idx,itemId:itemId,name:proName,countNum:countNum},
+                data:{opt:opt,countDate:countDate,countTime:countTime,countName:countName,idx,itemId:itemId,name:proName,countNum:countNum},
                 beforeSend: function() { $('.waiting').slideDown(); },
                 complete: function() { $('.waiting').slideUp(); },
                 success : function(data) {
                     $('#lasted-count').html(data);
-                    //console.log(data)
+                    $('.txt-pro-name').focus();
+                    if(countDate!=='' && countTime!=='' && countName!==''){
+                        $('#btn-review').removeAttr('disabled');   
+                    }
                 }
             });    
         }
