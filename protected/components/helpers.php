@@ -176,6 +176,11 @@ function sysMenuAssembliesView()
     return ucwords(t(param('menu_asseblies_view'), 'app'));
 }
 
+function sysMenuCategoryView()
+{
+    return ucwords(t(param('menu_categories_view'), 'app'));
+}
+
 function sysMenuItemView()
 {
     return ucwords(t(param('menu_item_view'), 'app'));

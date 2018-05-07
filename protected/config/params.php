@@ -38,6 +38,7 @@ return array(
     'menu_item' => 'item',
     'menu_item_add' => 'add item',
     'menu_asseblies_view'=>'Assemblies Item',
+    'menu_categories_view'=>'Categories',
     'menu_item_view' => 'view item',
     'menu_item_imp_exp' => 'Import/Export',
     'menu_item_markup_price' => 'Markup Price Update',

@@ -82,6 +82,7 @@ class Category extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'name' => Yii::t('app','Name'), //'Name',
+            'parent_id' => Yii::t('app','Parent'), //'Name',
 			'created_date' => Yii::t('app','Created Date'), //'Created Date',
 			'modified_date' => Yii::t('app','Modified Date'), //'Modified Date',
 		);

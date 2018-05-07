@@ -31,7 +31,7 @@ class CategoryController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore'),
+				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -108,6 +108,12 @@ class CategoryController extends Controller
             $this->render('create', array('model' => $model));
         }
 
+    }
+    public function actionCreate2(){
+        $model = new Category;
+        $data['model']=$model;
+        $data['parent']=Category::model()->findAll();
+        $this->render('create2',$data);
     }
 
 	/**
@@ -255,6 +261,47 @@ class CategoryController extends Controller
 
         $this->render('admin', $data);
 	}
+
+    public function actionList()
+    {
+        $model=new Category('search');
+        $model->unsetAttributes();  // clear any default values
+        if(isset($_GET['Category']))
+            $model->attributes=$_GET['Category'];
+
+        if (isset($_GET['pageSize'])) {
+            Yii::app()->user->setState('category_page_size',(int)$_GET['pageSize']);
+            unset($_GET['pageSize']);
+        }
+
+        if (isset($_GET['archived'])) {
+            Yii::app()->user->setState('category_archived', $_GET['archived']);
+            unset($_GET['archived']);
+        }
+
+        $model->category_archived = Yii::app()->user->getState('category_archived',
+            Yii::app()->params['defaultArchived']);
+
+        $page_size = CHtml::dropDownList(
+            'pageSize',
+            Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
+            Common::arrayFactory('page_size'),
+            array('class' => 'change-pagesize',)
+        );
+
+        $data['model'] = $model;
+        //$data['grid_id'] = strtolower(get_class($model)) . ' -grid';
+        $data['grid_id'] = 'category-grid';
+        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+        $data['page_size'] = $page_size;
+        $data['modal_header'] = Yii::t('app','New Category');
+
+        $data['grid_columns'] = Category::getCategoryColumn();
+
+        $data['data_provider'] = $model->search();
+
+        $this->render('_list', $data);
+    }
 
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
