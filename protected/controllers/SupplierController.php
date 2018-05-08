@@ -205,8 +205,8 @@ class SupplierController extends Controller
         $model = new Supplier('search');
 
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Item'])) {
-            $model->attributes = $_GET['Item'];
+        if (isset($_GET['Supplier'])) {
+            $model->attributes = $_GET['Supplier'];
         }
 
         if (isset($_GET['pageSize'])) {

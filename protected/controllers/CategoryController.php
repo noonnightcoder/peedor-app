@@ -31,7 +31,7 @@ class CategoryController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2'),
+				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2','SaveCategory'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -114,6 +114,34 @@ class CategoryController extends Controller
         $data['model']=$model;
         $data['parent']=Category::model()->findAll();
         $this->render('create2',$data);
+    }
+    public function actionSaveCategory(){
+        $i=$_POST['id']+1;
+        $model=Category::model()->findAll();
+
+        echo '<div class="col-sm-11 col-md-11">';
+            echo '<hr>';
+                echo '<div class="form-group">';
+                    echo CHtml::label('Category Name', 1, array('class' => 'control-label')); 
+                    echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category'));
+            echo '</div>';
+        echo '</div>';
+        echo '<div class="col-sm-11 col-md-11">';
+            echo '<div class="form-group">';
+                echo CHtml::label('Parent', 1, array('class' => 'control-label'));
+                echo '<select class="form-control" id="db-category'.($i-1).'" onchange="showDialog(event.target.value)">';
+                    echo '<option value="0">--Choose Parent--</option>';
+                    foreach($model as $key=>$value){
+                        echo '<option value="'.$value['name'].'">'.$value['name'].'</option>';
+                    }
+                    echo '<optgroup >';
+                        echo '<option value="addnew">';
+                            echo 'Create New';
+                        echo '</option>';
+                    echo '</optgroup>';
+                echo '</select>';
+            echo '</div>';
+        echo '</div>';
     }
 
 	/**

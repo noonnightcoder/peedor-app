@@ -311,8 +311,8 @@ class ClientController extends Controller
         $model = new Client('search');
 
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Item'])) {
-            $model->attributes = $_GET['Item'];
+        if (isset($_GET['Client'])) {
+            $model->attributes = $_GET['Client'];
         }
 
         if (isset($_GET['pageSize'])) {

@@ -37,7 +37,7 @@ $this->menu=array(
 	            		<option value="<?=$value['name']?>"><?=$value['name']?></option>
 	            	<?php endforeach;?>
 	            	<optgroup >
-	            		<option value="addnew0">
+	            		<option value="addnew">
 	            			Create New
 	            		</option>
 	            	</optgroup >
@@ -66,10 +66,7 @@ $this->menu=array(
 	var i=0
 	var t='addnew'
 	function showDialog(val){
-		
-
-		alert(val);
-		if(val==t+i){
+		if(val=='addnew'){
 			$('#modal-container').append('\
 				<div class="modal fade" id="myModal'+i+'" tabindex="-1" data-backdrop="false" role="dialog" aria-labelledby="myModalLabel">\
 				  <div class="modal-dialog" role="document">\
@@ -89,13 +86,13 @@ $this->menu=array(
 						    <div class="col-sm-11 col-md-11">\
 						        <div class="form-group">\
 						            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
-						            <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">\
-						            	<option value="0">--Choose Parent--</option>\
+						            <select class="form-control" id="db-category'+i+'" onchange="showDialog(event.target.value)">\
+						            	<option value="0" selected>--Choose Parent--</option>\
 						            	<?php foreach($parent as $key=>$value):?>\
 						            		<option value="<?=$value['name']?>"><?=$value['name']?></option>\
 						            	<?php endforeach;?>\
 						            	<optgroup >\
-						            		<option value="addnew'+(i+1)+'">\
+						            		<option value="addnew">\
 						            			Create New\
 						            		</option>\
 						            	</optgroup>\
@@ -105,7 +102,7 @@ $this->menu=array(
 				      </div>\
 				      <div class="modal-footer">\
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
-				        <button type="button" class="btn btn-primary">Save changes</button>\
+				        <button type="button" class="btn btn-primary" onclick="saveCategory('+i+')">Save changes</button>\
 				      </div>\
 				    </div>\
 				  </div>\
@@ -114,9 +111,37 @@ $this->menu=array(
 
 			$('#myModal'+i).modal('show')
 			$('#myModal'+i).on('hidden.bs.modal', function () {
+			  	$("#db-category"+i).val(0);
+			  	//$('#myModal'+(i-1)).html('reload');
+			  	
+			  	saveCategory(i);
+			})
+			$('#myModal0').on('hidden.bs.modal', function () {
+			  	i=0;
 			  	$("#db-category").val(0);
 			})
+			$('#myModal'+i).on('show.bs.modal', function () {
+			  	$("#db-category"+i).val(0);
+			})
+			$('#myModal0').on('show.bs.modal', function () {
+			  	$("#db-category0").val(0);
+			})
+			
 			i=i+1;
 		}
+	}
+
+	function saveCategory(i){
+		$.ajax({
+			type:'post',
+			data:{id:i},
+			url:'saveCategory',
+			beforeSend:function(){
+				$('#myModal'+i+' .modal-body').html('saving...')
+			},
+			success:function(data){
+				$('.modal-body').html(data)
+			}
+		})
 	}
 </script>

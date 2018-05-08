@@ -52,8 +52,8 @@ class EmployeeController extends Controller
         $model = new Employee('search');
 
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Item'])) {
-            $model->attributes = $_GET['Item'];
+        if (isset($_GET['Employee'])) {
+            $model->attributes = $_GET['Employee'];
         }
 
         if (isset($_GET['pageSize'])) {
