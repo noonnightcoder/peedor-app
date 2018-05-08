@@ -25,7 +25,7 @@ $this->menu=array(
 		<div class="col-sm-11 col-md-11">
 	        <div class="form-group">
 	            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>
-	            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category')); ?>
+	            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>
 	        </div>
 	    </div>
 	    <div class="col-sm-11 col-md-11">
@@ -34,7 +34,7 @@ $this->menu=array(
 	            <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">
 	            	<option value="0">--Choose Parent--</option>
 	            	<?php foreach($parent as $key=>$value):?>
-	            		<option value="<?=$value['name']?>"><?=$value['name']?></option>
+	            		<option value="<?=$value['id']?>"><?=$value['name']?></option>
 	            	<?php endforeach;?>
 	            	<optgroup >
 	            		<option value="addnew">
@@ -51,8 +51,10 @@ $this->menu=array(
 	<?php //echo $form->textFieldRow($model,'modified_date',array('class'=>'span5')); ?>
 
 	<div class="form-actions">
-            <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
+            <?php echo CHtml::Button($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                'onclick'=>'saveCategory("")',
+                'class'=>'btn btn-primary'
                 //'size'=>TbHtml::BUTTON_SIZE_SMALL,
             )); ?>
 	</div>
@@ -80,16 +82,16 @@ $this->menu=array(
 								<hr>\
 						        <div class="form-group">\
 						            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>\
-						            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category')); ?>\
+						            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>\
 						        </div>\
 						    </div>\
 						    <div class="col-sm-11 col-md-11">\
 						        <div class="form-group">\
 						            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
-						            <select class="form-control" id="db-category'+i+'" onchange="showDialog(event.target.value)">\
+						            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showDialog(event.target.value)">\
 						            	<option value="0" selected>--Choose Parent--</option>\
 						            	<?php foreach($parent as $key=>$value):?>\
-						            		<option value="<?=$value['name']?>"><?=$value['name']?></option>\
+						            		<option value="<?=$value['id']?>"><?=$value['name']?></option>\
 						            	<?php endforeach;?>\
 						            	<optgroup >\
 						            		<option value="addnew">\
@@ -112,18 +114,18 @@ $this->menu=array(
 			$('#myModal'+i).modal('show')
 			$('#myModal'+i).on('hidden.bs.modal', function () {
 			  	$("#db-category"+i).val(0);
-			  	//$('#myModal'+(i-1)).html('reload');
-			  	
-			  	saveCategory(i);
+			  	reloadCategory(i);
 			})
 			$('#myModal0').on('hidden.bs.modal', function () {
 			  	i=0;
 			  	$("#db-category").val(0);
+			  	reloadCategory(i);
 			})
-			$('#myModal'+i).on('show.bs.modal', function () {
+			$('#myModal'+i).on('shown.bs.modal', function () {
 			  	$("#db-category"+i).val(0);
+			  	reloadCategory(i);
 			})
-			$('#myModal0').on('show.bs.modal', function () {
+			$('#myModal0').on('shown.bs.modal', function () {
 			  	$("#db-category0").val(0);
 			})
 			
@@ -132,15 +134,40 @@ $this->menu=array(
 	}
 
 	function saveCategory(i){
+		var category_name=$('#myModal'+i+' .modal-body #Category_Name').val() || $('#Category_Name'+i).val();
+		var parent_id=$('#db-category'+i).val();
+		//alert(category_name+'-'+parent_id);
+		if(i==''){
+			i=100000
+		}
 		$.ajax({
 			type:'post',
-			data:{id:i},
-			url:'saveCategory',
+			data:{id:i,category_name:category_name,parent_id:parent_id},
+			url:'SaveCategory',
 			beforeSend:function(){
 				$('#myModal'+i+' .modal-body').html('saving...')
 			},
 			success:function(data){
-				$('.modal-body').html(data)
+				$('#myModal'+i+' .modal-body').html(data)
+				if(i==100000){
+					window.location.href='/peedor-app/index.php/category/list'
+				}
+			}
+		})
+	}
+	function reloadCategory(i){
+
+		$.ajax({
+			type:'post',
+			data:{id:i},
+			url:'ReloadCategory',
+			beforeSend:function(){
+				$('.parents').html('loading...')
+			},
+			success:function(data){
+				$('#myModal'+(i-1)+' .modal-body #db-category'+(i-1)).html(data)
+				$("#db-category").html(data)
+				$("#db-category"+(i-2)).html(data)
 			}
 		})
 	}

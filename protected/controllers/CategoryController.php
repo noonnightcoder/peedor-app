@@ -31,7 +31,7 @@ class CategoryController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2','SaveCategory'),
+				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2','SaveCategory','ReloadCategory'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -117,13 +117,20 @@ class CategoryController extends Controller
     }
     public function actionSaveCategory(){
         $i=$_POST['id']+1;
+        $category_name=$_POST['category_name'];
+        $parent_id=$_POST['parent_id'];
+        $category=new Category;
+       
+        $category->name=$category_name;
+        $category->parent_id=$parent_id;
+        $category->save();
+        echo $category->id; 
         $model=Category::model()->findAll();
-
         echo '<div class="col-sm-11 col-md-11">';
             echo '<hr>';
                 echo '<div class="form-group">';
                     echo CHtml::label('Category Name', 1, array('class' => 'control-label')); 
-                    echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category'));
+                    echo CHtml::TextField('Category',$category_name,array('class'=>'form-control','id'=>'Category_Name'));
             echo '</div>';
         echo '</div>';
         echo '<div class="col-sm-11 col-md-11">';
@@ -131,8 +138,15 @@ class CategoryController extends Controller
                 echo CHtml::label('Parent', 1, array('class' => 'control-label'));
                 echo '<select class="form-control" id="db-category'.($i-1).'" onchange="showDialog(event.target.value)">';
                     echo '<option value="0">--Choose Parent--</option>';
+                    $selected='';
                     foreach($model as $key=>$value){
-                        echo '<option value="'.$value['name'].'">'.$value['name'].'</option>';
+                        if($value['id']==$parent_id){
+                            $selected='selected';
+                            echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['name'].'</option>';
+                        }else{
+                            echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+                        }
+                        
                     }
                     echo '<optgroup >';
                         echo '<option value="addnew">';
@@ -143,7 +157,19 @@ class CategoryController extends Controller
             echo '</div>';
         echo '</div>';
     }
-
+    public function actionReloadCategory(){
+        $model=Category::model()->findAll();
+        echo '<option value="0">--Choose Parent--</option>';
+        $selected='';
+        foreach($model as $key=>$value){
+            echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+        }
+        echo '<optgroup >';
+            echo '<option value="addnew">';
+                echo 'Create New';
+            echo '</option>';
+        echo '</optgroup>';
+    }
 	/**
 	 * Updates a particular model.
 	 * If update is successful, the browser will be redirected to the 'view' page.
