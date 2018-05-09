@@ -1,12 +1,12 @@
 <?php
 $this->breadcrumbs=array(
-	'Categories'=>array('index'),
+	'Categories'=>array('category/list'),
 	'Create',
 );
-
+$baseUrl = Yii::app()->theme->baseUrl;
 $this->menu=array(
 	array('label'=>'List Category','url'=>array('index')),
-	array('label'=>'Manage Category','url'=>array('admin')),
+	array('label'=>'Manage Category','url'=>array('category/list')),
 );
 ?>
 
@@ -25,7 +25,8 @@ $this->menu=array(
 		<div class="col-sm-11 col-md-11">
 	        <div class="form-group">
 	            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>
-	            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>
+	            <?php echo CHtml::TextField('Category',$model['name']!==null ? $model['name'] : '',array('class'=>'form-control','id'=>'Category_Name')); ?>
+	            <span id="error" class="errorMsg100000"></span>
 	        </div>
 	    </div>
 	    <div class="col-sm-11 col-md-11">
@@ -34,7 +35,8 @@ $this->menu=array(
 	            <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">
 	            	<option value="0">--Choose Parent--</option>
 	            	<?php foreach($parent as $key=>$value):?>
-	            		<option value="<?=$value['id']?>"><?=$value['name']?></option>
+
+	            		<option value="<?=$value['id']?>" <?php echo $model['parent_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
 	            	<?php endforeach;?>
 	            	<optgroup >
 	            		<option value="addnew">
@@ -51,9 +53,9 @@ $this->menu=array(
 	<?php //echo $form->textFieldRow($model,'modified_date',array('class'=>'span5')); ?>
 
 	<div class="form-actions">
-            <?php echo CHtml::Button($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
+            <?php echo CHtml::Button($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app',$cateId>0 ? 'Update':'Save'),array(
                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
-                'onclick'=>'saveCategory("")',
+                'onclick'=>@$cateId>0 ? 'saveCategory("","'.@$cateId.'")': 'saveCategory("")',
                 'class'=>'btn btn-primary'
                 //'size'=>TbHtml::BUTTON_SIZE_SMALL,
             )); ?>
@@ -62,11 +64,9 @@ $this->menu=array(
 <div id="modal-container"></div>
 <?php $this->endWidget(); ?>
 <script type="text/javascript">
-	$(document).ready(function(e){
-		
-	})
 	var i=0
 	var t='addnew'
+	
 	function showDialog(val){
 		if(val=='addnew'){
 			$('#modal-container').append('\
@@ -83,6 +83,7 @@ $this->menu=array(
 						        <div class="form-group">\
 						            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>\
 						            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>\
+						            <span id="error" class="errorMsg'+i+'"></span>\
 						        </div>\
 						    </div>\
 						    <div class="col-sm-11 col-md-11">\
@@ -103,6 +104,7 @@ $this->menu=array(
 						    </div>\
 				      </div>\
 				      <div class="modal-footer">\
+				      <input type="hidden" values="" id="pid">\
 				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
 				        <button type="button" class="btn btn-primary" onclick="saveCategory('+i+')">Save changes</button>\
 				      </div>\
@@ -110,15 +112,17 @@ $this->menu=array(
 				  </div>\
 				</div>'
 			);
-
+			var pid=$('#pid'+i).val();
 			$('#myModal'+i).modal('show')
 			$('#myModal'+i).on('hidden.bs.modal', function () {
-			  	$("#db-category"+i).val(0);
+			  	$("#db-category"+(i-1)).val(pid);
+			  	alert(pid)
 			  	reloadCategory(i);
 			})
 			$('#myModal0').on('hidden.bs.modal', function () {
 			  	i=0;
-			  	$("#db-category").val(0);
+			  	$("#db-category").val(pid);
+			  	alert(i)
 			  	reloadCategory(i);
 			})
 			$('#myModal'+i).on('shown.bs.modal', function () {
@@ -133,34 +137,52 @@ $this->menu=array(
 		}
 	}
 
-	function saveCategory(i){
+	function saveCategory(i,cateid){
 		var category_name=$('#myModal'+i+' .modal-body #Category_Name').val() || $('#Category_Name'+i).val();
 		var parent_id=$('#db-category'+i).val();
-		//alert(category_name+'-'+parent_id);
-		if(i==''){
+		var url=''
+		if(cateid>0){
+			url='/peedor-app/index.php/category/update2/'+cateid
+		}else{
+			url='/peedor-app/index.php/category/SaveCategory'
+		}
+		if(i===''){
 			i=100000
 		}
 		$.ajax({
 			type:'post',
 			data:{id:i,category_name:category_name,parent_id:parent_id},
-			url:'SaveCategory',
+			url:url,
 			beforeSend:function(){
-				$('#myModal'+i+' .modal-body').html('saving...')
+				$('.errorMsg'+i).html('Processing...')
 			},
 			success:function(data){
-				$('#myModal'+i+' .modal-body').html(data)
-				if(i==100000){
-					window.location.href='/peedor-app/index.php/category/list'
+				if(data=='error'){
+					$('.errorMsg'+i).html('Category name is required');
+					$('#success').html('');
+				}else if(data=='existed'){
+					$('.errorMsg'+i).html('Name "'+category_name+'" has already been taken.');
+					$('#success').html('');
+				}else if(data.indexOf('success')>=0){
+					$('#myModal'+i+' .modal-body').html(data)
+					if(i==100000){
+						if(cateid>0){
+							$('.errorMsg'+i).html('<span style="color:#00f;">Update successfully</span>');
+						}else{
+							window.location.href='/peedor-app/index.php/category/list'	
+						}
+					}
 				}
 			}
 		})
 	}
 	function reloadCategory(i){
-
+		//alert(i)
+		var pid=$('#pid'+i).val();
 		$.ajax({
 			type:'post',
 			data:{id:i},
-			url:'ReloadCategory',
+			url:'/peedor-app/index.php/category/ReloadCategory/'+pid,
 			beforeSend:function(){
 				$('.parents').html('loading...')
 			},
@@ -172,3 +194,11 @@ $this->menu=array(
 		})
 	}
 </script>
+<style type="text/css">
+	#error{
+		color:#f00;
+	}
+	#success{
+		color:#00f;
+	}
+</style>

@@ -192,7 +192,9 @@ class Category extends CActiveRecord
                     'template' => '<div class="hidden-sm hidden-xs btn-group">{update}{delete}{restore}</div>',
                     'buttons' => array(
                         'update' => array(
-                            'click' => 'updateDialogOpen',
+                            //updateDialogOpen
+                            'click' => '',
+                            'url' => 'Yii::app()->createUrl("category/update2", array("id"=>$data->id))',
                             'label' => 'Update Category',
                             'icon' => 'ace-icon fa fa-edit',
                             'options' => array(
@@ -200,7 +202,7 @@ class Category extends CActiveRecord
                                 'data-refresh-grid-id' => 'category-grid',
                                 'class' => 'btn btn-xs btn-info',
                             ),
-                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.update")',
+                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.update2")',
                         ),
                         'delete' => array(
                             'label' => Yii::t('app', 'Delete Category'),

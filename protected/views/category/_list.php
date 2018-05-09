@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs = array(
-    sysMenuItem() => array('item/admin'),
-    sysMenuPriceTier(),
+    Yii::t('app', ucfirst(get_class($model))) => array('admin'),
+    Yii::t('app', 'Manage'),
 );
 ?>
 
@@ -31,7 +31,8 @@ $this->breadcrumbs = array(
 
             <!-- Grid Table layouts.admin._grid -->
             <?php $this->renderPartial('//layouts/admin/_grid', array(
-                'data_provider' => $data_provider ,
+                'model' => $model,
+                'data_provider' => $data_provider,
                 'grid_id' => $grid_id,
                 'page_size' => $page_size,
                 'grid_columns' => $grid_columns,

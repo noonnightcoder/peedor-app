@@ -31,7 +31,7 @@ class CategoryController extends Controller
 				'users'=>array('@'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2','SaveCategory','ReloadCategory'),
+				'actions'=>array('create','update','admin','delete','GetCategory2','InitCategory','restore','List','Create2','SaveCategory','ReloadCategory','Update2'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -110,6 +110,9 @@ class CategoryController extends Controller
 
     }
     public function actionCreate2(){
+        if (!Yii::app()->user->checkAccess('category.create')) {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
         $model = new Category;
         $data['model']=$model;
         $data['parent']=Category::model()->findAll();
@@ -117,52 +120,73 @@ class CategoryController extends Controller
     }
     public function actionSaveCategory(){
         $i=$_POST['id']+1;
-        $category_name=$_POST['category_name'];
+        $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
         $parent_id=$_POST['parent_id'];
         $category=new Category;
-       
-        $category->name=$category_name;
-        $category->parent_id=$parent_id;
-        $category->save();
-        echo $category->id; 
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'name=:name';
+        $criteria->params = array(':name'=>$category_name);
+        $exists = $category->exists($criteria);
         $model=Category::model()->findAll();
-        echo '<div class="col-sm-11 col-md-11">';
-            echo '<hr>';
-                echo '<div class="form-group">';
-                    echo CHtml::label('Category Name', 1, array('class' => 'control-label')); 
-                    echo CHtml::TextField('Category',$category_name,array('class'=>'form-control','id'=>'Category_Name'));
-            echo '</div>';
-        echo '</div>';
-        echo '<div class="col-sm-11 col-md-11">';
-            echo '<div class="form-group">';
-                echo CHtml::label('Parent', 1, array('class' => 'control-label'));
-                echo '<select class="form-control" id="db-category'.($i-1).'" onchange="showDialog(event.target.value)">';
-                    echo '<option value="0">--Choose Parent--</option>';
-                    $selected='';
-                    foreach($model as $key=>$value){
-                        if($value['id']==$parent_id){
-                            $selected='selected';
-                            echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['name'].'</option>';
-                        }else{
-                            echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
-                        }
-                        
-                    }
-                    echo '<optgroup >';
-                        echo '<option value="addnew">';
-                            echo 'Create New';
-                        echo '</option>';
-                    echo '</optgroup>';
-                echo '</select>';
-            echo '</div>';
-        echo '</div>';
+        $errorMsg='';
+        if($exists){
+            echo 'existed'; 
+            //$errorMsg='Name "'.$category_name.'" has already been taken.';
+        }else if($category_name==''){
+            echo 'error';
+            //$errorMsg='Category name is required';
+        }else{
+            $category->name=$category_name;
+            $category->parent_id=$parent_id;
+            $saved=$category->save();
+            if($saved>0){
+                echo '<input type="hidden" value="'.$category->id.'" id="pid'.($i).'">'; 
+                echo '<div class="col-sm-11 col-md-11">';
+                    echo '<hr>';
+                    echo '<h3 id="success">Data Successfully saved.</h3>';
+                        echo '<div class="form-group">';
+                            echo CHtml::label('Category Name', 1, array('class' => 'control-label')); 
+                            echo CHtml::TextField('Category',$category_name,array('class'=>'form-control','id'=>'Category_Name'));
+                            echo '<span id="error" class="errorMsg'.($i-1).'"></span>';
+                    echo '</div>';
+                echo '</div>';
+                echo '<div class="col-sm-11 col-md-11">';
+                    echo '<div class="form-group">';
+                        echo CHtml::label('Parent', 1, array('class' => 'control-label'));
+                        echo '<select class="form-control" id="db-category'.($i-1).'" onchange="showDialog(event.target.value)">';
+                            echo '<option value="0">--Choose Parent--</option>';
+                            $selected='';
+                            foreach($model as $key=>$value){
+                                if($value['id']==$parent_id){
+                                    $selected='selected';
+                                    echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['name'].'</option>';
+                                }else{
+                                    echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+                                }
+                                
+                            }
+                            echo '<optgroup >';
+                                echo '<option value="addnew">';
+                                    echo 'Create New';
+                                echo '</option>';
+                            echo '</optgroup>';
+                        echo '</select>';
+                    echo '</div>';
+                echo '</div>';
+            }
+        }
+        
     }
-    public function actionReloadCategory(){
+    public function actionReloadCategory($id=''){
         $model=Category::model()->findAll();
         echo '<option value="0">--Choose Parent--</option>';
         $selected='';
         foreach($model as $key=>$value){
-            echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
+            if($id==$value['id']){
+                echo '<option value="'.$value['id'].'" selected>'.$value['name'].'</option>';    
+            }else{
+                echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';    
+            }
         }
         echo '<optgroup >';
             echo '<option value="addnew">';
@@ -220,11 +244,34 @@ class CategoryController extends Controller
             ));
             Yii::app()->end();
         } else {
-            $this->render('update', array('model' => $model));
+            $data['model']=$model;
+            $this->render('update', $data);
         }
 
     }
-
+    public function actionUpdate2($id){
+        if (!Yii::app()->user->checkAccess('category.create')) {
+            throw new CHttpException(403, 'You are not authorized to perform this action');
+        }
+        //echo $_POST['category_name'];
+        if(isset($_POST['category_name'])){
+            $category = Category::model()->findByPk($id);
+            $category->name=$_POST['category_name'];
+            $category->modified_date = date('Y-m-d H:i:s');
+            $category->parent_id=$_POST['parent_id'];
+            $updated=$category->update(array('name','modified_date','parent_id'));
+            if($updated){
+                echo 'success';
+            }
+        }else{
+            $model = $this->loadModel($id);
+            $data['model']=$model;
+            $data['parent']=Category::model()->findAll();
+            $data['cateId']=$id;
+            $this->render('create2', $data);
+        }
+        
+    }
     public function actionDelete($id)
     {
         if (!Yii::app()->user->checkAccess('category.delete')) {
