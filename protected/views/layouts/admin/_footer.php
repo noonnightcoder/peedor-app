@@ -17,7 +17,8 @@
             });
         });
 
-        $('.search-form form').submit(function(){
+        $('.search-form form').submit(function(e) {
+            e.preventDefault();
             $.fn.yiiGridView.update('<?= $grid_id ?>', {
                 data: $(this).serialize()
             });
@@ -25,6 +26,7 @@
         });
 
         $('div#<?= $main_div_id ?>').on('change','.change-pagesize',function(e) {
+            e.preventDefault();
             $.fn.yiiGridView.update('<?= $grid_id ?>', {
                 data: {pageSize:$(this).val()}
             });

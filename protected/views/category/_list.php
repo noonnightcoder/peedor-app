@@ -19,7 +19,7 @@ $this->breadcrumbs = array(
                 <?php $this->renderPartial('//layouts/admin/_header',array(
                         'model' => $model,
                         'create_permission' => isset($create_permission) ? $create_permission : strtolower(get_class($model)) . '.create' ,
-                        'create_url' => isset($create_url) ? $create_url : 'Create2',
+                        'create_url' => isset($create_url) ? $create_url : 'create2',
                         'archived_attr' =>  isset($archived_attr) ? $archived_attr : strtolower(get_class($model)) . '_archived',
                         'grid_id' => $grid_id,
                         'module_name' => isset($module_name) ? $module_name : ucfirst(get_class($model)),

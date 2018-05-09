@@ -129,7 +129,6 @@ class Employee extends CActiveRecord
 		//$criteria->compare('status',$this->status,true);
 
        /* if ($this->search) {
-
             $criteria->condition = "(first_name=:search or last_name=:search or concat(first_name,last_name)=:fullname or concat(last_name,first_name)=:fullname  or mobile_no like :mobile_no)";
             $criteria->params = array(
                 ':search' => $this->search,

@@ -211,9 +211,6 @@ class PriceTierController extends Controller
         }
     }
 
-    /**
-     * Lists all models.
-     */
     public function actionIndex()
     {
         $dataProvider = new CActiveDataProvider('PriceTier');
@@ -222,16 +219,16 @@ class PriceTierController extends Controller
         ));
     }
 
-    /**
-     * Manages all models.
-     */
     public function actionAdmin()
     {
         $model = new PriceTier('search');
+
         $model->unsetAttributes();  // clear any default values
+
         if (isset($_GET['PriceTier'])) {
             $model->attributes = $_GET['PriceTier'];
         }
+
 
         if (isset($_GET['pageSize'])) {
             Yii::app()->user->setState('pricetier_page_size',(int)$_GET['pageSize']);

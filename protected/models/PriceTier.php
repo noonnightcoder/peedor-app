@@ -82,11 +82,20 @@ class PriceTier extends CActiveRecord
         $criteria = new CDbCriteria;
 
         //$criteria->compare('id',$this->id);
-        $criteria->compare('tier_name', $this->tier_name, true);
+        //$criteria->compare('tier_name', $this->tier_name, true);
         //$criteria->compare('deleted',$this->deleted);
 
-        if (Yii::app()->user->getState('pricetier_archived', Yii::app()->params['defaultArchived']) == 'false') {
-            $criteria->addSearchCondition('status', Yii::app()->params['active_status']);
+        if ( Yii::app()->user->getState('pricetier_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'tier_name like :search';
+            $criteria->params = array(
+                ':search' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (tier_name like :search)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
+            );
         }
 
         return new CActiveDataProvider($this, array(
