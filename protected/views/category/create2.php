@@ -144,7 +144,7 @@ $this->menu=array(
 		if(cateid>0){
 			url='/peedor-app/index.php/category/update2/'+cateid
 		}else{
-			url='/peedor-app/index.php/category/SaveCategory'
+			url='/peedor-app/index.php/category/saveCategory'
 		}
 		if(i===''){
 			i=100000
@@ -176,13 +176,14 @@ $this->menu=array(
 			}
 		})
 	}
+
 	function reloadCategory(i){
 		//alert(i)
 		var pid=$('#pid'+i).val();
 		$.ajax({
 			type:'post',
 			data:{id:i},
-			url:'/peedor-app/index.php/category/ReloadCategory/'+pid,
+			url:'/peedor-app/index.php/category/reloadCategory/'+pid,
 			beforeSend:function(){
 				$('.parents').html('loading...')
 			},
@@ -193,6 +194,7 @@ $this->menu=array(
 			}
 		})
 	}
+
 </script>
 <style type="text/css">
 	#error{
