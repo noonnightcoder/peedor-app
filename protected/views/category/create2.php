@@ -3,7 +3,7 @@ $this->breadcrumbs=array(
 	'Categories'=>array('category/list'),
 	'Create',
 );
-$baseUrl = Yii::app()->theme->baseUrl;
+$baseUrl = Yii::app()->baseUrl;
 $this->menu=array(
 	array('label'=>'List Category','url'=>array('index')),
 	array('label'=>'Manage Category','url'=>array('category/list')),
@@ -47,11 +47,6 @@ $this->menu=array(
 	        </div>
 	    </div>
 	</div>
-
-	<?php //echo $form->textFieldRow($model,'created_date',array('class'=>'span5')); ?>
-
-	<?php //echo $form->textFieldRow($model,'modified_date',array('class'=>'span5')); ?>
-
 	<div class="form-actions">
             <?php echo CHtml::Button($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app',$cateId>0 ? 'Update':'Save'),array(
                 'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
@@ -60,13 +55,17 @@ $this->menu=array(
                 //'size'=>TbHtml::BUTTON_SIZE_SMALL,
             )); ?>
 	</div>
-<!-- Modal -->
 <div id="modal-container"></div>
 <?php $this->endWidget(); ?>
 <script type="text/javascript">
 	var i=0
-	var t='addnew'
-	
+	//$(document).ready(function(e){
+		$('#myModal0').on('hidden.bs.modal',function(){
+			alert(i);
+			i=0
+			$("#db-category").val(0);
+		})
+	//})
 	function showDialog(val){
 		if(val=='addnew'){
 			$('#modal-container').append('\
@@ -112,39 +111,32 @@ $this->menu=array(
 				  </div>\
 				</div>'
 			);
-			var pid=$('#pid'+i).val();
 			$('#myModal'+i).modal('show')
-			$('#myModal'+i).on('hidden.bs.modal', function () {
-			  	$("#db-category"+(i-1)).val(pid);
-			  	alert(pid)
-			  	reloadCategory(i);
-			})
-			$('#myModal0').on('hidden.bs.modal', function () {
-			  	i=0;
-			  	$("#db-category").val(pid);
-			  	alert(i)
-			  	reloadCategory(i);
+			$('#myModal0').on('hidden.bs.modal',function(){
+				alert(i);
+				delete window.i
+				alert(i)
+				$("#db-category").val(0);
 			})
 			$('#myModal'+i).on('shown.bs.modal', function () {
 			  	$("#db-category"+i).val(0);
-			  	reloadCategory(i);
 			})
 			$('#myModal0').on('shown.bs.modal', function () {
 			  	$("#db-category0").val(0);
 			})
-			
 			i=i+1;
 		}
 	}
 
 	function saveCategory(i,cateid){
+		//alert(i);
 		var category_name=$('#myModal'+i+' .modal-body #Category_Name').val() || $('#Category_Name'+i).val();
 		var parent_id=$('#db-category'+i).val();
 		var url=''
 		if(cateid>0){
-			url='/peedor-app/index.php/category/update2/'+cateid
+			url="<?php echo $baseUrl.'/index.php/Category/Update2/'?>"+cateid
 		}else{
-			url='/peedor-app/index.php/category/SaveCategory'
+			url="<?php echo $baseUrl.'/index.php/Category/SaveCategory'?>"
 		}
 		if(i===''){
 			i=100000
@@ -165,11 +157,13 @@ $this->menu=array(
 					$('#success').html('');
 				}else if(data.indexOf('success')>=0){
 					$('#myModal'+i+' .modal-body').html(data)
+					$('#myModal'+i).hide()//hide modal
+					reloadCategory(i);
 					if(i==100000){
 						if(cateid>0){
 							$('.errorMsg'+i).html('<span style="color:#00f;">Update successfully</span>');
 						}else{
-							window.location.href='/peedor-app/index.php/category/list'	
+							window.location.href="<?php echo $baseUrl.'/index.php/Category/List'?>"	
 						}
 					}
 				}
@@ -182,14 +176,17 @@ $this->menu=array(
 		$.ajax({
 			type:'post',
 			data:{id:i},
-			url:'/peedor-app/index.php/category/ReloadCategory/'+pid,
+			url:"<?php echo $baseUrl.'/index.php/category/ReloadCategory/'?>"+pid,
 			beforeSend:function(){
 				$('.parents').html('loading...')
 			},
 			success:function(data){
 				$('#myModal'+(i-1)+' .modal-body #db-category'+(i-1)).html(data)
-				$("#db-category").html(data)
-				$("#db-category"+(i-2)).html(data)
+				if(i==0){
+					$("#db-category").html(data)	
+				}else{
+					$("#db-category"+(i-2)).html(data)	
+				}
 			}
 		})
 	}

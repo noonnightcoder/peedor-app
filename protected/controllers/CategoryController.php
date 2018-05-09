@@ -140,7 +140,7 @@ class CategoryController extends Controller
             $category->parent_id=$parent_id;
             $saved=$category->save();
             if($saved>0){
-                echo '<input type="hidden" value="'.$category->id.'" id="pid'.($i).'">'; 
+                echo '<input type="hidden" value="'.$category->id.'" id="pid'.($i-1).'">'; 
                 echo '<div class="col-sm-11 col-md-11">';
                     echo '<hr>';
                     echo '<h3 id="success">Data Successfully saved.</h3>';
