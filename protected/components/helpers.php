@@ -180,7 +180,10 @@ function sysMenuCategoryView()
 {
     return ucwords(t(param('menu_categories_view'), 'app'));
 }
-
+function sysMenuPriceBookView()
+{
+    return ucwords(t(param('menu_pricebook_view'), 'app'));
+}
 function sysMenuItemView()
 {
     return ucwords(t(param('menu_item_view'), 'app'));
