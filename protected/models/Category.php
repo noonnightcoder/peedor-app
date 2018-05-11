@@ -58,7 +58,7 @@ class Category extends CActiveRecord
             array('status', 'length', 'max'=>1),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('nam', 'safe', 'on' => 'search'),
+            array('name, search', 'safe', 'on' => 'search'),
         );
     }
 
