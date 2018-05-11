@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    'Inventory Count' =>array('index?trans_mode=physical_count2'),
+    'Price Book' =>array('/pricebook'),
     'Create',
 );
 ?>
