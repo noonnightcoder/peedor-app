@@ -66,9 +66,9 @@
 		var parent_id=$('#db-category'+i).val();
 		var url=''
 		if(cateid>0){
-			url="<?php echo $baseUrl.'/index.php/Category/Update2/'?>"+cateid
+			url="<?php echo Yii::app()->createUrl('Category/Update2/')?>"+cateid
 		}else{
-			url="<?php echo $baseUrl.'/index.php/Category/SaveCategory'?>"
+			url="<?php echo Yii::app()->createUrl('Category/SaveCategory')?>"
 		}
 		if(i===''){
 			i=100000
@@ -108,7 +108,7 @@
 		$.ajax({
 			type:'post',
 			data:{id:i},
-			url:"<?php echo $baseUrl.'/index.php/category/ReloadCategory/'?>"+pid,
+			url:"<?php echo Yii::app()->createUrl('Category/ReloadCategory')?>/"+pid,
 			beforeSend:function(){
 				$('.parents').html('loading...')
 			},
