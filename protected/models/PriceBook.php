@@ -37,8 +37,8 @@ class PriceBook extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('price_book_name, outlet_id', 'required'),
-			array('start_date,end_date', 'date', 'format'=>array('dd/MM/yyyy','d/MM/yyyy')),
-			array('price_book_name, item_id', 'safe', 'on'=>'search'),
+            array('price_book_name', 'unique'),
+			array('id,price_book_name', 'safe', 'on'=>'search'),
 		);
 	}
 

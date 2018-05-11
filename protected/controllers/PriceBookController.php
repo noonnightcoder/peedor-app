@@ -22,7 +22,7 @@ class PriceBookController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('Index','View'),
+                'actions' => array('Index','View','Create','AddItem','SavePriceBook'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -76,15 +76,15 @@ class PriceBookController extends Controller
         $data['count_title']='pricebook';
         $this->render('_pricebookDetail',$data);
     }
-    public function actionInventoryCountCreate(){
+    public function actionCreate(){
         //$invcount=new InventoryCount;
-        $model = new InventoryCount('search');
+        $model = new PriceBook('search');
         $item = new Item('search');
-        $receiveItem = new ReceivingItem;
+        $outlet = Outlet::model()->findAll();;
 
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['InventoryCount'])) {
-            $model->attributes = $_GET['InventoryCount'];
+        if (isset($_GET['PriceBook'])) {
+            $model->attributes = $_GET['PriceBook'];
         }
 
         if (isset($_GET['pageSize'])) {
@@ -101,13 +101,13 @@ class PriceBookController extends Controller
 
 
         $data['model'] = $model;
-        $data['receiveItem'] = $receiveItem;
+        $data['outlet'] = $outlet;
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
         $data['create_url'] = 'InventoryCountCreate';
 
-        $data['grid_columns'] = InventoryCount::getItemColumns();
+        $data['grid_columns'] = PriceBook::getItemColumns();
 
         $data['data_provider'] = $model->search();
         $this->render('create',$data);
@@ -121,52 +121,68 @@ class PriceBookController extends Controller
     }
 
     public function actionAddItem(){
-        $info=Item::model()->findbyPk($_POST['itemId']);
-        // var_dump($info['quantity']);
-        $this->setSession(Yii::app()->session);
-        
-        $data=$this->session['latestCount'];//initail data from session
-        $exist="";
-        if($_POST['opt']==1){
-            $itemId=$_POST['itemId'];
-            $itemName=$_POST['name'];
-            $countNum=$_POST['countNum'];
-            $countDate=$_POST['countDate'];
-            $countTime=$_POST['countTime'] ? $_POST['countTime'] : date('H:i:s');
-            $countName=$_POST['countName'];
-            $this->session['countheader']=array('name'=>$countName.' '.$countTime,'created_date'=>$countDate.' '.$countTime);
-            if(!empty($data)){//check if data is not empty
+         $info=Item::model()->findbyPk($_POST['itemId']);
+         // var_dump($info['quantity']);
+         $this->setSession(Yii::app()->session);
 
-                foreach($data as $k=>$v){
-                    $exist=array_search($itemName,$data[$k]);//search array by proName
-                    if($v['name']==$itemName){//update number of quantity count when item already counted
-                        $data[$k]['countNum']+=$countNum;//update array data
-                    }
-                }
+         $data=$this->session['itemsApplied'];//initail data from session
 
-            }
-            if($exist==""){
-                $data[]=array('itemId'=>$itemId,'name'=>$itemName,'expected'=>$info['quantity'],'cost'=>$info['cost_price'],'countNum'=>$countNum);
-            }
-            $this->session['latestCount']=$data;//after update or add item to data then update the session
+         if($_POST['opt']==1){
+
+            $itemId=$_POST['itemId'];//item id
+            $itemName=$_POST['proName'];//item name
+            $start_date=$_POST['start_date'];//price book valid start date
+            $end_date=$_POST['end_date'];//price book valid end date
+            $outlet=$_POST['outlet'];//price book apply to outlet
+            $price_book_name=$_POST['price_book_name'];//price book name
+
+            $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date);
+           
+            $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>0,'min_qty'=>0,'max_qty'=>0);
+         
+            $this->session['itemsApplied']=$data;//after update or add item to data then update the session
             
         }elseif($_POST['opt']==2){//remove counted item
-            unset($_SESSION['latestCount'][$_POST['idx']]); 
+            unset($_SESSION['itemsApplied'][$_POST['idx']]); 
         }elseif($_POST['opt']==3){
-
+            $val=$_POST['val'];
+            $idx=$_POST['idx'];
+            echo $idx;
             if(!empty($data)){//check if data is not empty
 
                 foreach($data as $k=>$v){
-                    if($v['itemId']==$_POST['itemId']){//update number of quantity count when item already counted
-                        $data[$k]['countNum']=$_POST['newCount'];//update array data
+                    if($k==$idx){//update number of quantity count when item already counted
+                        if($val=='markup'){
+                            $data[$k]['markup']=$_POST['markup'];//update array data
+                            $data[$k]['retail_price']=$data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100));
+                        }elseif($val=='retail_price'){
+
+                            $data[$k]['retail_price']=$_POST['retail_price'];
+                            $data[$k]['markup']=($_POST['retail_price']*100)-100;//update array data
+
+                        }elseif($val=='discount'){
+
+                            $data[$k]['discount']=$_POST['discount'];
+                            $data[$k]['retail_price']=$data[$k]['retail_price']-($data[$k]['retail_price']*($_POST['discount']/100));
+
+                        }elseif($val=='min_qty'){
+
+                            $data[$k]['min_qty']=$_POST['min_qty'];
+
+                        }elseif($val=='max_qty'){
+
+                            $data[$k]['max_qty']=$_POST['max_qty'];
+
+                        }
+                        
                     }
                 }
 
             }
-            $this->session['latestCount']=$data;//after update or add item to data then update the session
+            $this->session['itemsApplied']=$data;//after update or add item to data then update the session
 
         }
-        $latest=$this->session['latestCount'];
+        $itemsApplied=$this->session['itemsApplied'];
         //refresh list 
             echo '
             <table class="table">
@@ -174,23 +190,50 @@ class PriceBookController extends Controller
                     <tr>
                         <th>ID</th>
                         <th>Name</th>
-                        <th>Counted</th>
+                        <th>Cost</th>
+                        <th>Markup<small>(%)</small></th>
+                        <th>Discount<small>(%)</small></th>
+                        <th>Retail Price<br><small>Exclude Tax</small></th>
+                        <th>Min Quantity</th>
+                        <th>Max Quantity</th>
                         <th style="text-align: right;">Action</th>
                     </tr>
                 </thead>
                 <tbody>';
-            foreach($latest as $key=>$value){
+            foreach($itemsApplied as $key=>$value){
                 
                 echo'
                 <tr>
                     <td width="30">'.$value['itemId'].'</td>
                     <td>'.$value['name'].'</td>
+                    <td>'.$value['cost'].'</td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
+                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'markup\','.$key.')" class="txt-markup'.$key.' form-control" value="'.$value['markup'].'">
                         </div>
+                    </td>
+                    <td width="100">
+                        <div class="col-sm-12">
+                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'discount\','.$key.')" class="txt-discount'.$key.' form-control" value="'.$value['discount'].'">
+                        </div>
+                    </td>
+                    <td width="100">
+                        <div class="col-sm-12">
+                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'retail_price\','.$key.')" class="txt-retail-price'.$key.' form-control" value="'.$value['retail_price'].'">
+                        </div>
+                    </td>
+                    <td width="100">
+                        <div class="col-sm-12">
+                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'min_qty\','.$key.')" class="txt-min-qty'.$key.' form-control" value="'.$value['min_qty'].'">
+                        </div>
+                    </td>
+                    <td width="100">
+                        <div class="col-sm-12">
+                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'max_qty\','.$key.')" class="txt-max-qty'.$key.' form-control" value="'.$value['max_qty'].'">
+                        </div>
+                    </td>
                     <td width="80">
-                        <input type="button" value="Remove" class="btn btn-danger" onClick="inventoryCount(2,'.$key.')">
+                        <input type="button" value="X" class="btn btn-danger" onClick="PriceBook(2,'.$key.')">
                     </td>
                 </tr>
                 ';
@@ -203,51 +246,42 @@ class PriceBookController extends Controller
         
     }
 
-    public function actionSaveCount(){
+    public function actionSavePriceBook(){
         $this->setSession(Yii::app()->session);
-        $data=$this->session['latestCount'];//initail data from session
-        $header=$this->session['countheader'];//initail data from session
-        $employeeid=Yii::app()->session['employeeid'];
+        $data=$this->session['itemsApplied'];//initail data from session
+        $header=$this->session['pricebookHeader'];//initail data from session
 
         //save inventory count
-        $inventoryCount=new InventoryCount;
-        $inventoryCount->name=$header['name'];
-        $inventoryCount->created_date=$header['created_date'];
-        $inventoryCount->save();
+        $priceBook=new PriceBook;
 
-        //save detail and history
-        $connection = Yii::app()->db;
-        foreach($data as $key=>$value){
-            if($value['expected']<0){
-                $qty_b4_trans=(-1)*($value['countNum'])-$value['expected'];
-                $qty_b4_trans=(-1)*$qty_b4_trans;
-            }else{
-                $qty_b4_trans=$value['countNum']-$value['expected'];
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'price_book_name=:name';
+        $criteria->params = array(':name'=>$header['name']);
+        $exists = $priceBook->exists($criteria);
+        if($exists){
+            echo 'Price Book "'.$header['name'].'" already taken!';
+        }else{
+            $priceBook->price_book_name=$header['name'];
+            $priceBook->start_date=$header['start_date'];
+            $priceBook->end_date=$header['end_date'];
+            $priceBook->outlet_id=$header['outlet'];
+            $saveHeader=$priceBook->save();
+            //save detail and history
+            $connection = Yii::app()->db;
+            foreach($data as $key=>$value){
+               
+                $invSql="insert into pricings
+                (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
+                values(".$priceBook->id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
+                $command = $connection->createCommand($invSql);
+                $insert = $command->execute(); // execute the non-query SQL
+                // echo $invSql;
             }
-            $qty_af_trans=$qty_b4_trans+$value['expected'];
-            $cost=$qty_b4_trans*$value['cost'];
-            $invSql="insert into inventory_count_detail
-            (item_id,count_id,expected,counted,unit,cost)
-            values(".$value['itemId'].",".$inventoryCount->id.",".$value['expected'].",".$value['countNum'].",".$qty_b4_trans.",".$cost.")";
-            $command = $connection->createCommand($invSql);
-            $insert = $command->execute(); // execute the non-query SQL
-
-
-            //save to inventory
-            $sql = "insert into inventory
-            (trans_items,trans_user,trans_date,trans_comment,trans_inventory,trans_qty,qty_b4_trans,qty_af_trans) 
-            values(" .$value['itemId']. ",'".$employeeid."','" .$header['created_date']. "','" .$header['name']. "','".$value['expected']."','".$value['countNum']."','" .$qty_b4_trans. "','".$qty_af_trans."')";
-            $command1 = $connection->createCommand($sql);
-            $insert1 = $command1->execute(); // execute the non-query SQL
-
-            //update item quantity
-            $updateSql="update item set quantity=".$value['countNum']." where id=".$value['itemId'];
-            $command2 = $connection->createCommand($updateSql);
-            $insert2 = $command2->execute(); // execute the non-query SQL
+            unset(Yii::app()->session['itemsApplied']);
+            unset(Yii::app()->session['pricebookHeader']);
+            $this->redirect(array('/pricebook'));
         }
-        unset(Yii::app()->session['latestCount']);
-        unset(Yii::app()->session['countheader']);
-        $this->redirect(array('receivingItem/index?trans_mode=physical_count2'));
+        
     }
 
     public function actionAdd()
