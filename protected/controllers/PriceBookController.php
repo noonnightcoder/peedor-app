@@ -233,7 +233,7 @@ class PriceBookController extends Controller
                         </div>
                     </td>
                     <td width="80">
-                        <input type="button" value="X" class="btn btn-danger" onClick="PriceBook(2,'.$key.')">
+                        <input type="button" value="X" class="btn btn-danger" onClick="priceBook(2,'.$key.')">
                     </td>
                 </tr>
                 ';
