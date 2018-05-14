@@ -22,7 +22,7 @@ class PriceBookController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('Index','View','Create','AddItem','SavePriceBook'),
+                'actions' => array('Index','View','Create','AddItem','SavePriceBook','EditPriceBook'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -38,7 +38,9 @@ class PriceBookController extends Controller
     public function actionIndex() 
     {  
         authorized('pricebook.read');
-
+        $this->setSession(Yii::app()->session);
+        unset(Yii::app()->session['itemsApplied']);
+        unset(Yii::app()->session['pricebookHeader']);
         $model = new PriceBook('search');
 
         $model->unsetAttributes();  // clear any default values
@@ -82,34 +84,8 @@ class PriceBookController extends Controller
         $item = new Item('search');
         $outlet = Outlet::model()->findAll();;
 
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['PriceBook'])) {
-            $model->attributes = $_GET['PriceBook'];
-        }
-
-        if (isset($_GET['pageSize'])) {
-            Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
-            unset($_GET['pageSize']);
-        }
-
-        $page_size = CHtml::dropDownList(
-            'pageSize',
-            Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
-            Common::arrayFactory('page_size'),
-            array('class' => 'change-pagesize')
-        );
-
-
         $data['model'] = $model;
         $data['outlet'] = $outlet;
-        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
-        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-        $data['page_size'] = $page_size;
-        $data['create_url'] = 'InventoryCountCreate';
-
-        $data['grid_columns'] = PriceBook::getItemColumns();
-
-        $data['data_provider'] = $model->search();
         $this->render('create',$data);
     }
 
@@ -209,27 +185,27 @@ class PriceBookController extends Controller
                     <td>'.$value['cost'].'</td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'markup\','.$key.')" class="txt-markup'.$key.' form-control" value="'.$value['markup'].'">
+                            <input type="number" id="markup'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'markup\','.$key.')" class="txt-markup'.$key.' form-control" value="'.$value['markup'].'">
                         </div>
                     </td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'discount\','.$key.')" class="txt-discount'.$key.' form-control" value="'.$value['discount'].'">
+                            <input type="number" id="discount'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'discount\','.$key.')" class="txt-discount'.$key.' form-control" value="'.$value['discount'].'">
                         </div>
                     </td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'retail_price\','.$key.')" class="txt-retail-price'.$key.' form-control" value="'.$value['retail_price'].'">
+                            <input type="number" id="retail_price'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'retail_price\','.$key.')" class="txt-retail-price'.$key.' form-control" value="'. ($value['retail_price']>0 ? $value['retail_price'] : $info['cost_price']).'">
                         </div>
                     </td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'min_qty\','.$key.')" class="txt-min-qty'.$key.' form-control" value="'.$value['min_qty'].'">
+                            <input type="number" id="min_qty'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'min_qty\','.$key.')" class="txt-min-qty'.$key.' form-control" value="'.$value['min_qty'].'">
                         </div>
                     </td>
                     <td width="100">
                         <div class="col-sm-12">
-                            <input type="number" onkeypress="updateItem('.$value['itemId'].',\'max_qty\','.$key.')" class="txt-max-qty'.$key.' form-control" value="'.$value['max_qty'].'">
+                            <input type="number" id="max_qty'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'max_qty\','.$key.')" class="txt-max-qty'.$key.' form-control" value="'.$value['max_qty'].'">
                         </div>
                     </td>
                     <td width="80">
@@ -246,42 +222,80 @@ class PriceBookController extends Controller
         
     }
 
-    public function actionSavePriceBook(){
+    public function actionSavePriceBook($id=''){
+        $price_book_name = $_POST['PriceBook']['name'];
+        $outlet_id = $_POST['PriceBook']['outlet_id'];
+        $start_date = $_POST['PriceBook']['start_date'];
+        $end_date = $_POST['PriceBook']['end_date'];
         $this->setSession(Yii::app()->session);
         $data=$this->session['itemsApplied'];//initail data from session
-        $header=$this->session['pricebookHeader'];//initail data from session
+        //$header=$this->session['pricebookHeader'];//initail data from session
 
         //save inventory count
         $priceBook=new PriceBook;
-
+        //$pricing=new Pricing;
         $criteria = new CDbCriteria();
         $criteria->condition = 'price_book_name=:name';
-        $criteria->params = array(':name'=>$header['name']);
+        $criteria->params = array(':name'=>$price_book_name);
         $exists = $priceBook->exists($criteria);
-        if($exists){
-            echo 'Price Book "'.$header['name'].'" already taken!';
+        if($exists and ($id=='' or $id==0)){
+            echo 'Price Book "'.$price_book_name.'" already taken!';
         }else{
-            $priceBook->price_book_name=$header['name'];
-            $priceBook->start_date=$header['start_date'];
-            $priceBook->end_date=$header['end_date'];
-            $priceBook->outlet_id=$header['outlet'];
-            $saveHeader=$priceBook->save();
+            if($id>0){
+                PriceBook::model()->updateByPk($id,
+                    array(
+                        'price_book_name'=>$price_book_name,
+                        'start_date'=>date('Y-m-d H:i:s',strtotime($start_date)),
+                        'end_date'=>date('Y-m-d H:i:s',strtotime($end_date)),
+                        'outlet_id'=>$outlet_id,
+                    )
+                );
+                $pricing=Pricing::model()->findByAttributes(array('price_book_id'=>$id)); 
+                $pricing->delete(); // delete the row from the database table
+            }else{
+                $priceBook->price_book_name=$price_book_name;
+                $priceBook->start_date=$start_date;
+                $priceBook->end_date=$end_date;
+                $priceBook->outlet_id=$outlet_id;
+                $saveHeader=$priceBook->save();
+            }
+            $price_book_id=isset($id) ? $id : $priceBook->id;
             //save detail and history
             $connection = Yii::app()->db;
+            $delSql="delete from pricings where price_book_id=".$price_book_id;
+            $command = $connection->createCommand($delSql);
+            $delete = $command->execute(); 
             foreach($data as $key=>$value){
-               
+
+                
+
                 $invSql="insert into pricings
                 (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
-                values(".$priceBook->id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
+                values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
                 $command = $connection->createCommand($invSql);
                 $insert = $command->execute(); // execute the non-query SQL
-                // echo $invSql;
+
+               
             }
             unset(Yii::app()->session['itemsApplied']);
             unset(Yii::app()->session['pricebookHeader']);
             $this->redirect(array('/pricebook'));
         }
         
+    }
+
+    public function actionEditPriceBook($id){
+        $this->setSession(Yii::app()->session);
+        $priceBook=PriceBook::getPriceBookEdit($id);
+        $model = new PriceBook('search');
+        //$item = new Item('search');
+        $outlet = Outlet::model()->findAll();
+        $this->session['pricebookHeader']=$priceBook['data'];
+        $this->session['itemsApplied']=$priceBook['data']['item'];
+        $data['model'] = $model;
+        $data['outlet'] = $outlet;
+        $this->render('create',$data);
+        //var_dump($this->session['itemsApplied']);
     }
 
     public function actionAdd()

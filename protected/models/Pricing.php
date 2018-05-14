@@ -16,7 +16,7 @@
  * @property string $discount_type
  */
 
-class Princing extends CActiveRecord
+class Pricing extends CActiveRecord
 {
 	public $search;
         

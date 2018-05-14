@@ -11,6 +11,13 @@
             'title' => Yii::t('app', 'Price Book ' . ucfirst('Detail')),
             'headerIcon' => sysMenuItemIcon(),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
+		    'headerButtons' => array(
+		        TbHtml::buttonGroup(
+		            array(
+		                array('label' => Yii::t('app','Edit'),'url' => Yii::app()->createUrl('pricebook/EditPriceBook',array('id'=>$_GET['id'])),'icon'=>'fa fa-floppy-o white'),
+		            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+		        ),
+		    ),
         )); ?>
             
             <!-- Flash message layouts.partial._flash_message -->

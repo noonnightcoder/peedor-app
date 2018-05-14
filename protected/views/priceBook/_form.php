@@ -3,7 +3,7 @@
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'item-form',
     'enableAjaxValidation'=>true,
-    'action'=>$this->createUrl('PriceBook/SavePriceBook'),
+    'action'=>$this->createUrl('PriceBook/SavePriceBook/'.@$_GET['id']),
     'enableClientValidation'=>true,
     'clientOptions' => array(
         'validateOnSubmit'=>true,
@@ -23,7 +23,7 @@
             <div class="col-sm-11 col-md-3">
                 <div class="form-group">
                     <?php echo CHtml::label('Name', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('PriceBook',isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : '',array('class'=>'form-control','id'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
+                    <?php echo CHtml::TextField('PriceBook[name]',isset($_POST['PiceBook']['name']) ? $_POST['PiceBook']['name'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : ''),array('class'=>'form-control','id'=>'PriceBook_name','name'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
                 </div>
             </div>
             <div class="col-sm-11 col-md-3 margin-left-10">
@@ -31,7 +31,7 @@
                     <?php echo CHtml::label('Outlet', 1, array('class' => 'control-label')); ?>
                     <select name='PriceBook[outlet_id]' class="form-control" id="db-outlet">
                         <?php foreach($outlet as $key=>$value):?>
-                            <?php if($value['id']==isset($_SESSION['pricebookHeader']['outlet'])):?>
+                            <?php if($value['id']==isset($_POST['PiceBook']['outlet_id']) ? $_POST['PiceBook']['outlet_id'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['outlet'] : '')):?>
                                 <option value="<?=$value['id']?>" selected><?=$value['outlet_name']?></option>
                             <?php else:?>
                                 <option value="<?=$value['id']?>"><?=$value['outlet_name']?></option>
@@ -52,7 +52,7 @@
                             'pluginOptions' => array(
                                 'format' => 'yyyy-mm-dd',
                             ),
-                            'htmlOptions'=>array('value'=>isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['start_date'] : date('Y-m-d'))
+                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['start_date']) ? $_POST['PiceBook']['start_date'] : isset($_SESSION['pricebookHeader']['start_date']) ? $_SESSION['pricebookHeader']['start_date'] : date('Y-m-d'))
                         ));
                     ?>
                 </div>
@@ -66,7 +66,7 @@
                             'pluginOptions' => array(
                                 'format' => 'yyyy-mm-dd',
                             ),
-                            'htmlOptions'=>array('value'=>isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['end_date'] : date('Y-m-d'))
+                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['end_date']) ? $_POST['PiceBook']['end_date'] : isset($_SESSION['pricebookHeader']['end_date']) ? $_SESSION['pricebookHeader']['end_date'] : date('Y-m-d'))
                         ));
                     ?>
                 </div>
@@ -106,7 +106,7 @@
                                                     $(".btn-count").prop("disabled",false);
                                                     $(".txt-pro-name").val(ui.item.value);
                                                     $(".txt-pro-id").val(ui.item.id);
-
+                                                    priceBook(1,"")
                                                 }',
                                             ),
                                         ));
@@ -124,9 +124,6 @@
             <div class="row">
                 <div class="col-sm-11 table-responsive" id="lasted-count">
                     <?php if(isset($_SESSION['itemsApplied'])):?>
-                        <h3 style="color:#00f;">
-                            Input number and press enter to update item
-                        </h3>
                         <table class="table">
                             <thead>
                                 <tr>
@@ -149,27 +146,27 @@
                                         <td><?=$value['cost']?></td>
                                         <td width="100">
                                             <div class="col-sm-12">
-                                                <input type="number" onkeypress="updateItem(<?=$value['itemId']?>,'markup',<?=$key?>)" class="txt-markup<?=$key?> form-control" value="<?=$value['markup']?>">
+                                                <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'markup',<?=$key?>)" class="txt-markup<?=$key?> form-control" value="<?=$value['markup']?>">
                                             </div>
                                         </td>
                                         <td width="100">
                                             <div class="col-sm-12">
-                                                <input type="number" onkeypress="updateItem(<?=$value['itemId']?>,'discount',<?=$key?>)" class="txt-discount<?=$key?> form-control" value="<?=$value['discount']?>">
+                                                <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'discount',<?=$key?>)" class="txt-discount<?=$key?> form-control" value="<?=$value['discount']?>">
                                             </div>
                                         </td>
                                         <td width="100">
                                             <div class="col-sm-12">
-                                                <input type="number" onkeypress="updateItem(<?=$value['itemId']?>,'retail_price',<?=$key?>)" class="txt-retail-price<?=$key?> form-control" value="<?=$value['retail_price']?>">
+                                                <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'retail_price',<?=$key?>)" class="txt-retail-price<?=$key?> form-control" value="<?=$value['retail_price'] > 0 ? $value['retail_price'] : $value['cost'] ?>">
                                             </div>
                                         </td>
                                         <td width="100">
                                             <div class="col-sm-12">
-                                                <input type="number" onkeypress="updateItem(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> form-control" value="<?=$value['min_qty']?>">
+                                                <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> form-control" value="<?=$value['min_qty']?>">
                                             </div>
                                         </td>
                                         <td width="100">
                                             <div class="col-sm-12">
-                                                <input type="number" onkeypress="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> form-control" value="<?=$value['max_qty']?>">
+                                                <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> form-control" value="<?=$value['max_qty']?>">
                                             </div>
                                         </td>
                                         <td width="80">
@@ -184,7 +181,8 @@
             </div>
             <div class="row">
                 <div class='col-sm-11'>
-                    <a href="<?=Yii::app()->createUrl('PriceBook/SavePriceBook')?>" class="btn btn-primary pull-right">Save Price Book</a>
+                    <!-- <a href="<?=Yii::app()->createUrl('PriceBook/SavePriceBook')?>" class="btn btn-primary pull-right">Save Price Book</a> -->
+                    <input type="button" class="btn btn-primary pull-right" onclick="form.submit()" value="Save">
                 </div>
             </div>
         </div>
@@ -235,7 +233,7 @@
         })
     });
     function priceBook(opt,idx){
-        var url='AddItem';
+        var url='<?=Yii::app()->createUrl('/PriceBook/AddItem')?>';
         var start_date=$('#PriceBook_start_date').val();
         var end_date=$('#PriceBook_end_date').val();
         var price_book_name=$('#PriceBook_name').val();
@@ -258,9 +256,10 @@
         }
         
     }
+    var timer=null;
     function updateItem(itemId,val,idx){
         var opt=3;
-        var url='AddItem';
+        var url='<?=Yii::app()->createUrl('/PriceBook/AddItem')?>';
         var markup=$('.txt-markup'+idx).val();
         var discount=$('.txt-discount'+idx).val();
         var retail_price=$('.txt-retail-price'+idx).val();
@@ -268,6 +267,8 @@
         var max_qty=$('.txt-max-qty'+idx).val();
         var x = event.which || event.keyCode
         if(x == 13){
+            //clearTimeout(timer)
+            //timer=setTimeout(function(){
             $.ajax({url:url,
                 type : 'post',
                 data:{opt,itemId,markup,discount,retail_price,min_qty,max_qty,val,idx},
@@ -275,8 +276,32 @@
                 complete: function() { $('.waiting').slideUp(); },
                 success : function(data) {
                     $('#lasted-count').html(data);
+                    switch(val){
+                        case 'markup':
+                        $('#discount'+idx).focus();
+                        $('#discount'+idx).select();
+                        break;
+                        case 'discount':
+                        $('#retail_price'+idx).focus();
+                        $('#retail_price'+idx).select();
+                        break;
+                        case 'retail_price':
+                        $('#min_qty'+idx).focus();
+                        $('#min_qty'+idx).select();
+                        break;
+                        case 'min_qty':
+                        $('#max_qty'+idx).focus();
+                        $('#max_qty'+idx).select();
+                        break;
+                        case 'max_qty':
+                        $('#markup'+idx).focus();
+                        $('#markup'+idx).select();
+                        break;
+                    }
                 }
-            });    
+            });
+                //},700   
+            //)
         }
         
     }

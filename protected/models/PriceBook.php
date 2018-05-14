@@ -140,7 +140,7 @@ class PriceBook extends CActiveRecord
                    FROM price_book pb ,outlet o 
                    WHERE pb.outlet_id=o.id
                    AND pb.id=:id";
-        $sql2 = "SELECT name 'item name',retail_price 'retail price',min_unit 'from quantity',max_unit 'to quantity'
+        $sql2 = "SELECT name 'item name',item_id 'itemId',cost_price,markup 'markup(%)',discount 'discount(%)',retail_price 'retail price',min_unit 'from quantity',max_unit 'to quantity'
                    FROM item i ,pricings p 
                    WHERE i.id=p.item_id
                    AND p.price_book_id=:price_book_id";
@@ -155,6 +155,28 @@ class PriceBook extends CActiveRecord
         }
         return $data;
     }
+
+    public static function getPriceBookEdit($id){
+        $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
+                   FROM price_book pb ,outlet o
+                   WHERE pb.outlet_id=o.id
+                   AND pb.id=:id";
+        $sql2 = "SELECT name ,item_id 'itemId',cost_price cost,markup,discount,retail_price,min_unit min_qty,max_unit max_qty
+                   FROM item i ,pricings p 
+                   WHERE i.id=p.item_id
+                   AND p.price_book_id=:price_book_id";
+        $rawData = Yii::app()->db->createCommand($sql1)->queryAll(true, array(':id' => $id));
+        $data=array();
+        foreach($rawData as $key=>$value){
+            $data['data'] = $value;
+            $itemRawData = Yii::app()->db->createCommand($sql2)->queryAll(true, array(':price_book_id' => $value['price_book_id']));
+            foreach($itemRawData as $k=>$v){
+                $data['data']['item'][]=$v;
+            }
+        }
+        return $data;
+    }
+
     public static function getItemColumns() {
         return array(
             array(
