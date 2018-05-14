@@ -132,9 +132,9 @@ class PriceBookController extends Controller
                             $data[$k]['markup']=$_POST['markup'];//update array data
                             $data[$k]['retail_price']=$data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100));
                         }elseif($val=='retail_price'){
-
+                            $data[$k]['discount']=0;
                             $data[$k]['retail_price']=$_POST['retail_price'];
-                            $data[$k]['markup']=($_POST['retail_price']*100)-100;//update array data
+                            $data[$k]['markup']=(($_POST['retail_price']*100)/$data[$k]['cost'])-100;//update array data
 
                         }elseif($val=='discount'){
 
