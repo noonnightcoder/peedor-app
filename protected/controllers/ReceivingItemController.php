@@ -237,8 +237,10 @@ class ReceivingItemController extends Controller
                         <div class="col-sm-12">
                             <input type="number" onkeypress="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
                         </div>
-                    <td width="80">
-                        <input type="button" value="Remove" class="btn btn-danger" onClick="inventoryCount(2,'.$key.')">
+                    <td width="80" align="center">
+                        <a class="delete-item btn btn-danger btn-xs" onClick="inventoryCount(2,'.$key.')">
+                            <span class="glyphicon glyphicon glyphicon-trash "></span>
+                        </a>
                     </td>
                 </tr>
                 ';

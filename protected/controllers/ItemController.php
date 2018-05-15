@@ -248,14 +248,14 @@ class ItemController extends Controller
         authorized('item.create');
 
         $model = new Item;
-        $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(0);
+        // $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(0);
 
-        $this->setSession(Yii::app()->session);
+        // $this->setSession(Yii::app()->session);
 
-        $priceRange=$this->session['priceQty'];
+        // $priceRange=$this->session['priceQty'];
 
 
-        $price_tiers = PriceTier::model()->getListPriceTier();
+        // $price_tiers = PriceTier::model()->getListPriceTier();
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
@@ -269,12 +269,12 @@ class ItemController extends Controller
             $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
 
             //Saving new category to `category` table
-            $category_id = Category::model()->saveCategory($category_name);
+            //$category_id = Category::model()->saveCategory($category_name);
             $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
 
-            if ($category_id !== null) {
-                $model->category_id = $category_id;
-            }
+            // if ($category_id !== null) {
+            //     $model->category_id = $category_id;
+            // }
 
             if ($unit_measurable_id !== null) {
                 $model->unit_measurable_id = $unit_measurable_id;
@@ -288,24 +288,24 @@ class ItemController extends Controller
                         if (isset($_POST['Item']['count_interval'])) {
                             Item::model()->saveItemCounSchedule($model->id);
                         }
-                        //save price quantity range
-                        if($model->id>0){//check if item id exist after saved to table
-                            $connection = Yii::app()->db;//initial connection to run raw sql 
-                            if(isset($_POST['priceQuantity'])){
-                                foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
-                                    if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
-                                        $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
-                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
-                                        $command = $connection->createCommand($sql);
-                                        $insert = $command->execute(); // execute the non-query SQL
-                                    }
-                                }
-                            }
-                        }
+                        // //save price quantity range
+                        // if($model->id>0){//check if item id exist after saved to table
+                        //     $connection = Yii::app()->db;//initial connection to run raw sql 
+                        //     if(isset($_POST['priceQuantity'])){
+                        //         foreach($_POST['priceQuantity'] as $key=>$value){//loop data from price quantity
+                        //             if($value['from_quantity']>0 and $value['to_quantity']>$value['from_quantity'] and $value['unit_price']>0){
+                        //                 $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
+                        //                 $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d',strtotime('+10950 days'));
+                        //                 $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                        //                 $command = $connection->createCommand($sql);
+                        //                 $insert = $command->execute(); // execute the non-query SQL
+                        //             }
+                        //         }
+                        //     }
+                        // }
                         
                         // Saving Item Price Tier to `item_price_tier`
-                        ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
+                        // ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         $this->addImages($model, $transaction);
                         $transaction->commit();
 
@@ -329,11 +329,12 @@ class ItemController extends Controller
         }
 
         $data['model'] = $model;
-        $data['price_tiers'] = $price_tiers;
-        $data['item_price_quantity'] = $item_price_quantity;
-        $data['priceQty'] = $priceRange;
+        // $data['price_tiers'] = $price_tiers;
+        // $data['item_price_quantity'] = $item_price_quantity;
+        // $data['priceQty'] = $priceRange;
+        $data['categories']=Category::model()->findAll();
 
-        $this->render('create', $data);
+        $this->render('create2', $data);
 
     }
     public function actionAddPriceQty()
@@ -361,8 +362,8 @@ class ItemController extends Controller
         $this->setSession(Yii::app()->session);
 
         $priceRange=$this->session['priceQty'.$id];
-        $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
-        $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
+        // $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
+        // $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
         $next_id = Item::model()->getNextId($id);
         $previous_id = Item::model()->getPreviousId($id);
         $next_disable = $next_id === null ? 'disabled' : '';
@@ -381,12 +382,12 @@ class ItemController extends Controller
             $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
 
             //Saving new category to `category` table
-            $category_id = Category::model()->saveCategory($category_name);
+            // $category_id = Category::model()->saveCategory($category_name);
             $unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
 
-            if ($category_id !== null) {
-                $model->category_id = $category_id;
-            }
+            // if ($category_id !== null) {
+            //     $model->category_id = $category_id;
+            // }
 
             if ($unit_measurable_id !== null) {
                 $model->unit_measurable_id = $unit_measurable_id;
@@ -401,30 +402,28 @@ class ItemController extends Controller
                             Item::model()->saveItemCounSchedule($model->id);
                         }
 
-                        ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
+                        // ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         // Product Price (retail price) history
                         ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
-                        if (isset($_POST['priceQuantity'])) {
+                        // if (isset($_POST['priceQuantity'])) {
 
-                            var_dump($_POST['priceQuantity']);
+                        //     //save price quantity range
+                        //     $connection = Yii::app()->db;//initial connection to run raw sql
+                        //     $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
+                        //     $delete = $command->execute(); // execute the non-query SQL
 
-                            //save price quantity range
-                            $connection = Yii::app()->db;//initial connection to run raw sql
-                            $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
-                            $delete = $command->execute(); // execute the non-query SQL
-
-                            if (isset($_POST['priceQuantity'])) {
-                                foreach ($_POST['priceQuantity'] as $key => $value) {//loop data from price quantity
-                                    if ($value['from_quantity'] > 0 and $value['to_quantity'] > $value['from_quantity'] and $value['unit_price'] > 0) {
-                                        $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                                        $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d', strtotime('+10950 days'));
-                                        $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
-                                        $command = $connection->createCommand($sql);
-                                        $insert = $command->execute(); // execute the non-query SQL
-                                    }
-                                }
-                            }
-                        }
+                        //     if (isset($_POST['priceQuantity'])) {
+                        //         foreach ($_POST['priceQuantity'] as $key => $value) {//loop data from price quantity
+                        //             if ($value['from_quantity'] > 0 and $value['to_quantity'] > $value['from_quantity'] and $value['unit_price'] > 0) {
+                        //                 $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
+                        //                 $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d', strtotime('+10950 days'));
+                        //                 $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
+                        //                 $command = $connection->createCommand($sql);
+                        //                 $insert = $command->execute(); // execute the non-query SQL
+                        //             }
+                        //         }
+                        //     }
+                        // }
 
                         $this->addImages($model);
                         $transaction->commit();
@@ -441,12 +440,13 @@ class ItemController extends Controller
         }
 
         $data['model'] = $model;
-        $data['price_tiers'] = $price_tiers;
-        $data['item_price_quantity'] = $item_price_quantity;
+        // $data['price_tiers'] = $price_tiers;
+        // $data['item_price_quantity'] = $item_price_quantity;
         $data['next_disable'] = $next_disable;
         $data['previous_disable'] = $previous_disable;
-        $data['priceQty'] = $priceRange;
-        $this->render('update', $data);
+        // $data['priceQty'] = $priceRange;
+        $data['categories']=Category::model()->findAll();
+        $this->render('update2', $data);
     }
     public function actionAssemblies()
     {

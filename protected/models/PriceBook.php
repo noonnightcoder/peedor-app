@@ -19,6 +19,7 @@
 class PriceBook extends CActiveRecord
 {
 	public $search;
+    public $pricebook_archived;
         
         /**
 	 * @return string the associated database table name
@@ -38,7 +39,7 @@ class PriceBook extends CActiveRecord
 		return array(
 			array('price_book_name, outlet_id', 'required'),
             array('price_book_name', 'unique'),
-			array('id,price_book_name', 'safe', 'on'=>'search'),
+			array('price_book_name', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -82,23 +83,21 @@ class PriceBook extends CActiveRecord
 	 */
 	public function search()
     {
-        // Warning: Please modify the following code to remove attributes that
-        // should not be searched.
+        $criteria=new CDbCriteria;
 
-        $criteria = new CDbCriteria;
+        //$criteria->compare('id',$this->id);
+        $criteria->compare('price_book_name',$this->price_book_name,true);
 
-        $criteria->compare('id', $this->id);
-        
-        if  ( Yii::app()->user->getState('item_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
-            $criteria->condition = 'price_book_name LIKE :name';
+        if  ( Yii::app()->user->getState('pricebook_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'price_book_name like :search';
             $criteria->params = array(
-                ':name' => '%' . $this->search . '%'
+                ':search' => '%' . $this->search . '%',
             );
         } else {
-            $criteria->condition = 'status=:active_status AND (price_book_name LIKE :name)';
+            $criteria->condition = 'status=:active_status AND (price_book_name like :search)';
             $criteria->params = array(
-                ':active_status' => param('active_status'),
-                ':name' => '%' . $this->search . '%'
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
             );
         }
 
@@ -107,15 +106,17 @@ class PriceBook extends CActiveRecord
         //$criteria->condition='deleted=:is_deleted';
         //$criteria->params=array(':is_deleted'=>$this::_item_not_deleted);
 
-        $criteria->compare('outlet_id',$this->outlet_id);
+        //$criteria->compare('id',$this->id);
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
-                'pageSize' => Yii::app()->user->getState('item_page_size', Common::defaultPageSize()),
+                'pageSize' => Yii::app()->user->getState('pricebook_page_size', Common::defaultPageSize()),
             ),
             'sort' => array('defaultOrder' => 'price_book_name')
         ));
+
+        
     }
 
 	/**
@@ -135,31 +136,48 @@ class PriceBook extends CActiveRecord
 
         return $model;
     }
-    public static function getPriceBookDetail($id){
-        $sql1 = "SELECT pb.id  price_book_id,price_book_name,outlet_name,date_format(start_date,'%d-%m-%Y') valid_from,date_format(end_date,'%d-%m-%Y') valid_to
-                   FROM price_book pb ,outlet o 
-                   WHERE pb.outlet_id=o.id
-                   AND pb.id=:id";
-        $sql2 = "SELECT name 'item name',item_id 'itemId',cost_price,markup 'markup(%)',discount 'discount(%)',retail_price 'retail price',min_unit 'from quantity',max_unit 'to quantity'
-                   FROM item i ,pricings p 
-                   WHERE i.id=p.item_id
-                   AND p.price_book_id=:price_book_id";
-        $rawData = Yii::app()->db->createCommand($sql1)->queryAll(true, array(':id' => $id));
+    public static function getPriceBookDetail($id,$name=''){
+        $con='';
         $data=array();
-        foreach($rawData as $key=>$value){
-            $data['data'] = $value;
-            $itemRawData = Yii::app()->db->createCommand($sql2)->queryAll(true, array(':price_book_id' => $value['price_book_id']));
-            foreach($itemRawData as $k=>$v){
-                $data['data']['item'][]=$v;
+        $sql1 = "SELECT pb.id  price_book_id,price_book_name,outlet_name,cg.group_name,date_format(start_date,'%d-%m-%Y') valid_from,date_format(end_date,'%d-%m-%Y') valid_to
+                   FROM price_book pb ,outlet o,customer_group cg
+                   WHERE pb.outlet_id=o.id
+                   and pb.group_id=cg.id
+                   AND pb.id=:id";
+        $rawData = Yii::app()->db->createCommand($sql1)->queryAll(true, array(':id' => $id));
+        $sql2 = "SELECT name,i.id,cost_price,markup 'markup(%)',discount 'discount(%)',retail_price 'retail price',min_unit 'from quantity',max_unit 'to quantity'
+                   FROM item i ,pricings p 
+                   WHERE i.id=p.item_id";
+             
+            foreach($rawData as $key=>$value){
+                $data['data'] = $value;
+                if($value['price_book_name']=='General'){
+                    $itemRawData = Yii::app()->db->createCommand('select id,name , unit_price from item')->queryAll();
+                    foreach($itemRawData as $k=>$v){
+                        $data['data']['item'][]=$v;
+                    }
+                }else{
+                    $sql2 = $sql2.' AND p.price_book_id=:price_book_id';
+                    $itemRawData = Yii::app()->db->createCommand($sql2)->queryAll(true, array(':price_book_id' => $value['price_book_id']));
+                    foreach($itemRawData as $k=>$v){
+                        $data['data']['item'][]=$v;
+                    }
+                }
+                
             }
-        }
+        
+        
+
+        
+        
         return $data;
     }
 
     public static function getPriceBookEdit($id){
-        $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
-                   FROM price_book pb ,outlet o
+        $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,cg.id customer_group,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
+                   FROM price_book pb ,outlet o,customer_group cg
                    WHERE pb.outlet_id=o.id
+                   and pb.group_id=cg.id
                    AND pb.id=:id";
         $sql2 = "SELECT name ,item_id 'itemId',cost_price cost,markup,discount,retail_price,min_unit min_qty,max_unit max_qty
                    FROM item i ,pricings p 
@@ -181,7 +199,7 @@ class PriceBook extends CActiveRecord
         return array(
             array(
                 'name' => 'price_book_name',
-                'value' => '$data->status=="1" ? CHtml::link($data->price_book_name, Yii::app()->createUrl("pricebook/view",array("id"=>$data->primaryKey))) : "<s class=\"red\">  $data->price_book_name <span>" ',
+                'value' => '$data->status=="1" ? CHtml::link($data->price_book_name, Yii::app()->createUrl("pricebook/view",array("id"=>$data->primaryKey,"name"=>$data->price_book_name))) : "<s class=\"red\">  $data->price_book_name <span>" ',
                 'type' => 'raw',
                 'filter' => '',
             ),

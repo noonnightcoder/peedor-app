@@ -20,11 +20,29 @@
     <hr> 
     <div class="container">
         <div class="row">
+            <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
+        <?= Yii::t('app', 'are required'); ?></p>
+            <div class="col-sm-11 col-md-6">
+                <div class="form-group">
+                    <?php echo CHtml::label('Name *', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::TextField('PriceBook[price_book_name]',isset($_POST['PiceBook']['price_book_name']) ? $_POST['PiceBook']['price_book_name'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : ''),array('class'=>'form-control','id'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
+                    <span style="color:#f00;"><?=@$_GET['status']=='error' ? $_GET['name']=='' ? 'Field name is rquired' : 'Price book name '.@$_GET['name'].' already taken!' : ''?></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-sm-11 col-md-3">
                 <div class="form-group">
-                    <?php echo CHtml::label('Name', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('PriceBook[price_book_name]',isset($_POST['PiceBook']['price_book_name']) ? $_POST['PiceBook']['price_book_name'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : ''),array('class'=>'form-control','id'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
-                    <span style="color:#f00;"><?=@$_GET['status']=='error' ? 'Price book name '.@$_GET['name'].' already taken!' : ''?></span>
+                    <?php echo CHtml::label('Customer Group', 1, array('class' => 'control-label')); ?>
+                    <select name='PriceBook[group_id]' class="form-control" id="db-group">
+                        <?php foreach($customer_group as $key=>$value):?>
+                            <?php if($value['id']==isset($_POST['PiceBook']['group_id']) ? $_POST['PiceBook']['group_id'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['customer_group'] : '')):?>
+                                <option value="<?=$value['id']?>" selected><?=$value['group_name']?></option>
+                            <?php else:?>
+                                <option value="<?=$value['id']?>"><?=$value['group_name']?></option>
+                            <?php endif;?>
+                        <?php endforeach;?>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-11 col-md-3 margin-left-10">
@@ -41,7 +59,6 @@
                     </select>
                 </div>
             </div>
-            
         </div>   
         <div class="row"> 
             <div class="col-sm-11 col-md-3">
@@ -170,8 +187,10 @@
                                                 <input type="number" onkeyup="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> form-control" value="<?=$value['max_qty']?>">
                                             </div>
                                         </td>
-                                        <td width="80">
-                                            <input type="button" value="X" class="btn btn-danger pull-right" onClick="priceBook(2,<?=$key?>)">
+                                        <td width="80" align="center">
+                                            <a class="delete-item btn btn-danger btn-xs" onClick="priceBook(2,<?=$key?>)">
+                                                <span class="glyphicon glyphicon glyphicon-trash "></span>
+                                            </a>
                                         </td>
                                     </tr>
                                 <?php endforeach;?>
@@ -241,12 +260,13 @@
         var itemId=$('.txt-pro-id').val();
         var proName=$('.txt-pro-name').val();
         var outlet=$('#db-outlet').val();
+        var group_id=$('#db-group').val();
         if(opt==1 && (proName =='')){
             return false;
         }else{
             $.ajax({url:url,
                 type : 'post',
-                data:{opt,start_date,end_date,price_book_name,outlet,idx,itemId,proName},
+                data:{opt,start_date,end_date,price_book_name,outlet,group_id,idx,itemId,proName},
                 beforeSend: function() { $('.waiting').slideDown(); },
                 complete: function() { $('.waiting').slideUp(); },
                 success : function(data) {
@@ -295,8 +315,8 @@
                         $('#max_qty'+idx).select();
                         break;
                         case 'max_qty':
-                        $('#markup'+idx).focus();
-                        $('#markup'+idx).select();
+                        $('.txt-pro-name').focus();
+                        //$('#markup'+idx).select();
                         break;
                     }
                 }

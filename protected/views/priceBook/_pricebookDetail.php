@@ -8,11 +8,11 @@
     <div class="col-xs-12 widget-container-col ui-sortable">
 
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-            'title' => Yii::t('app', 'Price Book ' . ucfirst('Detail')),
+            'title' => Yii::t('app', ucfirst($_GET['name']).' Price Book'),
             'headerIcon' => sysMenuItemIcon(),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
 		    'headerButtons' => array(
-		        TbHtml::buttonGroup(
+		        $_GET['name'] =='General' ? '' : TbHtml::buttonGroup(
 		            array(
 		                array('label' => Yii::t('app','Edit'),'url' => Yii::app()->createUrl('pricebook/EditPriceBook',array('id'=>$_GET['id'])),'icon'=>'fa fa-floppy-o white'),
 		            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
@@ -27,43 +27,51 @@
 				<?php foreach($data as $key=>$header):?>
 					<div class="row">
 						<div class="col-sm-6">
-							<h4>Price Book Name: <?=$header['price_book_name']?></h4>
+							<h5>Price Book Name: <strong><?=$header['price_book_name']?></strong></h5>
 						</div>
 						<div class="col-sm-6">
-							<h4>Valid From: <?=$header['valid_from']?></h4>
+							<h5>Valid From: <strong><?=$header['valid_from']?></strong></h5>
 						</div>
 						<div class="col-sm-6">
-							<h4>Outlet Name: <?=$header['outlet_name']?></h4>
+							<h5>Outlet Name: <strong><?=$header['outlet_name']?></strong></h5>
 						</div>
 						<div class="col-sm-6">
-							<h4>Valid To: <?=$header['valid_to']?></h4>
+							<h5>Valid To: <strong><?=$header['valid_to']?></strong></h5>
 						</div>
-						
+						<div class="col-sm-6">
+							<h5>Customer Group: <strong><?=$header['group_name']?></strong></h5>
+						</div>
 					</div>
 					<hr>
-					<div class="row">
-						<table class="table">
-							<thead>
-								<?php foreach($header['item'] as $k=>$item):?>
-								<tr>
-									<?php foreach($item as $col=>$row):?>
-										<th><?=strtoupper($col)?></th>
-									<?php endforeach;?>
-								</tr>
-								<?php break;?>
-								<?php endforeach;?>
-							</thead>
-							<tbody>
-								<?php foreach($header['item'] as $k=>$item):?>
+					<?php if(isset($header['item'])):?>
+						<div class="row">
+							<table class="table">
+								<thead>
+									<?php foreach($header['item'] as $k=>$item):?>
 									<tr>
 										<?php foreach($item as $col=>$row):?>
-											<td><?=$row?></td>
+											<th><?=strtoupper($col)?></th>
 										<?php endforeach;?>
 									</tr>
-								<?php endforeach;?>
-							</tbody>
-						</table>
-					</div>
+									<?php break;?>
+									<?php endforeach;?>
+								</thead>
+								<tbody>
+									<?php foreach($header['item'] as $k=>$item):?>
+										<tr>
+											<?php foreach($item as $col=>$row):?>
+												<?php if($col=='name'):?>
+													<td><a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$item['id']?>"><?=$row?></a></td>	
+												<?php else:?>
+												<td><?=$row?></td>
+												<?php endif?>
+											<?php endforeach;?>
+										</tr>
+									<?php endforeach;?>
+								</tbody>
+							</table>
+						</div>
+					<?php endif;?>
 				<?php endforeach;?>
 			<?php endif;?>
         <?php $this->endWidget(); ?>

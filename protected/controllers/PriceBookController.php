@@ -53,6 +53,15 @@ class PriceBookController extends Controller
             unset($_GET['pageSize']);
         }
 
+        $model->pricebook_archived = Yii::app()->user->getState('pricebook_archived',
+            Yii::app()->params['defaultArchived']);
+
+        // $page_size = CHtml::dropDownList(
+        //     'pageSize',
+        //     Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
+        //     Common::arrayFactory('page_size'),
+        //     array('class' => 'change-pagesize',)
+        // );
         $page_size = CHtml::dropDownList(
             'pageSize',
             Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
@@ -72,7 +81,7 @@ class PriceBookController extends Controller
         $data['data_provider'] = $model->search();
         $this->render('_list',$data);
     }
-    public function actionView($id){
+    public function actionView($id,$name=''){
         $priceBook=PriceBook::getPriceBookDetail($id);
         $data['data']=$priceBook;
         $data['count_title']='pricebook';
@@ -82,10 +91,11 @@ class PriceBookController extends Controller
         //$invcount=new InventoryCount;
         $model = new PriceBook('search');
         $item = new Item('search');
-        $outlet = Outlet::model()->findAll();;
-
+        $outlet = Outlet::model()->findAll();
+        $customer_group = CustomerGroup::model()->findAll();
         $data['model'] = $model;
         $data['outlet'] = $outlet;
+        $data['customer_group'] = $customer_group;
         $this->render('create',$data);
     }
 
@@ -110,6 +120,7 @@ class PriceBookController extends Controller
             $start_date=$_POST['start_date'];//price book valid start date
             $end_date=$_POST['end_date'];//price book valid end date
             $outlet=$_POST['outlet'];//price book apply to outlet
+            $group_id=$_POST['group_id'];//price book apply to outlet
             $price_book_name=$_POST['price_book_name'];//price book name
 
             $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date);
@@ -208,8 +219,10 @@ class PriceBookController extends Controller
                             <input type="number" id="max_qty'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'max_qty\','.$key.')" class="txt-max-qty'.$key.' form-control" value="'.$value['max_qty'].'">
                         </div>
                     </td>
-                    <td width="80">
-                        <input type="button" value="X" class="btn btn-danger" onClick="priceBook(2,'.$key.')">
+                    <td width="80" align="center">
+                        <a class="delete-item btn btn-danger btn-xs" onClick="priceBook(2,'.$key.')">
+                            <span class="glyphicon glyphicon glyphicon-trash "></span>
+                        </a>
                     </td>
                 </tr>
                 ';
@@ -225,6 +238,7 @@ class PriceBookController extends Controller
     public function actionSavePriceBook($id=''){
         $price_book_name = $_POST['PriceBook']['price_book_name'];
         $outlet_id = $_POST['PriceBook']['outlet_id'];
+        $group_id = $_POST['PriceBook']['group_id'];
         $start_date = $_POST['PriceBook']['start_date'];
         $end_date = $_POST['PriceBook']['end_date'];
         $this->setSession(Yii::app()->session);
@@ -243,6 +257,8 @@ class PriceBookController extends Controller
         try {
             if($exists and ($id=='' or $id==0)){
                 $this->redirect(array('/PriceBook/create','name'=>$price_book_name,'status'=>'error'));
+            }elseif($price_book_name==''){
+                $this->redirect(array('/PriceBook/create','name'=>'','status'=>'error'));
             }else{
                 $connection = Yii::app()->db;
                 if($id>0){
@@ -264,20 +280,24 @@ class PriceBookController extends Controller
                     $priceBook->start_date=$start_date;
                     $priceBook->end_date=$end_date;
                     $priceBook->outlet_id=$outlet_id;
+                    $priceBook->group_id=$group_id;
                     $saveHeader=$priceBook->save();
                     $price_book_id = $priceBook->id;
                 }
                
-                //save detail and history
-                foreach($data as $key=>$value){
+                if(!empty($data)){
+                    //save item
+                    foreach($data as $key=>$value){
 
-                    $invSql="insert into pricings
-                    (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
-                    values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
-                    $command = $connection->createCommand($invSql);
-                    $insert = $command->execute(); // execute the non-query SQL
-                    //echo $invSql;
+                        $invSql="insert into pricings
+                        (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
+                        values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
+                        $command = $connection->createCommand($invSql);
+                        $insert = $command->execute(); // execute the non-query SQL
+                        //echo $invSql;
+                    }
                 }
+                
                 $transaction->commit();
                 unset(Yii::app()->session['itemsApplied']);
                 unset(Yii::app()->session['pricebookHeader']);
@@ -298,10 +318,13 @@ class PriceBookController extends Controller
         $model = new PriceBook('search');
         //$item = new Item('search');
         $outlet = Outlet::model()->findAll();
+        $customer_group = CustomerGroup::model()->findAll();
         $this->session['pricebookHeader']=$priceBook['data'];
-        $this->session['itemsApplied']=$priceBook['data']['item'];
+        
+        $this->session['itemsApplied']=isset($priceBook['data']['item']) ? $priceBook['data']['item'] : array();
         $data['model'] = $model;
         $data['outlet'] = $outlet;
+        $data['customer_group'] = $customer_group;
         $this->render('create',$data);
         //var_dump($this->session['itemsApplied']);
     }

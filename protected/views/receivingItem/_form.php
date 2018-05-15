@@ -20,10 +20,11 @@
     <hr> 
     <div class="container">
         <div class="row">
-            <h5 style="color: #f00">You must fill in these below field to continue!!</h5>
+            <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
+        <?= Yii::t('app', 'are required'); ?></p>
             <div class="col-sm-11 col-md-3">
                 <div class="form-group">
-                    <?php echo CHtml::label('Start Date', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::label('Start Date *', 1, array('class' => 'control-label')); ?>
                     <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
                             'attribute' => 'created_date',
                             'model' => $model,
@@ -37,13 +38,13 @@
             </div>
             <div class="col-sm-11 col-md-3">
                 <div class="form-group">
-                    <?php echo CHtml::label('Time', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::label('Time *', 1, array('class' => 'control-label')); ?>
                     <?php echo CHtml::TextField('InventoryCount',date('H:i:s'),array('class'=>'form-control input-mask-date','id'=>'InventoryCount_count_time','value'=>date('H:i:s'))); ?>
                 </div>
             </div>
             <div class="col-sm-11 col-md-6 margin-3">
                 <div class="form-group">
-                    <?php echo CHtml::label('Count Name', 1, array('class' => 'control-label')); ?>
+                    <?php echo CHtml::label('Count Name *', 1, array('class' => 'control-label')); ?>
                     <?php echo CHtml::TextField('InventoryCount','InventoryCount'.date('Y-m-d'),array('class'=>'form-control','id'=>'InventoryCount_count_name')); ?>
                 </div>
             </div>
@@ -125,8 +126,10 @@
                                                         <input type="number" onkeypress="updateCount(<?=$value['itemId']?>)" class="txt-counted<?=$value['itemId']?> form-control" value="<?=$value['countNum']?>">
                                                     </div>
                                                 </td>
-                                                <td width="80">
-                                                    <input type="button" value="Remove" class="btn btn-danger pull-right" onClick="inventoryCount(2,<?=$key?>)">
+                                                <td width="80" align="center">
+                                                    <a class="delete-item btn btn-danger btn-xs" onClick="inventoryCount(2,<?=$key?>)">
+                                                        <span class="glyphicon glyphicon glyphicon-trash "></span>
+                                                    </a>
                                                 </td>
                                             </tr>
                                         <?php endforeach;?>
