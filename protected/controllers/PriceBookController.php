@@ -223,7 +223,7 @@ class PriceBookController extends Controller
     }
 
     public function actionSavePriceBook($id=''){
-        $price_book_name = $_POST['PriceBook']['name'];
+        $price_book_name = $_POST['PriceBook']['price_book_name'];
         $outlet_id = $_POST['PriceBook']['outlet_id'];
         $start_date = $_POST['PriceBook']['start_date'];
         $end_date = $_POST['PriceBook']['end_date'];
@@ -238,48 +238,56 @@ class PriceBookController extends Controller
         $criteria->condition = 'price_book_name=:name';
         $criteria->params = array(':name'=>$price_book_name);
         $exists = $priceBook->exists($criteria);
-        if($exists and ($id=='' or $id==0)){
-            echo 'Price Book "'.$price_book_name.'" already taken!';
-        }else{
-            if($id>0){
-                PriceBook::model()->updateByPk($id,
-                    array(
-                        'price_book_name'=>$price_book_name,
-                        'start_date'=>date('Y-m-d H:i:s',strtotime($start_date)),
-                        'end_date'=>date('Y-m-d H:i:s',strtotime($end_date)),
-                        'outlet_id'=>$outlet_id,
-                    )
-                );
-                $pricing=Pricing::model()->findByAttributes(array('price_book_id'=>$id)); 
-                $pricing->delete(); // delete the row from the database table
+        $transaction = Yii::app()->db->beginTransaction();
+        
+        try {
+            if($exists and ($id=='' or $id==0)){
+                $this->redirect(array('/PriceBook/create','name'=>$price_book_name,'status'=>'error'));
             }else{
-                $priceBook->price_book_name=$price_book_name;
-                $priceBook->start_date=$start_date;
-                $priceBook->end_date=$end_date;
-                $priceBook->outlet_id=$outlet_id;
-                $saveHeader=$priceBook->save();
-            }
-            $price_book_id=isset($id) ? $id : $priceBook->id;
-            //save detail and history
-            $connection = Yii::app()->db;
-            $delSql="delete from pricings where price_book_id=".$price_book_id;
-            $command = $connection->createCommand($delSql);
-            $delete = $command->execute(); 
-            foreach($data as $key=>$value){
-
-                
-
-                $invSql="insert into pricings
-                (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
-                values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
-                $command = $connection->createCommand($invSql);
-                $insert = $command->execute(); // execute the non-query SQL
-
+                $connection = Yii::app()->db;
+                if($id>0){
+                    $price_book_id=$id;
+                    PriceBook::model()->updateByPk($id,
+                        array(
+                            'price_book_name'=>$price_book_name,
+                            'start_date'=>date('Y-m-d H:i:s',strtotime($start_date)),
+                            'end_date'=>date('Y-m-d H:i:s',strtotime($end_date)),
+                            'outlet_id'=>$outlet_id,
+                        )
+                    );
+                    $delSql="delete from pricings where price_book_id=".$price_book_id;
+                    $command = $connection->createCommand($delSql);
+                    $delete = $command->execute();
+                    
+                }else{
+                    $priceBook->price_book_name=$price_book_name;
+                    $priceBook->start_date=$start_date;
+                    $priceBook->end_date=$end_date;
+                    $priceBook->outlet_id=$outlet_id;
+                    $saveHeader=$priceBook->save();
+                    $price_book_id = $priceBook->id;
+                }
                
+                //save detail and history
+                foreach($data as $key=>$value){
+
+                    $invSql="insert into pricings
+                    (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
+                    values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
+                    $command = $connection->createCommand($invSql);
+                    $insert = $command->execute(); // execute the non-query SQL
+                    //echo $invSql;
+                }
+                $transaction->commit();
+                unset(Yii::app()->session['itemsApplied']);
+                unset(Yii::app()->session['pricebookHeader']);
+                Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+                                'Price book : <strong>' . $price_book_name . '</strong> have been saved successfully!');
+                $this->redirect(array('/pricebook'));
             }
-            unset(Yii::app()->session['itemsApplied']);
-            unset(Yii::app()->session['pricebookHeader']);
-            $this->redirect(array('/pricebook'));
+        }catch (Exception $e) {
+            $transaction->rollback();
+            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
         }
         
     }

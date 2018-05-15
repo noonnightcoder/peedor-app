@@ -23,7 +23,8 @@
             <div class="col-sm-11 col-md-3">
                 <div class="form-group">
                     <?php echo CHtml::label('Name', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('PriceBook[name]',isset($_POST['PiceBook']['name']) ? $_POST['PiceBook']['name'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : ''),array('class'=>'form-control','id'=>'PriceBook_name','name'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
+                    <?php echo CHtml::TextField('PriceBook[price_book_name]',isset($_POST['PiceBook']['price_book_name']) ? $_POST['PiceBook']['price_book_name'] : (isset($_SESSION['pricebookHeader']) ? $_SESSION['pricebookHeader']['name'] : ''),array('class'=>'form-control','id'=>'PriceBook_name','value'=>date('H:i:s'))); ?>
+                    <span style="color:#f00;"><?=@$_GET['status']=='error' ? 'Price book name '.@$_GET['name'].' already taken!' : ''?></span>
                 </div>
             </div>
             <div class="col-sm-11 col-md-3 margin-left-10">
@@ -52,7 +53,7 @@
                             'pluginOptions' => array(
                                 'format' => 'yyyy-mm-dd',
                             ),
-                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['start_date']) ? $_POST['PiceBook']['start_date'] : isset($_SESSION['pricebookHeader']['start_date']) ? $_SESSION['pricebookHeader']['start_date'] : date('Y-m-d'))
+                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['start_date']) ? $_POST['PiceBook']['start_date'] : isset($_SESSION['pricebookHeader']['start_date']) ? $_SESSION['pricebookHeader']['start_date'] : date('Y-m-d H:i:s'))
                         ));
                     ?>
                 </div>
@@ -66,7 +67,7 @@
                             'pluginOptions' => array(
                                 'format' => 'yyyy-mm-dd',
                             ),
-                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['end_date']) ? $_POST['PiceBook']['end_date'] : isset($_SESSION['pricebookHeader']['end_date']) ? $_SESSION['pricebookHeader']['end_date'] : date('Y-m-d'))
+                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['end_date']) ? $_POST['PiceBook']['end_date'] : isset($_SESSION['pricebookHeader']['end_date']) ? $_SESSION['pricebookHeader']['end_date'] : date('Y-m-d H:i:s'))
                         ));
                     ?>
                 </div>
@@ -304,6 +305,21 @@
             //)
         }
         
+    }
+    function validateBeforeSubmit(){
+        var price_book_name=$('#PriceBook_name').val();
+        var url = '<?=Yii::app()->createUrl('/PriceBook/SavePriceBook')?>';
+        $.ajax({url:url,
+            type : 'post',
+            data:{price_book_name},
+            beforeSend: function() { $('.waiting').slideDown(); },
+            complete: function() { $('.waiting').slideUp(); },
+            success : function(data) {
+                if(data=='exist'){
+                    alert('existed')
+                }
+            }
+        });
     }
 </script>
 
