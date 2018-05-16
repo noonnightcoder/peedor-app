@@ -39,7 +39,7 @@ class PriceBook extends CActiveRecord
 		return array(
 			array('price_book_name, outlet_id', 'required'),
             array('price_book_name', 'unique'),
-			array('price_book_name', 'safe', 'on'=>'search'),
+			array('price_book_name,search', 'safe', 'on'=>'search'),
 		);
 	}
 
