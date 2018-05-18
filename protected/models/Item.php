@@ -375,12 +375,12 @@ class Item extends CActiveRecord
                         ELSE i.`unit_price`
                     END unit_price,
                     i.`description`,um.`name` unit_measurable
-            FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
-                    AND pr.`price_book_id`=:price_book_id
-                    AND ".$quantity." BETWEEN pr.`min_unit` AND pr.`max_unit`
-                 LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
-            WHERE i.id=:item_id
-            AND status=:status";
+                FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
+                        AND pr.`price_book_id`=:price_book_id
+                        AND :quantity BETWEEN pr.`min_unit` AND pr.`max_unit`
+                     LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
+                WHERE i.id=:item_id
+                AND status=:status";
 
         if (!is_numeric($item_id)) {
             $item_id = 'NULL';
@@ -390,6 +390,7 @@ class Item extends CActiveRecord
                 ':item_id' => $item_id,
                 ':price_book_id' => $price_book_id,
                 ':status' => param('active_status'),
+                ':quantity' => $quantity,
             )
         );
 

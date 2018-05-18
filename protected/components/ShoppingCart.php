@@ -301,7 +301,7 @@ class ShoppingCart extends CApplicationComponent
         $items = $this->getCart();
 
         //$model = Item::model()->findbyPk($item_id);
-        $models = Item::model()->getItemPriceTier($item_id, $this->getPriceTier());
+        $models = Item::model()->getItemPriceTier($item_id, $this->getPriceTier(),$quantity);
            
         //try to get item id given an item_number
         if (empty($models)) {
