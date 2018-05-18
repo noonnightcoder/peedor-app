@@ -95,7 +95,7 @@
 						if(cateid>0){
 							$('.errorMsg'+i).html('<span style="color:#00f;">Update successfully</span>');
 						}else{
-							window.location.href="<?php echo $baseUrl.'/index.php/Category/List'?>"	
+							window.location.href="<?php echo $baseUrl.'/index.php/Category/Admin'?>"	
 						}
 					}
 				}

@@ -339,16 +339,46 @@ class Item extends CActiveRecord
         parent::afterFind(); //To raise the event
     }
 
-    public function getItemPriceTier($item_id, $price_tier_id)
+    // public function getItemPriceTier($item_id, $price_tier_id)
+    // {
+    //     $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
+    //                 CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price`
+    //                     ELSE i.`unit_price`
+    //                 END unit_price,
+    //                 i.`description`,um.`name` unit_measurable
+    //         FROM `item` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
+    //                 AND ipt.`price_tier_id`=:price_tier_id
+    //               LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
+    //         WHERE i.id=:item_id
+    //         AND status=:status";
+
+    //     if (!is_numeric($item_id)) {
+    //         $item_id = 'NULL';
+    //     }
+
+    //     $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+    //             ':item_id' => $item_id,
+    //             ':price_tier_id' => $price_tier_id,
+    //             ':status' => param('active_status'),
+    //         )
+    //     );
+
+    //     return $result;
+    // }
+
+    public function getItemPriceTier($item_id,$price_book_id,$quantity=50)
     {
         $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
-                    CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price`
+                    CASE 
+                        WHEN 
+                            pr.`retail_price` IS NOT NULL THEN pr.`retail_price`
                         ELSE i.`unit_price`
                     END unit_price,
                     i.`description`,um.`name` unit_measurable
-            FROM `item` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
-                    AND ipt.`price_tier_id`=:price_tier_id
-                  LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
+            FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
+                    AND pr.`price_book_id`=:price_book_id
+                    AND ".$quantity." BETWEEN pr.`min_unit` AND pr.`max_unit`
+                 LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
             WHERE i.id=:item_id
             AND status=:status";
 
@@ -358,7 +388,7 @@ class Item extends CActiveRecord
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
-                ':price_tier_id' => $price_tier_id,
+                ':price_book_id' => $price_book_id,
                 ':status' => param('active_status'),
             )
         );
@@ -366,22 +396,47 @@ class Item extends CActiveRecord
         return $result;
     }
 
-    public function getItemPriceTierItemNum($item_id, $price_tier_id)
+    // public function getItemPriceTierItemNum($item_id, $price_tier_id)
+    // {
+    //     $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
+    //                 CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price`
+    //                     ELSE i.`unit_price`
+    //                 END unit_price,
+    //                 i.`description`,um.`name` unit_measurable
+    //         FROM `item` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
+    //                 AND ipt.`price_tier_id`=:price_tier_id
+    //              LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
+    //         WHERE i.item_number=:item_id
+    //         AND status=:status";
+
+    //     $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+    //             ':item_id' => $item_id,
+    //             ':price_tier_id' => $price_tier_id,
+    //             ':status' => param('active_status'),
+    //         )
+    //     );
+
+    //     return $result;
+    // }
+
+
+    public function getItemPriceTierItemNum($item_id, $price_book_id,$quantity=50)
     {
         $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
-                    CASE WHEN ipt.`price` IS NOT NULL THEN ipt.`price`
-                        ELSE i.`unit_price`
-                    END unit_price,
-                    i.`description`,um.`name` unit_measurable
-            FROM `item` i LEFT JOIN item_price_tier ipt ON ipt.`item_id`=i.id
-                    AND ipt.`price_tier_id`=:price_tier_id
-                 LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
-            WHERE i.item_number=:item_id
-            AND status=:status";
+                     CASE WHEN pr.`retail_price` IS NOT NULL THEN pr.`retail_price`
+                         ELSE i.`unit_price`
+                     END unit_price,
+                     i.`description`,um.`name` unit_measurable
+             FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
+                     AND pr.`price_book_id`=:price_book_id
+                     AND ".$quantity." BETWEEN pr.`min_unit` AND pr.`max_unit`
+                  LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
+             WHERE i.id=:item_id
+             AND status=:status";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
-                ':price_tier_id' => $price_tier_id,
+                ':price_book_id' => $price_book_id,
                 ':status' => param('active_status'),
             )
         );

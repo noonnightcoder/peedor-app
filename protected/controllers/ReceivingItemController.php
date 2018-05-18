@@ -48,9 +48,11 @@ class ReceivingItemController extends Controller
             $this->reload(); 
         } elseif (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
             $this->reload();    
-        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
-            $this->reload(); 
-        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count2') {
+        } 
+        // elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        //     $this->reload(); 
+        // } 
+        elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
             //$this->reload(); 
             authorized('inventorycount.read');
 
@@ -304,7 +306,7 @@ class ReceivingItemController extends Controller
         }
         unset(Yii::app()->session['latestCount']);
         unset(Yii::app()->session['countheader']);
-        $this->redirect(array('receivingItem/index?trans_mode=physical_count2'));
+        $this->redirect(array('receivingItem/index?trans_mode=physical_count'));
     }
 
     public function actionAdd()

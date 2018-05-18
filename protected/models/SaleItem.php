@@ -33,6 +33,7 @@ class SaleItem extends CActiveRecord
         public $total_discount;
         public $total_gst; //Global Sale Tax (VAT)
         public $tier_id;
+        public $price_book_id;
         public $employee_id;
         public $invoice_format;
         public $payment_term;

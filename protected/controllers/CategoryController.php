@@ -59,65 +59,65 @@ class CategoryController extends Controller
      * Creates a new model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      */
-    public function actionCreate()
-    {
+    // public function actionCreate()
+    // {
 
-        if (!Yii::app()->user->checkAccess('category.create')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+    //     if (!Yii::app()->user->checkAccess('category.create')) {
+    //         throw new CHttpException(403, 'You are not authorized to perform this action');
+    //     }
 
-        $model = new Category;
+    //     $model = new Category;
 
-        if (isset($_POST['Category'])) {
-            $model->attributes = $_POST['Category'];
-            if ($model->validate()) {
-                $transaction = $model->dbConnection->beginTransaction();
-                try {
-                    $model->modified_date = date('Y-m-d H:i:s');
-                    if ($model->save()) {
-                        $transaction->commit();
-                        Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-                        echo CJSON::encode(array(
-                            'status' => 'success',
-                            'div' => "<div class=alert alert-info fade in> Successfully added ! </div>",
-                        ));
-                        Yii::app()->end();
-                    }
-                } catch (Exception $e) {
-                    $transaction->rollback();
-                    print_r($e);
-                }
-            }
-        }
+    //     if (isset($_POST['Category'])) {
+    //         $model->attributes = $_POST['Category'];
+    //         if ($model->validate()) {
+    //             $transaction = $model->dbConnection->beginTransaction();
+    //             try {
+    //                 $model->modified_date = date('Y-m-d H:i:s');
+    //                 if ($model->save()) {
+    //                     $transaction->commit();
+    //                     Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+    //                     echo CJSON::encode(array(
+    //                         'status' => 'success',
+    //                         'div' => "<div class=alert alert-info fade in> Successfully added ! </div>",
+    //                     ));
+    //                     Yii::app()->end();
+    //                 }
+    //             } catch (Exception $e) {
+    //                 $transaction->rollback();
+    //                 print_r($e);
+    //             }
+    //         }
+    //     }
 
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
-            echo CJSON::encode(array(
-                'status' => 'render',
-                'div' => $this->renderPartial('_form', array('model' => $model), true, true),
-            ));
-            Yii::app()->end();
-        } else {
-            $this->render('create', array('model' => $model));
-        }
+    //     if (Yii::app()->request->isAjaxRequest) {
+    //         $cs = Yii::app()->clientScript;
+    //         $cs->scriptMap = array(
+    //             'jquery.js' => false,
+    //             'bootstrap.js' => false,
+    //             'jquery.min.js' => false,
+    //             'bootstrap.notify.js' => false,
+    //             'bootstrap.bootbox.min.js' => false,
+    //         );
+    //         echo CJSON::encode(array(
+    //             'status' => 'render',
+    //             'div' => $this->renderPartial('_form', array('model' => $model), true, true),
+    //         ));
+    //         Yii::app()->end();
+    //     } else {
+    //         $this->render('create', array('model' => $model));
+    //     }
 
-    }
+    // }
 
-    public function actionCreate2(){
+    public function actionCreate(){
         if (!Yii::app()->user->checkAccess('category.create')) {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
         $model = new Category;
         $data['model']=$model;
         $data['parent']=Category::model()->findAll();
-        $this->render('create2',$data);
+        $this->render('create',$data);
     }
     public function actionSaveCategory(){
         $i=$_POST['id']+1;
@@ -326,11 +326,52 @@ class CategoryController extends Controller
     /**
      * Manages all models.
      */
+    // public function actionAdmin()
+    // {
+    //     $model = new Category('search');
+    //     $model->unsetAttributes();  // clear any default values
+
+    //     if (isset($_GET['Category']))
+    //         $model->attributes = $_GET['Category'];
+
+    //     if (isset($_GET['pageSize'])) {
+    //         Yii::app()->user->setState('category_page_size', (int)$_GET['pageSize']);
+    //         unset($_GET['pageSize']);
+    //     }
+
+    //     if (isset($_GET['archived'])) {
+    //         Yii::app()->user->setState('category_archived', $_GET['archived']);
+    //         unset($_GET['archived']);
+    //     }
+
+    //     $model->category_archived = Yii::app()->user->getState('category_archived',
+    //         Yii::app()->params['defaultArchived']);
+
+    //     $page_size = CHtml::dropDownList(
+    //         'pageSize',
+    //         Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
+    //         Common::arrayFactory('page_size'),
+    //         array('class' => 'change-pagesize',)
+    //     );
+
+    //     $data['model'] = $model;
+    //     //$data['grid_id'] = strtolower(get_class($model)) . ' -grid';
+    //     $data['grid_id'] = 'category-grid';
+    //     $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+    //     $data['page_size'] = $page_size;
+    //     $data['modal_header'] = Yii::t('app', 'New Category');
+
+    //     $data['grid_columns'] = Category::getCategoryColumn();
+
+    //     $data['data_provider'] = $model->search();
+
+    //     $this->render('admin', $data);
+    // }
+
     public function actionAdmin()
     {
         $model = new Category('search');
         $model->unsetAttributes();  // clear any default values
-
         if (isset($_GET['Category']))
             $model->attributes = $_GET['Category'];
 
@@ -366,47 +407,6 @@ class CategoryController extends Controller
         $data['data_provider'] = $model->search();
 
         $this->render('admin', $data);
-    }
-
-    public function actionList()
-    {
-        $model = new Category('search');
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Category']))
-            $model->attributes = $_GET['Category'];
-
-        if (isset($_GET['pageSize'])) {
-            Yii::app()->user->setState('category_page_size', (int)$_GET['pageSize']);
-            unset($_GET['pageSize']);
-        }
-
-        if (isset($_GET['archived'])) {
-            Yii::app()->user->setState('category_archived', $_GET['archived']);
-            unset($_GET['archived']);
-        }
-
-        $model->category_archived = Yii::app()->user->getState('category_archived',
-            Yii::app()->params['defaultArchived']);
-
-        $page_size = CHtml::dropDownList(
-            'pageSize',
-            Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
-            Common::arrayFactory('page_size'),
-            array('class' => 'change-pagesize',)
-        );
-
-        $data['model'] = $model;
-        //$data['grid_id'] = strtolower(get_class($model)) . ' -grid';
-        $data['grid_id'] = 'category-grid';
-        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-        $data['page_size'] = $page_size;
-        $data['modal_header'] = Yii::t('app', 'New Category');
-
-        $data['grid_columns'] = Category::getCategoryColumn();
-
-        $data['data_provider'] = $model->search();
-
-        $this->render('_list', $data);
     }
 
     /**

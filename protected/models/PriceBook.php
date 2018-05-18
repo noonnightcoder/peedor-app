@@ -118,7 +118,22 @@ class PriceBook extends CActiveRecord
 
         
     }
+    public function checkExists()
+    {
+        return PriceBook::model()->count('status=:active_status',
+            array(':active_status' => Yii::app()->params['active_status']));
+    }
+    public function getPriceBookSale()
+    {
+        $model = PriceBook::model()->findAll(array(
+            'order' => 'id',
+            'condition' => 'status=:active_status',
+            'params' => array(':active_status' => Yii::app()->params['active_status'])
+        ));
+        $list = CHtml::listData($model, 'id', 'price_book_name');
 
+        return $list;
+    }
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

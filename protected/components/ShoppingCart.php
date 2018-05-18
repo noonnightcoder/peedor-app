@@ -305,7 +305,7 @@ class ShoppingCart extends CApplicationComponent
            
         //try to get item id given an item_number
         if (empty($models)) {
-            $models = Item::model()->getItemPriceTierItemNum($item_id, $this->getPriceTier());
+            $models = Item::model()->getItemPriceTierItemNum($item_id, $this->getPriceTier(),$quantity);
             foreach ($models as $model) {
                 $item_id=$model["id"];
             }
@@ -349,7 +349,7 @@ class ShoppingCart extends CApplicationComponent
         $items = $this->getCart();
         
         foreach ($items as $item) {
-            $models = Item::model()->getItemPriceTier($item['item_id'], $this->getPriceTier());
+            $models = Item::model()->getItemPriceTier($item['item_id'], $this->getPriceTier(),$item['quantity']);
             foreach ($models as $model) {
                if (isset($items[$item['item_id']])) {
                     $items[$item['item_id']]['price'] = round($model['unit_price'], Common::getDecimalPlace());

@@ -132,6 +132,10 @@ class SaleItemController extends Controller
         $model->discount = $discount;
 
         if ($model->validate()) {
+            // $price_tier_id=Yii::app()->session['pricebook'];
+            // echo "<script>alert('$price_tier_id')</script>";
+            // Yii::app()->shoppingCart->setPriceTier($price_tier_id);
+            Yii::app()->shoppingCart->f5ItemPriceTier();
             Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
         } else {
             $error = CActiveForm::validate($model);
@@ -259,6 +263,9 @@ class SaleItemController extends Controller
     public function actionSetPriceTier()
     {
         if (Yii::app()->request->isPostRequest && Yii::app()->request->isAjaxRequest) {
+            // $this->setSession(Yii::app()->session);
+
+            // $this->session['pricebook']=$_POST['price_tier_id'];//initail data from session
             $price_tier_id = $_POST['price_tier_id'];
             Yii::app()->shoppingCart->setPriceTier($price_tier_id);
             Yii::app()->shoppingCart->f5ItemPriceTier();
@@ -851,5 +858,8 @@ class SaleItemController extends Controller
 
         return $data;
     }
-
+    public function setSession($value)
+    {
+        $this->session = $value;
+    }
 }

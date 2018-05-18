@@ -63,6 +63,22 @@ class Pricing extends CActiveRecord
             'max_unit' => Yii::t('app', 'Max Unit'), //'Start Date',
         );
     }
+    public function checkExists()
+    {
+        return Pricing::model()->count('status=:active_status',
+            array(':active_status' => Yii::app()->params['active_status']));
+    }
+    public function getPriceBookSale()
+    {
+        $model = Pricing::model()->findAll(array(
+            'order' => 'id',
+            'condition' => 'status=:active_status',
+            'params' => array(':active_status' => Yii::app()->params['active_status'])
+        ));
+        $list = CHtml::listData($model, 'id', 'PriceBookInfo');
+
+        return $list;
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.

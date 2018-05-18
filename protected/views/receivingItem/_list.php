@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs = array(
-	    Yii::t('app', ucfirst('inventory count')) => array('index?trans_mode=physical_count2'),
+	    Yii::t('app', ucfirst('inventory count')) => array('index?trans_mode=physical_count'),
 	    Yii::t('app', 'List'),
 	);
 ?>
