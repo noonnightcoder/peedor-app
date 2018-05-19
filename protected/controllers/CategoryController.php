@@ -141,59 +141,21 @@ class CategoryController extends Controller
             $category->parent_id=$parent_id;
             $saved=$category->save();
             if($saved>0){
-                echo '<input type="hidden" value="'.$category->id.'" id="pid'.($i-1).'">'; 
-                echo '<div class="col-sm-11 col-md-11">';
-                    echo '<hr>';
-                    echo '<h3 id="success">Data Successfully saved.</h3>';
-                        echo '<div class="form-group">';
-                            echo CHtml::label('Category Name', 1, array('class' => 'control-label')); 
-                            echo CHtml::TextField('Category',$category_name,array('class'=>'form-control','id'=>'Category_Name'));
-                            echo '<span id="error" class="errorMsg'.($i-1).'"></span>';
-                    echo '</div>';
-                echo '</div>';
-                echo '<div class="col-sm-11 col-md-11">';
-                    echo '<div class="form-group">';
-                        echo CHtml::label('Parent', 1, array('class' => 'control-label'));
-                        echo '<select class="form-control" id="db-category'.($i-1).'" onchange="showDialog(event.target.value)">';
-                            echo '<option value="0">--Choose Parent--</option>';
-                            $selected='';
-                            foreach($model as $key=>$value){
-                                if($value['id']==$parent_id){
-                                    $selected='selected';
-                                    echo '<option value="'.$value['id'].'" '.$selected.'>'.$value['name'].'</option>';
-                                }else{
-                                    echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';
-                                }
-                                
-                            }
-                            echo '<optgroup >';
-                                echo '<option value="addnew">';
-                                    echo 'Create New';
-                                echo '</option>';
-                            echo '</optgroup>';
-                        echo '</select>';
-                    echo '</div>';
-                echo '</div>';
+                $this->renderPartial('partial/_category_reload',array(
+                    'category_id'=>$category->id,
+                    'category_name'=>$category_name,
+                    'parent_id'=>$parent_id,
+                    'i'=>$i,
+                    'model'=>$model
+                ));
             }
         }
         
     }
     public function actionReloadCategory($id=''){
         $model=Category::model()->findAll();
-        echo '<option value="0">--Choose Parent--</option>';
-        $selected='';
-        foreach($model as $key=>$value){
-            if($id==$value['id']){
-                echo '<option value="'.$value['id'].'" selected>'.$value['name'].'</option>';    
-            }else{
-                echo '<option value="'.$value['id'].'">'.$value['name'].'</option>';    
-            }
-        }
-        echo '<optgroup >';
-            echo '<option value="addnew">';
-                echo 'Create New';
-            echo '</option>';
-        echo '</optgroup>';
+        echo $id;
+        $this->renderPartial('partial/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
 
     /**

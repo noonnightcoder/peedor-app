@@ -135,8 +135,9 @@ class SaleItemController extends Controller
             // $price_tier_id=Yii::app()->session['pricebook'];
             // echo "<script>alert('$price_tier_id')</script>";
             // Yii::app()->shoppingCart->setPriceTier($price_tier_id);
-            Yii::app()->shoppingCart->f5ItemPriceTier();
             Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
+            Yii::app()->shoppingCart->f5ItemPriceTier();
+            
         } else {
             $error = CActiveForm::validate($model);
             $errors = explode(":", $error);
@@ -191,7 +192,8 @@ class SaleItemController extends Controller
         $client_id = $_POST['SaleItem']['client_id'];
         $client = Client::model()->findByPk($client_id);
         Yii::app()->shoppingCart->setCustomer($client_id);
-        Yii::app()->shoppingCart->setPriceTier($client->price_tier_id);
+        Yii::app()->shoppingCart->setPriceTier($client_id);
+        Yii::app()->shoppingCart->f5ItemPriceTier();
         $this->reload();
     }
 
@@ -267,6 +269,7 @@ class SaleItemController extends Controller
 
             // $this->session['pricebook']=$_POST['price_tier_id'];//initail data from session
             $price_tier_id = $_POST['price_tier_id'];
+            echo $_POST['customer_id'];
             Yii::app()->shoppingCart->setPriceTier($price_tier_id);
             Yii::app()->shoppingCart->f5ItemPriceTier();
             $this->reload();

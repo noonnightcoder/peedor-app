@@ -89,7 +89,17 @@ class CustomerGroup extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	public function getCustomerGroup()
+    {
+        $model = CustomerGroup::model()->findAll(array(
+            'order' => 'id',
+            'condition' => 'status=:active_status',
+            'params' => array(':active_status' => Yii::app()->params['active_status'])
+        ));
+        $list = CHtml::listData($model, 'id', 'group_name');
 
+        return $list;
+    }
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

@@ -104,7 +104,8 @@
 	}
 	function reloadCategory(i){
 		//alert(i)
-		var pid=$('#pid'+i).val();
+		// var pid=$('#pid'+i).val();
+		var pid=1;
 		$.ajax({
 			type:'post',
 			data:{id:i},

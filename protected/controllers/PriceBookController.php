@@ -93,8 +93,12 @@ class PriceBookController extends Controller
         $item = new Item('search');
         $outlet = Outlet::model()->findAll();
         $customer_group = CustomerGroup::model()->findAll();
+        $this->setSession(Yii::app()->session);
+        $this->session['pricebookHeader']=array('name'=>'','customer_group'=>'','outlet'=>'');
+        $items=$this->session['itemsApplied'];//initail data from session
         $data['model'] = $model;
         $data['outlet'] = $outlet;
+        $data['items']=$items;
         $data['customer_group'] = $customer_group;
         $this->render('create',$data);
     }
@@ -120,43 +124,67 @@ class PriceBookController extends Controller
             $start_date=$_POST['start_date'];//price book valid start date
             $end_date=$_POST['end_date'];//price book valid end date
             $outlet=$_POST['outlet'];//price book apply to outlet
+            
             $group_id=$_POST['group_id'];//price book apply to outlet
             $price_book_name=$_POST['price_book_name'];//price book name
 
-            $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date);
+            $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date,'customer_group'=>$group_id);
            
             $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>0,'min_qty'=>0,'max_qty'=>0);
          
             $this->session['itemsApplied']=$data;//after update or add item to data then update the session
-            
         }elseif($_POST['opt']==2){//remove counted item
             unset($_SESSION['itemsApplied'][$_POST['idx']]); 
         }elseif($_POST['opt']==3){
             $val=$_POST['val'];
             $idx=$_POST['idx'];
-            echo $idx;
+            //var_dump($this->session['itemsApplied']);
             if(!empty($data)){//check if data is not empty
-
+                $retailAfMarkup=0;
+                $discount=0;
                 foreach($data as $k=>$v){
+                    if($val=='markupall' || $val=='discountall'){
+
+                        $markupall=$_POST['markupall']>0 ? $_POST['markupall'] : 0;
+                        $discountall=$_POST['discountall']>0 ? $_POST['discountall'] : 0;
+                        if($val=='markupall'){
+                            $data[$k]['markup']=$markupall;    
+                        }
+                        if($val=='discountall'){
+                            $data[$k]['discount']=$discountall;    
+                        }
+                        $retailAfMarkup=$data[$k]['cost']+($data[$k]['cost']*($data[$k]['markup']/100));
+                        $discount=$retailAfMarkup*($data[$k]['discount']/100);
+                        $data[$k]['retail_price']=$retailAfMarkup-$discount;
+                        
+                        
+
+                    }
                     if($k==$idx){//update number of quantity count when item already counted
-                        if($val=='markup'){
-                            $data[$k]['markup']=$_POST['markup'];//update array data
-                            $data[$k]['retail_price']=$data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100));
-                        }elseif($val=='retail_price'){
-                            $data[$k]['discount']=0;
-                            $data[$k]['retail_price']=$_POST['retail_price'];
-                            $data[$k]['markup']=(($_POST['retail_price']*100)/$data[$k]['cost'])-100;//update array data
 
-                        }elseif($val=='discount'){
+                        if($val=='markup' || $val=='discount'){
 
+                            $data[$k]['markup']=$_POST['markup'];
+                            $retailAfMarkup=$data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100));
+                            $discount=$retailAfMarkup*($_POST['discount']/100);
+                            $data[$k]['retail_price']=$retailAfMarkup-$discount;
                             $data[$k]['discount']=$_POST['discount'];
-                            $data[$k]['retail_price']=$data[$k]['retail_price']-($data[$k]['retail_price']*($_POST['discount']/100));
 
-                        }elseif($val=='min_qty'){
+                        }
+                        if($val=='retail_price'){
+
+                            $data[$k]['discount']=0;
+
+                            $data[$k]['retail_price']=$_POST['retail_price'];
+
+                            $data[$k]['markup']=(($_POST['retail_price']*100)/$data[$k]['cost'])-100;//update array data
+                        }
+                        if($val=='min_qty'){
 
                             $data[$k]['min_qty']=$_POST['min_qty'];
 
-                        }elseif($val=='max_qty'){
+                        }
+                        if($val=='max_qty'){
 
                             $data[$k]['max_qty']=$_POST['max_qty'];
 
@@ -166,72 +194,18 @@ class PriceBookController extends Controller
                 }
 
             }
+            
             $this->session['itemsApplied']=$data;//after update or add item to data then update the session
-
         }
-        $itemsApplied=$this->session['itemsApplied'];
-        //refresh list 
-            echo '
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Cost</th>
-                        <th>Markup<small>(%)</small></th>
-                        <th>Discount<small>(%)</small></th>
-                        <th>Retail Price<br><small>Exclude Tax</small></th>
-                        <th>Min Quantity</th>
-                        <th>Max Quantity</th>
-                        <th style="text-align: right;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>';
-            foreach($itemsApplied as $key=>$value){
-                
-                echo'
-                <tr>
-                    <td width="30">'.$value['itemId'].'</td>
-                    <td>'.$value['name'].'</td>
-                    <td>'.$value['cost'].'</td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" id="markup'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'markup\','.$key.')" class="txt-markup'.$key.' form-control" value="'.$value['markup'].'">
-                        </div>
-                    </td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" id="discount'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'discount\','.$key.')" class="txt-discount'.$key.' form-control" value="'.$value['discount'].'">
-                        </div>
-                    </td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" id="retail_price'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'retail_price\','.$key.')" class="txt-retail-price'.$key.' form-control" value="'. ($value['retail_price']>0 ? $value['retail_price'] : $info['cost_price']).'">
-                        </div>
-                    </td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" id="min_qty'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'min_qty\','.$key.')" class="txt-min-qty'.$key.' form-control" value="'.$value['min_qty'].'">
-                        </div>
-                    </td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" id="max_qty'.$key.'" onkeyup="updateItem('.$value['itemId'].',\'max_qty\','.$key.')" class="txt-max-qty'.$key.' form-control" value="'.$value['max_qty'].'">
-                        </div>
-                    </td>
-                    <td width="80" align="center">
-                        <a class="delete-item btn btn-danger btn-xs" onClick="priceBook(2,'.$key.')">
-                            <span class="glyphicon glyphicon glyphicon-trash "></span>
-                        </a>
-                    </td>
-                </tr>
-                ';
-                            
-            }
-        echo '
-            </tbody>
-        </table>
-        ';
+        $model = new PriceBook('search');
+        $item = new Item('search');
+        $outlet = Outlet::model()->findAll();
+        $customer_group = CustomerGroup::model()->findAll();
+        $data['model'] = $model;
+        $data['outlet'] = $outlet;
+        $data['items']=$this->session['itemsApplied'];
+        $data['customer_group'] = $customer_group;
+        $this->renderPartial('partial/_table',$data);
         
     }
 
@@ -244,7 +218,7 @@ class PriceBookController extends Controller
         $this->setSession(Yii::app()->session);
         $data=$this->session['itemsApplied'];//initail data from session
         //$header=$this->session['pricebookHeader'];//initail data from session
-
+        echo $group_id;
         //save inventory count
         $priceBook=new PriceBook;
         //$pricing=new Pricing;
@@ -269,6 +243,7 @@ class PriceBookController extends Controller
                             'start_date'=>date('Y-m-d H:i:s',strtotime($start_date)),
                             'end_date'=>date('Y-m-d H:i:s',strtotime($end_date)),
                             'outlet_id'=>$outlet_id,
+                            'group_id'=>$group_id
                         )
                     );
                     $delSql="delete from pricings where price_book_id=".$price_book_id;
@@ -320,10 +295,11 @@ class PriceBookController extends Controller
         $outlet = Outlet::model()->findAll();
         $customer_group = CustomerGroup::model()->findAll();
         $this->session['pricebookHeader']=$priceBook['data'];
-        
+        // print_r($priceBook);
         $this->session['itemsApplied']=isset($priceBook['data']['item']) ? $priceBook['data']['item'] : array();
         $data['model'] = $model;
         $data['outlet'] = $outlet;
+        $data['items']=$this->session['itemsApplied'];
         $data['customer_group'] = $customer_group;
         $this->render('create',$data);
         //var_dump($this->session['itemsApplied']);

@@ -366,21 +366,28 @@ class Item extends CActiveRecord
     //     return $result;
     // }
 
-    public function getItemPriceTier($item_id,$price_book_id,$quantity=50)
+    public function getItemPriceTier($item_id,$client_id,$quantity)
     {
-        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
-                    CASE 
+        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,cg.group_name,
+                    MIN(CASE 
                         WHEN 
-                            pr.`retail_price` IS NOT NULL THEN pr.`retail_price`
+                            pr.`retail_price` IS NOT NULL
+                        THEN pr.`retail_price`
                         ELSE i.`unit_price`
-                    END unit_price,
-                    i.`description`,um.`name` unit_measurable
-                FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
-                        AND pr.`price_book_id`=:price_book_id
-                        AND :quantity BETWEEN pr.`min_unit` AND pr.`max_unit`
-                     LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
-                WHERE i.id=:item_id
-                AND status=:status";
+                        END) unit_price,
+                        i.`description`,um.`name` unit_measurable
+                    FROM CLIENT cl JOIN customer_group cg
+                    ON cl.price_tier_id=cg.id
+                    AND cl.id=:client_id JOIN price_book pb 
+                    ON cg.id=pb.group_id JOIN pricings pr
+                    ON pb.id=pr.price_book_id
+                    AND pb.status=:status RIGHT JOIN item i
+                    ON pr.item_id=i.id
+                    AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 
+                    ON um.id = i.unit_measurable_id
+                    WHERE i.id=:item_id
+                    and i.status=:status
+                    GROUP BY i.`id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
 
         if (!is_numeric($item_id)) {
             $item_id = 'NULL';
@@ -388,7 +395,7 @@ class Item extends CActiveRecord
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
-                ':price_book_id' => $price_book_id,
+                ':client_id' => $client_id,
                 ':status' => param('active_status'),
                 ':quantity' => $quantity,
             )
@@ -421,24 +428,33 @@ class Item extends CActiveRecord
     // }
 
 
-    public function getItemPriceTierItemNum($item_id, $price_book_id,$quantity=50)
+    public function getItemPriceTierItemNum($item_id, $price_book_id,$quantity)
     {
-        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,
-                     CASE WHEN pr.`retail_price` IS NOT NULL THEN pr.`retail_price`
-                         ELSE i.`unit_price`
-                     END unit_price,
-                     i.`description`,um.`name` unit_measurable
-             FROM `item` i LEFT JOIN pricings pr ON pr.`item_id`=i.id
-                     AND pr.`price_book_id`=:price_book_id
-                     AND ".$quantity." BETWEEN pr.`min_unit` AND pr.`max_unit`
-                  LEFT JOIN unit_measurable um ON um.id = i.unit_measurable_id
-             WHERE i.id=:item_id
-             AND status=:status";
+        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,cg.group_name,
+                    MIN(CASE 
+                        WHEN 
+                            pr.`retail_price` IS NOT NULL
+                        THEN pr.`retail_price`
+                        ELSE i.`unit_price`
+                        END) unit_price,
+                        i.`description`,um.`name` unit_measurable
+                    FROM CLIENT cl JOIN customer_group cg
+                    ON cl.price_tier_id=cg.id JOIN price_book pb 
+                    ON cg.id=pb.group_id JOIN pricings pr
+                    ON pb.id=pr.price_book_id
+                    AND pb.status=:status RIGHT JOIN item i
+                    ON pr.item_id=i.id
+                    AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 
+                    ON um.id = i.unit_measurable_id
+                    WHERE i.item_number=:item_id
+                    and i.status=:status
+                    GROUP BY i.`id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
                 ':price_book_id' => $price_book_id,
                 ':status' => param('active_status'),
+                ':quantity'=>$quantity
             )
         );
 

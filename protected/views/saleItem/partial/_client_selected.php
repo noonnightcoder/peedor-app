@@ -37,14 +37,14 @@
             )); ?>
 
         <?php } ?>
-        <?php if (PriceBook::model()->checkExists()<>0) { ?>
+        <!-- <?php if (PriceBook::model()->checkExists()<>0) { ?>
             <p>
                 <?= $form->dropDownListControlGroup($model,'price_book_id', PriceBook::model()->getPriceBookSale(),array('id'=>'price_tier_id',
                     'options'=>array(Yii::app()->shoppingCart->getPriceTier()=>array('selected'=>true)),
-                    'class'=>'col-xs-10 col-sm-8','empty'=>'None','labelOptions'=>array('label'=>Yii::t('app','Item Tier')))); ?>
+                    'class'=>'col-xs-10 col-sm-8','empty'=>'None','labelOptions'=>array('label'=>Yii::t('app','Price Book')))); ?>
 
             </p>
-        <?php } ?>
+        <?php } ?> -->
 
         <br /> <br />
 

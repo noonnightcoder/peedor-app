@@ -1,7 +1,7 @@
-<?= $form->dropDownListControlGroup($model, 'price_tier_id', PriceTier::model()->getPriceTier(),
+<?= $form->dropDownListControlGroup($model, 'price_tier_id', CustomerGroup::model()->getCustomerGroup(),
     array(
         'class' => 'span3',
-        'empty' => Yii::t('app', 'Select Default Price Tier'),
+        // 'empty' => Yii::t('app', 'Select Default Price Tier'),
     )
 ); ?>
 

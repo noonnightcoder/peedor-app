@@ -19,6 +19,7 @@ $this->breadcrumbs=array(
     'content' => $this->renderPartial('_form', array(
             'model'=>$model,
             'outlet'=>$outlet,
+            'items'=>$items,
             'customer_group'=>$customer_group,
     ), true),
 )); ?>
