@@ -6,7 +6,7 @@ $this->breadcrumbs=array(
 ?>
 
 <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-    'title' => Yii::t('app','Count Inventory'),
+    'title' => Yii::t('app','New Price Book'),
     'headerIcon' => sysMenuItemIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     'headerButtons' => array(

@@ -8,7 +8,7 @@
     <div class="col-xs-12 widget-container-col ui-sortable">
 
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-            'title' => Yii::t('app', 'List of ' . ucfirst(get_class($model))),
+            'title' => Yii::t('app', 'Price Books'),
             'headerIcon' => sysMenuItemIcon(),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
         )); ?>
