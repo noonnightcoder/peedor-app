@@ -216,7 +216,7 @@ class PriceBookController extends Controller
         $start_date = $_POST['PriceBook']['start_date'];
         $end_date = $_POST['PriceBook']['end_date'];
         $this->setSession(Yii::app()->session);
-        $data=$this->session['itemsApplied'];//initail data from session
+        $data = $this->session['itemsApplied'];//initail data from session
         //$header=$this->session['pricebookHeader'];//initail data from session
         echo $group_id;
         //save inventory count
