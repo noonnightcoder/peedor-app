@@ -9,7 +9,7 @@
             <ul class="list-unstyled">
                 <li>
                     <strong>
-                        <?php echo TbHtml::link(ucwords($cust_fullname),$this->createUrl('Client/View/',array('id'=>$customer_id)), array(
+                        <?php echo TbHtml::link(ucwords($cust_fullname.'('.$group_name.')'),$this->createUrl('Client/View/',array('id'=>$customer_id)), array(
                             'class'=>'update-dialog-open-link',
                             'data-update-dialog-title' => Yii::t('app','Customer Information'),
                         )); ?>

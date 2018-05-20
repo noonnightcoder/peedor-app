@@ -27,11 +27,28 @@
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
         <?= Yii::t('app', 'are required'); ?></p>
         <div class="row">
-            <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255)); ?>
-            </div>
+            
             <div class="col-sm-6">
                 <?= $form->textFieldControlGroup($model,'name',array('size'=>60,'maxlength'=>500,'class'=>'span3',)); ?>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Item_brand"><?= Yii::t('app','Brand') ?></label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="db-brand" name="Item[brand_id]" onchange="showBrandDialog(event.target.value)">
+                            <option value="0">--Choose Brand--</option>
+                            <?php foreach($brand as $key=>$value):?>
+
+                                <option value="<?=$value['id']?>" <?php echo $model['brand_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
+                            <?php endforeach;?>
+                            <optgroup >
+                                <option value="addnew">
+                                    Create New
+                                </option>
+                            </optgroup >
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row">
@@ -46,27 +63,59 @@
                 )); ?>
             </div>
         </div>
-        <h4 class="header blue">
-            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Pricing') ?>
-        </h4>
-        <div class="row">
-            <div class="col-sm-6">
-                <?php echo $form->textFieldControlGroup($model, 'cost_price', array('class' => 'span3')); ?>
+        <div class="row margin-top-15">
+            <div class="col-sm-1">
+                <label>Tags </label>
             </div>
-            <div class="col-sm-6">
-                <?php echo $form->textFieldControlGroup($model, 'unit_price', array('class' => 'span3')); ?>
+            <div class="col-sm-11">
+                <div class="tag-container" title="Type any text then press Tap or Comma(,) or Enter key">
+                    <div class="tag-item-box"></div>
+                    <!-- <div class="col-sm-12"> -->
+                        <input type="text" class="span3 tag-box" value="" style="margin-top: 10px;float: left;">
+                        <?php echo $form->hiddenField($model, 'tags', array('class' => 'span3','id'=>'item-tags','value'=>Yii::app()->session['tags'])); ?>
+                    <!-- </div> -->
+                </div>
             </div>
         </div>
         <h4 class="header blue">
-            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Detail') ?>
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Inventory') ?>
         </h4>
+        <div class="row">
+            <div class="col-sm-6">
+                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255)); ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Item_supplier"><?= Yii::t('app','Supplier') ?></label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="db-supplier" name="Item[supplier_id]" onchange="showSupplierDialog(event.target.value)">
+                            <option value="0">--Choose Supplier--</option>
+                            <?php foreach($supplier as $key=>$value):?>
+
+                                <option value="<?=$value['id']?>" <?php echo $model['supplier_id']==$value['id'] ? 'selected' : ''?>><?=$value['company_name']?></option>
+                            <?php endforeach;?>
+                            <optgroup >
+                                <option value="addnew">
+                                    Create New
+                                </option>
+                            </optgroup >
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <?php echo $form->textFieldControlGroup($model, 'quantity', array('class' => 'span3')); ?>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
                     <div class="col-sm-9">
-                        <select class="form-control" id="db-category" name="Item[category_id]" onchange="showDialog(event.target.value)">
-                            <option value="0">--Choose Parent--</option>
+                        <select class="form-control" id="db-category" name="Item[category_id]" onchange="showCategoryDialog(event.target.value)">
+                            <option value="0">--Choose Category--</option>
                             <?php foreach($categories as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -84,60 +133,18 @@
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="Item_unit_measurable"><?= Yii::t('app','Unit Of Measurable') ?></label>
                     <div class="col-sm-9">
-                        <?php
-                        $this->widget('yiiwheels.widgets.select2.WhSelect2', array(
-                            'asDropDownList' => false,
-                            'model'=> $model,
-                            'attribute'=>'unit_measurable_id',
-                            'pluginOptions' => array(
-                                'placeholder' => Yii::t('app','Unit Of Measurable'),
-                                'multiple'=>false,
-                                'width' => '50%',
-                                //'tokenSeparators' => array(',', ' '),
-                                'allowClear'=>true,
-                                //'minimumInputLength'=>1,
-                                'ajax' => array(
-                                    'url' => Yii::app()->createUrl('unitMeasurable/GetUnitMeasurable2/'),
-                                    'dataType' => 'json',
-                                    'cache'=>true,
-                                    'data' => 'js:function(term,page) {
-                                                            return {
-                                                                term: term,
-                                                                page_limit: 10,
-                                                                quietMillis: 100,
-                                                                apikey: "e5mnmyr86jzb9dhae3ksgd73"
-                                                            };
-                                                        }',
-                                    'results' => 'js:function(data,page){
-                                                    return { results: data.results };
-                                                 }',
-                                ),
-                                'initSelection' => "js:function (element, callback) {
-                                                    var id=$(element).val();
-                                                    if (id!=='') {
-                                                        $.ajax('".$this->createUrl('/unitMeasurable/InitUnitMeasurable')."', {
-                                                            dataType: 'json',
-                                                            data: { id: id }
-                                                        }).done(function(data) {callback(data);});
-                                                    }
-                                            }",
-                                'createSearchChoice' => 'js:function(term, data) {
-                                                if ($(data).filter(function() {
-                                                    return this.text.localeCompare(term) === 0;
-                                                }).length === 0) {
-                                                    return {id:term, text: term, isNew: true};
-                                                }
-                                            }',
-                                'formatResult' => 'js:function(term) {
-                                                if (term.isNew) {
-                                                    return "<span class=\"label label-important\">New</span> " + term.text;
-                                                }
-                                                else {
-                                                    return term.text;
-                                                }
-                                            }',
-                            )));
-                        ?>
+                        <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]" onchange="showMeasurableDialog(event.target.value)">
+                            <option value="0">--Choose Measurable--</option>
+                            <?php foreach($measurable as $key=>$value):?>
+
+                                <option value="<?=$value['id']?>" <?php echo $model['unit_measurable_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
+                            <?php endforeach;?>
+                            <optgroup >
+                                <option value="addnew">
+                                    Create New
+                                </option>
+                            </optgroup >
+                        </select>
                     </div>
                 </div>
             </div>
@@ -150,12 +157,24 @@
                 <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3 txt-location','maxlength'=>20)); ?>
             </div>
         </div>
+        <h4 class="header blue">
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Pricing') ?>
+        </h4>
+        <div class="row">
+            <div class="col-sm-4">
+                <?php echo $form->textFieldControlGroup($model, 'cost_price', array('class' => 'span3')); ?>
+            </div>
+            <div class="col-sm-4">
+                <?php echo $form->textFieldControlGroup($model, 'markup', array('class' => 'span3','value'=>0)); ?>
+            </div>
+            <div class="col-sm-4">
+                <?php echo $form->textFieldControlGroup($model, 'unit_price', array('class' => 'span3')); ?>
+            </div>
+        </div>
     
-
-    
-
-    
-
+<?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
+<?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
+<?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
 </div>
 <?php $this->endWidget(); ?>
 <script>
@@ -170,3 +189,37 @@
 </script>
 <div id="modal-container"></div>
 <?php $this->renderPartial('partialList/_action',array('categories'=>$categories)) ?>
+
+<style type="text/css">
+    .margin-top-15{
+        margin-left: 15px;
+        margin-top: 15px;
+    }
+    .tag-container{
+        display: inline-block;
+        height: auto;
+        min-height: 35px;
+        border-radius: 3px;
+        width: 100%;
+        border:solid 1px #ccc;
+    }
+    .tag-box{
+        border:none !important;
+        float: left;
+        width: 200px;
+    }
+    .tag-item-box{
+        float: left;
+        height: auto;
+    }
+    .tag-item{
+        padding: 5px;
+        background-color: #ccc;
+        position: relative;
+        float: left;
+        top: 0px;
+        bottom: 10px;
+        margin: 10px 5px 10px 5px !important;
+        border-radius: 3px;
+    }
+</style>

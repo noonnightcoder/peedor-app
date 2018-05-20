@@ -20,7 +20,7 @@ class SupplierController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete','undoDelete','AddSupplier','GetSupplier'),
+				'actions'=>array('create','update','admin','delete','undoDelete','AddSupplier','GetSupplier','SaveSupplier'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -122,7 +122,22 @@ class SupplierController extends Controller
         loadview('create','_form',$data);
 
 	}
-
+    public function actionSaveSupplier(){
+        $model=new Supplier;
+        $data=array(
+            'company_name'=>$_POST['company_name'],
+            'first_name'=>$_POST['first_name'],
+            'last_name'=>$_POST['last_name']
+        );
+        $id = $model->saveSupplier($data);
+        if($id){
+            echo 'success';
+            //print_r($model);
+            $this->renderPartial('partialList/_supplier_reload',array('model'=>Supplier::model()->findAll(),'id'=>$id));
+        }else{
+            echo 'existed'; 
+        }
+    }
     public function actionUpdate($id, $recv_mode = 'N', $trans_mode = null)
     {
         authorized('supplier.update');

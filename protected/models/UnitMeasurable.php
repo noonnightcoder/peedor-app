@@ -131,4 +131,16 @@ class UnitMeasurable extends CActiveRecord
 
         return $id;
     }
+    public function saveUnitMeasurable2($name)
+    {
+        $id = null;
+        $exists = UnitMeasurable::model()->exists('name=:name', array(':name' => $name));
+        if (!$exists) {
+            $model = new UnitMeasurable;
+            $model->name = $name;
+            $model->save();
+            $id = $model->id;
+        }
+        return $id;
+    }
 }

@@ -32,7 +32,7 @@ class UnitMeasurableController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','GetUnitMeasurable2','initUnitMeasurable'),
+				'actions'=>array('create','update','GetUnitMeasurable2','initUnitMeasurable','SaveMeasurable'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -199,5 +199,18 @@ class UnitMeasurableController extends Controller
         if ($model !== null) {
             echo CJSON::encode(array('id' => $model->id, 'text' => $model->name));
         }
+    }
+
+    public function actionSaveMeasurable(){
+    	$model=new UnitMeasurable;
+    	$measurable_name=$_POST['measurable_name'];
+    	$id = $model->saveUnitMeasurable2($measurable_name);
+    	if($id){
+    		echo 'success';
+    		//print_r($model);
+    		$this->renderPartial('partialList/_measurable_reload',array('model'=>UnitMeasurable::model()->findAll(),'id'=>$id));
+    	}else{
+    		echo 'existed'; 
+    	}
     }
 }

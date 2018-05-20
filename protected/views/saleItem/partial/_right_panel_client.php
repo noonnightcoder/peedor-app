@@ -9,6 +9,7 @@
                 'content' => $this->renderPartial('partial/_client_selected', array(
                     'model' => $model,
                     'cust_fullname' => $cust_fullname,
+                    'group_name'=>$group_name,
                     'customer_id' => $customer_id,
                     'acc_balance' => $acc_balance,
                     'sale_mode' => $sale_mode,

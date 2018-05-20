@@ -13,6 +13,7 @@
         'customer' => $customer,
         'cust_fullname' => $cust_fullname,
         'customer_id' => $customer_id,
+        'group_name'=>$group_name,
         'acc_balance' => $acc_balance,
         'sale_mode' => $sale_mode,
         'cust_term' => $cust_term,

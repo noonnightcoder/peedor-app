@@ -776,13 +776,14 @@ class SaleItemController extends Controller
         $customer = Client::model()->clientByID($data['customer_id']);
         $employee = Employee::model()->employeeByID($data['employee_id']);
         $sale_rep = Employee::model()->employeeByID($data['salerep_id']);
-
+        $group_name = Client::model()->groupByID($data['customer_id']);
         $data['account'] = $account;
         $data['customer'] = $customer;
         $data['employee'] = $employee;
 
         $data['acc_balance'] = $account !== null ? $account->current_balance : '';
         $data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
+        $data['group_name'] = $group_name !== null ? $group_name : 'General';
         $data['salerep_fullname'] = $sale_rep !== null ? $sale_rep->first_name . ' ' . $sale_rep->last_name : $employee->first_name . ' '  . $employee->last_name;
         $data['salerep_tel'] = $sale_rep !== null ? $sale_rep->mobile_no : '';
         $data['cust_address1'] = $customer !== null ? $customer->address1 : '';

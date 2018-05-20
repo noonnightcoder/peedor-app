@@ -55,7 +55,9 @@ class ItemController extends Controller
                     'GetItemMain',
                     'NextId',
                     'PreviousId',
-                    'AddPriceQty'
+                    'AddPriceQty',
+                    'ReloadCategory',
+                    'saveCategory'
                 ),
                 'users' => array('@'),
             ),
@@ -262,6 +264,10 @@ class ItemController extends Controller
 
         if (isset($_POST['Item'])) {
             $model->attributes = $_POST['Item'];
+
+            $this->setSession(Yii::app()->session);
+
+            $tags=$this->session['tags']=$_POST['Item']['tags'];
             //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
             //$model->quantity = 0;
 
@@ -331,10 +337,12 @@ class ItemController extends Controller
         $data['model'] = $model;
         // $data['price_tiers'] = $price_tiers;
         // $data['item_price_quantity'] = $item_price_quantity;
-        // $data['priceQty'] = $priceRange;
+        $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['categories']=Category::model()->findAll();
-
+        $data['supplier'] = Supplier::model()->findAll();
+        $data['brand'] = Brand::model()->findAll();
         $this->render('create2', $data);
+        //var_dump($_POST['Item']);
 
     }
     public function actionAddPriceQty()
@@ -361,7 +369,7 @@ class ItemController extends Controller
         }
         $this->setSession(Yii::app()->session);
 
-        $priceRange=$this->session['priceQty'.$id];
+        $this->session['tags']=$model['tags'];
         // $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
         // $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
         $next_id = Item::model()->getNextId($id);
@@ -446,6 +454,9 @@ class ItemController extends Controller
         $data['previous_disable'] = $previous_disable;
         // $data['priceQty'] = $priceRange;
         $data['categories']=Category::model()->findAll();
+        $data['measurable'] = UnitMeasurable::model()->findAll();
+        $data['supplier'] = Supplier::model()->findAll();
+        $data['brand'] = Brand::model()->findAll();
         $this->render('update2', $data);
     }
     public function actionAssemblies()
@@ -983,5 +994,43 @@ class ItemController extends Controller
     public function setSession($value)
     {
         $this->session = $value;
+    }
+    public function actionSaveCategory(){
+        $i=$_POST['id']+1;
+        $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
+        $parent_id=$_POST['parent_id'];
+        $category=new Category;
+        $criteria = new CDbCriteria();
+        $criteria->condition = 'name=:name';
+        $criteria->params = array(':name'=>$category_name);
+        $exists = $category->exists($criteria);
+        $model=Category::model()->findAll();
+        $errorMsg='';
+        if($exists){
+            echo 'existed'; 
+            //$errorMsg='Name "'.$category_name.'" has already been taken.';
+        }else if($category_name==''){
+            echo 'error';
+            //$errorMsg='Category name is required';
+        }else{
+            $category->name=$category_name;
+            $category->parent_id=$parent_id;
+            $saved=$category->save();
+            if($saved>0){
+                $this->renderPartial('partialList/_category_reload',array(
+                    'category_id'=>$category->id,
+                    'category_name'=>$category_name,
+                    'parent_id'=>$parent_id,
+                    'i'=>$i,
+                    'model'=>$model
+                ));
+            }
+        }
+        
+    }
+    public function actionReloadCategory($id=''){
+        $model=Category::model()->findAll();
+        echo $id;
+        $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
 }

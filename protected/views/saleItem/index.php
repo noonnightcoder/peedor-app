@@ -28,6 +28,7 @@ $this->breadcrumbs=array(
         'cust_fullname' => $cust_fullname,
         'customer_id' => $customer_id,
         'acc_balance' => $acc_balance,
+        'group_name' => $group_name,
         'sale_mode' => $sale_mode,
         'sub_total' => $sub_total,
         'total' => $total,

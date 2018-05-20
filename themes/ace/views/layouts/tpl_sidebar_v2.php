@@ -32,12 +32,12 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id == 'item/admin',
                     'visible' => ckacc('item.read')
                 ),
-                array('label' => sysMenuAssembliesView(),
-                    'icon' => 'menu-icon '  . 'menu-icon fa fa-chain pink',
-                    'url' => url('item/assemblies'),
-                    'active' => $this->id . '/' . $this->action->id == 'item/assemblies',
-                    'visible' => ckacc('item.create')
-                ),
+                // array('label' => sysMenuAssembliesView(),
+                //     'icon' => 'menu-icon '  . 'menu-icon fa fa-chain pink',
+                //     'url' => url('item/assemblies'),
+                //     'active' => $this->id . '/' . $this->action->id == 'item/assemblies',
+                //     'visible' => ckacc('item.create')
+                // ),
                 array('label' => sysMenuCategoryView(),
                     'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
                     'url' => url('category/admin'),

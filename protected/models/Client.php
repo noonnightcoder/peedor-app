@@ -209,6 +209,23 @@ class Client extends CActiveRecord
         return isset($model) ? $model : null;
     }
 
+    public static function groupByID($id=0)
+    {
+        // Recommended: Secure Way to Write SQL in Yii
+        $sql = 'SELECT group_name 
+        FROM CLIENT c JOIN customer_group cg
+        ON c.price_tier_id=cg.id
+        where c.id=:id';
+
+        $group = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                ':id' => $id
+            )
+        );
+        foreach ($group as $value){
+            return $value['group_name'];
+        }
+    }
+
 	public function suggest($keyword,$limit=20)
 	{
 		$models=$this->findAll(array(

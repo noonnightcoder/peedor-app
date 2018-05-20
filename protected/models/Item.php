@@ -14,6 +14,8 @@ class Item extends CActiveRecord
     public $promo_end_date;
     public $item_archived;
     public $search;
+    public $markup;
+    public $tags;
 
     /**
      * Returns the static model of the specified AR class.
@@ -50,13 +52,14 @@ class Item extends CActiveRecord
             ),
             array('name', 'unique'),
             array(
-                'category_id, supplier_id, unit_id, unit_measurable_id, allow_alt_description, is_serialized, is_expire, count_interval',
+                'category_id, supplier_id,brand_id, unit_id, unit_measurable_id, allow_alt_description, is_serialized, is_expire, count_interval',
                 'numerical',
                 'integerOnly' => true
             ),
             array('cost_price, unit_price, quantity, reorder_level, items_add_minus, promo_price', 'numerical'),
             //array('unit_price','compare','compareAttribute'=>'cost_price','operator'=>'>=','message'=>'Buy Price must be less than or equal to Sale Price'),
             array('name', 'length', 'max' => 100),
+            array('tags', 'length', 'max' => 10000),
             array('item_number', 'length', 'max' => 255),
             array('location', 'length', 'max' => 20),
             array('batch_number', 'length', 'max' => 45),
@@ -70,7 +73,7 @@ class Item extends CActiveRecord
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
             array(
-                'id, name, search, item_number,batch_number,unit_id, category_id, supplier_id, cost_price, unit_price, quantity, unit_measurable_id, reorder_level, location, allow_alt_description, is_serialized, description, status, promo_price, is_expire, count_interval',
+                'id, name, search, item_number,batch_number,unit_id, category_id, supplier_id, cost_price, unit_price, quantity, unit_measurable_id, reorder_level, location, allow_alt_description, is_serialized, description, status, promo_price, is_expire, count_interval,tags',
                 'safe',
                 'on' => 'search'
             ),
@@ -102,9 +105,10 @@ class Item extends CActiveRecord
         return array(
             'id' => 'ID',
             'name' => Yii::t('app', 'Name'),
-            'item_number' => Yii::t('app', 'Item Number'),
+            'item_number' => Yii::t('app', 'SKU'),
             'unit_id' => Yii::t('app', 'Unit ID'),
             'category_id' => Yii::t('app', 'Category'),
+            'brand_id' => Yii::t('app', 'Brand'),
             'supplier_id' => Yii::t('app', 'Supplier'),
             'cost_price' => Yii::t('app', 'Buy Price'),
             'unit_price' => Yii::t('app', 'Sell Price'),
@@ -126,6 +130,8 @@ class Item extends CActiveRecord
             'is_expire' => Yii::t('app', 'Is Expire ?'),
             'count_interval' => Yii::t('app', 'Count Interval'),
             'unit_measurable_id' => Yii::t('app', 'Unit Of Measurable'),
+            'markup'=>Yii::t('app','Markup(%)'),
+            'tags'=>Yii::t('app','Product Tags')
         );
     }
 
