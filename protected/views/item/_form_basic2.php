@@ -82,7 +82,10 @@
         </h4>
         <div class="row">
             <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255)); ?>
+                <?= $form->textFieldControlGroup($model,'sku',array('class'=>'span3 txt-barcode','maxlength'=>32)); ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255,'placeholder'=>'ISBN,UPC,GTIN,etc.')); ?>
             </div>
         </div>
         <div class="row">
@@ -153,9 +156,7 @@
             <div class="col-sm-6">
                 <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3 txt-reorder-level pull-right',)); ?>
             </div>
-            <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'location',array('class'=>'span3 txt-location','maxlength'=>20)); ?>
-            </div>
+            
         </div>
         <h4 class="header blue">
             <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Pricing') ?>

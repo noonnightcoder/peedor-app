@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" onclick="document.getElementById('db-measurable').value=0" aria-label="Close">
           &times;
         </button>
         <h5 class="modal-title" id="exampleModalLabel">Create Unit Measurable</h5>
@@ -15,7 +15,7 @@
         <span id="error" class="errorMsg"></span>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('db-measurable').value=0" data-dismiss="modal">Close</button>
         <button type="button" onclick="saveMeasurable()" class="btn btn-primary">Save</button>
       </div>
     </div>

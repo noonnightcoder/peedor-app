@@ -13,7 +13,7 @@ $this->breadcrumbs=array(
             'model'=>$model,
             'price_tiers' => $price_tiers,
             'item_price_quantity' => $item_price_quantity,
-            'priceQty'=>$priceQty
+            // 'priceQty'=>$priceQty
     ), true),
 )); ?>
 

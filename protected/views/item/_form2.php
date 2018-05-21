@@ -30,10 +30,11 @@
                     'id' => 'tab_1',
                     'icon' => sysMenuItemIcon(),
                     'content' => $this->renderPartial('_form_basic2' ,array(
-                        'model' => $model,
-                        // 'price_tiers' => $price_tiers,
-                        'categories'=>$categories,
-                        'form' => $form,
+                        'model'=>$model,
+                        'brand' => $brand,
+                        'supplier' => $supplier,
+                        'measurable'=>$measurable,
+                        'categories'=>$categories
                         'title' => 'Basic'),true),
                     'active' => true,
                 ),

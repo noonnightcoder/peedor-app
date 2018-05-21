@@ -32,23 +32,23 @@
                     'content' => $this->renderPartial('_tab_basic' ,array(
                         'model' => $model,
                         'price_tiers' => $price_tiers,
-                        //'price_quantity_range' => $price_quantity_range,
+                        // 'price_quantity_range' => $price_quantity_range,
                         'form' => $form,
                         'title' => 'Basic'),true),
                     'active' => true,
                 ),
-                array('label' => sysMenuSale(),
-                    'id' => 'tab_2',
-                    'icon' => sysMenuSaleIcon(),
-                    'content' => $this->renderPartial('_tab_sale' ,array(
-                        'model' => $model,
-                        'price_tiers' => $price_tiers,
-                        'item_price_quantity' => $item_price_quantity,
-                        'priceQty'=>$priceQty,
-                        'form' => $form,
-                        'title' => sysMenuSale()),true),
-                    //'visible' => ckacc('sale.review')
-                ),
+                // array('label' => sysMenuSale(),
+                //     'id' => 'tab_2',
+                //     'icon' => sysMenuSaleIcon(),
+                //     'content' => $this->renderPartial('_tab_sale' ,array(
+                //         'model' => $model,
+                //         'price_tiers' => $price_tiers,
+                //         'item_price_quantity' => $item_price_quantity,
+                //         'priceQty'=>$priceQty,
+                //         'form' => $form,
+                //         'title' => sysMenuSale()),true),
+                //     //'visible' => ckacc('sale.review')
+                // ),
                 /*
                 array('label' => t('Purchase ','app'),
                     'id' => 'tab_3',

@@ -16,22 +16,38 @@
 			var unitprice=$('#Item_unit_price').val();
 			var costprice=$('#Item_cost_price').val();
 			var markup=$('#Item_markup').val();
-			unitprice=parseInt(costprice)+(parseInt(costprice)*(parseInt(markup)/100));
-			$('#Item_unit_price').val(unitprice);
+			unitprice=parseFloat(costprice)+(parseFloat(costprice)*(parseFloat(markup)/100));
+			$('#Item_unit_price').val(parseFloat(unitprice).toFixed(4));
 		})
-		$('#Item_unit_price').on('keyup',function(){
+		//prevent click key enter
+		$('#Item_markup, #Item_unit_price, #Item_cost_price').on('keydown',function(ev){
+			var char = ev.which || ev.keyCode;
+			if(char===13){
+				return false;
+			}
+		});
+		$('#Item_unit_price').on('keyup',function(e){
+			//var char = e.which || e.keyCode;
+			
 			var unitprice=$('#Item_unit_price').val();
 			var costprice=$('#Item_cost_price').val();
 			var markup=$('#Item_markup').val();
 			markup=((unitprice*100)/costprice)-100;
-			$('#Item_markup').val(markup);
+			$('#Item_markup').val(parseFloat(markup).toFixed(2));	
+			$('#Item_unit_price').on('keydown',function(ev){
+				var char = ev.which || ev.keyCode;
+				if(char===13){
+					return false;
+				}
+			});
+			
 		})
-		$('#Item_cost_price').on('keyup',function(){
+		$('#Item_cost_price').on('keyup',function(e){
 			var unitprice=$('#Item_unit_price').val();
 			var costprice=$('#Item_cost_price').val();
 			var markup=$('#Item_markup').val();
-			unitprice=parseInt(costprice)+(parseInt(costprice)*(parseInt(markup)/100));
-			$('#Item_unit_price').val(unitprice);
+			unitprice=parseFloat(costprice)+(parseFloat(costprice)*(parseFloat(markup)/100));
+			$('#Item_unit_price').val(parseFloat(unitprice).toFixed(4));
 		})
 		$('.tag-box').on('keydown',function(e){
 			var char = event.which || event.keyCode;
@@ -66,29 +82,29 @@
 		tags.splice(i,1);
 		$('.'+i).html('');
 		$('.'+i).css('display','none');
+		$('#item-tags').val(tags);
 	}
 	function showBrandDialog(val){
 		if(val=='addnew'){
 			$('#brandModal').modal('show');
-			$('#brandModal').on('hidden.bs.modal',function(){
-				$('#db-supplier').val(0);
-
+			$('#brandModal').on('shown.bs.modal', function () {
+			  	$('#Brand_Name').focus();
 			})
+			
 		}
 	}
 
 	function saveBrand(){
 		var name=$('#Brand_Name').val();
 		var url="<?php echo Yii::app()->createUrl('Brand/SaveBrand')?>"
-		ajaxSaveData(url,{name},name,$('#brandModal'),$('#db-brand'))
+		ajaxSaveData(url,{name},name,$('#brandModal'),$('#db-brand'),$('#Brand_Name'))
 		
 	}
 	function showSupplierDialog(val){
 		if(val=='addnew'){
 			$('#supplierModal').modal('show');
-			$('#supplierModal').on('hidden.bs.modal',function(){
-				$('#db-supplier').val(0);
-
+			$('#supplierModal').on('shown.bs.modal', function () {
+			  	$('#Supplier_Name').focus();
 			})
 		}
 	}
@@ -97,28 +113,36 @@
 		var company_name=$('#Supplier_Name').val();
 		var first_name=$('#Supplier_First_Name').val();
 		var last_name=$('#Supplier_Last_Name').val();
-		var url="<?php echo Yii::app()->createUrl('Supplier/SaveSupplier')?>"
-		ajaxSaveData(url,{company_name,first_name,last_name},company_name,$('#supplierModal'),$('#db-supplier'))
+		var url="<?php echo Yii::app()->createUrl('Supplier/SaveSupplier')?>";
+		if(company_name.length<=0){
+			$('.errorMsg').html('<small>Company Name is required</small>')
+		}else if(first_name.length<=0){
+			$('.errorMsgf').html('<small>First Name is required</small>')
+		}else if(last_name.length<=0){
+			$('.errorMsgl').html('<small>last Name is required</small>')
+		}else{
+			ajaxSaveData(url,{company_name,first_name,last_name},company_name,$('#supplierModal'),$('#db-supplier'),$('#Supplier_Name'))
+		}
+		
 		
 	}
 	function showMeasurableDialog(val){
 		if(val=='addnew'){
 			$('#measurableModal').modal('show');
-			$('#measurableModal').on('hidden.bs.modal',function(){
-				$('#db-measurable').val(0);
-
+			$('#measurableModal').on('shown.bs.modal',function(){
+				$('#Measurable_Name').focus();
 			})
 		}
 	}
 	function saveMeasurable(){
 		var measurable_name=$('#Measurable_Name').val();
 		var url="<?php echo Yii::app()->createUrl('unitMeasurable/SaveMeasurable')?>"
-		ajaxSaveData(url,{measurable_name},measurable_name,$('#measurableModal'),$('#db-measurable'))
+		ajaxSaveData(url,{measurable_name},measurable_name,$('#measurableModal'),$('#db-measurable'),$('#Measurable_Name'))
 		
 	}
 
 
-	function ajaxSaveData(url,data,field,modal,dblist){
+	function ajaxSaveData(url,data,field,modal,dblist,textbox){
 		if(i===''){
 			i=100000
 		}
@@ -138,10 +162,13 @@
 					$('#success').html('');
 				}else if(data.indexOf('success')>=0){
 					$('.errorMsg').html('');
-					modal.hide();
+					modal.modal('hide');
+					//$('#modal').modal('hide');
+					textbox.val('');
 					$('body').removeClass('modal-open');
 					dblist.html(data);
 				}
+				
 			}
 		})
 	}
@@ -153,38 +180,39 @@
 				  <div class="modal-dialog" role="document">\
 				    <div class="modal-content">\
 				      <div class="modal-header">\
-				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
+				        <button type="button" class="close" onclick="document.getElementById(\'db-category\').value=0"  data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>\
 				        <h4 class="modal-title" id="myModalLabel">Create Category</h4>\
 				      </div>\
 				      <div class="modal-body">\
-							<div class="col-sm-11 col-md-11">\
-								<hr>\
-						        <div class="form-group">\
-						            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>\
-						            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>\
-						            <span id="error" class="errorMsg'+i+'"></span>\
-						        </div>\
-						    </div>\
-						    <div class="col-sm-11 col-md-11">\
-						        <div class="form-group">\
-						            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
-						            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showCategoryDialog(event.target.value)">\
-						            	<option value="0" selected>--Choose Parent--</option>\
-						            	<?php foreach($categories as $key=>$value):?>\
-						            		<option value="<?=$value['id']?>"><?=$value['name']?></option>\
-						            	<?php endforeach;?>\
-						            	<optgroup >\
-						            		<option value="addnew">\
-						            			Create New\
-						            		</option>\
-						            	</optgroup>\
-						            </select>\
-						        </div>\
+					      <div class="row">\
+								<div class="col-sm-12 col-md-12">\
+							        <div class="form-group">\
+							            <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>\
+							            <?php echo CHtml::TextField('Category','',array('class'=>'form-control','id'=>'Category_Name')); ?>\
+							            <span id="error" class="errorMsg'+i+'"></span>\
+							        </div>\
+							    </div>\
+							    <div class="col-sm-12 col-md-12">\
+							        <div class="form-group">\
+							            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
+							            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showCategoryDialog(event.target.value)">\
+							            	<option value="0" selected>--Choose Parent--</option>\
+							            	<?php foreach($categories as $key=>$value):?>\
+							            		<option value="<?=$value['id']?>"><?=$value['name']?></option>\
+							            	<?php endforeach;?>\
+							            	<optgroup >\
+							            		<option value="addnew">\
+							            			Create New\
+							            		</option>\
+							            	</optgroup>\
+							            </select>\
+							        </div>\
+							    </div>\
 						    </div>\
 				      </div>\
 				      <div class="modal-footer">\
 				      <input type="hidden" values="" id="pid">\
-				        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\
+				        <button type="button" class="btn btn-default" onclick="document.getElementById(\'db-category\').value=0" data-dismiss="modal">Close</button>\
 				        <button type="button" class="btn btn-primary" onclick="saveCategory('+i+')">Save changes</button>\
 				      </div>\
 				    </div>\

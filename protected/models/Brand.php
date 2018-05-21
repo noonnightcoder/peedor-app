@@ -20,7 +20,7 @@ class Brand extends CActiveRecord
     /**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return Category the static model class
+	 * @return Brand the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -70,7 +70,7 @@ class Brand extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'items' => array(self::HAS_MANY, 'Item', 'category_id'),
+			
 		);
 	}
 
@@ -114,7 +114,7 @@ class Brand extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria'=>$criteria,
             'pagination' => array(
-                'pageSize' => Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
+                'pageSize' => Yii::app()->user->getState('brand_page_size', Common::defaultPageSize()),
             ),
             'sort'=>array( 'defaultOrder'=>'name')
         ));
@@ -138,7 +138,7 @@ class Brand extends CActiveRecord
     public function saveBrand($brand_name)
     {
         $brand_id = null;
-        $exists = Category::model()->exists('name=:name', array(':name' => $brand_name));
+        $exists = Brand::model()->exists('name=:name', array(':name' => $brand_name));
         if (!$exists) {
             $brand = new Brand;
             $brand->name = $brand_name;
@@ -159,54 +159,54 @@ class Brand extends CActiveRecord
         Brand::model()->updateByPk((int)$id, array('status' => Yii::app()->params['active_status'] ));
     }
 
-    public static function getBrandColumn()
-    {
-        return
-            array(
-                array(
-                    'name' => 'name',
-                    'value' => '$data->status=="1" ? $data->name : "<s class=\"red\">  $data->name <s>" ',
-                    'type' => 'raw',
-                ),
-                'modified_date',
-                array(
-                    'class' => 'bootstrap.widgets.TbButtonColumn',
-                    'header' => Yii::t('app', 'Action'),
-                    'template' => '<div class="hidden-sm hidden-xs btn-group">{update}{delete}{restore}</div>',
-                    'buttons' => array(
-                        'update' => array(
-                            //updateDialogOpen
-                            'click' => '',
-                            'url' => 'Yii::app()->createUrl("category/update2", array("id"=>$data->id))',
-                            'label' => 'Update Category',
-                            'icon' => 'ace-icon fa fa-edit',
-                            'options' => array(
-                                'data-update-dialog-title' => Yii::t('app', 'Update Price Tier'),
-                                'data-refresh-grid-id' => 'category-grid',
-                                'class' => 'btn btn-xs btn-info',
-                            ),
-                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.update2")',
-                        ),
-                        'delete' => array(
-                            'label' => Yii::t('app', 'Delete Category'),
-                            'options' => array(
-                                'data-update-dialog-title' => Yii::t('app', 'Delete Category'),
-                                'titile' => 'Delete Category',
-                                'class' => 'btn btn-xs btn-danger',
-                            ),
-                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.delete")',
-                        ),
-                        'restore' => array(
-                            'label' => Yii::t('app', 'Restore Category'),
-                            'url' => 'Yii::app()->createUrl("category/restore", array("id"=>$data->id))',
-                            'icon' => 'bigger-120 glyphicon-refresh',
-                            'options' => array(
-                                'class' => 'btn btn-xs btn-warning btn-undodelete',
-                            ),
-                            'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("category.delete")',
-                        ),
-                    ),
-                ),
-            );
-    }
+    // public static function getBrandColumn()
+    // {
+    //     return
+    //         array(
+    //             array(
+    //                 'name' => 'name',
+    //                 'value' => '$data->status=="1" ? $data->name : "<s class=\"red\">  $data->name <s>" ',
+    //                 'type' => 'raw',
+    //             ),
+    //             'modified_date',
+    //             array(
+    //                 'class' => 'bootstrap.widgets.TbButtonColumn',
+    //                 'header' => Yii::t('app', 'Action'),
+    //                 'template' => '<div class="hidden-sm hidden-xs btn-group">{update}{delete}{restore}</div>',
+    //                 'buttons' => array(
+    //                     'update' => array(
+    //                         //updateDialogOpen
+    //                         'click' => '',
+    //                         'url' => 'Yii::app()->createUrl("brand/update2", array("id"=>$data->id))',
+    //                         'label' => 'Update Brand',
+    //                         'icon' => 'ace-icon fa fa-edit',
+    //                         'options' => array(
+    //                             'data-update-dialog-title' => Yii::t('app', 'Update Price Tier'),
+    //                             'data-refresh-grid-id' => 'brand-grid',
+    //                             'class' => 'btn btn-xs btn-info',
+    //                         ),
+    //                         'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("brand.update2")',
+    //                     ),
+    //                     'delete' => array(
+    //                         'label' => Yii::t('app', 'Delete Brand'),
+    //                         'options' => array(
+    //                             'data-update-dialog-title' => Yii::t('app', 'Delete Brand'),
+    //                             'titile' => 'Delete Brand',
+    //                             'class' => 'btn btn-xs btn-danger',
+    //                         ),
+    //                         'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("brand.delete")',
+    //                     ),
+    //                     'restore' => array(
+    //                         'label' => Yii::t('app', 'Restore Brand'),
+    //                         'url' => 'Yii::app()->createUrl("brand/restore", array("id"=>$data->id))',
+    //                         'icon' => 'bigger-120 glyphicon-refresh',
+    //                         'options' => array(
+    //                             'class' => 'btn btn-xs btn-warning btn-undodelete',
+    //                         ),
+    //                         'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("brand.delete")',
+    //                     ),
+    //                 ),
+    //             ),
+    //         );
+    // }
 }

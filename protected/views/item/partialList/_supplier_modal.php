@@ -4,7 +4,7 @@
     <div class="modal-content">
       <div class="modal-header">
         
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-dismiss="modal" onclick="document.getElementById('db-supplier').value=0" aria-label="Close">
           &times;
         </button>
         <h5 class="modal-title" id="exampleModalLabel">Create Supplier</h5>
@@ -21,20 +21,21 @@
             <div class="col-sm-6">
               <?php echo CHtml::label('First Name', 1, array('class' => 'control-label')); ?>
               <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'Supplier_First_Name'));?>
-              <span id="error" class="errorMsg"></span>
+              <span id="error" class="errorMsgf"></span>
             </div>
             <div class="col-sm-6">
               <?php echo CHtml::label('Last Name', 1, array('class' => 'control-label')); ?>
               <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'Supplier_Last_Name'));?>
-              <span id="error" class="errorMsg"></span>
+              <span id="error" class="errorMsgl"></span>
             </div>
           </div>
       </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('db-supplier').value=0" data-dismiss="modal">Close</button>
         <button type="button" onclick="saveSupplier()" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 </div>
+

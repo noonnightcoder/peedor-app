@@ -16,6 +16,7 @@ class Item extends CActiveRecord
     public $search;
     public $markup;
     public $tags;
+    public $sku;
 
     /**
      * Returns the static model of the specified AR class.
@@ -59,7 +60,7 @@ class Item extends CActiveRecord
             array('cost_price, unit_price, quantity, reorder_level, items_add_minus, promo_price', 'numerical'),
             //array('unit_price','compare','compareAttribute'=>'cost_price','operator'=>'>=','message'=>'Buy Price must be less than or equal to Sale Price'),
             array('name', 'length', 'max' => 100),
-            array('tags', 'length', 'max' => 10000),
+            array('sku', 'length', 'max' => 32),
             array('item_number', 'length', 'max' => 255),
             array('location', 'length', 'max' => 20),
             array('batch_number', 'length', 'max' => 45),
@@ -105,7 +106,7 @@ class Item extends CActiveRecord
         return array(
             'id' => 'ID',
             'name' => Yii::t('app', 'Name'),
-            'item_number' => Yii::t('app', 'SKU'),
+            'item_number' => Yii::t('app', 'Barcode'),
             'unit_id' => Yii::t('app', 'Unit ID'),
             'category_id' => Yii::t('app', 'Category'),
             'brand_id' => Yii::t('app', 'Brand'),
@@ -131,7 +132,7 @@ class Item extends CActiveRecord
             'count_interval' => Yii::t('app', 'Count Interval'),
             'unit_measurable_id' => Yii::t('app', 'Unit Of Measurable'),
             'markup'=>Yii::t('app','Markup(%)'),
-            'tags'=>Yii::t('app','Product Tags')
+            'sku'=>Yii::t('app','SKU')
         );
     }
 
