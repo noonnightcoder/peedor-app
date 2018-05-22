@@ -1,4 +1,4 @@
-<option value="0">--Choose Parent--</option>
+<option value="">--Choose Parent--</option>
 <?php foreach($model as $key=>$value):?>
     <?php if($cid==$value['id']):?>
         <option value="<?=$value['id']?>" selected><?=$value['name']?></option>

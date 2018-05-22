@@ -29,13 +29,16 @@
                 array('label' =>  t('Basic','app'),
                     'id' => 'tab_1',
                     'icon' => sysMenuItemIcon(),
-                    'content' => $this->renderPartial('_form_basic2' ,array(
-                        'model'=>$model,
-                        'brand' => $brand,
-                        'supplier' => $supplier,
-                        'measurable'=>$measurable,
-                        'categories'=>$categories
-                        'title' => 'Basic'),true),
+                    'content' => $this->renderPartial('_form_basic2' ,
+                        array(
+                            'model'=>$model,
+                            'brand' => $brand,
+                            'supplier' => $supplier,
+                            'measurable'=>$measurable,
+                            'categories'=>$categories
+                            'title' => 'Basic'
+                        ),true
+                    ),
                     'active' => true,
                 ),
                 /*

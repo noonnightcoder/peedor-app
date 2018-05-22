@@ -36,7 +36,7 @@
                     <label class="col-sm-3 control-label" for="Item_brand"><?= Yii::t('app','Brand') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-brand" name="Item[brand_id]" onchange="showBrandDialog(event.target.value)">
-                            <option value="0">--Choose Brand--</option>
+                            <option value="">--Choose Brand--</option>
                             <?php foreach($brand as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['brand_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -118,7 +118,7 @@
                     <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-category" name="Item[category_id]" onchange="showCategoryDialog(event.target.value)">
-                            <option value="0">--Choose Category--</option>
+                            <option value="">--Choose Category--</option>
                             <?php foreach($categories as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -137,7 +137,7 @@
                     <label class="col-sm-3 control-label" for="Item_unit_measurable"><?= Yii::t('app','Unit Of Measurable') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]" onchange="showMeasurableDialog(event.target.value)">
-                            <option value="0">--Choose Measurable--</option>
+                            <option value="">--Choose Measurable--</option>
                             <?php foreach($measurable as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['unit_measurable_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -173,11 +173,12 @@
             </div>
         </div>
     
+
+</div>
+<?php $this->endWidget(); ?>
 <?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
 <?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
 <?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
-</div>
-<?php $this->endWidget(); ?>
 <script>
     function beforeValidate() {
     var form = $(this);

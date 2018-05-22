@@ -268,6 +268,9 @@ class ItemController extends Controller
             $this->setSession(Yii::app()->session);
 
             $this->session['tags']=$_POST['Item']['tags'];
+
+            // $model->category_id = null;
+            // $model->unit_measurable_id = null;
             //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
             //$model->quantity = 0;
 
@@ -276,7 +279,7 @@ class ItemController extends Controller
             //$_POST['Item']['category_id']=$_POST['Item']['category_id'] > 0 ? $_POST['Item']['category_id'] : 'NULL';
 
             //Saving new category to `category` table
-            //$category_id = Category::model()->saveCategory($category_name);
+            // $category_id = Category::model()->saveCategory($category_name);
             //$unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
 
             // if ($category_id !== null) {
@@ -321,7 +324,7 @@ class ItemController extends Controller
                         // Saving Item Price Tier to `item_price_tier`
                         // ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         unset($this->session['tags']);
-                        $this->addImages($model, $transaction);
+                        //$this->addImages($model, $transaction);
                         $transaction->commit();
 
                         if ($grid_cart == 'N') {

@@ -1,4 +1,4 @@
-<option value="0">--Choose Measurable--</option>
+<option value="">--Choose Measurable--</option>
 <?php foreach($model as $key=>$value):?>
     <?php if($id==$value['id']):?>
         <option value="<?=$value['id']?>" selected><?=$value['company_name']?></option>
