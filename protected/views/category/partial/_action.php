@@ -67,7 +67,7 @@
 		var parent_id=$('#db-category'+i).val();
 		var url=''
 		if(cateid>0){
-			url="<?php echo Yii::app()->createUrl('Category/Update2/')?>"+cateid
+			url="<?php echo Yii::app()->createUrl('Category/Update2/')?>/"+cateid
 		}else{
 			url="<?php echo Yii::app()->createUrl('Category/SaveCategory')?>"
 		}
@@ -96,6 +96,7 @@
 					if(i==100000){
 						if(cateid>0){
 							$('.errorMsg'+i).html('<span style="color:#00f;">Update successfully</span>');
+							window.location.href="<?php echo $baseUrl.'/index.php/Category/Admin'?>"
 						}else{
 							window.location.href="<?php echo $baseUrl.'/index.php/Category/Admin'?>"	
 						}

@@ -224,6 +224,42 @@ class Category extends CActiveRecord
             );
     }
 
+    public function buildTreeView( $ar, $pid = null ) {
+        $op = array();
+        foreach( $ar as $item ) {
+            if( $item['parent_id'] == $pid ) {
+                $op[$item['name']] = array(
+                    'text' => $item['name'],
+                    'icon-class'=>'orange',
+                    'type'=>'folder',
+                    //'parent_id' => $item['parent_id']
+                );
+                // using recursion
+                $children =  $this->childTreeView( $ar, $item['id'] );
+                // if( $children ) {
+                //     $children['text']='<i class="ace-icon fa fa-music blue"></i>'.$item['name'];
+                //     $children['type']='item';
+                //     $op[$item['name']]['additionalParameters']['children'] = $children;
+                // }
+            }
+        }
+        return $op;
+    }
+    public function childTreeView( $ar, $pid = null ) {
+        $op = array();
+        foreach( $ar as $item ) {
+            if( $item['parent_id'] == $pid ) {
+                // using recursion
+                $children =  $this->buildTreeView( $ar, $item['id'] );
+                if( $children ) {
+                    $children['text']='<i class="ace-icon fa fa-music blue"></i>'.$item['name'];
+                    $children['type']='item';
+                    $op[$item['name']]['additionalParameters']['children'] = $children;
+                }
+            }
+        }
+        return $op;
+    }
 
     public function buildTree( $ar, $pid = null ) {
         $op = array();

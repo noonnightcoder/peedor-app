@@ -57,7 +57,9 @@ class ItemController extends Controller
                     'PreviousId',
                     'AddPriceQty',
                     'ReloadCategory',
-                    'saveCategory'
+                    'saveCategory',
+                    'ItemFinder',
+                    'CategoryTree'
                 ),
                 'users' => array('@'),
             ),
@@ -1080,5 +1082,15 @@ class ItemController extends Controller
         $model=Category::model()->findAll();
         echo $id;
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
+    }
+    public function actionItemFinder(){
+        $model=Category::model()->findAll();
+        $data=array('model'=>$model);
+        $this->render('item_finder',$data);
+    }
+    public function actionCategoryTree(){
+        $model=Category::model()->findAll();
+        $arr = Category::model()->buildTreeView($model);
+        echo json_encode($arr);
     }
 }

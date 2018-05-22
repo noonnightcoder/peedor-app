@@ -50,6 +50,19 @@
     <![endif]-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.min.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.min.css" />
+
+     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/font-awesome.css" />
+    
+    <!-- page specific plugin styles -->
+    
+    <!-- ace styles -->
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace.css" />
+    
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-part2.min.css" />
+    <![endif]-->
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.css" />
     
     <!--[if lte IE 9]>
         <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-ie.min.css" />
@@ -67,13 +80,17 @@
     <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
    
     <?php
+        // $cs->registerScriptFile($baseUrl.'/js/jQuery.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.maskedinput.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
-        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);;
+        // $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
+        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/ace.ajax-content',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery-ui.min.js',CClientScript::POS_END);
+        
     ?>
 
     

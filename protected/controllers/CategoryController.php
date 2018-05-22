@@ -231,9 +231,15 @@ class CategoryController extends Controller
         }else{
             $model = $this->loadModel($id);
             $data['model']=$model;
-            $data['parent']=Category::model()->findAll();
+            $data['parent']=Category::model()->findAll(
+                array(
+                    'condition'=>'id not in (:id)',
+                    'params'=>array(
+                        ':id'=>$id
+                    )
+                );
             $data['cateId']=$id;
-            $this->render('create2', $data);
+            $this->render('create', $data);
         }
         
     }
