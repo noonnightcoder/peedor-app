@@ -81,12 +81,14 @@ class PriceBookController extends Controller
         $data['data_provider'] = $model->search();
         $this->render('_list',$data);
     }
+
     public function actionView($id,$name=''){
         $priceBook=PriceBook::getPriceBookDetail($id);
         $data['data']=$priceBook;
         $data['count_title']='pricebook';
         $this->render('_pricebookDetail',$data);
     }
+
     public function actionCreate(){
         //$invcount=new InventoryCount;
         $model = new PriceBook('search');

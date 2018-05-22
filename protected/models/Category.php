@@ -141,8 +141,8 @@ class Category extends CActiveRecord
 
         // Recommended: Secure Way to Write SQL in Yii
         $sql = "SELECT id ,name AS text 
-                    FROM category 
-                    WHERE (name LIKE :name)";
+                FROM category 
+                WHERE (name LIKE :name)";
 
         $name = '%' . $name . '%';
         return Yii::app()->db->createCommand($sql)->queryAll(true, array(':name' => $name));
@@ -222,5 +222,40 @@ class Category extends CActiveRecord
                     ),
                 ),
             );
+    }
+
+
+    public function buildTree( $ar, $pid = null ) {
+        $op = array();
+        foreach( $ar as $item ) {
+            if( $item['parent_id'] == $pid ) {
+                $op[$item['id']] = array(
+                    'name' => $item['name'],
+                    'parent_id' => $item['parent_id']
+                );
+                // using recursion
+                $children =  $this->buildTree( $ar, $item['id'] );
+                if( $children ) {
+                    $op[$item['id']]['children'] = $children;
+                }
+            }
+        }
+        return $op;
+    }
+
+    public function buildOptions($arr, $target, $parent = NULL) {
+	    $html = "";
+        foreach ( $arr as $key => $v )
+        {
+            if ( $key == $target )
+                $html .= "<option value='$key' selected>$parent {$v['name']}</option>\n";
+            else
+                $html .= "<option value='$key'>$parent {$v['name']}</option>\n";
+
+            if (array_key_exists('children', $v))
+                $html .= $this->buildOptions($v['children'],$target,$parent . $v['name']." > ");
+        }
+
+        return $html;
     }
 }

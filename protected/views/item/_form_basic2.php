@@ -173,12 +173,24 @@
             </div>
         </div>
     
+<<<<<<< Updated upstream
 
 </div>
 <?php $this->endWidget(); ?>
 <?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
 <?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
 <?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
+=======
+<?php $this->renderPartial('partial/_to_refactor'); ?>
+
+
+<?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
+<?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
+<?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
+
+</div>
+<?php $this->endWidget(); ?>
+>>>>>>> Stashed changes
 <script>
     function beforeValidate() {
     var form = $(this);

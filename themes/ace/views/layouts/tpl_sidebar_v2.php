@@ -336,7 +336,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . sysMenuSetting() . '</span>',
             'icon' => 'menu-icon '  . sysMenuSettingIcon(),
             'url' => url('settings/index'),
-            'active' => $this->id == 'priceTier' || strtolower($this->id) == 'default' || $this->id == 'store' || $this->id == 'settings' || $this->id == 'location' ,
+            'active' => $this->id == 'priceTier' || strtolower($this->id) == 'default' || $this->id == 'store' || $this->id == 'settings' || $this->id == 'location' || $this->id == 'rbacUser' ,
             'visible' => ckacc('store.update'),
             'items' => array(
                 // array('label' => sysMenuCategory(),
@@ -350,6 +350,11 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id == 'priceTier/admin',
                     'visible' => ckacc('store.update')),
                 //array('label'=>Yii::t('app','Location'),'icon'=> TbHtml::ICON_MAP_MARKER, 'url'=>url('location/admin'), 'active'=>$this->id .'/'. $this->action->id=='location/admin','visible'=>ckacc('store.update')),
+                array('label' => Yii::t('app', 'User &  Role'),
+                    'icon' => 'menu-icon '  . TbHtml::ICON_USER,
+                    'url' => url('rbacUser/admin'),
+                    'active' => $this->id . '/' . $this->action->id == 'rbacUser/admin',
+                ),
                 array('label' => Yii::t('app', 'Shop Setting'), 'icon' => 'menu-icon '  . TbHtml::ICON_COG, 'url' => url('settings/index'),
                     'active' => $this->id == 'settings',
                     //'visible'=> Yii::app()->user->isAdmin
