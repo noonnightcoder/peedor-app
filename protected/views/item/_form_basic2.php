@@ -15,7 +15,7 @@
     'htmlOptions'=>array('enctype' => 'multipart/form-data'),
 )); ?>
 
-<?php $this->renderPartial('_header', array('model' => $model)) ?>
+<?php /*$this->renderPartial('_header', array('model' => $model)) */?>
 
 
 <div class="col-sm-12">
@@ -172,6 +172,13 @@
                 <?php echo $form->textFieldControlGroup($model, 'unit_price', array('class' => 'span3')); ?>
             </div>
         </div>
+
+    <div class="form-actions">
+        <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
+            'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+            //'size'=>TbHtml::BUTTON_SIZE_SMALL,
+        )); ?>
+    </div>
 
 </div>
 

@@ -159,11 +159,21 @@
                 'items'=>$items,
                 'customer_group'=>$customer_group,
             )); ?>
-            <div class="row">
+
+            <!--<div class="row">
                 <div class='col-sm-12'>
                     <input type="button" class="btn btn-primary pull-right" onclick="form.submit()" value="Save">
                 </div>
+            </div>-->
+
+            <div class="form-actions">
+                <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
+                    'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
+                    //'size'=>TbHtml::BUTTON_SIZE_SMALL,
+                    'onClick'=> 'form.submit()'
+                )); ?>
             </div>
+
         </div>
     </div>
 </div>
