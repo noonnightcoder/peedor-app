@@ -4,6 +4,9 @@ $this->breadcrumbs=array(
 	'Create',
 );
 
+$arr = Category::model()->buildTree($parent);
+$option=Category::model()->buildOptions($arr,null);
+
 $this->menu=array(
 	array('label'=>'List Category','url'=>array('index')),
 	array('label'=>'Manage Category','url'=>array('category/list')),
@@ -33,11 +36,12 @@ $this->menu=array(
 	        <div class="form-group">
 	            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>
 	            <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">
-	            	<option value="0">--Choose Parent--</option>
-	            	<?php foreach($parent as $key=>$value):?>
+	            	<option value="">--Choose Parent--</option>
+	            	<!-- <?php foreach($parent as $key=>$value):?>
 
 	            		<option value="<?=$value['id']?>" <?php echo $model['parent_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
-	            	<?php endforeach;?>
+	            	<?php endforeach;?> -->
+	            	<?=Category::model()->buildOptions($arr,$model['parent_id'])?>
 	            	<optgroup >
 	            		<option value="addnew">
 	            			Create New
@@ -57,4 +61,7 @@ $this->menu=array(
 	</div>
 <div id="modal-container"></div>
 <?php $this->endWidget(); ?>
-<?php $this->renderPartial('partial/_action',array('parent'=>$parent)) ?>
+
+
+<?php $this->renderPartial('partial/_action',array('option'=>$option,'cid'=>0)) ?>
+

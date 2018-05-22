@@ -33,7 +33,7 @@ $this->menu=array(
 	        <div class="form-group">
 	            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>
 	            <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">
-	            	<option value="0">--Choose Parent--</option>
+	            	<option value="">--Choose Parent--</option>
 	            	<?php foreach($parent as $key=>$value):?>
 
 	            		<option value="<?=$value['id']?>" <?php echo $model['parent_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -57,4 +57,5 @@ $this->menu=array(
 	</div>
 <div id="modal-container"></div>
 <?php $this->endWidget(); ?>
+<?php $arr = Category::model()->buildTree($parent);?>
 <?php $this->renderPartial('partial/_action',array('parent'=>$parent)) ?>

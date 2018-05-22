@@ -1,5 +1,8 @@
 <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
-
+<?php
+$arr = Category::model()->buildTree($categories);
+$option=Category::model()->buildOptions($arr,null);
+?>
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'item-form',
     'enableAjaxValidation'=>true,
@@ -119,10 +122,11 @@
                     <div class="col-sm-9">
                         <select class="form-control" id="db-category" name="Item[category_id]" onchange="showCategoryDialog(event.target.value)">
                             <option value="">--Choose Category--</option>
-                            <?php foreach($categories as $key=>$value):?>
+                            <!-- <?php foreach($categories as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
-                            <?php endforeach;?>
+                            <?php endforeach;?> -->
+                            <?=Category::model()->buildOptions($arr,$model['category_id'])?>
                             <optgroup >
                                 <option value="addnew">
                                     Create New
@@ -182,15 +186,9 @@
 
 </div>
 
-<?php $this->renderPartial('partial/_to_refactor'); ?>
+<?php //$this->renderPartial('partial/_to_refactor'); ?>
 
 <?php $this->endWidget(); ?>
-
-<?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
-<?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
-<?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
-
-
 
 <?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
 <?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
@@ -210,7 +208,7 @@
 }
 </script>
 <div id="modal-container"></div>
-<?php $this->renderPartial('partialList/_action',array('categories'=>$categories)) ?>
+<?php $this->renderPartial('partialList/_action',array('option'=>$option)) ?>
 
 <style type="text/css">
     .margin-top-15{

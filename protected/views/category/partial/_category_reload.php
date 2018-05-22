@@ -11,10 +11,11 @@
         </div>
         <div class="col-sm-11 col-md-11">
             <div class="form-group">
+                <?php $arr = Category::model()->buildTree($model);?>
                 <?php echo CHtml::label('Parent', 1, array('class' => 'control-label'));?>
                 <select class="form-control" id="db-category<?=($i-1)?>" onchange="showDialog(event.target.value)">
-                    <option value="0">--Choose Parent--</option>
-                    <?php $selected='';foreach($model as $key=>$value):?>
+                    <option value="">--Choose Parent--</option>
+                    <!-- <?php $selected='';foreach($model as $key=>$value):?>
                         <?php if($value['id']==$parent_id):?>
                             <?php echo $parent_id;?>
                             <?php $selected='selected';?>
@@ -22,7 +23,8 @@
                         <?php else:?>
                                 <option value="<?=$value['id']?>"><?=$value['name']?></option>
                         <?php endif;?>
-                    <?php endforeach;?>
+                    <?php endforeach;?> -->
+                    <?=Category::model()->buildOptions($arr,$parent_id)?>
                     <optgroup >
                         <option value="addnew">
                             Create New

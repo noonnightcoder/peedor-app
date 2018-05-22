@@ -248,9 +248,9 @@ class Category extends CActiveRecord
         foreach ( $arr as $key => $v )
         {
             if ( $key == $target )
-                $html .= "<option value='$key' selected>$parent {$v['name']}</option>\n";
+                $html .= "<option value='$key' selected>$parent {$v['name']}</option>";
             else
-                $html .= "<option value='$key'>$parent {$v['name']}</option>\n";
+                $html .= "<option value=\"$key\">$parent {$v['name']}</option>";
 
             if (array_key_exists('children', $v))
                 $html .= $this->buildOptions($v['children'],$target,$parent . $v['name']." > ");

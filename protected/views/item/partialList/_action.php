@@ -196,10 +196,8 @@
 							        <div class="form-group">\
 							            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
 							            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showCategoryDialog(event.target.value)">\
-							            	<option value="0" selected>--Choose Parent--</option>\
-							            	<?php foreach($categories as $key=>$value):?>\
-							            		<option value="<?=$value['id']?>"><?=$value['name']?></option>\
-							            	<?php endforeach;?>\
+							            	<option value="" selected>--Choose Parent--</option>\
+							            	<?=$option?>\
 							            	<optgroup >\
 							            		<option value="addnew">\
 							            			Create New\
@@ -221,15 +219,17 @@
 			);
 			$('#myModal'+i).modal('show')
 			$('#myModal0').on('hidden.bs.modal',function(){
-				$("#db-category").val(0);
+				$("#db-category").val('');
 				$('body').removeClass('modal-open');
 			})
 			
 			$('#myModal'+i).on('shown.bs.modal', function () {
-			  	$("#db-category"+i).val(0);
+			  	$("#db-category"+i).val('');
+			  	$('.modal-body #Category_Name').focus();
 			})
 			$('#myModal0').on('shown.bs.modal', function () {
-			  	$("#db-category0").val(0);
+			  	$("#db-category0").val('');
+			  	$('#myModal0 #Category_Name').focus();
 			})
 			i=i+1;
 		}
