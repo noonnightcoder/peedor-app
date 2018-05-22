@@ -110,15 +110,18 @@ class CategoryController extends Controller
 
     // }
 
-    public function actionCreate(){
+    public function actionCreate()
+    {
         if (!Yii::app()->user->checkAccess('category.create')) {
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
         $model = new Category;
-        $data['model']=$model;
-        $data['parent']=Category::model()->findAll();
-        $this->render('create',$data);
+        $data['model'] = $model;
+        $data['parent'] = Category::model()->findAll();
+
+        $this->render('create', $data);
     }
+
     public function actionSaveCategory(){
         $i=$_POST['id']+1;
         $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
