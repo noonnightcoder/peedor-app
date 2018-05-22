@@ -1,19 +1,12 @@
 <?php
 $this->breadcrumbs=array(
-	'Categories'=>array('category/admin'),
+	'Categories'=>array('admin'),
 	'Create',
 );
 
 $arr = Category::model()->buildTree($parent);
 $option=Category::model()->buildOptions($arr,null);
 
-?>
-
-<?php
-$this->breadcrumbs=array(
-    sysMenuItem() =>array('admin'),
-    'Create',
-);
 ?>
 
 <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
@@ -24,6 +17,7 @@ $this->breadcrumbs=array(
         'model' => $model,
         'parent' => $parent,
         'arr' => $arr,
+        'cateId'=>$cateId
     ), true),
 )); ?>
 
