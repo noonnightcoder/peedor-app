@@ -253,7 +253,7 @@ class Category extends CActiveRecord
                 $html .= "<option value=\"$key\">$parent {$v['name']}</option>";
 
             if (array_key_exists('children', $v))
-                $html .= $this->buildOptions($v['children'],$target,$parent . $v['name']."/");
+                $html .= $this->buildOptions($v['children'],$target,$parent . $v['name']." / ");
         }
 
         return $html;
