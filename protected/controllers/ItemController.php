@@ -59,7 +59,8 @@ class ItemController extends Controller
                     'ReloadCategory',
                     'saveCategory',
                     'ItemFinder',
-                    'CategoryTree'
+                    'CategoryTree',
+                    'GetProductByCategory'
                 ),
                 'users' => array('@'),
             ),
@@ -1041,10 +1042,7 @@ class ItemController extends Controller
         //$session=Yii::app()->session;
         //$session['cartRecv']=$cart_data;
     }
-    public function setSession($value)
-    {
-        $this->session = $value;
-    }
+    
     public function actionSaveCategory(){
         $i=$_POST['id']+1;
         $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
@@ -1084,6 +1082,8 @@ class ItemController extends Controller
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
     public function actionItemFinder(){
+        $this->setSession(Yii::app()->session);
+        $this->session['view']=isset($this->session['view']) ? $this->session['view'] :'k';
         $model=Category::model()->findAll();
         $data=array('model'=>$model);
         $this->render('item_finder',$data);
@@ -1092,5 +1092,25 @@ class ItemController extends Controller
         $model=Category::model()->findAll();
         $arr = Category::model()->buildTreeView($model);
         echo json_encode($arr);
+    }
+    public function actionGetProductByCategory($category_id,$view){
+        $this->setSession(Yii::app()->session);
+        if($category_id>0){
+            $this->session['result']=Item::model()->findAll(array(
+                'condition'=>'category_id = :category_id',
+                'params'=>array(':category_id'=>$category_id)
+            ));
+            
+        }
+        if($view!=''){
+            $this->session['view']=$view;
+        }
+        $data['data']=$this->session['result'];
+        $data['view']=$this->session['view'];
+        $this->renderPartial('partial/_result',$data);
+    }
+    public function setSession($value)
+    {
+        $this->session = $value;
     }
 }

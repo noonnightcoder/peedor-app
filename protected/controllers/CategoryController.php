@@ -118,6 +118,7 @@ class CategoryController extends Controller
         $model = new Category;
         $data['model'] = $model;
         $data['parent'] = Category::model()->findAll();
+        $data['cateId'] = '';
 
         $this->render('create', $data);
     }
@@ -234,7 +235,10 @@ class CategoryController extends Controller
         }else{
             $model = $this->loadModel($id);
             $data['model']=$model;
-            $data['parent']=Category::model()->findAll();
+            $data['parent']=Category::model()->findAll(array(
+                'condition'=>'id <> :id',
+                'params'=>array(':id'=>$id)
+            ));
             $data['cateId']=$id;
             $this->render('create', $data);
         }

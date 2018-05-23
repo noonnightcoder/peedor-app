@@ -770,4 +770,16 @@ class Item extends CActiveRecord
         return null;
     }
 
+    public function itemByCategory($category_id)
+    {
+        $sql = "SELECT i.name,i.description,i.cost_price,i.unit_price 
+        FROM `item` i join `category` c
+        on (i.category_id=c.id or i.category_id=c.parent_id)
+        WHERE (c.id=:category_id or c.parent_id=:category_id)";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
+
+        return $result;
+    }
+
 }

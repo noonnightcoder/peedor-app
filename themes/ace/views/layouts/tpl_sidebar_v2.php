@@ -48,6 +48,11 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'url' => url('PriceBook/index'),
                     'active' => $this->id . '/' . $this->action->id == 'priceBook/index',
                     'visible' => ckacc('pricebook.read')),
+                array('label' => sysMenuItemFinder(),
+                    'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
+                    'url' => url('Item/ItemFinder'),
+                    'active' => $this->id . '/' . $this->action->id == 'Item/index',
+                    'visible' => ckacc('item.read')),
             ),
             /*
             'items' => array(

@@ -16115,8 +16115,8 @@ div.dataTables_processing {
   border-left-color: #67B2DD;
   display: block;
   padding: 0;
-  max-width: 200px;
-  max-height: 250px;
+  max-width: 100% !important;
+  /*max-height: 250px;*/
 }
 .tree-container .tree::before {
   margin-left: -1px;

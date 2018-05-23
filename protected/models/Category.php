@@ -226,21 +226,32 @@ class Category extends CActiveRecord
 
     public function buildTreeView( $ar, $pid = null ) {
         $op = array();
+         Yii::app()->session;
+         $view=isset($this->session['view']) ? $this->session['view'] : '';
         foreach( $ar as $item ) {
             if( $item['parent_id'] == $pid ) {
                 $op[$item['name']] = array(
-                    'text' => $item['name'],
+                    'text' => '<span style="display:inline-block;width:90%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
                     'icon-class'=>'orange',
                     'type'=>'folder',
                     //'parent_id' => $item['parent_id']
                 );
                 // using recursion
-                $children =  $this->childTreeView( $ar, $item['id'] );
-                // if( $children ) {
-                //     $children['text']='<i class="ace-icon fa fa-music blue"></i>'.$item['name'];
-                //     $children['type']='item';
-                //     $op[$item['name']]['additionalParameters']['children'] = $children;
-                // }
+                $children =  $this->buildTreeView( $ar, $item['id'] );
+                if( $children) {
+                    $children['text']=$item['name'];
+                    $children['type']='item';
+                    $children['icon-class']='pink';
+                    $op[$item['name']]['additionalParameters']['children'] = $children;
+                }else{
+                    $op[$item['name']] = array(
+                        'text' => '<span style="display:inline-block;width:100%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
+                        'icon-class'=>'orange',
+                        'type'=>'item',
+                    );
+                }
+            }else{
+
             }
         }
         return $op;
@@ -252,8 +263,9 @@ class Category extends CActiveRecord
                 // using recursion
                 $children =  $this->buildTreeView( $ar, $item['id'] );
                 if( $children ) {
-                    $children['text']='<i class="ace-icon fa fa-music blue"></i>'.$item['name'];
-                    $children['type']='item';
+                    $children['additionalParameters']['text']=$item['name'];
+                    $children['additionalParameters']['type']='folder';
+                    $children['additionalParameters']['icon-class']='pink';
                     $op[$item['name']]['additionalParameters']['children'] = $children;
                 }
             }

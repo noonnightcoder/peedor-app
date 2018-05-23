@@ -41,6 +41,7 @@ return array(
     'menu_categories_view'=>'Categories',
     'menu_pricebook_view'=>'Price Book',
     'menu_item_view' => 'view item',
+    'menu_item_finder' => 'Item finder',
     'menu_item_imp_exp' => 'Import/Export',
     'menu_item_markup_price' => 'Markup Price Update',
     'menu_inventory' => 'inventory',

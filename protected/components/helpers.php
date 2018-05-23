@@ -188,7 +188,10 @@ function sysMenuItemView()
 {
     return ucwords(t(param('menu_item_view'), 'app'));
 }
-
+function sysMenuItemFinder()
+{
+    return ucwords(t(param('menu_item_finder'), 'app'));
+}
 function sysMenuItemImpExp()
 {
     return ucwords(t(param('menu_item_imp_exp'), 'app'));

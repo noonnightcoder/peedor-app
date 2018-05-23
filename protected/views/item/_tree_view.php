@@ -1,37 +1,98 @@
-<div class="col-sm-6">
-	<div class="widget-box widget-color-green2">
-		<div class="widget-header">
-			<h4 class="widget-title lighter smaller">
-				Browse Files
-				<span class="smaller-80">(with selectable folders)</span>
-			</h4>
-		</div>
+<div class="col-sm-12">
+	<div class="row search-page" id="search-page-1">
+		<div class="col-xs-12">
+			<div class="row">
+				<div class="col-xs-12 col-sm-4">
+					<!-- #section:pages/search.well -->
+					<div class="search-area well well-sm">
+						<div class="search-filter-header bg-primary">
+							<h5 class="smaller no-margin-bottom">
+								<i class="ace-icon fa fa-sliders light-green bigger-130"></i>&nbsp; Refine your Search
+							</h5>
+						</div>
 
-		<div class="widget-body">
-			<div class="widget-main padding-8">
-				<ul id="tree2"></ul>
+						<div class="space-10"></div>
+
+						<div class="hr hr-dotted"></div>
+
+						<h4 class="blue smaller">
+							<i class="fa fa-tags"></i>
+							Category
+						</h4>
+
+						<!-- #section:plugins/fuelux.treeview -->
+						<div class="tree-container" style="width: 100% !important">
+							<ul id="category_tree"></ul>
+						</div>
+
+						<!-- /section:plugins/fuelux.treeview -->
+						<div class="hr hr-dotted"></div>
+
+						<div class="space-4"></div>
+					</div>
+
+					<!-- /section:pages/search.well -->
+				</div>
+
+				<div class="col-xs-12 col-sm-8">
+					<div class="row">
+						<div class="search-area well col-xs-12">
+							<div class="pull-left">
+								<b class="text-primary">Display</b>
+
+								&nbsp;
+								<div id="toggle-result-format" class="btn-group btn-overlap" data-toggle="buttons">
+									<label title="Thumbnail view" class="btn btn-lg btn-white btn-success <?=isset($_SESSION['view']) ? ($_SESSION['view']=='k' ? 'btn-success active' : '') : ''?>" data-class="btn-success" aria-pressed="true">
+										<input type="radio" onchange="loadProduct('','k')" checked="" autocomplete="off" />
+										<i class="icon-only ace-icon fa fa-th"></i>
+									</label>
+
+									<label title="List view" class="btn btn-lg btn-white btn-success <?=isset($_SESSION['view']) ? ($_SESSION['view']=='g' ? 'btn-success active' : '') : ''?>" data-class="btn-primary">
+										<input type="radio" onchange="loadProduct('','g')" value="1" checked autocomplete="off" />
+										<i class="icon-only ace-icon fa fa-list"></i>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div id="result"></div>
+					</div>
+					
+				</div>
 			</div>
 		</div>
 	</div>
 </div>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script type="text/javascript">
-	
+
+
+
+
+
 </script>
 
 <!-- inline scripts related to this page -->
 <script type="text/javascript">
+	function loadProduct(category_id,view='k'){
+		var url='<?=Yii::app()->createUrl('Item/GetProductByCategory')?>';
+		axios.get('GetProductByCategory?category_id='+category_id+'&view='+view).then(res=>{
+			$('#result').html(res.data);
+		}).catch(function(e){
+			console.log(e);
+		})
+	}
+	loadProduct('','<?=isset($_SESSION['view']) ? $_SESSION['view'] : ""?>')
 	jQuery(function($){
 		var sampleData = initiateDemoData();//see below
 		
-		$('#tree2').ace_tree({
+		$('#category_tree').ace_tree({
 			dataSource: sampleData['dataSource2'] ,
 			loadingHTML:'<div class="tree-loading"><i class="ace-icon fa fa-refresh fa-spin blue"></i></div>',
 			'open-icon' : 'ace-icon fa fa-folder-open',
 			'close-icon' : 'ace-icon fa fa-folder',
-			'itemSelect' : true,
+			'itemSelect' : false,
 			'folderSelect': true,
-			'multiSelect': true,
+			'multiSelect': false,
 			'selected-icon' : null,
 			'unselected-icon' : null,
 			'folder-open-icon' : 'ace-icon tree-plus',
@@ -39,63 +100,40 @@
 		});
 		
 		
+		
 		/**
 		//Use something like this to reload data	
-		$('#tree1').find("li:not([data-template])").remove();
-		$('#tree1').tree('render');
+		$('#category_tree').find("li:not([data-template])").remove();
+		$('#category_tree').tree('render');
 		*/
 		
 		
-		/**
-		//please refer to docs for more info
-		$('#tree1')
-		.on('loaded.fu.tree', function(e) {
-		})
-		.on('updated.fu.tree', function(e, result) {
-		})
-		.on('selected.fu.tree', function(e) {
-		})
-		.on('deselected.fu.tree', function(e) {
-		})
-		.on('opened.fu.tree', function(e) {
-		})
-		.on('closed.fu.tree', function(e) {
-		});
-		*/
 		
-		var category_tree={};
+		// //please refer to docs for more info
+		// $('#category_tree')
+		// .on('loaded.fu.tree', function(e) {
+		// })
+		// .on('updated.fu.tree', function(e, result) {
+		// })
+		// .on('selected.fu.tree', function(e) {
+		// 	console.log(sampleData)
+		// })
+		// .on('deselected.fu.tree', function(e) {
+		// })
+		// .on('opened.fu.tree', function(e) {
+		// })
+		// .on('closed.fu.tree', function(e) {
+		// });
+		
+		
 		function initiateDemoData(){
-			
-			axios.get('CategoryTree').then(res=>{
-				category_tree=res.data;
-				// return category_tree
-				console.log(category_tree);
-			}).catch(function(e){
-				console.log(e);
-			})
-			var tree_data_2 = {
-				
-				'music' : {text: 'Music', type: 'folder', 'icon-class':'orange'}	,
-				
-			}
-			console.log(category_tree);
-			// tree_data_2['music']['additionalParameters'] = {
-			// 	'children' : [
-			// 		{text: '<i class="ace-icon fa fa-music blue"></i> song1.ogg', type: 'item'},
-			// 		{text: '<i class="ace-icon fa fa-music blue"></i> song2.ogg', type: 'item'},
-			// 		{text: '<i class="ace-icon fa fa-music blue"></i> song3.ogg', type: 'item'},
-			// 		{text: '<i class="ace-icon fa fa-music blue"></i> song4.ogg', type: 'item'},
-			// 		{text: '<i class="ace-icon fa fa-music blue"></i> song5.ogg', type: 'item'}
-			// 	]
-			// }
-			console.log(tree_data_2);
-
-
-
 			var dataSource2 = function(options, callback){
 				var $data = null
-				if(!("text" in options) && !("type" in options)){
-					$data = tree_data_2;//the root tree
+				var category_tree=null
+				axios.get('CategoryTree').then(res=>{
+					category_tree=res.data;
+					if(!("text" in options) && !("type" in options)){
+					$data = category_tree;//the root tree
 					callback({ data: $data });
 					return;
 				}
@@ -107,13 +145,16 @@
 				
 				if($data != null)//this setTimeout is only for mimicking some random delay
 					setTimeout(function(){callback({ data: $data });} , parseInt(Math.random() * 500) + 200);
+					console.log(category_tree);
+				}).catch(function(e){
+					console.log(e);
+				})
+				
 
 				//we have used static data here
 				//but you can retrieve your data dynamically from a server using ajax call
 				//checkout examples/treeview.html and examples/treeview.js for more info
 			}
-
-			
 			return {'dataSource2' : dataSource2}
 		}
 
