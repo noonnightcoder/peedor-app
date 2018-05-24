@@ -733,6 +733,7 @@ class Item extends CActiveRecord
             ),
         );
     }
+
     public static function getProduct2($name = '')
     {
         // Recommended: Secure Way to Write SQL in Yii
