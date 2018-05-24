@@ -51,7 +51,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 array('label' => sysMenuItemFinder(),
                     'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
                     'url' => url('Item/ItemFinder'),
-                    'active' => $this->id . '/' . $this->action->id == 'Item/index',
+                    'active' => $this->id . '/' . $this->action->id== 'item/ItemFinder',
                     'visible' => ckacc('item.read')),
             ),
             /*

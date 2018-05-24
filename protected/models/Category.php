@@ -231,7 +231,7 @@ class Category extends CActiveRecord
         foreach( $ar as $item ) {
             if( $item['parent_id'] == $pid ) {
                 $op[$item['name']] = array(
-                    'text' => '<span style="display:inline-block;width:90%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
+                    'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
                     'icon-class'=>'orange',
                     'type'=>'folder',
                     //'parent_id' => $item['parent_id']
@@ -245,7 +245,7 @@ class Category extends CActiveRecord
                     $op[$item['name']]['additionalParameters']['children'] = $children;
                 }else{
                     $op[$item['name']] = array(
-                        'text' => '<span style="display:inline-block;width:100%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
+                        'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
                         'icon-class'=>'orange',
                         'type'=>'item',
                     );
@@ -256,23 +256,7 @@ class Category extends CActiveRecord
         }
         return $op;
     }
-    public function childTreeView( $ar, $pid = null ) {
-        $op = array();
-        foreach( $ar as $item ) {
-            if( $item['parent_id'] == $pid ) {
-                // using recursion
-                $children =  $this->buildTreeView( $ar, $item['id'] );
-                if( $children ) {
-                    $children['additionalParameters']['text']=$item['name'];
-                    $children['additionalParameters']['type']='folder';
-                    $children['additionalParameters']['icon-class']='pink';
-                    $op[$item['name']]['additionalParameters']['children'] = $children;
-                }
-            }
-        }
-        return $op;
-    }
-
+    
     public function buildTree( $ar, $pid = null ) {
         $op = array();
         foreach( $ar as $item ) {
@@ -305,5 +289,52 @@ class Category extends CActiveRecord
         }
 
         return $html;
+    }
+    public function buildCategoryBreadcrumb($arr, $target, $parent = NULL,$id) {
+        $html = "";
+        Yii::app()->session;
+        $view=isset($this->session['view']) ? $this->session['view'] : '';
+        foreach ( $arr as $key => $v )
+        {
+            if ( $key == $target)
+                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']},\"$view\")'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.",\"$view\")'> {$v['name']}</span>";
+            else
+                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']},\"$view\")'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.",\"$view\")'> {$v['name']}</span>";
+
+            if (array_key_exists('children', $v))
+                $html .=$this->buildCategoryBreadcrumb($v['children'],$target,$parent . $v['name']." / ",$id);
+        }
+
+        return $html;
+    }
+    public function buildTree2( $ar, $pid = null ) {
+        $op = array();
+
+        foreach( $ar as $item ) {
+            if( $item['id'] == $pid) {
+                $op[$item['id']] = array(
+                    'name' => $item['name'],
+                    'parent_id' => $item['parent_id']
+                );
+                // using recursion
+                $children =  $this->buildTree2( $ar, $item['parent_id'] );
+                if( $children ) {
+                    $op[$item['id']]['children'] = $children;
+                }
+            }
+        }
+        return $op;
+    }
+    public function getCategoryById($category_id)
+    {
+        $sql = "SELECT pc.`name`,pc.id parent_id,c.id
+                FROM `category` pc JOIN category c
+                ON pc.id=c.parent_id
+                WHERE (c.id=:category_id )";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
+        foreach($result as $value){
+            return $value;
+        }
     }
 }

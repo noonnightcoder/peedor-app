@@ -7,7 +7,7 @@ $this->breadcrumbs=array(
 
 <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
     'title' => Yii::t('app','Item Finder'),
-    'headerIcon' => sysMenuItemIcon(),
+    'headerIcon' => sysMenuItemFinderIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     'content' => $this->renderPartial('_tree_view', array(
             'model'=>$model,

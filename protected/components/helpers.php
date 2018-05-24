@@ -396,7 +396,10 @@ function sysMenuItemIcon()
 {
     return 'fa fa-coffee';
 }
-
+function sysMenuItemFinderIcon()
+{
+    return 'fa fa-search';
+}
 function sysMenuHomeIcon()
 {
     return 'fa fa-home';

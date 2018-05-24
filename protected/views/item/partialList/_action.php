@@ -1,9 +1,9 @@
 <?php $baseUrl = Yii::app()->baseUrl;?>
 <script type="text/javascript">
 	var i=0
-	var tags=[]
-	var tagsItem=$('#item-tags').val();
-	tags=tagsItem.split(',');
+	// var tags=[]
+	// var tagsItem=$('#item-tags').val();
+	// tags=tagsItem.split(',');
 	$(document).ready(function(e){
 
 		var unitprice=$('#Item_unit_price').val();
@@ -49,41 +49,56 @@
 			unitprice=parseFloat(costprice)+(parseFloat(costprice)*(parseFloat(markup)/100));
 			$('#Item_unit_price').val(parseFloat(unitprice).toFixed(4));
 		})
-		$('.tag-box').on('keydown',function(e){
-			var char = event.which || event.keyCode;
+		// $('.tag-box').on('keydown',function(e){
+		// 	var char = event.which || event.keyCode;
 			
-			if(char==188 || char==13 || char==9){
-				var tagslen=$(this).val();
-				if(tagslen.length>0){
-					tags.push($(this).val());
-					$(this).val('');
-					console.log(tags);
-					$('#item-tags').val(tags);
-					$('.tag-item-box').html('');
-					addTagsItem()
-				}
-				return false;
-			}
-			
-		})
-	})
-	addTagsItem()
-	function addTagsItem(){
-		if(tags.length>0){
-			tags.forEach(function(v,i){
-				if(v!==''){
-					$('.tag-item-box').append('<span class="tag-item '+i+'">'+v+' <b style="cursor:pointer" onclick="removeTagsItem('+i+')">&times;<b></span>');	
-				}
+		// 	if(char==188 || char==13 || char==9){
+		// 		var tagslen=$(this).val();
+		// 		if(tagslen.length>0){
+		// 			if(tags.indexOf($(this).val())==-1){
+		// 				tags.push($(this).val());
+		// 				$(this).val('');
+		// 				console.log(tags);
+		// 				$('#item-tags').val(tags);
+		// 				$('.tag-item-box').html('');
+		// 				addTagsItem()
+		// 			}else{
+		// 				$(this).val('')
+		// 			}
+					
+		// 		}
+		// 		return false;
+		// 	}else if(char==8){
+		// 		tags.forEach(function(v,i){
+		// 			tags.splice(-1,1);
+		// 			$('.'+i).html('');
+		// 			$('.'+i).css('display','none');
+		// 			$('#item-tags').val(tags);
+		// 		})
 				
-			})	
-		}
-	}
-	function removeTagsItem(i){
-		tags.splice(i,1);
-		$('.'+i).html('');
-		$('.'+i).css('display','none');
-		$('#item-tags').val(tags);
-	}
+		// 		console.log(tags)
+		// 		return false;
+		// 	}
+			
+		// })
+	})
+	// addTagsItem()
+	// function addTagsItem(){
+	// 	if(tags.length>0){
+	// 		tags.forEach(function(v,i){
+	// 			if(v!==''){
+	// 				$('.tag-item-box').append('<span class="tag-item '+i+'">'+v+' <b style="cursor:pointer" onclick="removeTagsItem('+i+')">&times;<b></span>');	
+	// 			}
+				
+	// 		})	
+	// 	}
+	// }
+	// function removeTagsItem(i){
+	// 	tags.splice(i,1);
+	// 	$('.'+i).html('');
+	// 	$('.'+i).css('display','none');
+	// 	$('#item-tags').val(tags);
+	// }
 	function showBrandDialog(val){
 		if(val=='addnew'){
 			$('#brandModal').modal('show');
@@ -285,7 +300,42 @@
 			}
 		})
 	}
+	jQuery(function($){
+		var tag_input = $('#form-field-tags');
+		try{
+			tag_input.tag(
+			  {
+				placeholder:tag_input.attr('placeholder'),
+				//enable typeahead by specifying the source array
+				source: ace.vars['US_STATES'],//defined in ace.js >> ace.enable_search_ahead
+				/**
+				//or fetch data from database, fetch those that match "query"
+				source: function(query, process) {
+				  $.ajax({url: 'remote_source.php?q='+encodeURIComponent(query)})
+				  .done(function(result_items){
+					process(result_items);
+				  });
+				}
+				*/
 
+			  }
+
+			)
+	
+			//programmatically add/remove a tag
+			var $tag_obj = $('#form-field-tags').data('tag');
+			//$tag_obj.add('');
+			
+			var index = $tag_obj.inValues('some tag');
+			$tag_obj.remove(index);
+
+		}
+		catch(e) {
+			//display a textarea for old IE, because it doesn't support this plugin or another one I tried!
+			tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
+			//autosize($('#form-field-tags'));
+		}
+	})
 </script>
 <style type="text/css">
 	#error{

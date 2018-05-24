@@ -68,16 +68,10 @@ $option=Category::model()->buildOptions($arr,null);
         </div>
         <div class="row margin-top-15">
             <div class="col-sm-1">
-                <label>Tags </label>
+                <label class="col-sm-3 control-label no-padding-right" for="form-field-tags">Tag</label>
             </div>
             <div class="col-sm-11">
-                <div class="tag-container" title="Type any text then press Tap or Comma(,) or Enter key">
-                    <div class="tag-item-box"></div>
-                    <!-- <div class="col-sm-12"> -->
-                        <input type="text" class="span3 tag-box" value="" style="margin-top: 10px;float: left;">
-                        <?php echo $form->hiddenField($model, 'tags', array('class' => 'span3','id'=>'item-tags','value'=>Yii::app()->session['tags'])); ?>
-                    <!-- </div> -->
-                </div>
+                <?php echo $form->textField($model, 'tags', array('class' => 'span3','id'=>'form-field-tags','value'=>Yii::app()->session['tags'])); ?>
             </div>
         </div>
         <h4 class="header blue">
@@ -241,5 +235,11 @@ $option=Category::model()->buildOptions($arr,null);
         bottom: 10px;
         margin: 10px 5px 10px 5px !important;
         border-radius: 3px;
+    }
+    .tags{
+        width: 100% !important;
+    }
+    .tags input[type="text"], .tags input[type="text"]:focus{
+        width: 250px !important;
     }
 </style>

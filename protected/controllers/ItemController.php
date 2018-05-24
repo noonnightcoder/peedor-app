@@ -311,11 +311,11 @@ class ItemController extends Controller
                                     // $sql = "insert into tag(tag_name) values('".$value."')";
                                     // $command = $connection->createCommand($sql);
                                     // $insertTag = $command->execute(); // execute the non-query SQL
-                                    $tagID=Tag::model()->saveTag($value);
+                                    $tagID=Tag::model()->saveTag(str_replace($value);
                                     // print_r($insertTag);
                                     // foreach($insertTag as $i=>$tag){
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
-                                    echo $ptagSql;
+                                    //echo $ptagSql;
                                     $command = $connection->createCommand($ptagSql);
                                     $insertProductTag = $command->execute(); // execute the non-query SQL
                                     // }
@@ -1100,13 +1100,17 @@ class ItemController extends Controller
                 'condition'=>'category_id = :category_id',
                 'params'=>array(':category_id'=>$category_id)
             ));
-            
+            $this->session['cate_arr']=Category::model()->findAll('id = :category_id ORDER by id desc',array(':category_id'=>$category_id)
+            );
         }
         if($view!=''){
             $this->session['view']=$view;
         }
+        $paretn_cate=Category::model()->getCategoryById($category_id);
+        $arr = Category::model()->buildTree($this->session['cate_arr'],$paretn_cate['parent_id']);
         $data['data']=$this->session['result'];
         $data['view']=$this->session['view'];
+        $data['category']=Category::model()->buildCategoryBreadcrumb($arr,null,$paretn_cate['name']!=NULL ? $paretn_cate['name'].' / ' :'',$category_id);
         $this->renderPartial('partial/_result',$data);
     }
     public function setSession($value)

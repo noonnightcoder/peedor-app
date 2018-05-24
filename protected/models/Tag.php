@@ -155,14 +155,15 @@ class Tag extends CActiveRecord
     }
     public function saveTag($name)
     {
+
         $tag_id = null;
-        //$exists = Tag::model()->exists('tag_name=:name', array(':name' => $name));
+        // $exists = Tag::model()->exists('tag_name=:name', array(':name' => $name));
         //if (!$exists) {
             $tag = new Tag;
             $tag->tag_name = $name;
             $tag->save();
             $tag_id = $tag->id;
-        //}
+        // }
 
         return $tag_id;
     }

@@ -54,7 +54,13 @@
 								</div>
 							</div>
 						</div>
-						<div id="result"></div>
+						<div class="space-10"></div>
+
+						<div class="hr hr-dotted"></div>
+						<div class="well well-sm">
+							
+							<div id="result"></div>
+						</div>
 					</div>
 					
 				</div>
@@ -62,7 +68,7 @@
 		</div>
 	</div>
 </div>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="<?=Yii::app()->theme->baseUrl.'/js/axios.js'?>"></script>
 <script type="text/javascript">
 
 
@@ -75,6 +81,7 @@
 <script type="text/javascript">
 	function loadProduct(category_id,view='k'){
 		var url='<?=Yii::app()->createUrl('Item/GetProductByCategory')?>';
+		$('#result').html('<div style="text-align:center"><img style="margin:auto !important;" src="<?=Yii::app()->theme->baseUrl?>/images/loading.gif" height="150px"></div>');
 		axios.get('GetProductByCategory?category_id='+category_id+'&view='+view).then(res=>{
 			$('#result').html(res.data);
 		}).catch(function(e){
@@ -160,3 +167,9 @@
 
 	});
 </script>
+<style type="text/css">
+	.cate-hover:hover{
+		text-decoration: underline;
+		cursor: pointer;
+	}
+</style>

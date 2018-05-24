@@ -11,6 +11,13 @@ $this->breadcrumbs = array(
             'title' => Yii::t('app', 'List of ' . ucfirst(get_class($model))),
             'headerIcon' => sysMenuItemIcon(),
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
+            'headerButtons' => array(
+                TbHtml::buttonGroup(
+                    array(
+                        array('label' => Yii::t('app','Item Finder'),'url' => Yii::app()->createUrl('Item/ItemFinder'),'icon'=>'fa fa-search white'),
+                    ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+                ),
+            ),
         )); ?>
             <!-- Admin Header layouts.admin._header -->
             <div class="page-header">

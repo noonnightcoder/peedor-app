@@ -79,11 +79,13 @@
     
     <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
    
-    <?php
-        // $cs->registerScriptFile($baseUrl.'/js/jQuery.js',CClientScript::POS_BEGIN);
+    <?php 
+        $cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
+         $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
+       
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.maskedinput.min.js',CClientScript::POS_END);
         // $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
