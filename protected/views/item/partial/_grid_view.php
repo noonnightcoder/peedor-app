@@ -3,7 +3,7 @@
 	<div class="col-xs-12">
 		<div class="media search-media">
 			<div class="media-left">
-				<a href="#">
+				<a href="<?=Yii::app()->createUrl('Item/ItemSearch?result='.$row['id'])?>">
 					<img class="media-object" src="<?=$baseUrl.'/images/noimage.gif'?>" width="120px" />
 				</a>
 			</div>
@@ -11,10 +11,10 @@
 			<div class="media-body">
 				<div>
 					<h5 class="media-heading">
-						<a href="#" class="blue"><?=$row['name']?></a>
+						<a href="<?=Yii::app()->createUrl('Item/ItemSearch?result='.$row['id'])?>" class="blue"><?=$row['name']?></a>
 					</h5>
 				</div>
-				<p><?=$row['description']?></p>
+				<p><?=substr($row['description'],0,80)?></p>
 			</div>
 		</div>
 	</div>

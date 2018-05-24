@@ -70,8 +70,8 @@ $option=Category::model()->buildOptions($arr,null);
             <div class="col-sm-1">
                 <label class="col-sm-3 control-label no-padding-right" for="form-field-tags">Tag</label>
             </div>
-            <div class="col-sm-11">
-                <?php echo $form->textField($model, 'tags', array('class' => 'span3','id'=>'form-field-tags','value'=>Yii::app()->session['tags'])); ?>
+            <div class="col-sm-11" title="Enter text then press comma(,) or Enter">
+                <?php echo $form->textField($model, 'tags', array('class' => 'span3','id'=>'form-field-tags','value'=>Yii::app()->session['tags'],'placeholder'=>'Tag Text')); ?>
             </div>
         </div>
         <h4 class="header blue">

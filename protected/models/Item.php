@@ -782,5 +782,17 @@ class Item extends CActiveRecord
 
         return $result;
     }
+    public function itemDetail($id){
+        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category
+        FROM `item` i left join `brand` b
+        on i.brand_id=b.id left join `supplier` s
+        on i.supplier_id=s.id left join `category` c
+        on i.category_id=c.id
+        WHERE i.id=:id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':id' => (int)$id));
+
+        return $result;
+    }
 
 }

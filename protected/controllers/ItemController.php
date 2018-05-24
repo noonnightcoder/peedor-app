@@ -60,7 +60,8 @@ class ItemController extends Controller
                     'saveCategory',
                     'ItemFinder',
                     'CategoryTree',
-                    'GetProductByCategory'
+                    'GetProductByCategory',
+                    'ItemSearch'
                 ),
                 'users' => array('@'),
             ),
@@ -311,7 +312,7 @@ class ItemController extends Controller
                                     // $sql = "insert into tag(tag_name) values('".$value."')";
                                     // $command = $connection->createCommand($sql);
                                     // $insertTag = $command->execute(); // execute the non-query SQL
-                                    $tagID=Tag::model()->saveTag(str_replace($value);
+                                    $tagID=Tag::model()->saveTag($value);
                                     // print_r($insertTag);
                                     // foreach($insertTag as $i=>$tag){
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
@@ -1112,6 +1113,12 @@ class ItemController extends Controller
         $data['view']=$this->session['view'];
         $data['category']=Category::model()->buildCategoryBreadcrumb($arr,null,$paretn_cate['name']!=NULL ? $paretn_cate['name'].' / ' :'',$category_id);
         $this->renderPartial('partial/_result',$data);
+    }
+    public function actionItemSearch($result){
+        $model=Item::model()->itemDetail($result);
+        $this->render('_result_detail',array(
+            'model'=>$model
+        ));
     }
     public function setSession($value)
     {
