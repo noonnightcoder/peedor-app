@@ -49,7 +49,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id == 'priceBook/index',
                     'visible' => ckacc('pricebook.read')),
                 array('label' => sysMenuItemFinder(),
-                    'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
+                    'icon' => 'menu-icon '  . 'menu-icon fa fa-search pink',
                     'url' => url('Item/ItemFinder'),
                     'active' => $this->id . '/' . $this->action->id== 'item/ItemFinder',
                     'visible' => ckacc('item.read')),
