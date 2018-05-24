@@ -527,6 +527,11 @@ function sysMenuSaleOrderInvoiceIcon()
     return 'fa fa-paper-plane-o';
 }
 
+function sysMenuUserIcon()
+{
+    return 'fa fa-user';
+}
+
 function getTransType()
 {
     return Yii::app()->shoppingCart->getMode();

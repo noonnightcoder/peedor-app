@@ -17,6 +17,9 @@
  */
 class Authitem extends CActiveRecord
 {
+    public $authitem_archived;
+    public $search;
+
     /**
      * Returns the static model of the specified AR class.
      * @param string $className active record class name.
@@ -73,7 +76,7 @@ class Authitem extends CActiveRecord
     public function attributeLabels()
     {
         return array(
-            'name' => 'Name',
+            'name' => 'Role Name',
             'type' => 'Type',
             'description' => 'Description',
             'bizrule' => 'Bizrule',

@@ -54,7 +54,7 @@ return array(
         // Configure auth extension to use CDbAuthManager schema
         'auth' => array(
             'strictMode' => true, // when enabled authorization items cannot be assigned children of the same type.
-            'userClass' => 'RbacUser', // the name of the user model class.
+            'userClass' => 'RbacUserNew', // the name of the user model class.
             'userIdColumn' => 'id', // the name of the user id column.
             'userNameColumn' => 'user_name', // the name of the user name column.
             'appLayout' => 'webroot.themes.ace.views.layouts.column1', // the layout used by the module.
