@@ -208,7 +208,7 @@ class ItemController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
-        $data['create_url'] = 'Create';
+        $data['create_url'] = 'create';
 
         $data['grid_columns'] = Item::getItemColumns();
 

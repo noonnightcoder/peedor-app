@@ -37,9 +37,11 @@
 
         </div>
 
+        <?= $form->textFieldControlGroup($model,'fax',array('class'=>'span3','maxlength'=>30)); ?>
+
         <?php //echo $form->dropDownListRow($model,'debter_id', DebtCollector::model()->getDebterInfo(), array('class'=>'span3','prompt'=>'Select Debt Colletor')); ?>
 
-        <?php $this->renderPartial('_address',array('model'=> $model ,'form' => $form)) ?>
+        <?php $this->renderPartial('//address/_address',array('model'=> $model ,'form' => $form)) ?>
 
         <?= $form->textFieldControlGroup($model, 'gps_n', array('class' => 'span3', 'maxlength' => 25)); ?>
 

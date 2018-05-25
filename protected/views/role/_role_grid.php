@@ -13,31 +13,35 @@
     <tbody>
         <tr>
             <td>Item</td>
-            <td class="permission"><input id="Authitem_name_all" value="1" checked="checked" type="checkbox"
-                                          name="Authitem_name_all"></td>
-            <td class="permission"><input id="Authitem_name_all" value="item.view" checked="checked" type="checkbox"
-                                          name="Authitem_name_all"></td>
-            <td class="permission"><input id="Authitem_name_all" value="item.create" checked="checked" type="checkbox"
-                                          name="Authitem_name_all"></td>
-            <td class="permission"><input id="Authitem_name_all" value="item.edit" checked="checked" type="checkbox"
-                                          name="Authitem_name_all"></td>
-            <td class="permission"><input id="Authitem_name_all" value="item.delete" checked="checked" type="checkbox"
-                                          name="Authitem_name_all"></td>
+            <?php foreach (Authitem::model()->getAuthItemData('item') as $id => $item): ?>
+                <td class="permission">
+                    <input value="<?= $item["name"]; ?>" type="checkbox" name="Authitem_name_all">
+                </td>
+            <?php endforeach; ?>
+
             <td>
-                <form>
-                    <div id='filters-container' style='display: none;'>
-                        <div id="div_id_filters" class="form-group">
-                            <div class="controls">
-                                <div class="checkbox">
-                                    <label><input type="checkbox" name="filter" id="id_filter_1" class="filter filters_1" value="Filter1" />Filter1</label></div>
-                                <div class="checkbox"><label><input type="checkbox" name="filter" id="id_filter_2" class="filter filters_2" value="Filter2" />Filter2</label></div>
-                                <div class="checkbox"><label><input type="checkbox" name="filter" id="id_filter_3" class="filter filters_3" value="Filter3" />Filter3</label></div>
-                                <!-- etc etc more filters -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="button-group">
+                                <button type="button" class="btn btn-primary btn-mini dropdown-toggle" data-toggle="dropdown">
+                                    <span class="fa fa-cog"></span> <span class="caret"></span></button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#" class="small" data-value="option1" tabIndex="-1">
+                                            <input type="checkbox"/>&nbsp;Price Book
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="small" data-value="option2" tabIndex="-1">
+                                            <input type="checkbox"/>&nbsp;Composite Item
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    <button id='filter-btn' data-contentwrapper='#filters-container' class='btn' rel="popover" type="button">Filter</button>
-                </form>
+                </div>
             </td>
         </tr>
     </tbody>
