@@ -23,6 +23,7 @@ class User extends CActiveRecord
 
     public $user_archived;
     public $search;
+    public $categories;
 
 	/**
 	 * @return string the associated database table name

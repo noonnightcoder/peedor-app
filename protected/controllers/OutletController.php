@@ -1,9 +1,16 @@
 <?php
 
-class RoleController extends Controller
+class OutletController extends Controller
 {
+	/**
+	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
+	 * using two-column layout. See 'protected/views/layouts/column2.php'.
+	 */
 	public $layout='//layouts/column2';
 
+	/**
+	 * @return array action filters
+	 */
 	public function filters()
 	{
 		return array(
@@ -20,7 +27,7 @@ class RoleController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin'),
+				'actions'=>array('create','update','admin','updateStatus'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -42,20 +49,21 @@ class RoleController extends Controller
 
 	public function actionCreate()
 	{
-		$model=new Authitem();
+		$model=new Outlet;
 
 		$this->performAjaxValidation($model);
 
-		if(isset($_POST['Authitem']))
-		{
-			$model->attributes=$_POST['Authitem'];
-			if($model->save())
+		if (isset($_POST['Outlet'])) {
+			$model->attributes=$_POST['Outlet'];
+			if ($model->save()) {
 				$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
-		$this->render('create',array(
-			'model'=>$model,
-		));
+        $data['model'] = $model;
+        $data['tax'] = Tax::model()->findAll();
+
+		$this->render('create',$data);
 	}
 
 	public function actionUpdate($id)
@@ -63,32 +71,49 @@ class RoleController extends Controller
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+		$this->performAjaxValidation($model);
 
-		if(isset($_POST['User']))
-		{
-			$model->attributes=$_POST['User'];
-			if($model->save())
-				$this->redirect(array('view','id'=>$model->id));
+		if (isset($_POST['Outlet'])) {
+			$model->attributes=$_POST['Outlet'];
+			if ($model->save()) {
+				$this->redirect(array('admin'));
+			}
 		}
 
-		$this->render('update',array(
-			'model'=>$model,
-		));
+        $data['model'] = $model;
+        $data['tax'] = Tax::model()->findAll();
+		$this->render('update', $data);
 	}
 
 	public function actionDelete($id)
 	{
-		$this->loadModel($id)->delete();
+		if (Yii::app()->request->isPostRequest) {
+			// we only allow deletion via POST request
+			$this->loadModel($id)->delete();
 
-		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+			if (!isset($_GET['ajax'])) {
+				$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+			}
+		} else {
+			throw new CHttpException(400,'Invalid request. Please do not repeat this request again.');
+		}
 	}
+
+    public function actionUpdateStatus($id,$status)
+    {
+        ajaxRequestPost();
+
+        Outlet::model()->updateStatus($id,$status);
+        if (!isset($_GET['ajax'])) {
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+        }
+
+    }
 
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('User');
+		$dataProvider=new CActiveDataProvider('Outlet');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -96,10 +121,12 @@ class RoleController extends Controller
 
 	public function actionAdmin()
 	{
-		$model=new AuthItem('search');
-		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['AuthItem']))
-			$model->attributes=$_GET['AuthItem'];
+        $model = new Outlet('search');
+
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['Outlet'])) {
+            $model->attributes = $_GET['Outlet'];
+        }
 
         if (isset($_GET['pageSize'])) {
             Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
@@ -111,40 +138,45 @@ class RoleController extends Controller
             unset($_GET['archived']);
         }
 
-        $model->authitem_archived = Yii::app()->user->getState(strtolower(get_class($model)) . '_archived', Yii::app()->params['defaultArchived']);
+        $model->outlet_archived = Yii::app()->user->getState(strtolower(get_class($model)) . '_archived', Yii::app()->params['defaultArchived']);
 
         $page_size = CHtml::dropDownList(
             'pageSize',
-            Yii::app()->user->getState('role_page_size', Common::defaultPageSize()),
+            Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
             Common::arrayFactory('page_size'),
             array('class' => 'change-pagesize')
         );
+
 
         $data['model'] = $model;
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
+        $data['create_url'] = 'create';
 
-        $data['grid_columns'] = UserColumn::getRoleColumns();
+        $data['grid_columns'] = Outlet::getOutletColumns();
 
         $data['data_provider'] = $model->search();
 
         $this->render('admin', $data);
-
 	}
 
 	public function loadModel($id)
 	{
-		$model=User::model()->findByPk($id);
-		if($model===null)
+		$model=Outlet::model()->findByPk($id);
+		if ($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
+		}
 		return $model;
 	}
 
+	/**
+	 * Performs the AJAX validation.
+	 * @param Outlet $model the model to be validated
+	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='user-form')
-		{
+		if (isset($_POST['ajax']) && $_POST['ajax']==='outlet-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

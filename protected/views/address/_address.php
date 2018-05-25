@@ -38,5 +38,3 @@
         'empty' => Yii::t('app', 'Select Village'),
     )
 ); ?>
-
-<?php //echo $form->textFieldControlGroup($model,'country_id',array('span'=>5)); ?>

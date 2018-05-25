@@ -94,6 +94,7 @@
 		
 		
 	}
+
 	function showMeasurableDialog(val){
 		if(val=='addnew'){
 			$('#measurableModal').modal('show');

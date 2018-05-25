@@ -1,39 +1,34 @@
 <?php
 
 /**
- * This is the model class for table "outlet".
+ * This is the model class for table "tax".
  *
- * The followings are the available columns in table 'outlet':
- * @property string $id
- * @property string $outlet_name
- * @property integer $tax_id
- * @property string $address1
- * @property string $address2
- * @property integer $village_id
- * @property integer $commune_id
- * @property integer $district_id
- * @property integer $city_id
- * @property integer $country_id
- * @property string $state
- * @property string $postcode
- * @property string $email
- * @property string $phone
+ * The followings are the available columns in table 'tax':
+ * @property integer $id
+ * @property string $tax_name
+ * @property integer $rate
  * @property string $status
  * @property string $created_at
  * @property string $updated_at
  * @property string $deleted_at
+ * @property integer $created_by
+ * @property integer $updated_by
+ * @property integer $deleted_by
+ *
+ * The followings are the available model relations:
+ * @property Outlet[] $outlets
  */
-class Outlet extends CActiveRecord
+class Tax extends CActiveRecord
 {
-     public $outlet_archived;
-     public $search;
+    public $tax_archived;
+    public $search;
 
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'outlet';
+		return 'tax';
 	}
 
 	/**
@@ -44,16 +39,15 @@ class Outlet extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('outlet_name', 'required'),
-			array('tax_id, village_id, commune_id, district_id, city_id, country_id', 'numerical', 'integerOnly'=>true),
-			array('outlet_name, address1, address2, state, email', 'length', 'max'=>128),
-			array('postcode', 'length', 'max'=>10),
-			array('phone', 'length', 'max'=>32),
+			array('rate, created_by, updated_by, deleted_by', 'numerical', 'integerOnly'=>true),
+			array('taxt_name', 'length', 'max'=>128),
 			array('status', 'length', 'max'=>1),
 			array('created_at, updated_at, deleted_at', 'safe'),
+            array('created_at,', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => true, 'on' => 'insert'),
+            array('updated_at', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => false, 'on' => 'update'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, outlet_name, tax_id, address1, address2, village_id, commune_id, district_id, city_id, country_id, state, postcode, email, phone, status, created_at, updated_at, deleted_at, search', 'safe', 'on'=>'search'),
+			array('id, taxt_name, rate, status, created_at, updated_at, deleted_at, created_by, updated_by, deleted_by, search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -65,7 +59,7 @@ class Outlet extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            'tax' => array(self::BELONGS_TO, 'Tax', 'tax_id'),
+			'outlets' => array(self::HAS_MANY, 'Outlet', 'tax_id'),
 		);
 	}
 
@@ -76,23 +70,15 @@ class Outlet extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'outlet_name' => 'Outlet Name',
-			'tax_id' => 'Tax',
-			'address1' => 'Address1',
-			'address2' => 'Address2',
-			'village_id' => 'Village',
-			'commune_id' => 'Commune',
-			'district_id' => 'District',
-			'city_id' => 'City',
-			'country_id' => 'Country',
-			'state' => 'State',
-			'postcode' => 'Postcode',
-			'email' => 'Email',
-			'phone' => 'Phone',
+			'taxt_name' => 'Taxt Name',
+			'rate' => 'Rate',
 			'status' => 'Status',
 			'created_at' => 'Created At',
 			'updated_at' => 'Updated At',
 			'deleted_at' => 'Deleted At',
+			'created_by' => 'Created By',
+			'updated_by' => 'Updated By',
+			'deleted_by' => 'Deleted By',
 		);
 	}
 
@@ -114,15 +100,17 @@ class Outlet extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		if  ( Yii::app()->user->getState('outlet_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
-            $criteria->condition = 'outlet_name like :search';
+        $criteria=new CDbCriteria;
+
+        if  ( Yii::app()->user->getState('tax_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'tax_name like :search';
             $criteria->params = array(
                 ':search' => '%' . $this->search . '%',
             );
         } else {
-            $criteria->condition = 'status=:active_status AND (outlet_name like :search)';
+            $criteria->condition = 'status=:active_status AND (tax_name like :search)';
             $criteria->params = array(
-                ':active_status' => Yii::app()->params['active_status'],
+                ':active_status' => param('active_status'),
                 ':search' => '%' . $this->search . '%',
             );
         }
@@ -130,18 +118,17 @@ class Outlet extends CActiveRecord
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
-                'pageSize' => Yii::app()->user->getState('outlet_page_size', Common::defaultPageSize()),
+                'pageSize' => Yii::app()->user->getState('tax_page_size', Common::defaultPageSize()),
             ),
-            'sort' => array('defaultOrder' => 'outlet_name')
+            'sort' => array('defaultOrder' => 'tax_name')
         ));
-
-    }
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Outlet the static model class
+	 * @return Tax the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -150,31 +137,24 @@ class Outlet extends CActiveRecord
 
     public function updateStatus($id,$status)
     {
-        //$this->updateByPk((int)$id, array('status' => $status));
-        Outlet::model()->updateByPk((int)$id, array('status' => $status));
+        Tax::model()->updateByPk((int)$id, array('status' => $status));
 
     }
 
-    public static function getOutletColumns() {
+    public static function getTaxColumns() {
         return array(
             array(
-                'name' => 'outlet_name',
-                'value' => '$data->status=="1" ? CHtml::link($data->outlet_name, Yii::app()->createUrl("outlet/update",array("id"=>$data->primaryKey))) : "<s class=\"red\">  $data->outlet_name <span>" ',
+                'name' => 'tax_name',
+                'value' => '$data->status=="1" ? CHtml::link($data->tax_name, Yii::app()->createUrl("tax/update",array("id"=>$data->primaryKey))) : "<s class=\"red\">  $data->tax_name <span>" ',
                 'type' => 'raw',
                 'filter' => '',
             ),
             array(
-                'name' => 'tax_id',
-                'value' => '$data->tax_id==null? " " : $data->tax->name',
-                'filter' => '',
-                //'filter' => CHtml::listData(Tax::model()->findAll(array('order' => 'taxt_name')), 'id', 'taxt_name'),
-            ),
-            array(
-                'name' => 'address1',
+                'name' => 'rate',
                 'filter' => '',
             ),
             array(
-                'name' => 'address2',
+                'name' => 'created_at',
                 'filter' => '',
             ),
             array(
@@ -198,7 +178,7 @@ class Outlet extends CActiveRecord
                     'inactive' => array(
                         'label' => Yii::t('Inactivate','app'),
                         'icon' => 'bigger-120 ace-icon fa fa-trash',
-                        'url' => 'Yii::app()->createUrl("outlet/updateStatus", array("id" => $data->id, "status" => param("inactive_status")))',
+                        'url' => 'Yii::app()->createUrl("tax/updateStatus", array("id" => $data->id, "status" => param("inactive_status")))',
                         'options' => array(
                             'class' => 'btn btn-xs btn-danger btn-inactive',
                         ),
@@ -206,8 +186,8 @@ class Outlet extends CActiveRecord
                     ),
                     'active' => array(
                         'label' => Yii::t('app', 'Activate'),
-                        'url' => 'Yii::app()->createUrl("outlet/updateStatus", array("id" => $data->id, "status" => param("active_status")))',
-                        'icon' => 'bigger-120 ace-icon fa fa-refresh',
+                        'url' => 'Yii::app()->createUrl("tax/updateStatus", array("id" => $data->id, "status" => param("active_status")))',
+                        'icon' => 'bigger-120 fa fa-refresh',
                         'options' => array(
                             'class' => 'btn btn-xs btn-warning btn-undodelete',
                         ),

@@ -1,4 +1,4 @@
-
+<div>
 
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'role-form',
@@ -20,6 +20,9 @@
     <?= $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>45)); ?>
 
     <?= $form->textAreaControlGroup($model, 'description', array('rows' => 2, 'cols' => 10, 'class' => 'span3')); ?>
+
+    <?php $this->renderPartial('_role_grid', array('user' => $model)) ?>
+
 
     <div class="form-actions">
         <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(

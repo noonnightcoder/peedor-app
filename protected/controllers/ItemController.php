@@ -208,7 +208,7 @@ class ItemController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
-        $data['create_url'] = 'Create';
+        $data['create_url'] = 'create';
 
         $data['grid_columns'] = Item::getItemColumns();
 
@@ -328,6 +328,7 @@ class ItemController extends Controller
         //unset($_SESSION['priceQty'][0]); 
         //return $this->render('_form_price_qty');
     }
+
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
 
@@ -518,6 +519,7 @@ class ItemController extends Controller
             }
         $this->render('_form_item_assembly',array('model'=>$model,'assembly_item'=>$assembly_item));
     }
+
     public function actionGetItemMain()
     {
         $res = array();
