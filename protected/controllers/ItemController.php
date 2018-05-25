@@ -372,6 +372,7 @@ class ItemController extends Controller
         //unset($_SESSION['priceQty'][0]); 
         //return $this->render('_form_price_qty');
     }
+
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
 
@@ -579,6 +580,7 @@ class ItemController extends Controller
             }
         $this->render('_form_item_assembly',array('model'=>$model,'assembly_item'=>$assembly_item));
     }
+
     public function actionGetItemMain()
     {
         $res = array();

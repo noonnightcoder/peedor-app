@@ -1,6 +1,6 @@
 <?php
 
-class OutletController extends Controller
+class TaxController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -19,6 +19,11 @@ class OutletController extends Controller
 		);
 	}
 
+	/**
+	 * Specifies the access control rules.
+	 * This method is used by the 'accessControl' filter.
+	 * @return array access control rules
+	 */
 	public function accessRules()
 	{
 		return array(
@@ -47,23 +52,27 @@ class OutletController extends Controller
 		));
 	}
 
+	/**
+	 * Creates a new model.
+	 * If creation is successful, the browser will be redirected to the 'view' page.
+	 */
 	public function actionCreate()
 	{
-		$model=new Outlet;
+		$model=new Tax;
 
+		// Uncomment the following line if AJAX validation is needed
 		$this->performAjaxValidation($model);
 
-		if (isset($_POST['Outlet'])) {
-			$model->attributes=$_POST['Outlet'];
+		if (isset($_POST['Tax'])) {
+			$model->attributes=$_POST['Tax'];
 			if ($model->save()) {
-				$this->redirect(array('view','id'=>$model->id));
+				$this->redirect(array('admin'));
 			}
 		}
 
-        $data['model'] = $model;
-        $data['tax'] = Tax::model()->findAll();
-
-		$this->render('create',$data);
+		$this->render('create',array(
+			'model'=>$model,
+		));
 	}
 
 	public function actionUpdate($id)
@@ -71,18 +80,18 @@ class OutletController extends Controller
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
-		$this->performAjaxValidation($model);
+		// $this->performAjaxValidation($model);
 
-		if (isset($_POST['Outlet'])) {
-			$model->attributes=$_POST['Outlet'];
+		if (isset($_POST['Tax'])) {
+			$model->attributes=$_POST['Tax'];
 			if ($model->save()) {
-				$this->redirect(array('admin'));
+                $this->redirect(array('admin'));
 			}
 		}
 
-        $data['model'] = $model;
-        $data['tax'] = Tax::model()->findAll();
-		$this->render('update', $data);
+		$this->render('update',array(
+			'model'=>$model,
+		));
 	}
 
 	public function actionDelete($id)
@@ -104,28 +113,34 @@ class OutletController extends Controller
     {
         ajaxRequestPost();
 
-        Outlet::model()->updateStatus($id,$status);
+        Tax::model()->updateStatus($id,$status);
         if (!isset($_GET['ajax'])) {
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
         }
 
     }
 
+	/**
+	 * Lists all models.
+	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Outlet');
+		$dataProvider=new CActiveDataProvider('Tax');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
 	}
 
+	/**
+	 * Manages all models.
+	 */
 	public function actionAdmin()
 	{
-        $model = new Outlet('search');
+        $model = new Tax('search');
 
         $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Outlet'])) {
-            $model->attributes = $_GET['Outlet'];
+        if (isset($_GET['Tax'])) {
+            $model->attributes = $_GET['Tax'];
         }
 
         if (isset($_GET['pageSize'])) {
@@ -138,7 +153,7 @@ class OutletController extends Controller
             unset($_GET['archived']);
         }
 
-        $model->outlet_archived = Yii::app()->user->getState(strtolower(get_class($model)) . '_archived', Yii::app()->params['defaultArchived']);
+        $model->tax_archived = Yii::app()->user->getState(strtolower(get_class($model)) . '_archived', Yii::app()->params['defaultArchived']);
 
         $page_size = CHtml::dropDownList(
             'pageSize',
@@ -154,16 +169,23 @@ class OutletController extends Controller
         $data['page_size'] = $page_size;
         $data['create_url'] = 'create';
 
-        $data['grid_columns'] = Outlet::getOutletColumns();
+        $data['grid_columns'] = Tax::getTaxColumns();
 
         $data['data_provider'] = $model->search();
 
         $this->render('admin', $data);
 	}
 
+	/**
+	 * Returns the data model based on the primary key given in the GET variable.
+	 * If the data model is not found, an HTTP exception will be raised.
+	 * @param integer $id the ID of the model to be loaded
+	 * @return Tax the loaded model
+	 * @throws CHttpException
+	 */
 	public function loadModel($id)
 	{
-		$model=Outlet::model()->findByPk($id);
+		$model=Tax::model()->findByPk($id);
 		if ($model===null) {
 			throw new CHttpException(404,'The requested page does not exist.');
 		}
@@ -172,11 +194,11 @@ class OutletController extends Controller
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Outlet $model the model to be validated
+	 * @param Tax $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if (isset($_POST['ajax']) && $_POST['ajax']==='outlet-form') {
+		if (isset($_POST['ajax']) && $_POST['ajax']==='tax-form') {
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}

@@ -114,29 +114,28 @@ class Outlet extends CActiveRecord
 
 		$criteria=new CDbCriteria;
 
-		$criteria->compare('id',$this->id,true);
-		$criteria->compare('outlet_name',$this->outlet_name,true);
-		$criteria->compare('tax_id',$this->tax_id);
-		$criteria->compare('address1',$this->address1,true);
-		$criteria->compare('address2',$this->address2,true);
-		$criteria->compare('village_id',$this->village_id);
-		$criteria->compare('commune_id',$this->commune_id);
-		$criteria->compare('district_id',$this->district_id);
-		$criteria->compare('city_id',$this->city_id);
-		$criteria->compare('country_id',$this->country_id);
-		$criteria->compare('state',$this->state,true);
-		$criteria->compare('postcode',$this->postcode,true);
-		$criteria->compare('email',$this->email,true);
-		$criteria->compare('phone',$this->phone,true);
-		$criteria->compare('status',$this->status,true);
-		$criteria->compare('created_at',$this->created_at,true);
-		$criteria->compare('updated_at',$this->updated_at,true);
-		$criteria->compare('deleted_at',$this->deleted_at,true);
+		if  ( Yii::app()->user->getState('outlet_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'outlet_name like :search';
+            $criteria->params = array(
+                ':search' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (outlet_name like :search)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
+            );
+        }
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-		));
-	}
+        return new CActiveDataProvider($this, array(
+            'criteria' => $criteria,
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('outlet_page_size', Common::defaultPageSize()),
+            ),
+            'sort' => array('defaultOrder' => 'outlet_name')
+        ));
+
+    }
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -148,6 +147,13 @@ class Outlet extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+
+    public function updateStatus($id,$status)
+    {
+        //$this->updateByPk((int)$id, array('status' => $status));
+        Outlet::model()->updateByPk((int)$id, array('status' => $status));
+
+    }
 
     public static function getOutletColumns() {
         return array(
@@ -173,37 +179,39 @@ class Outlet extends CActiveRecord
             ),
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
-                'header' => Yii::t('app','Action'),
-                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{delete}{undeleted}</div>',
+                'header' => Yii::t('app', 'Action'),
+                'template' => '<div class="btn-group">{view}{update}{inactive}{active}</div>',
+                'htmlOptions' => array('class' => 'nowrap'),
                 'buttons' => array(
-                    'detail' => array(
-                        'click' => 'updateDialogOpen',
-                        'label' => Yii::t('app', 'Stock'),
-                        'url' => 'Yii::app()->createUrl("Inventory/admin", array("item_id"=>$data->id))',
+                    'view' => array(
                         'options' => array(
-                            'data-toggle' => 'tooltip',
-                            'data-update-dialog-title' => 'Stock History',
-                            'class' => 'btn btn-xs btn-pink',
-                            'title' => 'Stock History',
+                            'class' => 'btn btn-xs btn-success',
                         ),
-                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.index") ',
                     ),
-                    'delete' => array(
-                        'label' => Yii::t('app', 'Delete Item'),
-                        'icon' => 'bigger-120 fa fa-trash',
+                    'update' => array(
+                        'icon' => 'ace-icon fa fa-edit',
                         'options' => array(
-                            'class' => 'btn btn-xs btn-danger',
+                            'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.delete")',
+                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("employee.update")',
                     ),
-                    'undeleted' => array(
-                        'label' => Yii::t('app', 'Restore Item'),
-                        'url' => 'Yii::app()->createUrl("Item/UndoDelete", array("id"=>$data->id))',
-                        'icon' => 'bigger-120 glyphicon-refresh',
+                    'inactive' => array(
+                        'label' => Yii::t('Inactivate','app'),
+                        'icon' => 'bigger-120 ace-icon fa fa-trash',
+                        'url' => 'Yii::app()->createUrl("outlet/updateStatus", array("id" => $data->id, "status" => param("inactive_status")))',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-danger btn-inactive',
+                        ),
+                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("employee.delete")',
+                    ),
+                    'active' => array(
+                        'label' => Yii::t('app', 'Activate'),
+                        'url' => 'Yii::app()->createUrl("outlet/updateStatus", array("id" => $data->id, "status" => param("active_status")))',
+                        'icon' => 'bigger-120 ace-icon fa fa-refresh',
                         'options' => array(
                             'class' => 'btn btn-xs btn-warning btn-undodelete',
                         ),
-                        'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
+                        'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("employee.delete")',
                     ),
                 ),
             ),

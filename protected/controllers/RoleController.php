@@ -98,8 +98,8 @@ class RoleController extends Controller
 	{
 		$model=new AuthItem('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['User']))
-			$model->attributes=$_GET['User'];
+		if(isset($_GET['AuthItem']))
+			$model->attributes=$_GET['AuthItem'];
 
         if (isset($_GET['pageSize'])) {
             Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
@@ -115,7 +115,7 @@ class RoleController extends Controller
 
         $page_size = CHtml::dropDownList(
             'pageSize',
-            Yii::app()->user->getState('user_page_size', Common::defaultPageSize()),
+            Yii::app()->user->getState('role_page_size', Common::defaultPageSize()),
             Common::arrayFactory('page_size'),
             array('class' => 'change-pagesize')
         );
