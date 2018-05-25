@@ -250,87 +250,45 @@ class ItemController extends Controller
 
     public function actionCreate($grid_cart = 'N', $sale_status = '2')
     {
-
         authorized('item.create');
-
         $model = new Item;
-        // $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate(0);
-
-        // $this->setSession(Yii::app()->session);
-
-        // $priceRange=$this->session['priceQty'];
-
-
-        // $price_tiers = PriceTier::model()->getListPriceTier();
-
-        // Uncomment the following line if AJAX validation is needed
+        $item_image=new ItemImage;
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
             $model->attributes = $_POST['Item'];
-
+            
             $this->setSession(Yii::app()->session);
 
             $this->session['tags']=$_POST['Item']['tags'];
-
-            // $model->category_id = null;
-            // $model->unit_measurable_id = null;
-            //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-            //$model->quantity = 0;
-
-            //$category_name = $_POST['Item']['category_id'];
-            //$unit_measurable_name = $_POST['Item']['unit_measurable_id'];
-            //$_POST['Item']['category_id']=$_POST['Item']['category_id'] > 0 ? $_POST['Item']['category_id'] : 'NULL';
-
-            //Saving new category to `category` table
-            // $category_id = Category::model()->saveCategory($category_name);
-            //$unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
-
-            // if ($category_id !== null) {
-            //     $model->category_id = $category_id;
-            // }
-
-            // if ($unit_measurable_id !== null) {
-            //     $model->unit_measurable_id = $unit_measurable_id;
-            // }
 
             if ($model->validate()) {
                 $transaction = Yii::app()->db->beginTransaction();
                 try {
                     if ($model->save()) {
 
-                        // if (isset($_POST['Item']['count_interval'])) {
-                        //     Item::model()->saveItemCounSchedule($model->id);
-                        // }
-                        //save price quantity range
                         if($model->id>0){//check if item id exist after saved to table
+                            //save image
+                            $this->multipleImageUpload($model->id,$item_image,'image','images');
+
                             $connection = Yii::app()->db;//initial connection to run raw sql 
                             if(isset($_POST['Item']['tags'])){
                                 $str = $_POST['Item']['tags'];
                                 $tagsArry=explode(",",$str);
                                 foreach($tagsArry as $key=>$value){//loop data from price quantity
-                                    // $sql = "insert into tag(tag_name) values('".$value."')";
-                                    // $command = $connection->createCommand($sql);
-                                    // $insertTag = $command->execute(); // execute the non-query SQL
+                                    
                                     $tagID=Tag::model()->saveTag($value);
-                                    // print_r($insertTag);
-                                    // foreach($insertTag as $i=>$tag){
+                                    
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
-                                    //echo $ptagSql;
+                                    
                                     $command = $connection->createCommand($ptagSql);
-                                    $insertProductTag = $command->execute(); // execute the non-query SQL
-                                    // }
+                                    $insertProductTag = $command->execute(); 
                                     
                                 }
                             }
                         }
-                        
-                        // Saving Item Price Tier to `item_price_tier`
-                        // ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
                         unset($this->session['tags']);
-                        //$this->addImages($model, $transaction);
                         $transaction->commit();
-
                         if ($grid_cart == 'N') {
                             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
                                 'Item : <strong>' . $model->name . '</strong> have been saved successfully!');
@@ -351,8 +309,6 @@ class ItemController extends Controller
         }
 
         $data['model'] = $model;
-        // $data['price_tiers'] = $price_tiers;
-        // $data['item_price_quantity'] = $item_price_quantity;
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['categories']=Category::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
@@ -392,8 +348,7 @@ class ItemController extends Controller
         }
         //echo substr($tagsItem, 2);
         $this->session['tags']=substr($tagsItem, 2);
-        // $price_tiers = PriceTier::model()->getListPriceTierUpdate($id);
-        // $item_price_quantity = ItemPriceQuantity::model()->getListItemPriceQuantityUpdate($id);
+        $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
         $next_id = Item::model()->getNextId($id);
         $previous_id = Item::model()->getPreviousId($id);
         $next_disable = $next_id === null ? 'disabled' : '';
@@ -402,26 +357,10 @@ class ItemController extends Controller
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
-
         if (isset($_POST['Item'])) {
             $old_price = $model->unit_price;
             $model->attributes = $_POST['Item'];
-            //$qty = isset($_POST['Item']['quantity']) ? $_POST['Item']['quantity'] : 0;
-            //$model->quantity = $qty;  A buggy was not noticed every update reset item to zero EM EUY
-            // $category_name = $_POST['Item']['category_id'];
-            // $unit_measurable_name = $_POST['Item']['unit_measurable_id'];
             $this->session['tags']=$_POST['Item']['tags'];
-            //Saving new category to `category` table
-            // $category_id = Category::model()->saveCategory($category_name);
-            //$unit_measurable_id = UnitMeasurable::model()->saveUnitMeasurable($unit_measurable_name);
-
-            // if ($category_id !== null) {
-            //     $model->category_id = $category_id;
-            // }
-
-            // if ($unit_measurable_id !== null) {
-            //     $model->unit_measurable_id = $unit_measurable_id;
-            // }
 
             if ($model->validate()) {
                 $transaction = Yii::app()->db->beginTransaction();
@@ -1097,10 +1036,7 @@ class ItemController extends Controller
     public function actionGetProductByCategory($category_id,$view){
         $this->setSession(Yii::app()->session);
         if($category_id>0){
-            $this->session['result']=Item::model()->findAll(array(
-                'condition'=>'category_id = :category_id',
-                'params'=>array(':category_id'=>$category_id)
-            ));
+            $this->session['result']=Item::model()->itemByCategory($category_id);
             $this->session['cate_arr']=Category::model()->findAll('id = :category_id ORDER by id desc',array(':category_id'=>$category_id)
             );
         }
@@ -1116,9 +1052,32 @@ class ItemController extends Controller
     }
     public function actionItemSearch($result){
         $model=Item::model()->itemDetail($result);
+        $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
         $this->render('_result_detail',array(
-            'model'=>$model
+            'model'=>$model,
+            'item_image'=>$item_image
         ));
+    }
+    public function multipleImageUpload($item_id,$model,$attr_name,$path_to_save){
+        $msg=null;
+        $images=CUploadedFile::getInstancesByName($attr_name);
+        if(isset($images) && count($images)>0){
+            foreach($images as $img=>$pic){
+               $rnd = rand(0,9999);  // generate random number between 0-9999
+               $fileName = "{$rnd}-{$pic}"; 
+               $save_pic=$pic->saveAs(Yii::app()->basePath.'/../'.$path_to_save.'/'.$fileName);
+               if($save_pic){
+                    // $model->item_id=$item_id;
+                    // $model->filename=$fileName;
+                    // $model->save();
+                    //$msg=true;
+                    ItemImage::model()->saveItemImage($item_id,$fileName);
+               }else{
+                    //$msg=false;                    
+               }
+            }    
+        }
+        //echo $msg;
     }
     public function setSession($value)
     {

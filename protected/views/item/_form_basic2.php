@@ -12,7 +12,6 @@ $option=Category::model()->buildOptions($arr,null);
         'validateOnSubmit'=>true,
         'validateOnChange'=>true,
         'validateOnType'=>true,
-        'beforeValidate'=>"js:beforeValidate()",
     ),
     'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
     'htmlOptions'=>array('enctype' => 'multipart/form-data'),
@@ -72,6 +71,20 @@ $option=Category::model()->buildOptions($arr,null);
             </div>
             <div class="col-sm-11" title="Enter text then press comma(,) or Enter">
                 <?php echo $form->textField($model, 'tags', array('class' => 'span3','id'=>'form-field-tags','value'=>Yii::app()->session['tags'],'placeholder'=>'Tag Text')); ?>
+            </div>
+        </div>
+        <h4 class="header blue">
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Product Image') ?>
+        </h4>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <input multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+
+                        <!-- /section:custom/file-input -->
+                    </div>
+                </div>
             </div>
         </div>
         <h4 class="header blue">

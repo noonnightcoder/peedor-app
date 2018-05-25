@@ -1,9 +1,9 @@
-<?php $baseUrl = Yii::app()->theme->baseUrl?>
+<?php $baseUrl = Yii::app()->baseUrl?>
 <h5 class="blue smaller">
 	<!-- <i class="fa fa-tags"></i> -->
 	Category: <?=$category?>
 </h5>
-<?php if($data):?>
+<?php if(!empty($data)):?>
 	<?php if($view=='k'):?>
 		<?php $this->renderPartial('partial/_kanban_view',array('data'=>$data,'baseUrl'=>$baseUrl,'category'=>$category));?>
 		<?php elseif($view=='g'):?>

@@ -259,19 +259,22 @@ class Category extends CActiveRecord
     
     public function buildTree( $ar, $pid = null ) {
         $op = array();
-        foreach( $ar as $item ) {
-            if( $item['parent_id'] == $pid ) {
-                $op[$item['id']] = array(
-                    'name' => $item['name'],
-                    'parent_id' => $item['parent_id']
-                );
-                // using recursion
-                $children =  $this->buildTree( $ar, $item['id'] );
-                if( $children ) {
-                    $op[$item['id']]['children'] = $children;
+        if(!empty($ar)){
+            foreach( $ar as $item ) {
+                if( $item['parent_id'] == $pid ) {
+                    $op[$item['id']] = array(
+                        'name' => $item['name'],
+                        'parent_id' => $item['parent_id']
+                    );
+                    // using recursion
+                    $children =  $this->buildTree( $ar, $item['id'] );
+                    if( $children ) {
+                        $op[$item['id']]['children'] = $children;
+                    }
                 }
             }
         }
+        
         return $op;
     }
 
@@ -333,8 +336,11 @@ class Category extends CActiveRecord
                 WHERE (c.id=:category_id )";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
-        foreach($result as $value){
-            return $value;
+        if(!empty($result)){
+            foreach($result as $value){
+                return $value;
+            }
         }
+        
     }
 }

@@ -49,56 +49,9 @@
 			unitprice=parseFloat(costprice)+(parseFloat(costprice)*(parseFloat(markup)/100));
 			$('#Item_unit_price').val(parseFloat(unitprice).toFixed(4));
 		})
-		// $('.tag-box').on('keydown',function(e){
-		// 	var char = event.which || event.keyCode;
 			
-		// 	if(char==188 || char==13 || char==9){
-		// 		var tagslen=$(this).val();
-		// 		if(tagslen.length>0){
-		// 			if(tags.indexOf($(this).val())==-1){
-		// 				tags.push($(this).val());
-		// 				$(this).val('');
-		// 				console.log(tags);
-		// 				$('#item-tags').val(tags);
-		// 				$('.tag-item-box').html('');
-		// 				addTagsItem()
-		// 			}else{
-		// 				$(this).val('')
-		// 			}
-					
-		// 		}
-		// 		return false;
-		// 	}else if(char==8){
-		// 		tags.forEach(function(v,i){
-		// 			tags.splice(-1,1);
-		// 			$('.'+i).html('');
-		// 			$('.'+i).css('display','none');
-		// 			$('#item-tags').val(tags);
-		// 		})
-				
-		// 		console.log(tags)
-		// 		return false;
-		// 	}
-			
-		// })
 	})
-	// addTagsItem()
-	// function addTagsItem(){
-	// 	if(tags.length>0){
-	// 		tags.forEach(function(v,i){
-	// 			if(v!==''){
-	// 				$('.tag-item-box').append('<span class="tag-item '+i+'">'+v+' <b style="cursor:pointer" onclick="removeTagsItem('+i+')">&times;<b></span>');	
-	// 			}
-				
-	// 		})	
-	// 	}
-	// }
-	// function removeTagsItem(i){
-	// 	tags.splice(i,1);
-	// 	$('.'+i).html('');
-	// 	$('.'+i).css('display','none');
-	// 	$('#item-tags').val(tags);
-	// }
+
 	function showBrandDialog(val){
 		if(val=='addnew'){
 			$('#brandModal').modal('show');
@@ -335,6 +288,46 @@
 			tag_input.after('<textarea id="'+tag_input.attr('id')+'" name="'+tag_input.attr('name')+'" rows="3">'+tag_input.val()+'</textarea>').remove();
 			//autosize($('#form-field-tags'));
 		}
+		$('#id-input-file-3').ace_file_input({
+					style: 'well',
+					btn_choose: 'Drop files here or click to choose',
+					btn_change: null,
+					no_icon: 'ace-icon fa fa-cloud-upload',
+					droppable: true,
+					thumbnail: 'small',//large | fit
+					maxSize: 2000000,//bytes
+					allowExt: ["jpeg", "jpg", "png", "gif"],
+					allowMime: ["image/jpg", "image/jpeg", "image/png", "image/gif"]
+					//,icon_remove:null//set null, to hide remove/reset button
+					,before_change:function(files, dropped) {
+						//Check an example below
+						//or examples/file-upload.html
+						if(files.length>3){
+							alert('You can update maximum only 3 image');
+							return false;
+						}
+						return true;
+					}
+					/**,before_remove : function() {
+						return true;
+					}*/
+					,
+					preview_error : function(filename, error_code) {
+						//name of the file that failed
+						//error_code values
+						//1 = 'FILE_LOAD_FAILED',
+						//2 = 'IMAGE_LOAD_FAILED',
+						//3 = 'THUMBNAIL_FAILED'
+						//alert(error_code);
+					}
+			
+				}).on('change', function(){
+					//console.log($(this).data('ace_input_files'));
+					//console.log($(this).data('ace_input_method'));
+				}).on('file.error.ace', function(ev, info) {
+					if(info.error_count['ext'] || info.error_count['mime']) alert('Invalid file type! Please select an image!');
+					if(info.error_count['size']) alert('Invalid file size! Maximum 100KB');
+				});;
 	})
 </script>
 <style type="text/css">

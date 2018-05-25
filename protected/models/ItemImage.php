@@ -113,6 +113,13 @@ class ItemImage extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	public function saveItemImage($item_id,$filename)
+	{
+		$image=new ItemImage;
+		$image->filename=$filename;
+		$image->item_id=$item_id;
+		$image->save();
+	}
 
 	/**
 	 * Returns the static model of the specified AR class.

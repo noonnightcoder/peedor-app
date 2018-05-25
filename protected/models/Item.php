@@ -773,17 +773,18 @@ class Item extends CActiveRecord
 
     public function itemByCategory($category_id)
     {
-        $sql = "SELECT i.name,i.description,i.cost_price,i.unit_price 
-        FROM `item` i join `category` c
-        on (i.category_id=c.id or i.category_id=c.parent_id)
-        WHERE (c.id=:category_id or c.parent_id=:category_id)";
+        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,
+(SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
+        FROM `item` i JOIN `category` c
+        ON (i.category_id=c.id) 
+        WHERE (c.id=:category_id )";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
 
         return $result;
     }
     public function itemDetail($id){
-        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category
+        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
         FROM `item` i left join `brand` b
         on i.brand_id=b.id left join `supplier` s
         on i.supplier_id=s.id left join `category` c

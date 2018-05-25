@@ -1,4 +1,4 @@
-	<?php $baseUrl = Yii::app()->theme->baseUrl?>
+	<?php $baseUrl = Yii::app()->baseUrl?>
 <div class="row">
 	<div class="col-xs-12">
 		<span class="text-info">- Brand: </span>
@@ -14,16 +14,24 @@
 			</a>
 		</h4>
 	</div>
-	<div class="col-sm-3">
+	<div class="col-sm-4">
 		
-		<div class="thumbnail search-thumbnail" style="height: 190px;">
-			<span class="search-promotion label label-success arrowed-in arrowed-in-right"></span>
-
-			<img class="media-object" src="<?=$baseUrl.'/images/noimage.gif'?>" />
-			
+		<div class="thumbnail search-thumbnail" id="big-image">
+				<img class="media-object" src="<?=$baseUrl.'/images/'.($model[0]['image'] ? $model[0]['image'] : 'noimage.gif')?>" />
+		</div>
+		<div class="row">
+			<?php if(!empty($item_image)):?>
+				<?php foreach($item_image as $image):?>
+					<div class="col-sm-4">
+						<div class="thumbnail search-thumbnail">
+							<img class="media-object" style="" onmouseover="changeImage(event.target.src)" src="<?=$baseUrl.'/images/'.$image['filename']?>" />
+						</div>
+					</div>
+				<?php endforeach;?>
+			<?php endif;?>
 		</div>
 	</div>
-	<div class="col-sm-7">
+	<div class="col-sm-6">
 		<?=$model[0]['description']?>
 	</div>
 	<div class="col-sm-2">
@@ -46,3 +54,10 @@
 		width: 85% !important;
 	}
 </style>
+<script type="text/javascript">
+	function changeImage(image){
+		
+		//var image=$('#image'+id).val();
+		$('#big-image').html('<img class="media-object" src="'+image+'">')
+	}
+</script>

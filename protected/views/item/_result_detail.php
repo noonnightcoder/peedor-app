@@ -10,7 +10,8 @@ $this->breadcrumbs=array(
     'headerIcon' => sysMenuItemIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     'content' => $this->renderPartial('partial/_detail', array(
-            'model'=>$model
+            'model'=>$model,
+            'item_image'=>$item_image
     ), true),
 )); ?>
 
