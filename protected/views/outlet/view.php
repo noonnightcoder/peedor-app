@@ -1,21 +1,9 @@
 <?php
-/* @var $this OutletController */
-/* @var $model Outlet */
-?>
-
-<?php
 $this->breadcrumbs=array(
-	'Outlets'=>array('index'),
+	'Outlets'=>array('admin'),
 	$model->id,
 );
 
-$this->menu=array(
-	array('label'=>'List Outlet', 'url'=>array('index')),
-	array('label'=>'Create Outlet', 'url'=>array('create')),
-	array('label'=>'Update Outlet', 'url'=>array('update', 'id'=>$model->id)),
-	array('label'=>'Delete Outlet', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->id),'confirm'=>'Are you sure you want to delete this item?')),
-	array('label'=>'Manage Outlet', 'url'=>array('admin')),
-);
 ?>
 
 <h1>View Outlet #<?php echo $model->id; ?></h1>

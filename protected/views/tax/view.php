@@ -5,7 +5,7 @@
 
 <?php
 $this->breadcrumbs=array(
-	'Taxes'=>array('index'),
+	'Taxes'=>array('admin'),
 	$model->id,
 );
 
