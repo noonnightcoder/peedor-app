@@ -98,8 +98,7 @@
         
     ?>
 
-    
-    <?php /*
+    <?php
         if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
                 jQuery("body").ajaxComplete(
@@ -111,7 +110,7 @@
                 );
             ');
         }
-    */?>
+    ?>
 </head>
 
 <body class="no-skin">

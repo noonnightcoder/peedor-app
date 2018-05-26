@@ -1,4 +1,4 @@
-<div>
+<div class="col-xs-12 widget-container-col" id="widget-container-col-2">
 
 <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
     'id'=>'role-form',
@@ -15,13 +15,13 @@
 
 	<p class="note">Fields with <span class="required">*</span> are required.</p>
 
-	<?php echo $form->errorSummary($model); ?>
-
     <?= $form->textFieldControlGroup($model,'name',array('class'=>'span3','maxlength'=>45)); ?>
 
     <?= $form->textAreaControlGroup($model, 'description', array('rows' => 2, 'cols' => 10, 'class' => 'span3')); ?>
 
-    <?php $this->renderPartial('_role_grid', array('user' => $model)) ?>
+
+    <?php $this->renderPartial('_form_role', array('user' => $model)) ?>
+
 
 
     <div class="form-actions">
@@ -32,5 +32,7 @@
     </div>
 
 <?php $this->endWidget(); ?>
+</div>
 
-</div><!-- form -->
+
+

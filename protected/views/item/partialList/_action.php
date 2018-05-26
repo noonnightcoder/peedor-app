@@ -186,6 +186,7 @@
 				  </div>\
 				</div>'
 			);
+
 			$('#myModal'+i).modal('show')
 			$('#myModal0').on('hidden.bs.modal',function(){
 				$("#db-category").val('');
@@ -203,6 +204,7 @@
 			i=i+1;
 		}
 	}
+
 	function saveCategory(i,cateid){
 		//alert(i);
 		var category_name=$('#myModal'+i+' .modal-body #Category_Name').val() || $('#Category_Name'+i).val();
@@ -234,6 +236,7 @@
 			}
 		})
 	}
+
 	function reloadCategory(i){
 		//alert(i)
 		var pid=$('#pid'+i).val();
@@ -254,6 +257,7 @@
 			}
 		})
 	}
+
 	jQuery(function($){
 		var tag_input = $('#form-field-tags');
 		try{

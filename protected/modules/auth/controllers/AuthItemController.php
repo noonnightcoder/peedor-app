@@ -104,10 +104,6 @@ abstract class AuthItemController extends AuthController
         );
     }
 
-    /**
-     * Displays the item with the given name.
-     * @param string $name name of the item.
-     */
     public function actionView($name)
     {
         $formModel = new AddAuthItemForm();
@@ -157,10 +153,6 @@ abstract class AuthItemController extends AuthController
         );
     }
 
-    /**
-     * Deletes the item with the given name.
-     * @throws CHttpException if the item does not exist or if the request is invalid.
-     */
     public function actionDelete()
     {
         if (isset($_GET['name'])) {
@@ -187,11 +179,6 @@ abstract class AuthItemController extends AuthController
         }
     }
 
-    /**
-     * Removes the parent from the item with the given name.
-     * @param string $itemName name of the item.
-     * @param string $parentName name of the parent.
-     */
     public function actionRemoveParent($itemName, $parentName)
     {
         /* @var $am CAuthManager|AuthBehavior */
