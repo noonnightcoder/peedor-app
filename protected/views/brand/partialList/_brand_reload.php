@@ -1,4 +1,3 @@
-<option value="0">--Choose Brand--</option>
 <?php foreach($model as $key=>$value):?>
     <?php if($id==$value['id']):?>
         <option value="<?=$value['id']?>" selected><?=$value['name']?></option>

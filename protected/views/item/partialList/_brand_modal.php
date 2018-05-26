@@ -16,8 +16,15 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('db-brand').value=0" data-dismiss="modal">Close</button>
-        <button type="button" onclick="saveBrand()" class="btn btn-primary">Save</button>
+        <button type="button" id='btn-brand' class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 </div>
+<?php $this->renderPartial('partial/_js',array(
+  'btnSave'=>'btn-brand',
+  'name'=>'Brand_Name',
+  'url'=>Yii::app()->createUrl('Brand/SaveBrand'),
+  'modal'=>'brandModal',
+  'list'=>'db-brand'
+));?>

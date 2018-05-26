@@ -5,7 +5,8 @@
 	// var tagsItem=$('#item-tags').val();
 	// tags=tagsItem.split(',');
 	$(document).ready(function(e){
-
+		$('[data-rel=tooltip]').tooltip({container:'body'});
+		$('[data-rel=popover]').popover({container:'body'});
 		var unitprice=$('#Item_unit_price').val();
 		var costprice=$('#Item_cost_price').val();
 		var markup=$('#Item_markup').val();
@@ -52,63 +53,67 @@
 			
 	})
 
-	function showBrandDialog(val){
-		if(val=='addnew'){
-			$('#brandModal').modal('show');
-			$('#brandModal').on('shown.bs.modal', function () {
-			  	$('#Brand_Name').focus();
-			})
+	// function showBrandDialog(val){
+	// 	if(val=='addnew'){
+	// 		$('#brandModal').modal('show');
+	// 		$('#brandModal').on('shown.bs.modal', function () {
+	// 		  	$('#Brand_Name').focus();
+	// 		  	$('#db-brand').val('');
+	// 		})
 			
-		}
-	}
+			
+	// 	}
+	// }
 
-	function saveBrand(){
-		var name=$('#Brand_Name').val();
-		var url="<?php echo Yii::app()->createUrl('Brand/SaveBrand')?>"
-		ajaxSaveData(url,{name},name,$('#brandModal'),$('#db-brand'),$('#Brand_Name'))
+	// function saveBrand(){
+	// 	var name=$('#Brand_Name').val();
+	// 	var url="<?php echo Yii::app()->createUrl('Brand/SaveBrand')?>"
+	// 	ajaxSaveData(url,{name},name,$('#brandModal'),$('#db-brand'),$('#Brand_Name'))
 		
-	}
-	function showSupplierDialog(val){
-		if(val=='addnew'){
-			$('#supplierModal').modal('show');
-			$('#supplierModal').on('shown.bs.modal', function () {
-			  	$('#Supplier_Name').focus();
-			})
-		}
-	}
+	// }
+	// function showSupplierDialog(val){
+	// 	if(val=='addnew'){
+	// 		$('#supplierModal').modal('show');
+	// 		$('#supplierModal').on('shown.bs.modal', function () {
+	// 		  	$('#Supplier_Name').focus();
+	// 		  	$('#db-Supplier_Name').val('');
+	// 		})
 
-	function saveSupplier(){
-		var company_name=$('#Supplier_Name').val();
-		var first_name=$('#Supplier_First_Name').val();
-		var last_name=$('#Supplier_Last_Name').val();
-		var url="<?php echo Yii::app()->createUrl('Supplier/SaveSupplier')?>";
-		if(company_name.length<=0){
-			$('.errorMsg').html('<small>Company Name is required</small>')
-		}else if(first_name.length<=0){
-			$('.errorMsgf').html('<small>First Name is required</small>')
-		}else if(last_name.length<=0){
-			$('.errorMsgl').html('<small>last Name is required</small>')
-		}else{
-			ajaxSaveData(url,{company_name,first_name,last_name},company_name,$('#supplierModal'),$('#db-supplier'),$('#Supplier_Name'))
-		}
-		
-		
-	}
+	// 	}
+	// }
 
-	function showMeasurableDialog(val){
-		if(val=='addnew'){
-			$('#measurableModal').modal('show');
-			$('#measurableModal').on('shown.bs.modal',function(){
-				$('#Measurable_Name').focus();
-			})
-		}
-	}
-	function saveMeasurable(){
-		var measurable_name=$('#Measurable_Name').val();
-		var url="<?php echo Yii::app()->createUrl('unitMeasurable/SaveMeasurable')?>"
-		ajaxSaveData(url,{measurable_name},measurable_name,$('#measurableModal'),$('#db-measurable'),$('#Measurable_Name'))
+	// function saveSupplier(){
+	// 	var company_name=$('#Supplier_Name').val();
+	// 	var first_name=$('#Supplier_First_Name').val();
+	// 	var last_name=$('#Supplier_Last_Name').val();
+	// 	var url="<?php echo Yii::app()->createUrl('Supplier/SaveSupplier')?>";
+	// 	if(company_name.length<=0){
+	// 		$('.errorMsg').html('<small>Company Name is required</small>')
+	// 	}else if(first_name.length<=0){
+	// 		$('.errorMsgf').html('<small>First Name is required</small>')
+	// 	}else if(last_name.length<=0){
+	// 		$('.errorMsgl').html('<small>last Name is required</small>')
+	// 	}else{
+	// 		ajaxSaveData(url,{company_name,first_name,last_name},company_name,$('#supplierModal'),$('#db-supplier'),$('#Supplier_Name'))
+	// 	}
 		
-	}
+		
+	// }
+
+	// function showMeasurableDialog(val){
+	// 	if(val=='addnew'){
+	// 		$('#measurableModal').modal('show');
+	// 		$('#measurableModal').on('shown.bs.modal',function(){
+	// 			$('#Measurable_Name').focus();
+	// 		})
+	// 	}
+	// }
+	// function saveMeasurable(){
+	// 	var measurable_name=$('#Measurable_Name').val();
+	// 	var url="<?php echo Yii::app()->createUrl('unitMeasurable/SaveMeasurable')?>"
+	// 	ajaxSaveData(url,{measurable_name},measurable_name,$('#measurableModal'),$('#db-measurable'),$('#Measurable_Name'))
+		
+	// }
 
 
 	function ajaxSaveData(url,data,field,modal,dblist,textbox){
@@ -303,6 +308,7 @@
 					,before_change:function(files, dropped) {
 						//Check an example below
 						//or examples/file-upload.html
+						$('#item-image').html('');
 						if(files.length>3){
 							alert('You can update maximum only 3 image');
 							return false;
@@ -327,7 +333,7 @@
 					//console.log($(this).data('ace_input_method'));
 				}).on('file.error.ace', function(ev, info) {
 					if(info.error_count['ext'] || info.error_count['mime']) alert('Invalid file type! Please select an image!');
-					if(info.error_count['size']) alert('Invalid file size! Maximum 100KB');
+					if(info.error_count['size']) alert('Invalid file size! Maximum 200KB');
 				});;
 	})
 </script>

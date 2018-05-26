@@ -16,8 +16,15 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('db-measurable').value=0" data-dismiss="modal">Close</button>
-        <button type="button" onclick="saveMeasurable()" class="btn btn-primary">Save</button>
+        <button type="button" id="btn-measurable" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 </div>
+<?php $this->renderPartial('partial/_js',array(
+  'btnSave'=>'btn-measurable',
+  'name'=>'Measurable_Name',
+  'url'=>Yii::app()->createUrl('unitMeasurable/SaveMeasurable'),
+  'modal'=>'measurableModal',
+  'list'=>'db-measurable'
+));?>

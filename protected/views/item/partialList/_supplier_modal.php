@@ -13,19 +13,19 @@
           <div class="row">
             <div class="col-sm-12">
               <?php echo CHtml::label('Company Name', 1, array('class' => 'control-label')); ?>
-              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'Supplier_Name'));?>
+              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'company_name'));?>
               <span id="error" class="errorMsg"></span>
             </div>
           </div>
           <div class="row">
             <div class="col-sm-6">
               <?php echo CHtml::label('First Name', 1, array('class' => 'control-label')); ?>
-              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'Supplier_First_Name'));?>
+              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'first_name'));?>
               <span id="error" class="errorMsgf"></span>
             </div>
             <div class="col-sm-6">
               <?php echo CHtml::label('Last Name', 1, array('class' => 'control-label')); ?>
-              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'Supplier_Last_Name'));?>
+              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'last_name'));?>
               <span id="error" class="errorMsgl"></span>
             </div>
           </div>
@@ -33,9 +33,17 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" onclick="document.getElementById('db-supplier').value=0" data-dismiss="modal">Close</button>
-        <button type="button" onclick="saveSupplier()" class="btn btn-primary">Save</button>
+        <button type="button" id="btn-supplier" class="btn btn-primary">Save</button>
       </div>
     </div>
   </div>
 </div>
-
+<?php $this->renderPartial('partial/_js',array(
+  'btnSave'=>'btn-supplier',
+  'name'=>'company_name',
+  'first_name'=>'first_name',
+  'last_name'=>'last_name',
+  'url'=>Yii::app()->createUrl('Supplier/SaveSupplier'),
+  'modal'=>'supplierModal',
+  'list'=>'db-supplier'
+));?>

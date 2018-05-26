@@ -120,7 +120,6 @@ class ItemImage extends CActiveRecord
 		$image->item_id=$item_id;
 		$image->save();
 	}
-
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

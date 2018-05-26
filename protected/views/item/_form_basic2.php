@@ -37,8 +37,8 @@ $option=Category::model()->buildOptions($arr,null);
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="Item_brand"><?= Yii::t('app','Brand') ?></label>
                     <div class="col-sm-9">
-                        <select class="form-control" id="db-brand" name="Item[brand_id]" onchange="showBrandDialog(event.target.value)">
-                            <option value="">--Choose Brand--</option>
+                        <select class="form-control" id="db-brand" name="Item[brand_id]">
+                            <option value=""></option>
                             <?php foreach($brand as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['brand_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -80,8 +80,29 @@ $option=Category::model()->buildOptions($arr,null);
             <div class="col-sm-12">
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+                        
+                        <?php if(!empty(@$item_image)):?>
+                            <label for="id-input-file-3" class="ace-file-input ace-file-multiple">
+                                <input style="display: none;" multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+                                <div  id="item-image">
+                                <span class="ace-file-container">
+                                     
+                                    <?php foreach($item_image as $i=>$image):?>
+                                        <span class="ace-file-name" data-file="<?=$image['filename']?>">
+                                            <img class="middle" src='<?=Yii::app()->baseUrl.'/images/'.$image['filename']?>' height="50px">
+                                        </span>
+                                        
+                                    <?php endforeach;?>
 
+                                </span>
+                                <a class="remove">
+                                    <i class=" ace-icon fa fa-times"></i>
+                                </a>
+                            </div>
+                            </label>
+                        <?php else:?>
+                            <input multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+                        <?php endif;?>
                         <!-- /section:custom/file-input -->
                     </div>
                 </div>
@@ -92,11 +113,21 @@ $option=Category::model()->buildOptions($arr,null);
         </h4>
         <div class="row">
             <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'sku',array('class'=>'span3 txt-barcode','maxlength'=>32)); ?>
+                <?= $form->textFieldControlGroup($model,'sku',array('class'=>'span3 txt-barcode','maxlength'=>32,'data-rel'=>'tooltip','title'=>'Stock Keeping Unit(Define product code for internal use)')); ?>
             </div>
             <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255,'placeholder'=>'ISBN,UPC,GTIN,etc.')); ?>
+                <?= $form->textFieldControlGroup($model,'mpn',array('class'=>'span3 form-control','maxlength'=>255,'data-rel'=>'tooltip','title'=>'Manufacturing Part Number unambiguously identify a part design')); ?>
             </div>
+            
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255,'data-rel'=>'tooltip','title'=>'Twelve digit unique number associated with barcode(Universal Product Code)')); ?>
+            </div>
+            <div class="col-sm-6">
+                <?= $form->textFieldControlGroup($model,'isbn',array('class'=>'span3 txt-barcode','maxlength'=>32,'data-rel'=>'tooltip','title'=>'Thirteen digit unique commercial book identifier(International Standard Book Number')); ?>
+            </div>
+            
         </div>
         <div class="row">
             <div class="col-sm-6">
@@ -104,7 +135,7 @@ $option=Category::model()->buildOptions($arr,null);
                     <label class="col-sm-3 control-label" for="Item_supplier"><?= Yii::t('app','Supplier') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-supplier" name="Item[supplier_id]" onchange="showSupplierDialog(event.target.value)">
-                            <option value="0">--Choose Supplier--</option>
+                            <option value="0"></option>
                             <?php foreach($supplier as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['supplier_id']==$value['id'] ? 'selected' : ''?>><?=$value['company_name']?></option>
@@ -128,7 +159,7 @@ $option=Category::model()->buildOptions($arr,null);
                     <label class="col-sm-3 control-label" for="Item_category"><?= Yii::t('app','Category') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-category" name="Item[category_id]" onchange="showCategoryDialog(event.target.value)">
-                            <option value="">--Choose Category--</option>
+                            <option value=""></option>
                             <!-- <?php foreach($categories as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
@@ -148,7 +179,7 @@ $option=Category::model()->buildOptions($arr,null);
                     <label class="col-sm-3 control-label" for="Item_unit_measurable"><?= Yii::t('app','Unit Of Measurable') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]" onchange="showMeasurableDialog(event.target.value)">
-                            <option value="">--Choose Measurable--</option>
+                            <option value=""></option>
                             <?php foreach($measurable as $key=>$value):?>
 
                                 <option value="<?=$value['id']?>" <?php echo $model['unit_measurable_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>

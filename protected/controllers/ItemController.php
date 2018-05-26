@@ -333,7 +333,7 @@ class ItemController extends Controller
     {
 
         authorized('item.update');
-
+        $imageModel=new ItemImage;
         if ($item_number_flag == '0') {
             $model = $this->loadModel($id);
         } else {
@@ -359,6 +359,8 @@ class ItemController extends Controller
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
+            
+            
             $old_price = $model->unit_price;
             $model->attributes = $_POST['Item'];
             $this->session['tags']=$_POST['Item']['tags'];
@@ -371,31 +373,12 @@ class ItemController extends Controller
                         if (isset($_POST['Item']['count_interval'])) {
                             Item::model()->saveItemCounSchedule($model->id);
                         }
-
-                        // ItemPriceTier::model()->saveItemPriceTier($model->id, $price_tiers);
-                        // Product Price (retail price) history
-                        //ItemPrice::model()->saveItemPrice($model->id, $model->unit_price, $old_price);
-                        // if (isset($_POST['priceQuantity'])) {
-
-                        //     //save price quantity range
-                        //     $connection = Yii::app()->db;//initial connection to run raw sql
-                        //     $command = $connection->createCommand("delete from item_price_quantity where item_id=$id");
-                        //     $delete = $command->execute(); // execute the non-query SQL
-
-                        //     if (isset($_POST['priceQuantity'])) {
-                        //         foreach ($_POST['priceQuantity'] as $key => $value) {//loop data from price quantity
-                        //             if ($value['from_quantity'] > 0 and $value['to_quantity'] > $value['from_quantity'] and $value['unit_price'] > 0) {
-                        //                 $start_date = @$value['start_date'] ? @$value['start_date'] : date('Y-m-d');
-                        //                 $end_date = @$value['end_date'] ? @$value['end_date'] : date('Y-m-d', strtotime('+10950 days'));
-                        //                 $sql = "insert into item_price_quantity(item_id,from_quantity,to_quantity,unit_price,start_date,end_date) values(" . $model->id . ",'" . $value['from_quantity'] . "','" . $value['to_quantity'] . "','" . $value['unit_price'] . "','" . $start_date . "','" . $end_date . "')";
-                        //                 $command = $connection->createCommand($sql);
-                        //                 $insert = $command->execute(); // execute the non-query SQL
-                        //             }
-                        //         }
-                        //     }
-                        // }
-                        // Tag::model()->deleteTagByItemId($id);
-                                
+                        if(isset($_FILES['image']['name'])){
+                            ItemImage::model()->deleteAll(
+                                'item_id = :item_id',array(':item_id'=>$id
+                            ));
+                            $this->multipleImageUpload($id,$imageModel,'image','images');
+                        }        
                         if($model->id>0){//check if item id exist after saved to table
                             $connection = Yii::app()->db;//initial connection to run raw sql 
                             if(isset($_POST['Item']['tags'])){
@@ -409,12 +392,9 @@ class ItemController extends Controller
                                 $str = $_POST['Item']['tags'];
                                 $tagsArry=explode(",",$str);
                                 foreach($tagsArry as $key=>$value){//loop data from price quantity
-                                    // $sql = "insert into tag(tag_name) values('".$value."')";
-                                    // $command = $connection->createCommand($sql);
-                                    // $insertTag = $command->execute(); // execute the non-query SQL
+                                    
                                     $tagID=Tag::model()->saveTag($value);
-                                    // print_r($insertTag);
-                                    // foreach($insertTag as $i=>$tag){
+                                    
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
                                     echo $ptagSql;
                                     $command = $connection->createCommand($ptagSql);
@@ -444,7 +424,7 @@ class ItemController extends Controller
         // $data['item_price_quantity'] = $item_price_quantity;
         $data['next_disable'] = $next_disable;
         $data['previous_disable'] = $previous_disable;
-        // $data['priceQty'] = $priceRange;
+        $data['item_image'] = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
         $data['categories']=Category::model()->findAll();
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();

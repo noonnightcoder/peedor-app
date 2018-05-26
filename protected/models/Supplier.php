@@ -267,15 +267,15 @@ class Supplier extends CActiveRecord
     }
     public function saveSupplier($data){
         $id = null;
-        $exists = Supplier::model()->exists('company_name=:name', array(':name' => $data['company_name']));
-        if (!$exists) {
-            $model = new Supplier;
-            $model->company_name = $data['company_name'];
-            $model->first_name = $data['first_name'];
-            $model->last_name = $data['last_name'];
-            $model->save();
-            $id = $model->id;
-        }
+            $exists = Supplier::model()->exists('company_name=:name', array(':name' => $data['company_name']));
+            if (!$exists) {
+                $model = new Supplier;
+                $model->company_name = $data['company_name'];
+                $model->first_name = $data['first_name'];
+                $model->last_name = $data['last_name'];
+                $model->save();
+                $id = $model->id;
+            }
         return $id;
     }
 }

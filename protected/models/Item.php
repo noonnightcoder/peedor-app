@@ -46,7 +46,7 @@ class Item extends CActiveRecord
         return array(
             array('name, cost_price, unit_price', 'required'),
             array(
-                'item_number',
+                'item_number,sku,mpn,isbn',
                 'unique',
                 'message' => '{attribute} {value} already exists ' .
                     '<a class="btn btn-xs btn-info" href="UpdateImage/id/{value}/item_number_flag/1"><span class="glyphicon ace-icon fa fa-edit"></span></a>'
@@ -106,7 +106,7 @@ class Item extends CActiveRecord
         return array(
             'id' => 'ID',
             'name' => Yii::t('app', 'Name'),
-            'item_number' => Yii::t('app', 'Barcode'),
+            'item_number' => Yii::t('app', 'UPC'),
             'unit_id' => Yii::t('app', 'Unit ID'),
             'category_id' => Yii::t('app', 'Category'),
             'brand_id' => Yii::t('app', 'Brand'),
@@ -132,7 +132,9 @@ class Item extends CActiveRecord
             'count_interval' => Yii::t('app', 'Count Interval'),
             'unit_measurable_id' => Yii::t('app', 'Unit Of Measurable'),
             'markup'=>Yii::t('app','Markup(%)'),
-            'sku'=>Yii::t('app','SKU')
+            'sku'=>Yii::t('app','SKU'),
+            'mpn'=>Yii::t('app','MPN'),
+            'isbn'=>Yii::t('app','ISBN')
         );
     }
 
@@ -645,7 +647,7 @@ class Item extends CActiveRecord
         return array(
             array(
                 'name' => 'name',
-                'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("item/updateImage",array("id"=>$data->primaryKey))) : "<s class=\"red\">  $data->name <span>" ',
+                'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("Item/ItemSearch",array("result"=>$data->primaryKey))) : "<s class=\"red\">  $data->name <span>" ',
                 'type' => 'raw',
                 'filter' => '',
             ),
@@ -777,7 +779,7 @@ class Item extends CActiveRecord
 (SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
         FROM `item` i JOIN `category` c
         ON (i.category_id=c.id) 
-        WHERE (c.id=:category_id )";
+        WHERE (c.id=:category_id  or c.parent_id=:category_id)";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
 

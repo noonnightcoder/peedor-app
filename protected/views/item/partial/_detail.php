@@ -24,7 +24,7 @@
 				<?php foreach($item_image as $image):?>
 					<div class="col-sm-4">
 						<div class="thumbnail search-thumbnail">
-							<img class="media-object" style="" onmouseover="changeImage(event.target.src)" src="<?=$baseUrl.'/images/'.$image['filename']?>" />
+							<img class="media-object" style="" onclick="changeImage(event.target.src)" src="<?=$baseUrl.'/images/'.$image['filename']?>" />
 						</div>
 					</div>
 				<?php endforeach;?>

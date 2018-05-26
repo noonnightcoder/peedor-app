@@ -125,7 +125,7 @@ class SupplierController extends Controller
     public function actionSaveSupplier(){
         $model=new Supplier;
         $data=array(
-            'company_name'=>$_POST['company_name'],
+            'company_name'=>$_POST['name'],
             'first_name'=>$_POST['first_name'],
             'last_name'=>$_POST['last_name']
         );

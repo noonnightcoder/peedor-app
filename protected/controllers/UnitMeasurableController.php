@@ -203,7 +203,7 @@ class UnitMeasurableController extends Controller
 
     public function actionSaveMeasurable(){
     	$model=new UnitMeasurable;
-    	$measurable_name=$_POST['measurable_name'];
+    	$measurable_name=$_POST['name'];
     	$id = $model->saveUnitMeasurable2($measurable_name);
     	if($id){
     		echo 'success';

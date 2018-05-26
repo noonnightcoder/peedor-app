@@ -14,7 +14,8 @@ $this->breadcrumbs=array(
             'brand' => $brand,
             'supplier' => $supplier,
             'measurable'=>$measurable,
-            'categories'=>$categories
+            'categories'=>$categories,
+            'item_image'=>$item_image
             ),
         true),
     'headerButtons' => array(

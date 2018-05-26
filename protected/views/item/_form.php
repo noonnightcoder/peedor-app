@@ -78,6 +78,7 @@
     </div>
 
 <?php $this->endWidget(); ?>
+
 <script>
     function beforeValidate() {
     var form = $(this);
