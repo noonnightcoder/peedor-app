@@ -25,7 +25,7 @@
         var url="<?=$url?>"
         ajaxSave(url,{name,first_name,last_name},name,$('#<?=$modal?>'),$('#<?=$list?>'),$('#<?=$name?>'))
       })
-    }else{
+    } else{
       $('#<?=$btnSave?>').click(function(v){
         var name=$('#<?=$name?>').val();
         var url="<?=$url?>"

@@ -998,11 +998,13 @@ class ItemController extends Controller
         }
         
     }
-    public function actionReloadCategory($id=''){
+
+    public function actionReloadCategory($id='')
+    {
         $model=Category::model()->findAll();
-        echo $id;
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
+
     public function actionItemFinder(){
         $this->setSession(Yii::app()->session);
         $this->session['view']=isset($this->session['view']) ? $this->session['view'] :'k';

@@ -153,6 +153,7 @@ $option=Category::model()->buildOptions($arr,null);
                 <?php echo $form->textFieldControlGroup($model, 'quantity', array('class' => 'span3')); ?>
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">

@@ -193,19 +193,23 @@
 			);
 
 			$('#myModal'+i).modal('show')
+
 			$('#myModal0').on('hidden.bs.modal',function(){
 				$("#db-category").val('');
 				$('body').removeClass('modal-open');
-			})
+			});
 			
 			$('#myModal'+i).on('shown.bs.modal', function () {
+                reloadCategory(i);
 			  	$("#db-category"+i).val('');
 			  	$('.modal-body #Category_Name').focus();
-			})
+			});
+
 			$('#myModal0').on('shown.bs.modal', function () {
 			  	$("#db-category0").val('');
 			  	$('#myModal0 #Category_Name').focus();
-			})
+			});
+
 			i=i+1;
 		}
 	}

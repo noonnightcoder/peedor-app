@@ -19,10 +19,7 @@
 
     <?= $form->textAreaControlGroup($model, 'description', array('rows' => 2, 'cols' => 10, 'class' => 'span3')); ?>
 
-
     <?php $this->renderPartial('_form_role', array('user' => $model)) ?>
-
-
 
     <div class="form-actions">
         <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
