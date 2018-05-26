@@ -40,14 +40,14 @@ class Tax extends CActiveRecord
 		// will receive user inputs.
 		return array(
 			array('rate, created_by, updated_by, deleted_by', 'numerical', 'integerOnly'=>true),
-			array('taxt_name', 'length', 'max'=>128),
+			array('tax_name', 'length', 'max'=>128),
 			array('status', 'length', 'max'=>1),
 			array('created_at, updated_at, deleted_at', 'safe'),
             array('created_at,', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => true, 'on' => 'insert'),
             array('updated_at', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => false, 'on' => 'update'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, taxt_name, rate, status, created_at, updated_at, deleted_at, created_by, updated_by, deleted_by, search', 'safe', 'on'=>'search'),
+			array('id, tax_name, rate, status, created_at, updated_at, deleted_at, created_by, updated_by, deleted_by, search', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -70,7 +70,7 @@ class Tax extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'taxt_name' => 'Taxt Name',
+			'tax_name' => 'Taxt Name',
 			'rate' => 'Rate',
 			'status' => 'Status',
 			'created_at' => 'Created At',

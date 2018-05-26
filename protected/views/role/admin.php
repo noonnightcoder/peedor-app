@@ -8,8 +8,8 @@ $this->breadcrumbs = array(
     <div class="col-xs-12 widget-container-col ui-sortable">
 
         <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-            'title' => Yii::t('app', 'List of ' . ucfirst(get_class($model))),
-            'headerIcon' => sysMenuUserIcon(),
+            'title' => Yii::t('app', 'List of ' . ucfirst('Role')),
+            'headerIcon' => 'ace-icon fa fa-user-circle-o',
             'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
         )); ?>
         <!-- Admin Header layouts.admin._header -->

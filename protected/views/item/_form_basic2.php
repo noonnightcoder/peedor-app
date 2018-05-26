@@ -162,7 +162,7 @@ $option=Category::model()->buildOptions($arr,null);
                             <option value=""></option>
                             <!-- <?php foreach($categories as $key=>$value):?>
 
-                                <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
+                                <option value="<?=$value['id']?>" <?php echo $model['category_id']==$value['id'] ? 'selected' : ''?>><?= $value['name'] ?></option>
                             <?php endforeach;?> -->
                             <?=Category::model()->buildOptions($arr,$model['category_id'])?>
                             <optgroup >
