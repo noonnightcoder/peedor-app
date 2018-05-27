@@ -42,6 +42,9 @@ class RbacUser extends CActiveRecord
     public $rptprofits;
     public $categories;
     public $role_name;
+    public $pricebooks;
+    public $saleorders;
+    public $customerpayments;
 
     /**
      * Returns the static model of the specified AR class.

@@ -23,6 +23,19 @@ class User extends CActiveRecord
 
     public $user_archived;
     public $search;
+
+    public $customers;
+    public $items;
+    public $sales;
+    public $employees;
+    public $store;
+    public $suppliers;
+    public $receivings;
+    public $reports;
+    public $invoices;
+    public $payments;
+    public $rptprofits;
+    public $role_name;
     public $categories;
 
 	/**

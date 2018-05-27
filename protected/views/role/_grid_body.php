@@ -1,6 +1,12 @@
 <tbody>
-    <tr>
-        <?php $this->renderPartial('_grid_crud', array('title' => $row_title, 'permission' => 'item' )) ?>
-        <?php $this->renderPartial('_grid_more'); ?>
-    </tr>
+<tr>
+    <td class=""> <?= Yii::t('app',$grid_title); ?> </td>
+    <?= CHtml::activeCheckboxList($user, $control_name,Authitem::model()->getAuthItemDataList($permission),
+        array('separator' => '',
+            'checkAll' => Yii::t('app','Select All'),
+            'template'=>'<td class="permission">{input}</td>'
+        )
+    );
+    ?>
+</tr>
 </tbody>

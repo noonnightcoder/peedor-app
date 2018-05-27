@@ -157,6 +157,7 @@ class EmployeeController extends Controller
 
         $model = new Employee;
         $user = new RbacUser;
+        $role = new Authitem;
         $auth_assignment = new Authassignment;
         $disabled = "";
         $role_name = "";
@@ -230,6 +231,7 @@ class EmployeeController extends Controller
 
         $data['model'] = $model;
         $data['user'] = $user;
+        $data['role'] = $role;
         $data['disabled'] = $disabled;
 
         $this->render('create', $data);

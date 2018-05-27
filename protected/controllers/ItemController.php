@@ -5,9 +5,6 @@ class ItemController extends Controller
 
     public $layout = '//layouts/column1';
 
-    /**
-     * @return array action filters
-     */
     public function filters()
     {
         return array(
@@ -15,11 +12,6 @@ class ItemController extends Controller
         );
     }
 
-    /**
-     * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
-     */
     public function accessRules()
     {
         return array(
@@ -251,6 +243,7 @@ class ItemController extends Controller
     public function actionCreate($grid_cart = 'N', $sale_status = '2')
     {
         authorized('item.create');
+
         $model = new Item;
         $item_image=new ItemImage;
         $this->performAjaxValidation($model);
@@ -275,7 +268,7 @@ class ItemController extends Controller
                             if(isset($_POST['Item']['tags'])){
                                 $str = $_POST['Item']['tags'];
                                 $tagsArry=explode(",",$str);
-                                foreach($tagsArry as $key=>$value){//loop data from price quantity
+                                foreach($tagsArry as $key=>$value){ //loop data from price quantity
                                     
                                     $tagID=Tag::model()->saveTag($value);
                                     
@@ -316,6 +309,7 @@ class ItemController extends Controller
         $this->render('create2', $data);
 
     }
+
     public function actionAddPriceQty()
     {
         $this->setSession(Yii::app()->session);
@@ -431,6 +425,7 @@ class ItemController extends Controller
         $data['brand'] = Brand::model()->findAll();
         $this->render('update2', $data);
     }
+
     public function actionAssemblies()
     {
         authorized('assemblyitem.read');
@@ -466,6 +461,7 @@ class ItemController extends Controller
         $data['data_provider'] = $model->search();
         $this->render('assemblies',$data);
     }
+
     public function actionAssembliesCreate()
     {
         authorized('AssemblyItem.create');
@@ -513,6 +509,7 @@ class ItemController extends Controller
         echo CJSON::encode($res);
         Yii::app()->end();
     }
+
     public function actionAutocompleteItem()
     {
         $res = array();
@@ -621,6 +618,7 @@ class ItemController extends Controller
             $this->render('_inventory', array('model' => $model));
         }
     }
+
     public function actionGetProduct2()
     {
         if (isset($_GET['term'])) {
@@ -631,6 +629,7 @@ class ItemController extends Controller
 
         }
     }
+
     public function actionSelectItem()
     {
         $model = new Item('search');
@@ -957,6 +956,7 @@ class ItemController extends Controller
         $item_id = Item::model()->getPreviousId($id);
         $this->actionUpdateImage($item_id,'0');
     }
+
     public function setCart($cart_data,$session_name)
     {
         $this->setSession(Yii::app()->session);
@@ -1012,11 +1012,13 @@ class ItemController extends Controller
         $data=array('model'=>$model);
         $this->render('item_finder',$data);
     }
+
     public function actionCategoryTree(){
         $model=Category::model()->findAll();
         $arr = Category::model()->buildTreeView($model);
         echo json_encode($arr);
     }
+
     public function actionGetProductByCategory($category_id,$view){
         $this->setSession(Yii::app()->session);
         if($category_id>0){
@@ -1034,6 +1036,7 @@ class ItemController extends Controller
         $data['category']=Category::model()->buildCategoryBreadcrumb($arr,null,$paretn_cate['name']!=NULL ? $paretn_cate['name'].' / ' :'',$category_id);
         $this->renderPartial('partial/_result',$data);
     }
+
     public function actionItemSearch($result){
         $model=Item::model()->itemDetail($result);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
@@ -1042,6 +1045,7 @@ class ItemController extends Controller
             'item_image'=>$item_image
         ));
     }
+
     public function multipleImageUpload($item_id,$model,$attr_name,$path_to_save){
         $msg=null;
         $images=CUploadedFile::getInstancesByName($attr_name);
@@ -1063,6 +1067,7 @@ class ItemController extends Controller
         }
         //echo $msg;
     }
+
     public function setSession($value)
     {
         $this->session = $value;

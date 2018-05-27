@@ -10,8 +10,9 @@ $this->breadcrumbs=array(
               'headerIcon' => 'ace-icon fa fa-user',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
               'content' => $this->renderPartial('_form', array(
-                  'model'=>$model,
-                  'user'=>$user,
+                  'model' => $model,
+                  'user' => $user,
+                  'role' => $role,
                   'disabled' => $disabled,
                   'grid_id' => $grid_id,
                   'data_provider' => $data_provider,

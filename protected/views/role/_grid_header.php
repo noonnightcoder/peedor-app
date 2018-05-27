@@ -6,6 +6,6 @@
         <td class="permission"><?= Yii::t('app', 'Create'); ?></td>
         <td class="permission"><?= Yii::t('app', 'Edit'); ?></td>
         <td class="permission"><?= Yii::t('app', 'Delete'); ?></td>
-       <td></td>
+        <td style="width:100%"></td>
     </tr>
 </thead>
