@@ -40,7 +40,7 @@ $option=Category::model()->buildOptions($arr,null);
                         <select class="form-control" id="db-brand" name="Item[brand_id]">
                             <option value=""></option>
                             <?php foreach($brand as $key=>$value):?>
-
+                                <option value="" selected></option>
                                 <option value="<?=$value['id']?>" <?php echo $model['brand_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
                             <?php endforeach;?>
                             <optgroup >
@@ -137,7 +137,7 @@ $option=Category::model()->buildOptions($arr,null);
                         <select class="form-control" id="db-supplier" name="Item[supplier_id]" onchange="showSupplierDialog(event.target.value)">
                             <option value="0"></option>
                             <?php foreach($supplier as $key=>$value):?>
-
+                                <option value="" selected></option>
                                 <option value="<?=$value['id']?>" <?php echo $model['supplier_id']==$value['id'] ? 'selected' : ''?>><?=$value['company_name']?></option>
                             <?php endforeach;?>
                             <optgroup >

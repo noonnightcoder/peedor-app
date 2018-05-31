@@ -57,6 +57,7 @@ class ItemController extends Controller
                     'PreviousId',
                     'AddPriceQty',
                     'ReloadCategory',
+                    'ParentReload',
                     'saveCategory',
                     'ItemFinder',
                     'CategoryTree',
@@ -1002,6 +1003,20 @@ class ItemController extends Controller
         $model=Category::model()->findAll();
         echo $id;
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
+    }
+    public function actionParentReload(){
+        $categories=Category::model()->findAll();
+        $arr = Category::model()->buildTree($categories);
+        $option=Category::model()->buildOptions($arr,null);
+        echo '
+            <option value="" selected></option>'
+            .$option.'
+            <optgroup >
+                <option value="addnew">
+                    Create New
+                </option>
+            </optgroup>
+        ';
     }
     public function actionItemFinder(){
         $this->setSession(Yii::app()->session);

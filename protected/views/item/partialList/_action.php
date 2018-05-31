@@ -1,3 +1,4 @@
+<div id="test">Hello</div>
 <?php $baseUrl = Yii::app()->baseUrl;?>
 <script type="text/javascript">
 	var i=0
@@ -170,13 +171,7 @@
 							        <div class="form-group">\
 							            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
 							            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showCategoryDialog(event.target.value)">\
-							            	<option value="" selected>--Choose Parent--</option>\
-							            	<?=$option?>\
-							            	<optgroup >\
-							            		<option value="addnew">\
-							            			Create New\
-							            		</option>\
-							            	</optgroup>\
+							            	<?php $this->renderPartial("partialList/_modalPareng",array("option",$option))?>\
 							            </select>\
 							        </div>\
 							    </div>\
@@ -226,6 +221,7 @@
 				$('.errorMsg'+i).html('Processing...')
 			},
 			success:function(data){
+				reloadParent();
 				if(data=='error'){
 					$('.errorMsg'+i).html('Category name is required');
 					$('#success').html('');
@@ -237,6 +233,7 @@
 					$('#myModal'+i).hide()//hide modal
 					$('body').removeClass('modal-open');
 					reloadCategory(i);
+
 				}
 			}
 		})
@@ -262,7 +259,19 @@
 			}
 		})
 	}
-
+	function reloadParent(){
+			//alert(i)
+			
+			$.ajax({
+				type:'post',
+				data:{},
+				url:"<?php echo Yii::app()->createUrl('Item/ParentReload')?>/"+pid,
+				success:function(data){
+					
+					$('#test').html(data);
+				}
+			})
+		}
 	jQuery(function($){
 		var tag_input = $('#form-field-tags');
 		try{
