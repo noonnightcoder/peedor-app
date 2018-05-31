@@ -1,22 +1,27 @@
-<?php if (ckacc('sale.create')) { ?>
-
-    <?= TbHtml::linkButton(Yii::t('app',  'Add Sale Order'), array(
-        'color' => TbHtml::BUTTON_COLOR_SUCCESS,
-        'size' => TbHtml::BUTTON_SIZE_SMALL,
-        'icon' => 'ace-icon fa fa-plus white',
-        'url' => $this->createUrl('saleItem/update'),
+<div id="report_header">
+    <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+        'id' => 'report-form',
+        'method' => 'get',
+        'action' => Yii::app()->createUrl($this->route),
+        'enableAjaxValidation' => false,
+        'layout' => TbHtml::FORM_LAYOUT_INLINE,
     )); ?>
 
-    <?php /* echo  TbHtml::linkButton(Yii::t('app',  'Add Invoice'), array(
-        'color' => TbHtml::BUTTON_COLOR_PRIMARY,
-        'size' => TbHtml::BUTTON_SIZE_SMALL,
-        'icon' => 'ace-icon fa fa-plus white',
-        'url' => $this->createUrl('saleItem/update',array('tran_type' => '1')),
-    )); */?>
+        <?php if ($advance_search!==null) { ?>
+            <?php $this->renderPartial('//layout/report/_advance_search', array(
+                'report' => $report,
+            )); ?>
+        <?php } ?>
 
-<?php } ?>
+        <?php $this->renderPartial('//layout/report/_header_date_range', array(
+            'report' => $report,
+        )); ?>
 
-<!--<a href="<?/*= Yii::app()->createUrl('saleItem/reminder'); */?>">
-    <i class="ace-icon fa fa-bell-o"></i>
-    <?/*= t('invoice reminder off','app'); */?>
-</a>-->
+        <?php $this->renderPartial('//layout//report/_header_view_btn', array(
+        )); ?>
+
+    <?php $this->endWidget(); ?>
+
+</div>
+
+

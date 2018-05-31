@@ -2,7 +2,11 @@
     <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         'id' => 'report-form',
         'method' => 'get',
-        'action' => Yii::app()->createUrl($this->route),
+        'action' => Yii::app()->createUrl($this->route,array(
+            'status' => $status,
+            'user_id' => $user_id,
+            'title' => $title,
+        )),
         'enableAjaxValidation' => false,
         'layout' => TbHtml::FORM_LAYOUT_INLINE,
     )); ?>
