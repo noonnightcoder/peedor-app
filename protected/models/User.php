@@ -37,6 +37,8 @@ class User extends CActiveRecord
     public $rptprofits;
     public $role_name;
     public $categories;
+    public $stockcounts;
+    public $stocktransfers;
 
 	/**
 	 * @return string the associated database table name

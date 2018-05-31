@@ -3,10 +3,10 @@
 
         <table class="table table-striped table-bordered table-hover role-table">
 
-            <?php $this->renderPartial('//role/_grid_header') ?>
+            <?php $this->renderPartial('//role/grid/_grid_header') ?>
 
             <?php foreach ($grid_items  as $key => $value): ?>
-                <?php $this->renderPartial('//role/_grid_body', array(
+                <?php $this->renderPartial('//role/grid/_grid_body', array(
                     'user' => $user,
                     'grid_title' => $value['grid_title'],
                     'permission' => $value['permission'],

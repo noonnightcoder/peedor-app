@@ -11,8 +11,16 @@
 
     <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         'id' => 'employee-form',
-        'enableAjaxValidation' => false,
+        'enableAjaxValidation'=>true,
+        //'action'=>$this->createUrl('Item/Create'),
+        'enableClientValidation'=>true,
+        'clientOptions' => array(
+            'validateOnSubmit'=>true,
+            'validateOnChange'=>true,
+            'validateOnType'=>true,
+        ),
         'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
+
     )); ?>
 
     <div>
@@ -82,26 +90,52 @@
                         array('grid_title' => 'Category', 'permission' => 'category.', 'control_name' => 'categories'),
                     ),
                 ),
-                array('header_title' => 'Contacts', 'header_icon' => sysMenuUserIcon(),
-                    'grid_items' => array (
-                        array('grid_title' => 'Customers',  'permission' => 'customer.', 'control_name' => 'customers'),
-                        array('grid_title' => 'Suppliers', 'permission' => 'supplier.', 'control_name' => 'suppliers'),
-                    )
-                ),
                 array('header_title' => 'Sales', 'header_icon' => sysMenuSaleOrder(),
                     'grid_items' => array (
-                        array('grid_title' => 'Sale Order',  'permission' => 'saleorder', 'control_name' => 'saleorders'),
+                        array('grid_title' => 'Sale Order',  'permission' => 'sale', 'control_name' => 'saleorders'),
                         array('grid_title' => 'Customer Payment', 'permission' => 'customerpayment.', 'control_name' => 'customerpayments'),
                     )
                 ),
+                array('header_title' => 'Contacts', 'header_icon' => sysMenuUserIcon(),
+                    'grid_items' => array (
+                        array('grid_title' => 'Customer',  'permission' => 'customer.', 'control_name' => 'customers'),
+                        array('grid_title' => 'Supplier', 'permission' => 'supplier.', 'control_name' => 'suppliers'),
+                    )
+                ),
+                array('header_title' => 'Stocks', 'header_icon' => sysMenuUserIcon(),
+                    'grid_items' => array (
+                        array('grid_title' => 'Stock count',  'permission' => 'stockcount.', 'control_name' => 'stockcounts'),
+                        array('grid_title' => 'Stock Transfer', 'permission' => 'stocktransfer.', 'control_name' => 'stocktransfers'),
+                    )
+                ),
+                array('header_title' => 'Purchases', 'header_icon' => sysMenuUserIcon(),
+                    'grid_items' => array (
+                        array('grid_title' => 'Purchase Order',  'permission' => 'purchaseorder.', 'control_name' => 'purchaseorders'),
+                        array('grid_title' => 'Purchase Receive', 'permission' => 'purchasereceive.', 'control_name' => 'purchasereceives'),
+                        array('grid_title' => 'Purchase Return', 'permission' => 'purchasereturn.', 'control_name' => 'purchasereturns'),
+                    )
+                ),
+            );
+
+            $permission_items_ctl = array (
+                array('header_title' => 'Reports', 'header_icon' => 'fa fa-signal',
+                    'grid_items' => array (
+                        array('grid_title' => 'Report',  'permission' => 'report', 'control_name' => 'reports'),
+                    ),
+                ),
+                array('header_title' => 'Settings', 'header_icon' => 'fa fa-cogs',
+                    'grid_items' => array (
+                        array('grid_title' => 'Setting',  'permission' => 'setting', 'control_name' => 'settings'),
+                    ),
+                )
             );
 
             ?>
 
             <?php foreach($permission_items as $key => $value): ?>
 
-                <?php $this->renderPartial('//role/_permission', array(
-                    'model' => $role,
+                <?php $this->renderPartial('//role/grid/_permission', array(
+                    'model' => $model,
                     'user' => $user,
                     'header_title' => $value['header_title'],
                     'header_icon' => $value['header_icon'],
@@ -109,6 +143,20 @@
                 )); ?>
 
             <?php endforeach; ?>
+
+            <?php foreach($permission_items_ctl as $key => $value): ?>
+
+                <?php $this->renderPartial('//role/control/_permission', array(
+                    'model' => $model,
+                    'user' => $user,
+                    'header_title' => $value['header_title'],
+                    'header_icon' => $value['header_icon'],
+                    'grid_items' => $value['grid_items']
+                )); ?>
+
+            <?php endforeach; ?>
+
+
 
             <div class="form-actions">
                 <?= TbHtml::submitButton($model->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Save'), array(

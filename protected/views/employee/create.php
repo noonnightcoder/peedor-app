@@ -12,11 +12,11 @@ $this->breadcrumbs=array(
               'content' => $this->renderPartial('_form', array(
                   'model' => $model,
                   'user' => $user,
-                  'role' => $role,
+                  //'role' => $role,
                   'disabled' => $disabled,
-                  'grid_id' => $grid_id,
-                  'data_provider' => $data_provider,
-                  'grid_columns' => $grid_columns,
+                  //'grid_id' => $grid_id,
+                  //'data_provider' => $data_provider,
+                  //'grid_columns' => $grid_columns,
               ), true),
  )); ?>  
 

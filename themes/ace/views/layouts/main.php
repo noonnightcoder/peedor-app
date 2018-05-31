@@ -99,7 +99,7 @@
     ?>
 
     <?php
-        if (Yii::app()->components['user']->loginRequiredAjaxResponse){
+/*        if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
                 jQuery("body").ajaxComplete(
                     function(event, request, options) {
@@ -110,7 +110,7 @@
                 );
             ');
         }
-    ?>
+    */?>
 </head>
 
 <body class="no-skin">

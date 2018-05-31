@@ -42,7 +42,7 @@ class DashboardController extends Controller
 
 	public function actionView()
 	{        
-	    authorized('dashboard.read');
+	    authorized('report.dashboard');
 
         $report=new Dashboard;
         $this->render('index',array('report'=>$report));

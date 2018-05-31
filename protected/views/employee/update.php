@@ -14,13 +14,10 @@ $this->breadcrumbs=array(
               'headerIcon' => 'ace-icon fa fa-user',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
               'content' => $this->renderPartial('_form', array(
-                  'model'=>$model,
-                  'user'=>$user,
+                  'model' => $model,
+                  'user' => $user,
                   'disabled' => $disabled,
                   //'auth_items' => $auth_items,
-                  'grid_id' => $grid_id,
-                  'data_provider' => $data_provider,
-                  'grid_columns' => $grid_columns,
               ),true),
  )); ?>  
 

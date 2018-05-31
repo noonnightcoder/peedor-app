@@ -3,15 +3,8 @@
 class EmployeeController extends Controller
 {
 
-    /**
-     * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
-     * using two-column layout. See 'protected/views/layouts/column2.php'.
-     */
     public $layout = '//layouts/column1';
 
-    /**
-     * @return array action filters
-     */
     public function filters()
     {
         return array(
@@ -19,11 +12,6 @@ class EmployeeController extends Controller
         );
     }
 
-    /**
-     * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
-     */
     public function accessRules()
     {
         return array(
@@ -157,17 +145,13 @@ class EmployeeController extends Controller
 
         $model = new Employee;
         $user = new RbacUser;
-        $role = new Authitem;
-        $auth_assignment = new Authassignment;
         $disabled = "";
-        $role_name = "";
-
 
         if (isset($_POST['Employee'])) {
             $model->attributes = $_POST['Employee'];
             $user->attributes = $_POST['RbacUser'];
             //$location_id = $_POST['Employee']['location'];
-            $role_name = $_POST['RbacUser']['role_name'];
+            //$role_name = $_POST['RbacUser']['role_name'];
 
             if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
                 $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
@@ -178,6 +162,8 @@ class EmployeeController extends Controller
             $valid = $model->validate();
             $valid = $user->validate() && $valid;
 
+            $this->performAjaxValidation($valid);
+
             if ($valid) {
                 $transaction = $model->dbConnection->beginTransaction();
                 try {
@@ -186,32 +172,23 @@ class EmployeeController extends Controller
 
                         if ($user->save()) {
 
-                            $auth_assignment->itemname = $role_name;
-                            $auth_assignment->userid = $user->id;
-                            if (!$auth_assignment->save()) {
-                                $transaction->rollback();
-                                print_r($auth_assignment->errors);
-                            }
+                            $assign_items = $this->authItemPermission();
 
-                            /*
-                            $assignitems = $this->authItemPermission();
+                            foreach ($assign_items as $assign_item) {
+                                if (!empty($_POST['RbacUser'][$assign_item])) {
+                                    foreach ($_POST['RbacUser'][$assign_item] as $itemId) {
+                                        $auth_assignment = new Authassignment;
+                                        $auth_assignment->userid = $user->id;
+                                        $auth_assignment->itemname = $itemId;
 
-                            foreach ($assignitems as $assignitem) {
-                                if (!empty($_POST['RbacUser'][$assignitem])) {
-                                    foreach ($_POST['RbacUser'][$assignitem] as $itemId) {
-                                        $authassigment = new Authassignment;
-                                        $authassigment->userid = $user->id;
-                                        $authassigment->itemname = $itemId;
-
-                                        if (!$authassigment->save()) {
+                                        if (!$auth_assignment->save()) {
                                             $transaction->rollback();
-                                            print_r($authassigment->errors);
+                                            print_r($auth_assignment->errors);
                                         }
                                     }
                                 }
 
                             }
-                            */
 
                             $transaction->commit();
                             Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
@@ -227,13 +204,11 @@ class EmployeeController extends Controller
             }
         }
 
-        $data = RbacUser::model()->permissionData($role_name);
+        //$data = RbacUser::model()->permissionData($role_name);
 
         $data['model'] = $model;
         $data['user'] = $user;
-        $data['role'] = $role;
         $data['disabled'] = $disabled;
-
         $this->render('create', $data);
     }
 
@@ -242,7 +217,6 @@ class EmployeeController extends Controller
         authorized('employee.update');
 
         $disabled = "";
-        $role_name = "";
 
         $model = $this->loadModel($id);
         $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
@@ -256,15 +230,33 @@ class EmployeeController extends Controller
         $auth_items = array();
         foreach ($auth_assignment as $auth_item) {
             $auth_items[] = $auth_item->itemname;
-            $role_name = $auth_item->itemname;
         }
 
-        $user->role_name = $auth_items;
+        foreach ($this->authItemPermission() as $value) {
+            $user->$value = $auth_items;
+        }
+
+        /*
+        $user->items = $auth_items;
+        $user->pricebooks = $auth_items;
+        $user->categories = $auth_items;
+        $user->sales = $auth_items;
+        $user->employees = $auth_items;
+        $user->customers = $auth_items;
+        $user->store = $auth_items;
+        $user->suppliers = $auth_items;
+        $user->receivings = $auth_items;
+        $user->reports = $auth_items;
+        $user->invoices = $auth_items;
+        $user->payments = $auth_items;
+        $user->rptprofits = $auth_items;
+        */
+
+        $this->performAjaxValidation($model);
 
         if (isset($_POST['Employee'])) {
             $model->attributes = $_POST['Employee'];
             $user->attributes = $_POST['RbacUser'];
-            $role_name = $_POST['RbacUser']['role_name'];
 
             if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
                 $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
@@ -284,16 +276,17 @@ class EmployeeController extends Controller
                             // Delete all existing granted module
                             Authassignment::model()->deleteAuthassignment($user->id);
 
-                            $auth_assignment = new Authassignment;
-
-                            $auth_assignment->itemname = $role_name;
-                            $auth_assignment->userid = $user->id;
-
-                            if (!$auth_assignment->save()) {
-                                $transaction->rollback();
-                                print_r($auth_assignment->errors);
+                            $assign_items = $this->authItemPermission();
+                            foreach ($assign_items as $assign_item) {
+                                if (!empty($_POST['RbacUser'][$assign_item])) {
+                                    foreach ($_POST['RbacUser'][$assign_item] as $itemId) {
+                                        $auth_assigment = new Authassignment;
+                                        $auth_assigment->userid = $user->id;
+                                        $auth_assigment->itemname = $itemId;
+                                        $auth_assigment->save();
+                                    }
+                                }
                             }
-
 
                             $transaction->commit();
                             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS, 'Employee : <strong>' . ucwords($model->last_name . ' ' . $model->first_name) . '</strong> have been saved successfully!');
@@ -313,14 +306,7 @@ class EmployeeController extends Controller
             $disabled = "true";
         }
 
-        $data = RbacUser::model()->permissionData($role_name);
-
-        $data['model'] = $model;
-        $data['user'] = $user;
-        $data['disabled'] = $disabled;
-        //$data['auth_items'] = $auth_items;
-
-        $this->render('update', $data);
+        $this->render('update', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
     }
 
     public function actionInlineUpdate()
@@ -468,7 +454,8 @@ class EmployeeController extends Controller
 
     protected function authItemPermission()
     {
-        return array('items', 'sales', 'employees', 'customers', 'suppliers', 'store', 'receivings', 'reports', 'invoices', 'payments', 'rptprofits', 'categories');
+        return array('items','pricebooks','categories' ,'saleorders', 'customerpayments', 'customers', 'suppliers',
+            'stockcounts', 'stocktransfers', 'purchaseorders', 'purchasereceives', 'reports','settings');
     }
 
 
