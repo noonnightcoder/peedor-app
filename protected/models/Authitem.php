@@ -320,6 +320,21 @@ class Authitem extends CActiveRecord
         return $model;
     }
 
+    public function getAuthItemDataList($match = 'item')
+    {
+        $match = addcslashes($match, '%_'); // escape LIKE's special characters
+
+        $q = new CDbCriteria(array(
+            'condition' => "name LIKE :match and type=0", // no quotes around :match
+            'params' => array(':match' => "$match%"),
+            'order' => "sort_order",
+        ));
+
+        $model = Authitem::model()->findAll($q);
+        $list = CHtml::listData($model, 'name', 'AuthItemName');
+        return $list;
+    }
+
     protected function getRoleInfo()
     {
         return $this->description;

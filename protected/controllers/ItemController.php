@@ -5,9 +5,6 @@ class ItemController extends Controller
 
     public $layout = '//layouts/column1';
 
-    /**
-     * @return array action filters
-     */
     public function filters()
     {
         return array(
@@ -15,11 +12,6 @@ class ItemController extends Controller
         );
     }
 
-    /**
-     * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
-     */
     public function accessRules()
     {
         return array(
@@ -62,7 +54,8 @@ class ItemController extends Controller
                     'ItemFinder',
                     'CategoryTree',
                     'GetProductByCategory',
-                    'ItemSearch'
+                    'ItemSearch',
+                    'TestImageUpload'
                 ),
                 'users' => array('@'),
             ),
@@ -252,6 +245,7 @@ class ItemController extends Controller
     public function actionCreate($grid_cart = 'N', $sale_status = '2')
     {
         authorized('item.create');
+
         $model = new Item;
         $item_image=new ItemImage;
         $this->performAjaxValidation($model);
@@ -276,7 +270,7 @@ class ItemController extends Controller
                             if(isset($_POST['Item']['tags'])){
                                 $str = $_POST['Item']['tags'];
                                 $tagsArry=explode(",",$str);
-                                foreach($tagsArry as $key=>$value){//loop data from price quantity
+                                foreach($tagsArry as $key=>$value){ //loop data from price quantity
                                     
                                     $tagID=Tag::model()->saveTag($value);
                                     
@@ -314,9 +308,11 @@ class ItemController extends Controller
         $data['categories']=Category::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
+        $data['image']=$item_image;
         $this->render('create2', $data);
 
     }
+
     public function actionAddPriceQty()
     {
         $this->setSession(Yii::app()->session);
@@ -374,13 +370,23 @@ class ItemController extends Controller
                         if (isset($_POST['Item']['count_interval'])) {
                             Item::model()->saveItemCounSchedule($model->id);
                         }
-                        if(isset($_FILES['image']['name'])){
-                            ItemImage::model()->deleteAll(
-                                'item_id = :item_id',array(':item_id'=>$id
-                            ));
-                            $this->multipleImageUpload($id,$imageModel,'image','images');
-                        }        
+                               
                         if($model->id>0){//check if item id exist after saved to table
+                            if(isset($_FILES['image'])){
+                                foreach($_FILES['image']['name'] as $img){
+                                    if($img!=''){
+                                        $cur_image=ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
+                                        foreach($cur_image as $img){
+                                            $img_file=Yii::app()->basePath.'/../images/'.$img['filename'];
+                                            if(file_exists($img_file)){
+                                                unlink($img_file);
+                                            }
+                                        }
+                                        ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$id)));
+                                        $this->multipleImageUpload($id,$item_image,'image','images');
+                                    }
+                                }
+                            }
                             $connection = Yii::app()->db;//initial connection to run raw sql 
                             if(isset($_POST['Item']['tags'])){
                                 $sql="DELETE t,pt
@@ -397,7 +403,7 @@ class ItemController extends Controller
                                     $tagID=Tag::model()->saveTag($value);
                                     
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
-                                    echo $ptagSql;
+                                    //echo $ptagSql;
                                     $command = $connection->createCommand($ptagSql);
                                     $insertProductTag = $command->execute(); // execute the non-query SQL
                                     // }
@@ -418,6 +424,7 @@ class ItemController extends Controller
                     Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
                 }
             }
+            
         }
 
         $data['model'] = $model;
@@ -430,8 +437,10 @@ class ItemController extends Controller
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
+        $data['image']=$imageModel;
         $this->render('update2', $data);
     }
+
     public function actionAssemblies()
     {
         authorized('assemblyitem.read');
@@ -467,6 +476,7 @@ class ItemController extends Controller
         $data['data_provider'] = $model->search();
         $this->render('assemblies',$data);
     }
+
     public function actionAssembliesCreate()
     {
         authorized('AssemblyItem.create');
@@ -514,6 +524,7 @@ class ItemController extends Controller
         echo CJSON::encode($res);
         Yii::app()->end();
     }
+
     public function actionAutocompleteItem()
     {
         $res = array();
@@ -622,6 +633,7 @@ class ItemController extends Controller
             $this->render('_inventory', array('model' => $model));
         }
     }
+
     public function actionGetProduct2()
     {
         if (isset($_GET['term'])) {
@@ -632,6 +644,7 @@ class ItemController extends Controller
 
         }
     }
+
     public function actionSelectItem()
     {
         $model = new Item('search');
@@ -958,6 +971,7 @@ class ItemController extends Controller
         $item_id = Item::model()->getPreviousId($id);
         $this->actionUpdateImage($item_id,'0');
     }
+
     public function setCart($cart_data,$session_name)
     {
         $this->setSession(Yii::app()->session);
@@ -999,9 +1013,10 @@ class ItemController extends Controller
         }
         
     }
-    public function actionReloadCategory($id=''){
+
+    public function actionReloadCategory($id='')
+    {
         $model=Category::model()->findAll();
-        echo $id;
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
     public function actionParentReload(){
@@ -1025,11 +1040,13 @@ class ItemController extends Controller
         $data=array('model'=>$model);
         $this->render('item_finder',$data);
     }
+
     public function actionCategoryTree(){
         $model=Category::model()->findAll();
         $arr = Category::model()->buildTreeView($model);
         echo json_encode($arr);
     }
+
     public function actionGetProductByCategory($category_id,$view){
         $this->setSession(Yii::app()->session);
         if($category_id>0){
@@ -1047,6 +1064,7 @@ class ItemController extends Controller
         $data['category']=Category::model()->buildCategoryBreadcrumb($arr,null,$paretn_cate['name']!=NULL ? $paretn_cate['name'].' / ' :'',$category_id);
         $this->renderPartial('partial/_result',$data);
     }
+
     public function actionItemSearch($result){
         $model=Item::model()->itemDetail($result);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
@@ -1055,10 +1073,12 @@ class ItemController extends Controller
             'item_image'=>$item_image
         ));
     }
+
     public function multipleImageUpload($item_id,$model,$attr_name,$path_to_save){
         $msg=null;
         $images=CUploadedFile::getInstancesByName($attr_name);
         if(isset($images) && count($images)>0){
+            
             foreach($images as $img=>$pic){
                $rnd = rand(0,9999);  // generate random number between 0-9999
                $fileName = "{$rnd}-{$pic}"; 
@@ -1076,8 +1096,18 @@ class ItemController extends Controller
         }
         //echo $msg;
     }
+
     public function setSession($value)
     {
         $this->session = $value;
+    }
+    public function actionTestImageUpload($e){
+        if($e==1){
+            ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>1)));
+        }else{
+            $this->multipleImageUpload(1,'','image','images');
+            echo json_encode(array('a' => 1 ));
+        }
+        
     }
 }

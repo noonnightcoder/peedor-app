@@ -18,11 +18,6 @@ class CategoryController extends Controller
         );
     }
 
-    /**
-     * Specifies the access control rules.
-     * This method is used by the 'accessControl' filter.
-     * @return array access control rules
-     */
     public function accessRules()
     {
         return array(
@@ -44,10 +39,6 @@ class CategoryController extends Controller
         );
     }
 
-    /**
-     * Displays a particular model.
-     * @param integer $id the ID of the model to be displayed
-     */
     public function actionView($id)
     {
         $this->render('view', array(
@@ -55,66 +46,10 @@ class CategoryController extends Controller
         ));
     }
 
-    /**
-     * Creates a new model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     */
-    // public function actionCreate()
-    // {
-
-    //     if (!Yii::app()->user->checkAccess('category.create')) {
-    //         throw new CHttpException(403, 'You are not authorized to perform this action');
-    //     }
-
-    //     $model = new Category;
-
-    //     if (isset($_POST['Category'])) {
-    //         $model->attributes = $_POST['Category'];
-    //         if ($model->validate()) {
-    //             $transaction = $model->dbConnection->beginTransaction();
-    //             try {
-    //                 $model->modified_date = date('Y-m-d H:i:s');
-    //                 if ($model->save()) {
-    //                     $transaction->commit();
-    //                     Yii::app()->clientScript->scriptMap['jquery.js'] = false;
-    //                     echo CJSON::encode(array(
-    //                         'status' => 'success',
-    //                         'div' => "<div class=alert alert-info fade in> Successfully added ! </div>",
-    //                     ));
-    //                     Yii::app()->end();
-    //                 }
-    //             } catch (Exception $e) {
-    //                 $transaction->rollback();
-    //                 print_r($e);
-    //             }
-    //         }
-    //     }
-
-    //     if (Yii::app()->request->isAjaxRequest) {
-    //         $cs = Yii::app()->clientScript;
-    //         $cs->scriptMap = array(
-    //             'jquery.js' => false,
-    //             'bootstrap.js' => false,
-    //             'jquery.min.js' => false,
-    //             'bootstrap.notify.js' => false,
-    //             'bootstrap.bootbox.min.js' => false,
-    //         );
-    //         echo CJSON::encode(array(
-    //             'status' => 'render',
-    //             'div' => $this->renderPartial('_form', array('model' => $model), true, true),
-    //         ));
-    //         Yii::app()->end();
-    //     } else {
-    //         $this->render('create', array('model' => $model));
-    //     }
-
-    // }
-
     public function actionCreate()
     {
-        if (!Yii::app()->user->checkAccess('category.create')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('category.create');
+
         $model = new Category;
         $data['model'] = $model;
         $data['parent'] = Category::model()->findAll();
@@ -124,6 +59,7 @@ class CategoryController extends Controller
     }
 
     public function actionSaveCategory(){
+
         $i=$_POST['id']+1;
         $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
         $parent_id=$_POST['parent_id'];
@@ -156,22 +92,16 @@ class CategoryController extends Controller
         }
         
     }
+
     public function actionReloadCategory($id=''){
         $model=Category::model()->findAll();
         echo $id;
         $this->renderPartial('partial/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
 
-    /**
-     * Updates a particular model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id the ID of the model to be updated
-     */
     public function actionUpdate($id)
     {
-        if (!Yii::app()->user->checkAccess('category.create')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('category.update');
 
         $model = $this->loadModel($id);
 
@@ -219,9 +149,8 @@ class CategoryController extends Controller
     }
 
     public function actionUpdate2($id){
-        if (!Yii::app()->user->checkAccess('category.create')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('category.update');
+
         //echo $_POST['category_name'];
         if(isset($_POST['category_name'])){
             $category = Category::model()->findByPk($id);
@@ -247,9 +176,7 @@ class CategoryController extends Controller
 
     public function actionDelete($id)
     {
-        if (!Yii::app()->user->checkAccess('category.delete')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('category.delete');
 
         if (Yii::app()->request->isPostRequest) {
             Category::model()->deleteCategory($id);
@@ -265,9 +192,7 @@ class CategoryController extends Controller
 
     public function actionRestore($id)
     {
-        if (!Yii::app()->user->checkAccess('category.delete')) {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
-        }
+        authorized('category.delete');
 
         if (Yii::app()->request->isPostRequest) {
             Category::model()->restoreCategory($id);
@@ -281,9 +206,6 @@ class CategoryController extends Controller
         }
     }
 
-    /**
-     * Lists all models.
-     */
     public function actionIndex()
     {
         $dataProvider = new CActiveDataProvider('Category');
@@ -291,51 +213,6 @@ class CategoryController extends Controller
             'dataProvider' => $dataProvider,
         ));
     }
-
-    /**
-     * Manages all models.
-     */
-    // public function actionAdmin()
-    // {
-    //     $model = new Category('search');
-    //     $model->unsetAttributes();  // clear any default values
-
-    //     if (isset($_GET['Category']))
-    //         $model->attributes = $_GET['Category'];
-
-    //     if (isset($_GET['pageSize'])) {
-    //         Yii::app()->user->setState('category_page_size', (int)$_GET['pageSize']);
-    //         unset($_GET['pageSize']);
-    //     }
-
-    //     if (isset($_GET['archived'])) {
-    //         Yii::app()->user->setState('category_archived', $_GET['archived']);
-    //         unset($_GET['archived']);
-    //     }
-
-    //     $model->category_archived = Yii::app()->user->getState('category_archived',
-    //         Yii::app()->params['defaultArchived']);
-
-    //     $page_size = CHtml::dropDownList(
-    //         'pageSize',
-    //         Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
-    //         Common::arrayFactory('page_size'),
-    //         array('class' => 'change-pagesize',)
-    //     );
-
-    //     $data['model'] = $model;
-    //     //$data['grid_id'] = strtolower(get_class($model)) . ' -grid';
-    //     $data['grid_id'] = 'category-grid';
-    //     $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-    //     $data['page_size'] = $page_size;
-    //     $data['modal_header'] = Yii::t('app', 'New Category');
-
-    //     $data['grid_columns'] = Category::getCategoryColumn();
-
-    //     $data['data_provider'] = $model->search();
-
-    //     $this->render('admin', $data);
-    // }
 
     public function actionAdmin()
     {
@@ -378,11 +255,6 @@ class CategoryController extends Controller
         $this->render('admin', $data);
     }
 
-    /**
-     * Returns the data model based on the primary key given in the GET variable.
-     * If the data model is not found, an HTTP exception will be raised.
-     * @param integer the ID of the model to be loaded
-     */
     public function loadModel($id)
     {
         $model = Category::model()->findByPk($id);
@@ -391,10 +263,6 @@ class CategoryController extends Controller
         return $model;
     }
 
-    /**
-     * Performs the AJAX validation.
-     * @param CModel the model to be validated
-     */
     protected function performAjaxValidation($model)
     {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'category-form') {

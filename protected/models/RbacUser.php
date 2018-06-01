@@ -29,19 +29,23 @@ class RbacUser extends CActiveRecord
     public $Password;
     public $ResetPassword;
 
-    public $customers;
     public $items;
-    public $sales;
-    public $employees;
-    public $store;
-    public $suppliers;
-    public $receivings;
-    public $reports;
-    public $invoices;
-    public $payments;
-    public $rptprofits;
+    public $pricebooks;
     public $categories;
+    public $saleorders;
+    public $customerpayments;
+    public $customers;
+    public $suppliers;
+    public $stockcounts;
+    public $stocktransfers;
+    public $purchaseorders;
+    public $purchasereceives;
+    public $purchasereturns;
+    public $reports;
+    public $settings;
+    public $employees;
     public $role_name;
+
 
     /**
      * Returns the static model of the specified AR class.
@@ -123,9 +127,6 @@ class RbacUser extends CActiveRecord
         );
     }
 
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
     public function attributeLabels()
     {
         return array(
@@ -154,10 +155,6 @@ class RbacUser extends CActiveRecord
         );
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-     */
     public function search()
     {
         // Warning: Please modify the following code to remove attributes that

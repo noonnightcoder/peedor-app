@@ -19,10 +19,36 @@
 
     <?= $form->textAreaControlGroup($model, 'description', array('rows' => 2, 'cols' => 10, 'class' => 'span3')); ?>
 
+    <?php
+    $permission_items = array (
+        array('header_title' => 'Item',
+                'grid_items' => array (
+                      array('grid_title' => 'Item',  'permission' => 'item', 'control_name' => 'items'),
+                      array('grid_title' => 'Price Book', 'permission' => 'pricebook', 'control_name' => 'pricebooks'),
+                      array('grid_title' => 'Category', 'permission' => 'category', 'control_name' => 'categories'),
+                ),
+        ),
+        array('header_title' => 'Sale',
+            'grid_items' => array (
+                array('grid_title' => 'Item',  'permission' => 'item', 'control_name' => 'items'),
+                array('grid_title' => 'Price Book', 'permission' => 'pricebook', 'control_name' => 'pricebooks'),
+                array('grid_title' => 'Category', 'permission' => 'category', 'control_name' => 'categories'),
+            )
+        ),
+    );
 
-    <?php $this->renderPartial('_form_role', array('user' => $model)) ?>
+    ?>
 
+    <?php /*foreach($permission_items as $key => $value): */?><!--
 
+        <?php /*$this->renderPartial('//role/_permission', array(
+                'user' => $model,
+                'header_title' => $value['header_title'],
+                'grid_items' => $value['grid_items']
+            ));
+        */?>
+
+    --><?php /*endforeach */?>
 
     <div class="form-actions">
         <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(

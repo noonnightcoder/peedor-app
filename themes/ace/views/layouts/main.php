@@ -82,13 +82,14 @@
     <?php 
         $cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
          $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
+         
         $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN); 
         $cs->registerScriptFile($baseUrl.'/js/elements.fileinput.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/chosen.jquery.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/jquery.inputlimiter.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
-       
+       $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.maskedinput.min.js',CClientScript::POS_END);
         // $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
@@ -99,7 +100,7 @@
     ?>
 
     <?php
-        if (Yii::app()->components['user']->loginRequiredAjaxResponse){
+/*        if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
                 jQuery("body").ajaxComplete(
                     function(event, request, options) {
@@ -110,7 +111,7 @@
                 );
             ');
         }
-    ?>
+    */?>
 </head>
 
 <body class="no-skin">

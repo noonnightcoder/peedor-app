@@ -17,27 +17,16 @@ class Category extends CActiveRecord
     public $search;
     public $category_archived;
 
-    /**
-	 * Returns the static model of the specified AR class.
-	 * @param string $className active record class name.
-	 * @return Category the static model class
-	 */
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
 	}
 
-	/**
-	 * @return string the associated database table name
-	 */
 	public function tableName()
 	{
 		return 'category';
 	}
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -62,9 +51,6 @@ class Category extends CActiveRecord
         );
     }
 
-	/**
-	 * @return array relational rules.
-	 */
 	public function relations()
 	{
 		// NOTE: you may need to adjust the relation name and the related
@@ -74,9 +60,6 @@ class Category extends CActiveRecord
 		);
 	}
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
 	public function attributeLabels()
 	{
 		return array(
@@ -88,10 +71,6 @@ class Category extends CActiveRecord
 		);
 	}
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
-	 */
 	public function search()
 	{
 		$criteria=new CDbCriteria;
@@ -180,6 +159,7 @@ class Category extends CActiveRecord
                 array(
                     'name' => 'name',
                     'value' => '$data->status=="1" ? $data->name : "<s class=\"red\">  $data->name <s>" ',
+                    //'value' => 'Category::model()->buildCategoryBreadcrumb(Category::model()->findAll(),null,$data->parent_id,$data->id)',
                     'type' => 'raw',
                 ),
                 'modified_date',
@@ -293,6 +273,7 @@ class Category extends CActiveRecord
 
         return $html;
     }
+
     public function buildCategoryBreadcrumb($arr, $target, $parent = NULL,$id) {
         $html = "";
         Yii::app()->session;
@@ -310,6 +291,7 @@ class Category extends CActiveRecord
 
         return $html;
     }
+
     public function buildTree2( $ar, $pid = null ) {
         $op = array();
 
@@ -328,6 +310,7 @@ class Category extends CActiveRecord
         }
         return $op;
     }
+
     public function getCategoryById($category_id)
     {
         $sql = "SELECT pc.`name`,pc.id parent_id,c.id

@@ -40,7 +40,6 @@ $option=Category::model()->buildOptions($arr,null);
                         <select class="form-control" id="db-brand" name="Item[brand_id]">
                             <option value=""></option>
                             <?php foreach($brand as $key=>$value):?>
-                                <option value="" selected></option>
                                 <option value="<?=$value['id']?>" <?php echo $model['brand_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
                             <?php endforeach;?>
                             <optgroup >
@@ -135,9 +134,8 @@ $option=Category::model()->buildOptions($arr,null);
                     <label class="col-sm-3 control-label" for="Item_supplier"><?= Yii::t('app','Supplier') ?></label>
                     <div class="col-sm-9">
                         <select class="form-control" id="db-supplier" name="Item[supplier_id]" onchange="showSupplierDialog(event.target.value)">
-                            <option value="0"></option>
+                            <option value=""></option>
                             <?php foreach($supplier as $key=>$value):?>
-                                <option value="" selected></option>
                                 <option value="<?=$value['id']?>" <?php echo $model['supplier_id']==$value['id'] ? 'selected' : ''?>><?=$value['company_name']?></option>
                             <?php endforeach;?>
                             <optgroup >
@@ -153,6 +151,7 @@ $option=Category::model()->buildOptions($arr,null);
                 <?php echo $form->textFieldControlGroup($model, 'quantity', array('class' => 'span3')); ?>
             </div>
         </div>
+
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">

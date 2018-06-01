@@ -140,7 +140,7 @@ class Tag extends CActiveRecord
         return $result;
     }
     public function deleteTagByItemId($id){
-        $sql = "DELETE t,pt
+                $sql="DELETE t,pt
                 FROM tag t JOIN product_tag pt
                 ON t.id=pt.tag_id JOIN item i
                 ON pt.product_id=i.id
@@ -167,7 +167,6 @@ class Tag extends CActiveRecord
 
         return $tag_id;
     }
-
     // public function deleteBrand($id)
     // {
     //     Brand::model()->updateByPk((int)$id, array('status' => Yii::app()->params['inactive_status'] ));

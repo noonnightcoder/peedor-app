@@ -8,13 +8,13 @@
             </div>
             <div class="buttons">
                 <div class="qq-upload-button-selector qq-upload-button">
-                    <div>Add Image</div>
+                    <div class="btn btn-primary">Add Image</div>
                 </div>
             </div>
-            <span class="qq-drop-processing-selector qq-drop-processing">
+            <!-- <span class="qq-drop-processing-selector qq-drop-processing">
                 <span>Processing dropped files...</span>
                 <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
-            </span>
+            </span> -->
             <div class="qq-upload-list-selector qq-upload-list" aria-live="polite" aria-relevant="additions removals">
 
 
@@ -31,9 +31,9 @@
                     <span class="qq-edit-filename-icon-selector qq-edit-filename-icon" aria-label="Edit filename"></span>
                     
                     <span class="qq-upload-size-selector qq-upload-size"></span>
-                    <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
+                   <!--  <button type="button" class="qq-btn qq-upload-retry-selector qq-upload-retry">Retry</button>
                     <button type="button" class="qq-btn qq-upload-delete-selector qq-upload-delete">Delete</button>
-                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span>
+                    <span role="status" class="qq-upload-status-text-selector qq-upload-status-text"></span> -->
                         
                     </div>
 
@@ -115,7 +115,7 @@
             element: document.getElementById('fine-uploader-manual-trigger'),
             template: 'qq-template-manual-trigger',
             request: {
-                endpoint: '<?=Yii::app()->createUrl("Item/Create")?>'
+                endpoint: '<?=Yii::app()->createUrl("Item/TestImageUpload?e=0")?>'
             },
             thumbnails: {
                 placeholders: {

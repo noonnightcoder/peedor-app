@@ -38,6 +38,7 @@ class PriceBookController extends Controller
     public function actionIndex() 
     {  
         authorized('pricebook.read');
+
         $this->setSession(Yii::app()->session);
         unset(Yii::app()->session['itemsApplied']);
         unset(Yii::app()->session['pricebookHeader']);
