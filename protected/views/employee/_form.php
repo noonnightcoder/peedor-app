@@ -90,7 +90,7 @@
                         array('grid_title' => 'Category', 'permission' => 'category.', 'control_name' => 'categories'),
                     ),
                 ),
-                array('header_title' => 'Sales', 'header_icon' => sysMenuSaleOrder(),
+                array('header_title' => 'Sales', 'header_icon' => 'fa fa-cart-arrow-down',
                     'grid_items' => array (
                         array('grid_title' => 'Sale Order',  'permission' => 'sale', 'control_name' => 'saleorders'),
                         array('grid_title' => 'Customer Payment', 'permission' => 'customerpayment.', 'control_name' => 'customerpayments'),
@@ -103,13 +103,13 @@
                         array('grid_title' => 'Supplier', 'permission' => 'supplier.', 'control_name' => 'suppliers'),
                     )
                 ),
-                array('header_title' => 'Stocks', 'header_icon' => 'fa fa-coffee',
+                array('header_title' => 'Inventory', 'header_icon' => 'fa fa-desktop',
                     'grid_items' => array (
                         array('grid_title' => 'Stock count',  'permission' => 'stockcount.', 'control_name' => 'stockcounts'),
                         array('grid_title' => 'Stock Transfer', 'permission' => 'stocktransfer.', 'control_name' => 'stocktransfers'),
                     )
                 ),
-                array('header_title' => 'Purchases', 'header_icon' => sysMenuUserIcon(),
+                array('header_title' => 'Purchases', 'header_icon' => 'fa fa-money',
                     'grid_items' => array (
                         array('grid_title' => 'Purchase Order',  'permission' => 'purchaseorder.', 'control_name' => 'purchaseorders'),
                         array('grid_title' => 'Purchase Receive', 'permission' => 'purchasereceive.', 'control_name' => 'purchasereceives'),
