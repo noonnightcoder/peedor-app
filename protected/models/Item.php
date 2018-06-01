@@ -732,7 +732,6 @@ class Item extends CActiveRecord
                         'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
                     ),
                     'update' => array(
-                        'click' => 'updateDialogOpen11',
                         'icon' => 'ace-icon fa fa-edit',
                         'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->id))',
                         'options' => array(
