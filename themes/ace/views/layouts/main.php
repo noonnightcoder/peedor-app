@@ -58,11 +58,10 @@
     <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
     
     <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-<<<<<<< HEAD
    
     <?php 
-        $cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
-         $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
+        /*$cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
          
         $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN); 
@@ -70,10 +69,8 @@
         $cs->registerScriptFile($baseUrl.'/js/chosen.jquery.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/jquery.inputlimiter.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
-       $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);
-=======
-    <?php
->>>>>>> 51be907fa6948bf59ea0419f535b1dfe2882ce58
+        $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);*/
+
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);;
