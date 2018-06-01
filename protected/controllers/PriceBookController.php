@@ -91,6 +91,10 @@ class PriceBookController extends Controller
     }
 
     public function actionCreate(){
+        $this->layout = '//layouts/columntree';
+
+        authorized('pricebook.create');
+
         //$invcount=new InventoryCount;
         $model = new PriceBook('search');
         $item = new Item('search');
@@ -291,6 +295,11 @@ class PriceBookController extends Controller
     }
 
     public function actionEditPriceBook($id){
+
+        $this->layout = '//layouts/columntree';
+
+        authorized('pricebook.update');
+
         $this->setSession(Yii::app()->session);
         $priceBook=PriceBook::getPriceBookEdit($id);
         $model = new PriceBook('search');

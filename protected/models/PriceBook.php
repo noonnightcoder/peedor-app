@@ -69,18 +69,6 @@ class PriceBook extends CActiveRecord
         );
     }
 
-	/**
-	 * Retrieves a list of models based on the current search/filter conditions.
-	 *
-	 * Typical usecase:
-	 * - Initialize the model fields with values from filter form.
-	 * - Execute this method to get CActiveDataProvider instance which will filter
-	 * models according to data in model fields.
-	 * - Pass data provider to CGridView, CListView or any similar widget.
-	 *
-	 * @return CActiveDataProvider the data provider that can return the models
-	 * based on the search/filter conditions.
-	 */
 	public function search()
     {
         $criteria=new CDbCriteria;
@@ -116,13 +104,14 @@ class PriceBook extends CActiveRecord
             'sort' => array('defaultOrder' => 'price_book_name')
         ));
 
-        
     }
+
     public function checkExists()
     {
         return PriceBook::model()->count('status=:active_status',
             array(':active_status' => Yii::app()->params['active_status']));
     }
+
     public function getPriceBookSale()
     {
         $model = PriceBook::model()->findAll(array(
@@ -134,12 +123,7 @@ class PriceBook extends CActiveRecord
 
         return $list;
     }
-	/**
-	 * Returns the static model of the specified AR class.
-	 * Please note that you should have this exact method in all your CActiveRecord descendants!
-	 * @param string $className active record class name.
-	 * @return ReceivingItem the static model class
-	 */
+
 	public static function model($className=__CLASS__)
 	{
 		return parent::model($className);
@@ -151,6 +135,7 @@ class PriceBook extends CActiveRecord
 
         return $model;
     }
+
     public static function getPriceBookDetail($id,$name=''){
         $con='';
         $data=array();
@@ -180,16 +165,12 @@ class PriceBook extends CActiveRecord
                 }
                 
             }
-        
-        
-
-        
-        
         return $data;
     }
 
     public static function getPriceBookEdit($id){
-        $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,cg.id customer_group,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
+
+	    $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,cg.id customer_group,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
                    FROM price_book pb ,outlet o,customer_group cg
                    WHERE pb.outlet_id=o.id
                    and pb.group_id=cg.id

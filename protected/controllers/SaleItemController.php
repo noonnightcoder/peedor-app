@@ -872,4 +872,5 @@ class SaleItemController extends Controller
     {
         $this->session = $value;
     }
+
 }
