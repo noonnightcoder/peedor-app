@@ -503,7 +503,8 @@ class SaleItemController extends Controller
 
     }
 
-    public function actionList($status,$user_id=null,$title='Sale Order')
+    //public function actionList($status,$user_id=null,$title='Sale Order')
+    public function actionList()
     {
         $grid_id = 'sale-order-grid';
        //$title = 'Order To Invoice';
@@ -617,7 +618,8 @@ class SaleItemController extends Controller
     public function actionSaleUpdateStatus($sale_id,$status) {
 
         ajaxRequest();
-        Sale::model()-> updateSaleStatus($sale_id,$status);
+        Sale::model()->updateSaleStatus($sale_id,$status);
+
     }
 
     // To be delete change to saleUpdate status function

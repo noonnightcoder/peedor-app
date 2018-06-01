@@ -677,7 +677,7 @@ class Item extends CActiveRecord
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => Yii::t('app','Action'),
-                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}</div>',
+                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}{update}</div>',
                 'buttons' => array(
                     'detail' => array(
                         'click' => 'updateDialogOpen',
@@ -730,6 +730,14 @@ class Item extends CActiveRecord
                             'class' => 'btn btn-xs btn-warning btn-undodelete',
                         ),
                         'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
+                    ),
+                    'update' => array(
+                        'click' => 'updateDialogOpen11',
+                        'icon' => 'ace-icon fa fa-edit',
+                        'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->id))',
+                        'options' => array(
+                            'class' => 'btn-xs btn-info',
+                        ),
                     ),
                 ),
             ),
