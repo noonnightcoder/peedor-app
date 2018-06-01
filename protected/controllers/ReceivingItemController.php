@@ -40,9 +40,9 @@ class ReceivingItemController extends Controller
         Yii::app()->receivingCart->setMode($trans_mode);
         
         /* To check on performance issue here */
-        if ( Yii::app()->user->checkAccess('purchase.receive') && Yii::app()->receivingCart->getMode()=='receive' )  {
+        if ( Yii::app()->user->checkAccess('purchasereceive.read') && Yii::app()->receivingCart->getMode()=='receive' )  {
             $this->reload(); 
-        } else if (Yii::app()->user->checkAccess('purchase.return') && Yii::app()->receivingCart->getMode()=='return') {
+        } else if (Yii::app()->user->checkAccess('purchasereturn.read') && Yii::app()->receivingCart->getMode()=='return') {
             $this->reload(); 
         } elseif (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
             $this->reload(); 
@@ -52,9 +52,9 @@ class ReceivingItemController extends Controller
         // elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
         //     $this->reload(); 
         // } 
-        elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        elseif (Yii::app()->user->checkAccess('stockcount.read') && Yii::app()->receivingCart->getMode()=='physical_count') {
             //$this->reload(); 
-            authorized('inventorycount.read');
+            authorized('stockcount.read');
 
             $model = new InventoryCount('search');
 
@@ -126,6 +126,8 @@ class ReceivingItemController extends Controller
             throw new CHttpException(403, 'You are not authorized to perform this action');
         }
     }
+
+
     public function actionInventoryCountCreate(){
         //$invcount=new InventoryCount;
         $model = new InventoryCount('search');
