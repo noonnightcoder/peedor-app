@@ -4,9 +4,6 @@ class SaleItemController extends Controller
 {
     //public $layout='//layouts/column1';
 
-    /**
-     * @return array action filters
-     */
     public function filters()
     {
         return array(
@@ -368,7 +365,7 @@ class SaleItemController extends Controller
            $data['comment'], param('sale_suspend_status'), $data['discount_amt'],$data['discount_symbol'],
            $data['total_gst'],$data['salerep_id'],$data['qtytotal']);
 
-       //$customer = $this->customerInfo($data['customer_id']);
+        //$customer = $this->customerInfo($data['customer_id']);
         //$data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
 
         if ($data['sale_id'] == 'POS -1') {
@@ -506,15 +503,21 @@ class SaleItemController extends Controller
 
     }
 
-    public function actionList($status,$user_id=null,$title='Sale Order')
+    //public function actionList($status,$user_id=null,$title='Sale Order')
+    public function actionList()
     {
         $grid_id = 'sale-order-grid';
        //$title = 'Order To Invoice';
-        $title = $title;
+        $title = $_GET['title'];
+        $status = $_GET['status'];
+        $user_id = $_GET['user_id'];
 
-        $data = $this->commonData($grid_id,$title,'show');
+        $data = $this->commonData($grid_id,$title,'show','show');
 
         $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
+        $data['status'] = $status;
+        $data['user_id'] = $user_id;
+        $data['title'] = $title;
 
         if ($user_id !==null) {
             $data['data_provider'] = $data['report']->saleListByStatusUser($status, $user_id);
@@ -523,7 +526,8 @@ class SaleItemController extends Controller
         }
 
         $data['grid_id'] = 'sale-order-grid';
-        loadview('review','partialList/_grid_one',$data);
+
+        loadview('review','//layouts/report/_grid',$data);
     }
 
     // Old one to be delete too complicated to do process base or wizard form here
@@ -614,7 +618,8 @@ class SaleItemController extends Controller
     public function actionSaleUpdateStatus($sale_id,$status) {
 
         ajaxRequest();
-        Sale::model()-> updateSaleStatus($sale_id,$status);
+        Sale::model()->updateSaleStatus($sale_id,$status);
+
     }
 
     // To be delete change to saleUpdate status function
@@ -862,6 +867,7 @@ class SaleItemController extends Controller
 
         return $data;
     }
+
     public function setSession($value)
     {
         $this->session = $value;

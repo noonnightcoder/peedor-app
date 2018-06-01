@@ -286,6 +286,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'url' => url('tax/admin'),
                     'active' => $this->id == 'tax',
                 ),
+                /*
                 array('label' => Yii::t('app', 'User'),
                     'icon' => 'menu-icon '  . TbHtml::ICON_USER,
                     'url' => url('user/admin'),
@@ -296,6 +297,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'url' => url('role/admin'),
                     'active' => $this->id == 'role',
                 ),
+                */
                 array('label' => Yii::t('app', 'Shop Setting'), 'icon' => 'menu-icon '  . TbHtml::ICON_COG, 'url' => url('settings/index'),
                     'active' => $this->id == 'settings',
                     //'visible'=> Yii::app()->user->isAdmin

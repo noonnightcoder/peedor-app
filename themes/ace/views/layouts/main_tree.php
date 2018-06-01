@@ -35,19 +35,39 @@
     <!-- bootstrap & fontawesome -->
     <!-- <link rel="stylesheet" type="text/css" href="<?php //echo $baseUrl ?>/css/bootstrap.min.css" /> -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/font-awesome.min.css" />
+    
+    <!-- page specific plugin styles -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/colorbox.css" />
+    
+    <!-- text fonts -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-fonts.css" />
+    
+    <!-- ace styles -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace.min.css" />
+    
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-part2.min.css" />
+    <![endif]-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.min.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.min.css" />
 
      <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/font-awesome.css" />
     
     <!-- page specific plugin styles -->
-
+    
+    <!-- ace styles -->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace.css" />
+    
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-part2.min.css" />
+    <![endif]-->
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.css" />
+    
+    <!--[if lte IE 9]>
+        <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-ie.min.css" />
+    <![endif]-->
+    
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
 
@@ -58,27 +78,24 @@
     <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
     
     <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-<<<<<<< HEAD
    
     <?php 
         $cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
          $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
-         
         $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN); 
         $cs->registerScriptFile($baseUrl.'/js/elements.fileinput.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/chosen.jquery.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/jquery.inputlimiter.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
-       $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);
-=======
-    <?php
->>>>>>> 51be907fa6948bf59ea0419f535b1dfe2882ce58
+       
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);;
+        $cs->registerScriptFile($baseUrl.'/js/jquery.maskedinput.min.js',CClientScript::POS_END);
+        // $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);  
+        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);
+        //$cs->registerScriptFile($baseUrl.'/js/ace.ajax-content',CClientScript::POS_END);
         $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery-ui.min.js',CClientScript::POS_END);
+        
     ?>
 
     <?php

@@ -5,6 +5,12 @@ $this->breadcrumbs=array(
 );
 ?>
 
+<?php $this->renderPartial('partial/' . $header_view, array(
+    'report' => $report,
+    'advance_search' => $advance_search,
+    'header_tab' => $header_tab, // Using for tab style
+)); ?>
+
 <div id="sale_order_id">
 
     <?php $this->renderPartial('//layouts/alert/_flash'); ?>

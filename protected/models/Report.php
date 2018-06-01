@@ -77,7 +77,35 @@ class Report extends CFormModel
 
     public function saleListByStatusUser($status='2',$user_id) {
 
-        $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+
+        if ($this->search_id !== '') {
+            $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+                      employee_name,employee_id,client_id,quantity,sub_total,
+                      discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
+               FROM v_sale_invoice_2
+               WHERE sale_id=:search_id
+               AND status=:status
+               AND created_by=:user_id
+               AND printeddo_by is null
+               UNION ALL
+               SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+                      employee_name,employee_id,client_id,quantity,sub_total,
+                      discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
+               FROM v_sale_invoice_2
+               WHERE sale_id=:search_id
+               AND status=:status
+               AND created_by in (select id from employee where report_to=:user_id)
+               AND printeddo_by is null
+               ORDER By sale_time desc";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':search_id' => $this->search_id,
+                    ':status' => $status,
+                    ':user_id' => $user_id)
+            );
+
+        } else {
+            $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
                       discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
                FROM v_sale_invoice_2
@@ -86,7 +114,7 @@ class Report extends CFormModel
                AND status=:status
                AND created_by=:user_id
                AND printeddo_by is null
-               UNION 
+               UNION ALL
                SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
                       discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
@@ -99,12 +127,13 @@ class Report extends CFormModel
                ORDER By sale_time desc";
 
 
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                ':from_date' => $this->from_date,
-                ':to_date' => $this->to_date,
-                ':status' => $status,
-                ':user_id' => $user_id)
-        );
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                    ':status' => $status,
+                    ':user_id' => $user_id)
+            );
+        }
 
         $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField' => 'sale_id',
@@ -119,9 +148,11 @@ class Report extends CFormModel
         return $dataProvider; // Return as array object
     }
 
-    public function saleListByStatus($status='2') {
+    public function saleListByStatus($status='2')
+    {
 
-        $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+        if ($this->search_id !== '') {
+            $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
                       discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
                FROM v_sale_invoice_2
@@ -131,11 +162,30 @@ class Report extends CFormModel
                AND printeddo_by is null
                ORDER By sale_time desc";
 
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                ':from_date' => $this->from_date,
-                ':to_date' => $this->to_date,
-                ':status' => $status)
-        );
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                    ':status' => $status)
+            );
+        } else {
+            $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
+                      employee_name,employee_id,client_id,quantity,sub_total,
+                      discount_amount,vat_amount,total,paid,balance,status,status_f,'' payment_term
+               FROM v_sale_invoice_2
+               WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
+               AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND status=:status
+               AND printeddo_by is null
+               ORDER By sale_time desc";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                    ':status' => $status)
+            );
+        }
+
+
 
         $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField' => 'sale_id',

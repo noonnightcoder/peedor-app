@@ -246,6 +246,8 @@ class ItemController extends Controller
     {
         authorized('item.create');
 
+        $this->layout = '//layouts/columntree';
+
         $model = new Item;
         $item_image=new ItemImage;
         $this->performAjaxValidation($model);
@@ -328,8 +330,9 @@ class ItemController extends Controller
 
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
-
+        $this->layout = '//layouts/columntree';
         authorized('item.update');
+
         $imageModel=new ItemImage;
         if ($item_number_flag == '0') {
             $model = $this->loadModel($id);
@@ -1034,6 +1037,9 @@ class ItemController extends Controller
         ';
     }
     public function actionItemFinder(){
+
+        $this->layout = '//layouts/columntree';
+
         $this->setSession(Yii::app()->session);
         $this->session['view']=isset($this->session['view']) ? $this->session['view'] :'k';
         $model=Category::model()->findAll();
