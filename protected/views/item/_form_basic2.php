@@ -80,7 +80,7 @@ $option=Category::model()->buildOptions($arr,null);
                 <div class="form-group">
                     <div class="col-xs-12">
                         
-                        <?php if(!empty(@$item_image)):?>
+                        <?php if(!empty($item_image)):?>
                             <label for="id-input-file-3" class="ace-file-input ace-file-multiple">
                                 <input style="display: none;" multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
                                 <div  id="item-image">

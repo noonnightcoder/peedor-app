@@ -22,7 +22,7 @@
             <!-- /section:basics/sidebar.mobile.toggle -->
             <div class="navbar-header pull-left">
                     <!-- #section:basics/navbar.layout.brand -->
-                    <img src="<?=$baseUrl.'/images/logo/Piidoor-Logo.png'?>" height="45px">
+                    <img src="<?=$baseUrl.'/images/logo/piidor_logo.png'?>" height="45px">
                     <!-- <a href="#" class="navbar-brand">
                         <small>
                             <img src="/images/peedor_logo.png" width="20px">
