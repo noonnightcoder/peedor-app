@@ -103,7 +103,7 @@
                         array('grid_title' => 'Supplier', 'permission' => 'supplier.', 'control_name' => 'suppliers'),
                     )
                 ),
-                array('header_title' => 'Stocks', 'header_icon' => sysMenuUserIcon(),
+                array('header_title' => 'Stocks', 'header_icon' => 'fa fa-coffee',
                     'grid_items' => array (
                         array('grid_title' => 'Stock count',  'permission' => 'stockcount.', 'control_name' => 'stockcounts'),
                         array('grid_title' => 'Stock Transfer', 'permission' => 'stocktransfer.', 'control_name' => 'stocktransfers'),
