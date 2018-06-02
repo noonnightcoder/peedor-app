@@ -348,7 +348,7 @@ class ItemController extends Controller
             $tagsItem.=",".$value['tag_name'];
         }
         //echo substr($tagsItem, 2);
-        $this->session['tags']=substr($tagsItem, 2);
+        $this->session['tags']=substr($tagsItem, 1);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
         $next_id = Item::model()->getNextId($id);
         $previous_id = Item::model()->getPreviousId($id);
@@ -387,6 +387,7 @@ class ItemController extends Controller
                                         }
                                         ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$id)));
                                         $this->multipleImageUpload($id,$item_image,'image','images');
+                                        break;
                                     }
                                 }
                             }
@@ -1106,14 +1107,5 @@ class ItemController extends Controller
     public function setSession($value)
     {
         $this->session = $value;
-    }
-    public function actionTestImageUpload($e){
-        if($e==1){
-            ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>1)));
-        }else{
-            $this->multipleImageUpload(1,'','image','images');
-            echo json_encode(array('a' => 1 ));
-        }
-        
     }
 }

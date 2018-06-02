@@ -1,10 +1,6 @@
-<div id="test">Hello</div>
 <?php $baseUrl = Yii::app()->baseUrl;?>
 <script type="text/javascript">
 	var i=0
-	// var tags=[]
-	// var tagsItem=$('#item-tags').val();
-	// tags=tagsItem.split(',');
 	$(document).ready(function(e){
 		$('[data-rel=tooltip]').tooltip({container:'body'});
 		$('[data-rel=popover]').popover({container:'body'});
@@ -53,69 +49,6 @@
 		})
 			
 	})
-
-	// function showBrandDialog(val){
-	// 	if(val=='addnew'){
-	// 		$('#brandModal').modal('show');
-	// 		$('#brandModal').on('shown.bs.modal', function () {
-	// 		  	$('#Brand_Name').focus();
-	// 		  	$('#db-brand').val('');
-	// 		})
-			
-			
-	// 	}
-	// }
-
-	// function saveBrand(){
-	// 	var name=$('#Brand_Name').val();
-	// 	var url="<?php echo Yii::app()->createUrl('Brand/SaveBrand')?>"
-	// 	ajaxSaveData(url,{name},name,$('#brandModal'),$('#db-brand'),$('#Brand_Name'))
-		
-	// }
-	// function showSupplierDialog(val){
-	// 	if(val=='addnew'){
-	// 		$('#supplierModal').modal('show');
-	// 		$('#supplierModal').on('shown.bs.modal', function () {
-	// 		  	$('#Supplier_Name').focus();
-	// 		  	$('#db-Supplier_Name').val('');
-	// 		})
-
-	// 	}
-	// }
-
-	// function saveSupplier(){
-	// 	var company_name=$('#Supplier_Name').val();
-	// 	var first_name=$('#Supplier_First_Name').val();
-	// 	var last_name=$('#Supplier_Last_Name').val();
-	// 	var url="<?php echo Yii::app()->createUrl('Supplier/SaveSupplier')?>";
-	// 	if(company_name.length<=0){
-	// 		$('.errorMsg').html('<small>Company Name is required</small>')
-	// 	}else if(first_name.length<=0){
-	// 		$('.errorMsgf').html('<small>First Name is required</small>')
-	// 	}else if(last_name.length<=0){
-	// 		$('.errorMsgl').html('<small>last Name is required</small>')
-	// 	}else{
-	// 		ajaxSaveData(url,{company_name,first_name,last_name},company_name,$('#supplierModal'),$('#db-supplier'),$('#Supplier_Name'))
-	// 	}
-		
-		
-	// }
-
-	// function showMeasurableDialog(val){
-	// 	if(val=='addnew'){
-	// 		$('#measurableModal').modal('show');
-	// 		$('#measurableModal').on('shown.bs.modal',function(){
-	// 			$('#Measurable_Name').focus();
-	// 		})
-	// 	}
-	// }
-	// function saveMeasurable(){
-	// 	var measurable_name=$('#Measurable_Name').val();
-	// 	var url="<?php echo Yii::app()->createUrl('unitMeasurable/SaveMeasurable')?>"
-	// 	ajaxSaveData(url,{measurable_name},measurable_name,$('#measurableModal'),$('#db-measurable'),$('#Measurable_Name'))
-		
-	// }
-
 
 	function ajaxSaveData(url,data,field,modal,dblist,textbox){
 		if(i===''){
@@ -171,7 +104,6 @@
 							        <div class="form-group">\
 							            <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>\
 							            <select class="form-control" id="db-category'+i+'" class="parents" onchange="showCategoryDialog(event.target.value)">\
-							            	<?php $this->renderPartial("partialList/_modalPareng",array("option",$option))?>\
 							            </select>\
 							        </div>\
 							    </div>\
@@ -225,7 +157,6 @@
 				$('.errorMsg'+i).html('Processing...')
 			},
 			success:function(data){
-				reloadParent();
 				if(data=='error'){
 					$('.errorMsg'+i).html('Category name is required');
 					$('#success').html('');
@@ -263,19 +194,6 @@
 			}
 		})
 	}
-	function reloadParent(){
-			//alert(i)
-			
-			$.ajax({
-				type:'post',
-				data:{},
-				url:"<?php echo Yii::app()->createUrl('Item/ParentReload')?>/"+pid,
-				success:function(data){
-					
-					$('#test').html(data);
-				}
-			})
-		}
 	jQuery(function($){
 		var tag_input = $('#form-field-tags');
 		try{

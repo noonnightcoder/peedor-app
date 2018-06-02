@@ -216,7 +216,10 @@ class CategoryController extends Controller
 
     public function actionAdmin()
     {
+
+
         $model = new Category('search');
+
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Category']))
             $model->attributes = $_GET['Category'];
@@ -243,16 +246,17 @@ class CategoryController extends Controller
 
         $data['model'] = $model;
         //$data['grid_id'] = strtolower(get_class($model)) . ' -grid';
-        $data['grid_id'] = 'category-grid';
+        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
         $data['modal_header'] = Yii::t('app', 'New Category');
 
         $data['grid_columns'] = Category::getCategoryColumn();
 
-        $data['data_provider'] = $model->search();
+        $data['data_provider'] = $model->search2();
 
         $this->render('admin', $data);
+        
     }
 
     public function loadModel($id)
@@ -293,4 +297,29 @@ class CategoryController extends Controller
             echo CJSON::encode(array('id' => $model->id, 'text' => $model->name));
         }
     }
+}
+class SDataProvider extends CDataProvider {
+/**
+* Constructor.
+* @param string the model class. This will be assigned to the {@link modelClass} property.
+* @param array configuration (name=>value) to be applied to this data provider.
+* Any public properties of the data provider can be configured via this parameter
+*/
+ public function __construct($id,$data) {
+  $this->setData($data);
+  $this->setId($id);
+ }
+ //put your code here
+  protected function calculateTotalItemCount() {
+    return count($this->getData());
+  }
+  protected function fetchData() {
+    return $this->getData();
+  }
+  protected function fetchKeys() {
+    foreach ($this->getData() as $key=>$value) {
+      $keys[]= $key;
+    }
+    return $keys;
+  }
 }

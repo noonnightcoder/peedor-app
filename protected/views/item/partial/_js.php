@@ -24,6 +24,8 @@
         var last_name=$('#<?=@$last_name?>').val();
         var url="<?=$url?>"
         ajaxSave(url,{name,first_name,last_name},name,$('#<?=$modal?>'),$('#<?=$list?>'),$('#<?=$name?>'))
+        $('#<?=@$first_name?>').val('');
+        $('#<?=@$last_name?>').val('');
       })
     } else{
       $('#<?=$btnSave?>').click(function(v){

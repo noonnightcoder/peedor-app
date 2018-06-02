@@ -73,8 +73,9 @@ class Category extends CActiveRecord
 
 	public function search()
 	{
-		$criteria=new CDbCriteria;
 
+		$criteria=new CDbCriteria;
+        //$arr = $this->buildTree(Category::model()->findAll());
 		//$criteria->compare('id',$this->id);
 		$criteria->compare('name',$this->name,true);
 
@@ -100,7 +101,45 @@ class Category extends CActiveRecord
         ));
 
 	}
+    public function search2()
+    {
 
+        $criteria=new CDbCriteria;
+        $cate_array=explode(',', Category::model()->buildCategoryView(Category::model()->buildTree(Category::model()->findAll()),null));
+        $data=array();
+        foreach($cate_array as $v){
+            $category=explode('|', $v);
+
+            if($category[0]!='' ){
+                $data[]=array('id'=>$category[1],'status'=>$category[0],'modified_date'=>$category[2],'name'=>$category[3]);
+            }
+
+        }
+        // $dataP=new CArrayDataProvider ("grid");
+        // $dataP->setData($data);
+        $criteria->compare('name',$this->name,true);
+
+        if  ( Yii::app()->user->getState('category_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
+            $criteria->condition = 'name like :search';
+            $criteria->params = array(
+                ':search' => '%' . $this->search . '%',
+            );
+        } else {
+            $criteria->condition = 'status=:active_status AND (name like :search)';
+            $criteria->params = array(
+                ':active_status' => Yii::app()->params['active_status'],
+                ':search' => '%' . $this->search . '%',
+            );
+        }
+
+        return new CArrayDataProvider($data, array(
+            'pagination' => array(
+                'pageSize' => Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
+            ),
+            'sort'=>array( 'defaultOrder'=>'name')
+        ));
+
+    } 
     protected function getCategoryInfo()
     {
         return $this->name;
@@ -158,7 +197,7 @@ class Category extends CActiveRecord
             array(
                 array(
                     'name' => 'name',
-                    'value' => '$data->status=="1" ? $data->name : "<s class=\"red\">  $data->name <s>" ',
+                    'value' => '$data["status"]=="1" ? $data["name"] : $data["name"] ',
                     //'value' => 'Category::model()->buildCategoryBreadcrumb(Category::model()->findAll(),null,$data->parent_id,$data->id)',
                     'type' => 'raw',
                 ),
@@ -171,7 +210,7 @@ class Category extends CActiveRecord
                         'update' => array(
                             //updateDialogOpen
                             'click' => '',
-                            'url' => 'Yii::app()->createUrl("category/update2", array("id"=>$data->id))',
+                            'url' => 'Yii::app()->createUrl("category/update2", array("id"=>$data["id"]))',
                             'label' => 'Update Category',
                             'icon' => 'ace-icon fa fa-edit',
                             'options' => array(
@@ -179,25 +218,26 @@ class Category extends CActiveRecord
                                 'data-refresh-grid-id' => 'category-grid',
                                 'class' => 'btn btn-xs btn-info',
                             ),
-                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.update2")',
+                            'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("category.update2")',
                         ),
                         'delete' => array(
+                            'url' => 'Yii::app()->createUrl("category/delete/",array("id"=>$data["id"]))', 
                             'label' => Yii::t('app', 'Delete Category'),
                             'options' => array(
                                 'data-update-dialog-title' => Yii::t('app', 'Delete Category'),
                                 'titile' => 'Delete Category',
                                 'class' => 'btn btn-xs btn-danger',
                             ),
-                            'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("category.delete")',
+                            'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("category.delete")',
                         ),
                         'restore' => array(
                             'label' => Yii::t('app', 'Restore Category'),
-                            'url' => 'Yii::app()->createUrl("category/restore", array("id"=>$data->id))',
+                            'url' => 'Yii::app()->createUrl("category/restore", array("id"=>$data["id"]))',
                             'icon' => 'bigger-120 glyphicon-refresh',
                             'options' => array(
                                 'class' => 'btn btn-xs btn-warning btn-undodelete',
                             ),
-                            'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("category.delete")',
+                            'visible' => '$data["status"]=="0" && Yii::app()->user->checkAccess("category.delete")',
                         ),
                     ),
                 ),
@@ -244,7 +284,10 @@ class Category extends CActiveRecord
                 if( $item['parent_id'] == $pid ) {
                     $op[$item['id']] = array(
                         'name' => $item['name'],
-                        'parent_id' => $item['parent_id']
+                        'parent_id' => $item['parent_id'],
+                        'id'=>$item['id'],
+                        'status'=>$item['status'],
+                        'modified_date'=>$item['modified_date']
                     );
                     // using recursion
                     $children =  $this->buildTree( $ar, $item['id'] );
@@ -271,6 +314,25 @@ class Category extends CActiveRecord
                 $html .= $this->buildOptions($v['children'],$target,$parent . $v['name']." / ");
         }
 
+        return $html;
+    }
+    public function buildCategoryView($arr, $target, $parent = NULL) {
+        $html = "";
+        foreach ( $arr as $key => $v )
+        {
+            // $html.="|";
+            if ( $key == $target ){
+                 $html.= "$parent {$v['name']},";
+            }
+            else{
+                 $html.= "{$v['status']}|{$v['id']}|{$v['modified_date']}|$parent {$v['name']},";
+            }
+
+            if (array_key_exists('children', $v)){
+                $html.= $this->buildCategoryView($v['children'],$target,$parent . $v['name']." / ");
+            }
+            
+        }
         return $html;
     }
 
