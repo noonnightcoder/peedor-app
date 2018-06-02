@@ -10,9 +10,10 @@
             <?php $this->renderPartial('//role/grid/_permission_content', array(
                 'user' => $user,
                 'grid_items' => $grid_items,
+                'auth_items' => $auth_items,
             )) ?>
 
-            <?= print_r($user->items) ?>
+            <?php /* print_r($user->items) */?>
 
         </div>
     </div>

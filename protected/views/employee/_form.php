@@ -81,6 +81,8 @@
                 <i class="ace-icon fa fa-gavel blue"></i><?= Yii::t('app', 'Employee Permissions and Access'); ?>
             </h4>
 
+            <?php /*print_r($auth_items) */?>
+
             <?php
             $permission_items = array (
                 array('header_title' => 'Items', 'header_icon' => sysMenuItemIcon(),
@@ -140,7 +142,8 @@
                     'user' => $user,
                     'header_title' => $value['header_title'],
                     'header_icon' => $value['header_icon'],
-                    'grid_items' => $value['grid_items']
+                    'grid_items' => $value['grid_items'],
+                    'auth_items' => $auth_items,
                 )); ?>
 
             <?php endforeach; ?>
@@ -156,7 +159,6 @@
                 )); ?>
 
             <?php endforeach; ?>
-
 
 
             <div class="form-actions">

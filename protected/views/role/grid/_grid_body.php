@@ -19,7 +19,11 @@
     <?php foreach(Authitem::model()->getAuthItemData($permission) as $key => $value): ?>
         <?php if ($key < 4 ) { ?>
             <td class="permission">
-                <input id="RbacUser_<?= $control_name ?>_<?= $key ?>" value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />
+                <?php if (in_array($value['name'], $auth_items, true)) { ?>
+                    <input id="RbacUser_<?= $control_name ?>_<?= $key ?>" value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" checked>
+                <?php } else { ?>
+                <input id="RbacUser_<?= $control_name ?>_<?= $key ?>" value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox">
+                <?php  } ?>
             </td>
         <?php } elseif ($key==4) { ?>
                 <td>
@@ -29,16 +33,24 @@
                                 <button type="button" class="btn btn-primary btn-mini dropdown-toggle" data-toggle="dropdown">
                                     <span class="fa fa-cog"></span> <span class="caret"></span></button>
                                 <ul class="dropdown-menu">
-                                    <li>
-                                        <a href="#" class="small" data-value="option1" tabIndex="-1">
-                                            <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />&nbsp;<?= $value['description'] ?>
-                                        </a>
-                                    </li>
+                                        <li>
+                                            <a href="#" class="small" data-value="option1" tabIndex="-1">
+                                                <?php if (in_array($value['name'], $auth_items, true)) { ?>
+                                                    <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" checked />&nbsp;<?= $value['description'] ?>
+                                                <?php } else { ?>
+                                                    <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />&nbsp;<?= $value['description'] ?>
+                                                <?php  } ?>
+                                            </a>
+                                        </li>
 
         <?php } else { ?>
             <li>
                 <a href="#" class="small" data-value="option1" tabIndex="-1">
-                    <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />&nbsp;<?= $value['description'] ?>
+                    <?php if (in_array($value['name'], $auth_items, true)) { ?>
+                        <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" checked />&nbsp;<?= $value['description'] ?>
+                    <?php } else { ?>
+                        <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />&nbsp;<?= $value['description'] ?>
+                    <?php  } ?>
                 </a>
             </li>
         <?php  } ?>

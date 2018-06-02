@@ -11,6 +11,7 @@
                     'grid_title' => $value['grid_title'],
                     'permission' => $value['permission'],
                     'control_name' => $value['control_name'],
+                    'auth_items' => $auth_items,
                 )) ?>
             <?php endforeach; ?>
 

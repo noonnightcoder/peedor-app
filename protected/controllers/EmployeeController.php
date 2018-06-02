@@ -180,8 +180,8 @@ class EmployeeController extends Controller
             $auth_items[] = $auth_item->itemname;
         }
 
-        foreach ($this->authItemPermission() as $value) {
-            $user->$value = $auth_items;
+        foreach ($this->authItemPermission() as $item) {
+            $user->$item = $auth_items;
         }
 
 
@@ -252,7 +252,12 @@ class EmployeeController extends Controller
             $disabled = "true";
         }
 
-        $this->render('update', array('model' => $model, 'user' => $user, 'disabled' => $disabled));
+        $data['model'] = $model;
+        $data['user'] = $user;
+        $data['disabled'] = $disabled;
+        $data['auth_items'] = $auth_items;
+
+        $this->render('update', $data);
     }
 
     public function actionInlineUpdate()

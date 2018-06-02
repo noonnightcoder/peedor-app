@@ -17,7 +17,7 @@ $this->breadcrumbs=array(
                   'model' => $model,
                   'user' => $user,
                   'disabled' => $disabled,
-                  //'auth_items' => $auth_items,
+                  'auth_items' => $auth_items,
               ),true),
  )); ?>  
 
