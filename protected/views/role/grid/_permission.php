@@ -12,6 +12,8 @@
                 'grid_items' => $grid_items,
             )) ?>
 
+            <?= print_r($user->items) ?>
+
         </div>
     </div>
 </div>

@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
-    'Sales' => array('create'),
-    'Create',
+    'Sale Orders' => array('#'),
+    'Create' => array('create'),
 );
 ?>
 

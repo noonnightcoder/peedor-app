@@ -26,7 +26,7 @@
                      <a href="#" class="navbar-brand">
                         <small>
                             <!--<img src="/images/peedor_logo.png" width="20px">-->
-                            <i class="fa fa-free-code-camp green"></i>
+                            <i class="fa fa-free-code-camp red bolder"></i>
                             <?= bizNameFirstUpper() . ' Smart Inventory' ?>
                         </small>
                     </a>

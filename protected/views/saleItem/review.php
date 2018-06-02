@@ -1,3 +1,10 @@
+<?php
+$this->breadcrumbs=array(
+    'Sale Orders' => array('create'),
+    'Create',
+);
+?>
+
 <?php $this->renderPartial('//layouts//report/' . $header_view, array(
     'report' => $report,
     'advance_search' => $advance_search,

@@ -295,5 +295,69 @@ class Employee extends CActiveRecord
             return isset($_items[$type]) ? $_items[$type] : false;
         }
     }
-        
+
+    public function getEmployeeColumn()
+    {
+        return array(
+            array(
+                'name' => 'login_id',
+                'header' => 'Login ID',
+                'value' => array($this, "gridLoginIDColumn"),
+            ),
+            'first_name',
+            'last_name',
+            array(
+                'name' => 'mobile_no',
+            ),
+            array(
+                'name' => 'adddress1',
+            ),
+            array(
+                'name' => 'address2',
+            ),
+            array(
+                'class' => 'bootstrap.widgets.TbButtonColumn',
+                'header' => Yii::t('app', 'Action'),
+                'template' => '<div class="btn-group">{view}{update}{delete}{undeleted}</div>',
+                'htmlOptions' => array('class' => 'nowrap'),
+                'buttons' => array(
+                    'view' => array(
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                    ),
+                    'update' => array(
+                        'icon' => 'ace-icon fa fa-edit',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                    ),
+                    'delete' => array(
+                        'label' => 'Delete',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("employee.delete")',
+                    ),
+                    'undeleted' => array(
+                        'label' => Yii::t('app', 'Undo Delete Item'),
+                        'url' => 'Yii::app()->createUrl("Employee/UndoDelete", array("id"=>$data->id))',
+                        'icon' => 'bigger-120 glyphicon-refresh',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-warning btn-undodelete',
+                        ),
+                        'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("employee.delete")',
+                    ),
+                ),
+            ),
+        );
+    }
+
+
+    protected function gridLoginIDColumn($data, $row)
+    {
+        $model = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => $data->id));
+
+        echo ucwords($model->user_name);
+    }
 }

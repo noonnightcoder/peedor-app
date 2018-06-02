@@ -68,59 +68,7 @@ class EmployeeController extends Controller
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
 
-        $data['grid_columns'] = array(
-            array(
-                'name' => 'login_id',
-                'header' => 'Login ID',
-                'value' => array($this, "gridLoginIDColumn"),
-            ),
-            'first_name',
-            'last_name',
-            array(
-                'name' => 'mobile_no',
-            ),
-            array(
-                'name' => 'adddress1',
-            ),
-            array(
-                'name' => 'address2',
-            ),
-            array(
-                'class' => 'bootstrap.widgets.TbButtonColumn',
-                'header' => Yii::t('app', 'Action'),
-                'template' => '<div class="btn-group">{view}{update}{delete}{undeleted}</div>',
-                'htmlOptions' => array('class' => 'nowrap'),
-                'buttons' => array(
-                    'view' => array(
-                        'options' => array(
-                            'class' => 'btn btn-xs btn-success',
-                        ),
-                    ),
-                    'update' => array(
-                        'icon' => 'ace-icon fa fa-edit',
-                        'options' => array(
-                            'class' => 'btn btn-xs btn-info',
-                        ),
-                    ),
-                    'delete' => array(
-                        'label' => 'Delete',
-                        'options' => array(
-                            'class' => 'btn btn-xs btn-danger',
-                        ),
-                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("employee.delete")',
-                    ),
-                    'undeleted' => array(
-                        'label' => Yii::t('app', 'Undo Delete Item'),
-                        'url' => 'Yii::app()->createUrl("Employee/UndoDelete", array("id"=>$data->id))',
-                        'icon' => 'bigger-120 glyphicon-refresh',
-                        'options' => array(
-                            'class' => 'btn btn-xs btn-warning btn-undodelete',
-                        ),
-                        'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("employee.delete")',
-                    ),
-                ),
-            ),
-        );
+        $data['grid_columns'] = Employee::model()->getEmployeeColumn();
 
         $data['data_provider'] = $model->search();
 
@@ -236,21 +184,20 @@ class EmployeeController extends Controller
             $user->$value = $auth_items;
         }
 
-        /*
-        $user->items = $auth_items;
-        $user->pricebooks = $auth_items;
-        $user->categories = $auth_items;
-        $user->sales = $auth_items;
-        $user->employees = $auth_items;
-        $user->customers = $auth_items;
-        $user->store = $auth_items;
-        $user->suppliers = $auth_items;
-        $user->receivings = $auth_items;
-        $user->reports = $auth_items;
-        $user->invoices = $auth_items;
-        $user->payments = $auth_items;
-        $user->rptprofits = $auth_items;
-        */
+
+        //$user->items = $auth_items;
+        //$user->pricebooks = $auth_items;
+        //$user->categories = $auth_items;
+        //$user->sales = $auth_items;
+        //$user->employees = $auth_items;
+        //$user->customers = $auth_items;
+        //$user->store = $auth_items;
+        //$user->suppliers = $auth_items;
+        //$user->receivings = $auth_items;
+        //$user->reports = $auth_items;
+        //$user->invoices = $auth_items;
+        //$user->payments = $auth_items;
+        //$user->rptprofits = $auth_items;
 
         $this->performAjaxValidation($model);
 
@@ -263,7 +210,6 @@ class EmployeeController extends Controller
                 $model->dob = $dob;
             }
 
-            // validate BOTH $a and $b
             $valid = $model->validate();
             $valid = $user->validate() && $valid;
 
@@ -280,10 +226,10 @@ class EmployeeController extends Controller
                             foreach ($assign_items as $assign_item) {
                                 if (!empty($_POST['RbacUser'][$assign_item])) {
                                     foreach ($_POST['RbacUser'][$assign_item] as $itemId) {
-                                        $auth_assigment = new Authassignment;
-                                        $auth_assigment->userid = $user->id;
-                                        $auth_assigment->itemname = $itemId;
-                                        $auth_assigment->save();
+                                        $auth_assignment = new Authassignment;
+                                        $auth_assignment->userid = $user->id;
+                                        $auth_assignment->itemname = $itemId;
+                                        $auth_assignment->save();
                                     }
                                 }
                             }
@@ -399,13 +345,6 @@ class EmployeeController extends Controller
         }
     }
 
-    protected function gridLoginIDColumn($data, $row)
-    {
-        $model = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => $data->id));
-
-        echo ucwords($model->user_name);
-    }
-
     public function actionUploadImage($employee_id)
     {
 
@@ -457,6 +396,7 @@ class EmployeeController extends Controller
         return array('items','pricebooks','categories' ,'saleorders', 'customerpayments', 'customers', 'employees', 'suppliers',
             'stockcounts', 'stocktransfers', 'purchaseorders', 'purchasereceives', 'purchasereturns','reports','settings');
     }
+
 
 
 }

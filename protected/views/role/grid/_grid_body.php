@@ -19,7 +19,7 @@
     <?php foreach(Authitem::model()->getAuthItemData($permission) as $key => $value): ?>
         <?php if ($key < 4 ) { ?>
             <td class="permission">
-                <input value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />
+                <input id="RbacUser_<?= $control_name ?>_<?= $key ?>" value="<?= $value['name'] ?>" name="RbacUser[<?= $control_name ?>][]" type="checkbox" />
             </td>
         <?php } elseif ($key==4) { ?>
                 <td>
@@ -48,10 +48,12 @@
                         </div>
                     </div>
                 </td>
+
     <script>
         jQuery('#RbacUser_<?= $control_name ?>_all').click(function() {
             $("input[name='RbacUser[<?= $control_name ?>][]']").prop('checked', this.checked);
         });
     </script>
+
 </tr>
 </tbody>
