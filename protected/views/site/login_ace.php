@@ -4,7 +4,7 @@
         <div class="login-container">
             <div class="center">
                 <h1>
-                    <i class="ace-icon fa fa-leaf green"></i>
+                    <i class="ace-icon fa fa-free-code-camp green"></i>
                     <span class="red"><?= Yii::t('app', companyName()); ?></span>
                     <span class="white" id="id-text2"><?= Yii::t('app','APP'); ?></span>
                 </h1>
@@ -70,8 +70,6 @@
                                 </fieldset>
 
                             <?php $this->endWidget(); ?>
-
-
 
                                 <!--<div class="social-or-login center">
                                         <span class="bigger-110"><?/*= Yii::t('app','Or Login Using') */?></span>

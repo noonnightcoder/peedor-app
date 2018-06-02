@@ -374,7 +374,7 @@ function sysMenuSaleIcon()
 
 function sysMenuSaleAddIcon()
 {
-    return 'fa fa-plus pink';
+    return 'fa fa-pencil pink';
 }
 
 function sysMenuSaleViewIcon()

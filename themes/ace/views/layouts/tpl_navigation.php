@@ -22,14 +22,14 @@
             <!-- /section:basics/sidebar.mobile.toggle -->
             <div class="navbar-header pull-left">
                     <!-- #section:basics/navbar.layout.brand -->
-                    <img src="<?=$baseUrl.'/images/logo/piidor_logo.png'?>" height="45px">
-                    <!-- <a href="#" class="navbar-brand">
+                    <!--<img src="<?/*=$baseUrl.'/images/logo/piidor_logo.png'*/?>" height="45px">-->
+                     <a href="#" class="navbar-brand">
                         <small>
-                            <img src="/images/peedor_logo.png" width="20px">
-                            
-                            <?= bizNameFirstUpper() ?>
+                            <!--<img src="/images/peedor_logo.png" width="20px">-->
+                            <i class="fa fa-free-code-camp green"></i>
+                            <?= bizNameFirstUpper() . ' Smart Inventory' ?>
                         </small>
-                    </a> -->
+                    </a>
                     <!-- /section:basics/navbar.layout.brand -->
 
             </div>
