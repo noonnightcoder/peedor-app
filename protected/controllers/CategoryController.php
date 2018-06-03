@@ -253,7 +253,7 @@ class CategoryController extends Controller
 
         $data['grid_columns'] = Category::getCategoryColumn();
 
-        $data['data_provider'] = $model->search2();
+        $data['data_provider'] = $model->search();
 
         $this->render('admin', $data);
         
@@ -298,13 +298,20 @@ class CategoryController extends Controller
         }
     }
 }
+
+
+
+/*
+    |--------------------------------------------------------------------------
+    | Why create another class here?
+    |--------------------------------------------------------------------------
+    |
+    | Better to create class in its own class file
+    |
+ */
+
+/*
 class SDataProvider extends CDataProvider {
-/**
-* Constructor.
-* @param string the model class. This will be assigned to the {@link modelClass} property.
-* @param array configuration (name=>value) to be applied to this data provider.
-* Any public properties of the data provider can be configured via this parameter
-*/
  public function __construct($id,$data) {
   $this->setData($data);
   $this->setId($id);
@@ -323,3 +330,4 @@ class SDataProvider extends CDataProvider {
     return $keys;
   }
 }
+*/

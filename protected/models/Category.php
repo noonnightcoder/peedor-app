@@ -101,12 +101,14 @@ class Category extends CActiveRecord
         ));
 
 	}
+
     public function search2()
     {
 
         $criteria=new CDbCriteria;
         $cate_array=explode(',', Category::model()->buildCategoryView(Category::model()->buildTree(Category::model()->findAll()),null));
         $data=array();
+
         foreach($cate_array as $v){
             $category=explode('|', $v);
 
@@ -117,6 +119,7 @@ class Category extends CActiveRecord
         }
         // $dataP=new CArrayDataProvider ("grid");
         // $dataP->setData($data);
+
         $criteria->compare('name',$this->name,true);
 
         if  ( Yii::app()->user->getState('category_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
@@ -140,6 +143,7 @@ class Category extends CActiveRecord
         ));
 
     } 
+
     protected function getCategoryInfo()
     {
         return $this->name;
@@ -197,8 +201,9 @@ class Category extends CActiveRecord
             array(
                 array(
                     'name' => 'name',
-                    'value' => '$data["status"]=="1" ? $data["name"] : $data["name"] ',
-                    //'value' => 'Category::model()->buildCategoryBreadcrumb(Category::model()->findAll(),null,$data->parent_id,$data->id)',
+                    //'value' => '$data["status"]=="1" ? $data["name"] : $data["name"] ',
+                    'value' => '$data["name"] .  Category::model()->showSubCategories($data["id"]," / ")',
+                    //'value' => 'Category::model()->buildTree(Category::model()->findAll(), $data->parent_id)',
                     'type' => 'raw',
                 ),
                 'modified_date',
@@ -208,7 +213,6 @@ class Category extends CActiveRecord
                     'template' => '<div class="hidden-sm hidden-xs btn-group">{update}{delete}{restore}</div>',
                     'buttons' => array(
                         'update' => array(
-                            //updateDialogOpen
                             'click' => '',
                             'url' => 'Yii::app()->createUrl("category/update2", array("id"=>$data["id"]))',
                             'label' => 'Update Category',
@@ -245,7 +249,7 @@ class Category extends CActiveRecord
     }
 
     public function buildTreeView( $ar, $pid = null ) {
-        $op = array();
+         $op = array();
          Yii::app()->session;
          $view=isset($this->session['view']) ? $this->session['view'] : '';
         foreach( $ar as $item ) {
@@ -285,9 +289,9 @@ class Category extends CActiveRecord
                     $op[$item['id']] = array(
                         'name' => $item['name'],
                         'parent_id' => $item['parent_id'],
-                        'id'=>$item['id'],
-                        'status'=>$item['status'],
-                        'modified_date'=>$item['modified_date']
+                        'id'=> $item['id'],
+                        'status'=> $item['status'],
+                        'modified_date'=> $item['modified_date']
                     );
                     // using recursion
                     $children =  $this->buildTree( $ar, $item['id'] );
@@ -300,6 +304,7 @@ class Category extends CActiveRecord
         
         return $op;
     }
+
 
     public function buildOptions($arr, $target, $parent = NULL) {
 	    $html = "";
@@ -316,6 +321,7 @@ class Category extends CActiveRecord
 
         return $html;
     }
+
     public function buildCategoryView($arr, $target, $parent = NULL) {
         $html = "";
         foreach ( $arr as $key => $v )
@@ -386,6 +392,17 @@ class Category extends CActiveRecord
                 return $value;
             }
         }
-        
     }
+
+    public function showSubCategories($cat_id, $dashes = ''){
+        $rsSub = Category::model()->findAll('parent_id =:parent_id', array(':parent_id' => $cat_id));
+
+        if (isset($rsSub)) {
+            foreach ($rsSub as $key => $value) {
+                echo $value['name'] . $dashes;
+                $this->showSubCategories($value['id'], $dashes);
+            }
+        }
+    }
+
 }

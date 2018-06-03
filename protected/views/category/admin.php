@@ -29,6 +29,13 @@ $this->breadcrumbs = array(
             <!-- Flash message layouts.partial._flash_message -->
             <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 
+           <!-- --><?php
+/*                print_r(Category::model()->buildCategoryView(Category::model()->findAll(), 155 ,null));
+            */?>
+
+            <?php
+/*                Category::model()->showSubCategories(154, '/')
+            */?>
             <!-- Grid Table layouts.admin._grid -->
             <?php $this->renderPartial('//layouts/admin/_grid', array(
                 'model' => $model,
