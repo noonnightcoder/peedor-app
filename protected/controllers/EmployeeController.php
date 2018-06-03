@@ -153,10 +153,12 @@ class EmployeeController extends Controller
         }
 
         //$data = RbacUser::model()->permissionData($role_name);
+        $auth_items = array();
 
         $data['model'] = $model;
         $data['user'] = $user;
         $data['disabled'] = $disabled;
+        $data['auth_items'] = $auth_items;
         $this->render('create', $data);
     }
 
@@ -167,8 +169,8 @@ class EmployeeController extends Controller
         $disabled = "";
 
         $model = $this->loadModel($id);
-        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
 
+        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int)$id));
         $criteria = new CDbCriteria;
         $criteria->condition = 'userid=:userId';
         $criteria->select = 'itemname';
@@ -180,10 +182,13 @@ class EmployeeController extends Controller
             $auth_items[] = $auth_item->itemname;
         }
 
-        foreach ($this->authItemPermission() as $item) {
-            $user->$item = $auth_items;
-        }
+        $user->items = $auth_items;
 
+        /*
+        foreach ($this->authItemPermission() as $item) {
+            $user->items = $auth_items;
+        }
+        */
 
         //$user->items = $auth_items;
         //$user->pricebooks = $auth_items;

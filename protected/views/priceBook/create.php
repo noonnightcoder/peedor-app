@@ -12,15 +12,15 @@ $this->breadcrumbs=array(
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app','Cancel'),'url' => Yii::app()->createUrl('/pricebook'),'icon'=>'fa fa-window-close  white','id'=>'btn-review'),
+                array('label' => Yii::t('app','Cancel'),'url' => Yii::app()->createUrl('/priceBook'),'icon'=>'fa fa-window-close  white','id'=>'btn-review'),
             ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
         ),
     ),
     'content' => $this->renderPartial('_form', array(
-            'model'=>$model,
-            'outlet'=>$outlet,
-            'items'=>$items,
-            'customer_group'=>$customer_group,
+            'model' =>$model,
+            'outlet' =>$outlet,
+            'items' =>$items,
+            'customer_group' => $customer_group,
     ), true),
 )); ?>
 

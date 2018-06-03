@@ -44,17 +44,17 @@ class ReceivingItemController extends Controller
             $this->reload(); 
         } else if (Yii::app()->user->checkAccess('purchasereturn.read') && Yii::app()->receivingCart->getMode()=='return') {
             $this->reload(); 
-        } elseif (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
+        } elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
             $this->reload(); 
-        } elseif (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
+        } elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
             $this->reload();    
         } 
         // elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
         //     $this->reload(); 
         // } 
-        elseif (Yii::app()->user->checkAccess('stockcount.read') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='physical_count') {
             //$this->reload(); 
-            authorized('stockcount.read');
+            authorized('stockcount.create');
 
             $model = new InventoryCount('search');
 

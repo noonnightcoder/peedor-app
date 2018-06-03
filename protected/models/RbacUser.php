@@ -46,28 +46,24 @@ class RbacUser extends CActiveRecord
     public $employees;
     public $role_name;
 
+    protected $auth_items;
 
-    /**
-     * Returns the static model of the specified AR class.
-     * @param string $className active record class name.
-     * @return RbacUser the static model class
-     */
+    public function __construct()
+    {
+        $this->items = array();
+    }
+
+
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
     }
 
-    /**
-     * @return string the associated database table name
-     */
     public function tableName()
     {
         return 'rbac_user';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -215,6 +211,25 @@ class RbacUser extends CActiveRecord
         $data['grid_id'] = 'permission_id';
 
         return $data;
+    }
+
+    public function getUserPermission($id)
+    {
+        $user = RbacUser::model()->find('employee_id=:employeeID', array(':employeeID' => (int) $id));
+
+        $criteria = new CDbCriteria;
+        $criteria->condition = 'userid=:userId';
+        $criteria->select = 'itemname';
+        $criteria->params = array(':userId' => $user->id);
+        $auth_assignment = Authassignment::model()->findAll($criteria);
+
+        //$auth_items = array();
+        foreach ($auth_assignment as $auth_item) {
+            $auth_items[] = $auth_item->itemname;
+        }
+
+        return $auth_items;
+
     }
 
 

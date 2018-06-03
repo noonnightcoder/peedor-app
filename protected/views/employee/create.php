@@ -17,6 +17,7 @@ $this->breadcrumbs=array(
                   //'grid_id' => $grid_id,
                   //'data_provider' => $data_provider,
                   //'grid_columns' => $grid_columns,
+                  'auth_items' => $auth_items,
               ), true),
  )); ?>  
 

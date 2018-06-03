@@ -305,7 +305,6 @@ class Category extends CActiveRecord
         return $op;
     }
 
-
     public function buildOptions($arr, $target, $parent = NULL) {
 	    $html = "";
         foreach ( $arr as $key => $v )

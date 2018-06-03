@@ -40,7 +40,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 ),
                 array('label' => sysMenuPriceBookView(),
                     'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
-                    'url' => url('PriceBook/index'),
+                    'url' => url('priceBook/index'),
                     'active' => $this->id . '/' . $this->action->id == 'priceBook/index',
                     'visible' => ckacc('pricebook.create') || ckacc('pricebook.read') || ckacc('pricebook.update') || ckacc('pricebook.delete'),
                 ),
