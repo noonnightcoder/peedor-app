@@ -55,7 +55,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . sysMenuInventory() . '</span>',
             'icon' => 'menu-icon '  . sysMenuInventoryIcon(),
             //'url' => url('receivingItem/index'),
-            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index',
+            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' || $this->id . '/' . $this->action->id == 'receivingItem/InventoryCountCreate',
             'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete'),
             'items' => array(
                 array('label' => sysMenuInventoryCount(),
