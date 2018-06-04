@@ -57,12 +57,6 @@ class PriceBookController extends Controller
         $model->pricebook_archived = Yii::app()->user->getState('pricebook_archived',
             Yii::app()->params['defaultArchived']);
 
-        // $page_size = CHtml::dropDownList(
-        //     'pageSize',
-        //     Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
-        //     Common::arrayFactory('page_size'),
-        //     array('class' => 'change-pagesize',)
-        // );
         $page_size = CHtml::dropDownList(
             'pageSize',
             Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
@@ -75,11 +69,11 @@ class PriceBookController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
-        $data['create_url'] = 'Create';
+        //$data['create_url'] = 'create';
 
         $data['grid_columns'] = PriceBook::getItemColumns();
-
         $data['data_provider'] = $model->search();
+
         $this->render('_list',$data);
     }
 
@@ -90,7 +84,8 @@ class PriceBookController extends Controller
         $this->render('_pricebookDetail',$data);
     }
 
-    public function actionCreate(){
+    public function actionCreate() {
+
         $this->layout = '//layouts/columntree';
 
         authorized('pricebook.create');
