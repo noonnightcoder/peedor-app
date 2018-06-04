@@ -1,4 +1,3 @@
-	<?php $baseUrl = Yii::app()->baseUrl?>
 <div class="row">
 	<div class="col-xs-12">
 		<span class="text-info">- Brand: </span>
@@ -9,7 +8,7 @@
 	</div>
 	<div class="col-sm-12">
 		<h4>
-			<a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?>">
+			<a href="<?= Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?> ">
 				<?=$model[0]['name']?>
 			</a>
 		</h4>
@@ -17,14 +16,14 @@
 	<div class="col-sm-4">
 		
 		<div class="thumbnail search-thumbnail" id="big-image">
-				<img class="media-object" src="<?=$baseUrl.'/images/'.($model[0]['image'] ? $model[0]['image'] : 'noimage.gif')?>" />
+				<img class="media-object" src="<?= baseurl() .'/images/'.($model[0]['image'] ? $model[0]['image'] : 'noimage.gif')?>" />
 		</div>
 		<div class="row">
 			<?php if(!empty($item_image)):?>
 				<?php foreach($item_image as $image):?>
 					<div class="col-sm-4">
 						<div class="thumbnail search-thumbnail">
-							<img class="media-object" style="" onclick="changeImage(event.target.src)" src="<?=$baseUrl.'/images/'.$image['filename']?>" />
+							<img class="media-object" style="" onclick="changeImage(event.target.src)" src="<?= baseurl() .'/images/'.$image['filename']?>" />
 						</div>
 					</div>
 				<?php endforeach;?>
@@ -43,11 +42,17 @@
 			<p></p>
 			<strong class="blue">- Supplier: <?=$model[0]['company_name'] ? $model[0]['company_name'] : 'N/A'?></strong>
 			<hr>
-			<a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?>" class="search-btn-action btn btn-sm btn-block btn-info">Edit</a>
+
+            <?php if (ckacc('item.update')) { ?>
+                <a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?>" class="search-btn-action btn btn-sm btn-block btn-info">
+                    Edit
+                </a>
+            <?php } ?>
 			
 		</div>
 	</div>
 </div>
+
 <style type="text/css">
 	.search-btn-action{
 		left: 14px !important;
@@ -56,7 +61,6 @@
 </style>
 <script type="text/javascript">
 	function changeImage(image){
-		
 		//var image=$('#image'+id).val();
 		$('#big-image').html('<img class="media-object" src="'+image+'">')
 	}

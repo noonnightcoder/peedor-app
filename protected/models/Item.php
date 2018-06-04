@@ -647,7 +647,13 @@ class Item extends CActiveRecord
         return array(
             array(
                 'name' => 'name',
-                'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("Item/ItemSearch",array("result"=>$data->primaryKey))) : "<s class=\"red\">  $data->name <span>" ',
+                'value' => '$data->status=="1" ? CHtml::link($data->name, Yii::app()->createUrl("item/itemSearch",array("result"=>$data->primaryKey))) : "<s class=\"red\">  $data->name <span>" ',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'price',
+                'value' => '$data->status=="1" ? $data->unit_price : "<s class=\"red\">  $data->unit_price <span>"',
                 'type' => 'raw',
                 'filter' => '',
             ),
@@ -657,16 +663,19 @@ class Item extends CActiveRecord
                 'type' => 'raw',
                 'filter' => '',
             ),
+            /*
             array(
                 'name' => 'location',
                 'value' => '$data->status=="1" ? $data->location : "<s class=\"red\">  $data->location <span>"',
                 'type' => 'raw',
                 'filter' => '',
             ),
+            */
             array(
                 'name' => 'category_id',
                 'value' => '$data->category_id==null? " " : $data->category->name',
-                'filter' => CHtml::listData(Category::model()->findAll(array('order' => 'name')), 'id', 'name'),
+                //'filter' => CHtml::listData(Category::model()->findAll(array('order' => 'name')), 'id', 'name'),
+                'filter' => '',
             ),
             array(
                 'name' => 'quantity',
@@ -700,7 +709,7 @@ class Item extends CActiveRecord
                             'class' => 'btn btn-xs btn-info',
                             'title' => 'Cost History',
                         ),
-                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update"))',
+                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update") || Yii::app()->user->checkAccess("item.cost"))',
                     ),
                     'price' => array(
                         'click' => 'updateDialogOpen',
@@ -737,6 +746,7 @@ class Item extends CActiveRecord
                         'options' => array(
                             'class' => 'btn-xs btn-info',
                         ),
+                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.cost") || Yii::app()->user->checkAccess("item.update"))',
                     ),
                 ),
             ),

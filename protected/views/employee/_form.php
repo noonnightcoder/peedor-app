@@ -14,11 +14,13 @@
         'enableAjaxValidation'=>true,
         //'action'=>$this->createUrl('Item/Create'),
         'enableClientValidation'=>true,
+        /*
         'clientOptions' => array(
             'validateOnSubmit'=>true,
             'validateOnChange'=>true,
             'validateOnType'=>true,
         ),
+        */
         'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 
     )); ?>

@@ -48,12 +48,6 @@ class RbacUser extends CActiveRecord
 
     protected $auth_items;
 
-    public function __construct()
-    {
-        $this->items = array();
-    }
-
-
     public static function model($className = __CLASS__)
     {
         return parent::model($className);

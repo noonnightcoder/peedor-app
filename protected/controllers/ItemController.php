@@ -1023,6 +1023,7 @@ class ItemController extends Controller
         $model=Category::model()->findAll();
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
+
     public function actionParentReload(){
         $categories=Category::model()->findAll();
         $arr = Category::model()->buildTree($categories);
@@ -1037,6 +1038,7 @@ class ItemController extends Controller
             </optgroup>
         ';
     }
+
     public function actionItemFinder(){
 
         $this->layout = '//layouts/columntree';
@@ -1073,6 +1075,7 @@ class ItemController extends Controller
     }
 
     public function actionItemSearch($result){
+
         $model=Item::model()->itemDetail($result);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
         $this->render('_result_detail',array(
@@ -1082,6 +1085,7 @@ class ItemController extends Controller
     }
 
     public function multipleImageUpload($item_id,$model,$attr_name,$path_to_save){
+
         $msg=null;
         $images=CUploadedFile::getInstancesByName($attr_name);
         if(isset($images) && count($images)>0){

@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    sysMenuItem() =>array('admin'),
+    t('Item','app') =>array('admin'),
     'Finder',
 );
 ?>

@@ -6,76 +6,61 @@
    <title><?= bizNameFirstUpper() . ' ' . bizTitleUcWord() . ' - ' . companySloganUcwords() ?></title>
     <meta name="description" content="overview &amp; stats" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <?php
-        $baseUrl = Yii::app()->theme->baseUrl;
-        $cs = Yii::app()->getClientScript();
-    ?>
     <?php Yii::app()->bootstrap->register(); ?>
     
-    <!--<link rel="icon" type="image/ico" href="<?php /*echo $baseUrl */?>/css/img/bakouicon.ico" />-->
-    <link rel="apple-touch-icon" sizes="57x57" href="<?= $baseUrl ?>/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="<?= $baseUrl ?>/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="<?= $baseUrl ?>/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="<?= $baseUrl ?>/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="<?= $baseUrl ?>/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="<?= $baseUrl ?>/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="<?= $baseUrl ?>/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="<?= $baseUrl ?>/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="<?= $baseUrl ?>/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="<?= $baseUrl ?>/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="<?= $baseUrl ?>/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="<?= $baseUrl ?>/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="<?= $baseUrl ?>/favicon/favicon-16x16.png">
-    <link rel="manifest" href="<?= $baseUrl ?>/favicon/manifest.json">
+    <!--<link rel="icon" type="image/ico" href="<?php /*echo baseurl() */?>/css/img/bakouicon.ico" />-->
+    <link rel="apple-touch-icon" sizes="57x57" href="<?= baseurl() ?>/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="<?= baseurl() ?>/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="<?= baseurl() ?>/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="<?= baseurl() ?>/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="<?= baseurl() ?>/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="<?= baseurl() ?>/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="<?= baseurl() ?>/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="<?= baseurl() ?>/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= baseurl() ?>/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192"  href="<?= baseurl() ?>/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= baseurl() ?>/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="<?= baseurl() ?>/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= baseurl() ?>/favicon/favicon-16x16.png">
+    <link rel="manifest" href="<?= baseurl() ?>/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="<?= $baseUrl ?>/favicon/ms-icon-144x144.png">
+    <meta name="msapplication-TileImage" content="<?= baseurl() ?>/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
 
     <!-- bootstrap & fontawesome -->
-    <!-- <link rel="stylesheet" type="text/css" href="<?php //echo $baseUrl ?>/css/bootstrap.min.css" /> -->
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/font-awesome.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/colorbox.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-fonts.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.min.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.min.css" />
+    <!-- <link rel="stylesheet" type="text/css" href="<?php //echo baseurl() ?>/css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/font-awesome.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/colorbox.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace-fonts.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace-skins.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace-rtl.min.css" />
 
-     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/font-awesome.css" />
+     <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/font-awesome.css" />
     
     <!-- page specific plugin styles -->
 
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-skins.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/ace-rtl.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace-skins.css" />
+    <link rel="stylesheet" type="text/css" href="<?= baseurl() ?>/css/ace-rtl.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo baseurl() ?>/css/loading_animation.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo baseurl() ?>/css/jquery-ui-1.10.4.custom.min.css" />
 
-    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/pace.css" />
-    <script data-pace-options='{ "ajax": true, "document": true, "eventLag": false, "elements": false }' src="<?php echo $baseUrl ?>/js/pace.js"></script>
+    <link rel="stylesheet" type="text/css" href="<?php echo baseurl() ?>/css/pace.css" />
+    <script data-pace-options='{ "ajax": true, "document": true, "eventLag": false, "elements": false }' src="<?php echo baseurl() ?>/js/pace.js"></script>
     
     <!-- ace settings handler -->
-    <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
+    <?php //$cs->registerScriptFile(baseurl().'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
     
     <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
    
-    <?php 
-        /*$cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);
-         
-        $cs->registerScriptFile($baseUrl.'/js/tree.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN); 
-        $cs->registerScriptFile($baseUrl.'/js/elements.fileinput.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/chosen.jquery.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/jquery.inputlimiter.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/treeview.js',CClientScript::POS_BEGIN);
-        $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);*/
-
-        $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace-elements.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/ace.min.js',CClientScript::POS_END);;
-        $cs->registerScriptFile($baseUrl.'/js/jquery.form.min.js',CClientScript::POS_END);
-        $cs->registerScriptFile($baseUrl.'/js/jquery-ui.min.js',CClientScript::POS_END);
+    <?php
+        cs()->registerScriptFile(baseurl().'/js/ace-extra.min.js',CClientScript::POS_END);
+        cs()->registerScriptFile(baseurl().'/js/ace-elements.min.js',CClientScript::POS_END);
+        cs()->registerScriptFile(baseurl().'/js/ace.min.js',CClientScript::POS_END);;
+        cs()->registerScriptFile(baseurl().'/js/jquery.form.min.js',CClientScript::POS_END);
+        cs()->registerScriptFile(baseurl().'/js/jquery-ui.min.js',CClientScript::POS_END);
     ?>
 
     <?php

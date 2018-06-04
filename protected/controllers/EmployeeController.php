@@ -98,8 +98,6 @@ class EmployeeController extends Controller
         if (isset($_POST['Employee'])) {
             $model->attributes = $_POST['Employee'];
             $user->attributes = $_POST['RbacUser'];
-            //$location_id = $_POST['Employee']['location'];
-            //$role_name = $_POST['RbacUser']['role_name'];
 
             if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
                 $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
@@ -137,7 +135,6 @@ class EmployeeController extends Controller
                                 }
 
                             }
-
                             $transaction->commit();
                             Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
                             $this->redirect(array('admin'));
@@ -152,7 +149,6 @@ class EmployeeController extends Controller
             }
         }
 
-        //$data = RbacUser::model()->permissionData($role_name);
         $auth_items = array();
 
         $data['model'] = $model;
