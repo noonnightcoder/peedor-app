@@ -117,6 +117,7 @@ class Category extends CActiveRecord
             }
 
         }
+
         // $dataP=new CArrayDataProvider ("grid");
         // $dataP->setData($data);
 

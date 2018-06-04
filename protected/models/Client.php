@@ -165,13 +165,15 @@ class Client extends CActiveRecord
         // Recommended: Secure Way to Write SQL in Yii
         $sql = 'SELECT id ,concat_ws(" : ",concat_ws("  ",first_name,last_name),mobile_no) AS text
                     FROM client 
-                    WHERE (first_name LIKE :name or last_name like :name or mobile_no like :name)
-                    AND status=:active_status';
+                WHERE (first_name LIKE :name or last_name like :name or mobile_no like :name)
+               AND status=:active_status';
 
         $name = '%' . $name . '%';
 
         return Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':name' => $name, ':active_status' => Yii::app()->params['active_status']));
+            array(':name' => $name,
+                ':active_status' => Yii::app()->params['active_status'])
+        );
 
     }
 
@@ -213,7 +215,7 @@ class Client extends CActiveRecord
     {
         // Recommended: Secure Way to Write SQL in Yii
         $sql = 'SELECT group_name 
-        FROM CLIENT c JOIN customer_group cg
+        FROM client c JOIN customer_group cg
         ON c.price_tier_id=cg.id
         where c.id=:id';
 
