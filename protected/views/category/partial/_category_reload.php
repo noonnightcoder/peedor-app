@@ -14,6 +14,7 @@
                 <?php $arr = Category::model()->buildTree($model);?>
                 <?php echo CHtml::label('Parent', 1, array('class' => 'control-label'));?>
                 <select class="form-control" id="db-category<?=($i-1)?>" onchange="showDialog(event.target.value)">
+                    <option value=""></option>
                     <?=Category::model()->buildOptions($arr,$parent_id)?>
                     <optgroup >
                         <option value="addnew">

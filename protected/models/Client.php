@@ -109,7 +109,7 @@ class Client extends CActiveRecord
             'status' => Yii::t('app', 'Status'),
             'search' => Yii::t('app', 'Search') . Yii::t('app', 'Customer'),
             'dob' => Yii::t('app','Date of Birth'),
-            'price_tier_id' => Yii::t('app','Price Tier'),
+            'price_tier_id' => Yii::t('app','Group'),
             'employee_id' => Yii::t('app','Employee'),
             'payment_term' => Yii::t('app','Payment Term'),
         );

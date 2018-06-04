@@ -17,15 +17,15 @@ class Category extends CActiveRecord
     public $search;
     public $category_archived;
 
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
 
-	public function tableName()
-	{
-		return 'category';
-	}
+    public function tableName()
+    {
+        return 'category';
+    }
 
     public function rules()
     {
@@ -51,33 +51,33 @@ class Category extends CActiveRecord
         );
     }
 
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'items' => array(self::HAS_MANY, 'Item', 'category_id'),
-		);
-	}
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'items' => array(self::HAS_MANY, 'Item', 'category_id'),
+        );
+    }
 
-	public function attributeLabels()
-	{
-		return array(
-			'id' => 'ID',
-			'name' => Yii::t('app','Name'), //'Name',
+    public function attributeLabels()
+    {
+        return array(
+            'id' => 'ID',
+            'name' => Yii::t('app','Name'), //'Name',
             'parent_id' => Yii::t('app','Parent'), //'Name',
-			'created_date' => Yii::t('app','Created Date'), //'Created Date',
-			'modified_date' => Yii::t('app','Modified Date'), //'Modified Date',
-		);
-	}
+            'created_date' => Yii::t('app','Created Date'), //'Created Date',
+            'modified_date' => Yii::t('app','Modified Date'), //'Modified Date',
+        );
+    }
 
-	public function search()
-	{
+    public function search()
+    {
 
-		$criteria=new CDbCriteria;
+        $criteria=new CDbCriteria;
         //$arr = $this->buildTree(Category::model()->findAll());
-		//$criteria->compare('id',$this->id);
-		$criteria->compare('name',$this->name,true);
+        //$criteria->compare('id',$this->id);
+        $criteria->compare('name',$this->name,true);
 
         if  ( Yii::app()->user->getState('category_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
             $criteria->condition = 'name like :search';
@@ -100,7 +100,7 @@ class Category extends CActiveRecord
             'sort'=>array( 'defaultOrder'=>'name')
         ));
 
-	}
+    }
 
     public function search2()
     {
@@ -117,7 +117,6 @@ class Category extends CActiveRecord
             }
 
         }
-
         // $dataP=new CArrayDataProvider ("grid");
         // $dataP->setData($data);
 
@@ -202,8 +201,8 @@ class Category extends CActiveRecord
             array(
                 array(
                     'name' => 'name',
-                    //'value' => '$data["status"]=="1" ? $data["name"] : $data["name"] ',
-                    'value' => '$data["name"] .  Category::model()->showSubCategories($data["id"]," / ")',
+                    'value' => '$data["status"]=="1" ? $data["name"] : $data["name"] ',
+                    // 'value' => '$data["name"] .  Category::model()->showSubCategories($data["id"]," / ")',
                     //'value' => 'Category::model()->buildTree(Category::model()->findAll(), $data->parent_id)',
                     'type' => 'raw',
                 ),
@@ -223,7 +222,7 @@ class Category extends CActiveRecord
                                 'data-refresh-grid-id' => 'category-grid',
                                 'class' => 'btn btn-xs btn-info',
                             ),
-                            'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("category.update2")',
+                            'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("category.update")',
                         ),
                         'delete' => array(
                             'url' => 'Yii::app()->createUrl("category/delete/",array("id"=>$data["id"]))', 
@@ -306,8 +305,9 @@ class Category extends CActiveRecord
         return $op;
     }
 
+
     public function buildOptions($arr, $target, $parent = NULL) {
-	    $html = "";
+        $html = "";
         foreach ( $arr as $key => $v )
         {
             if ( $key == $target )
@@ -395,14 +395,14 @@ class Category extends CActiveRecord
     }
 
     public function showSubCategories($cat_id, $dashes = ''){
+
         $rsSub = Category::model()->findAll('parent_id =:parent_id', array(':parent_id' => $cat_id));
 
         if (isset($rsSub)) {
-            foreach ($rsSub as $key => $value) {
+            foreach (array_reverse($rsSub,true) as $key => $value) {
                 echo $value['name'] . $dashes;
                 $this->showSubCategories($value['id'], $dashes);
             }
         }
     }
-
 }

@@ -153,17 +153,17 @@ function invNumPrefix()
 
 function sysMenuHome()
 {
-    return strtoupper(t(param('menu_home'), 'app'));
+    return ucwords(t(param('menu_home'), 'app'));
 }
 
 function sysMenuDashboard()
 {
-    return strtoupper(t(param('menu_dashboard'), 'app'));
+    return ucwords(t(param('menu_dashboard'), 'app'));
 }
 
 function sysMenuItem()
 {
-    return strtoupper(t(param('menu_item'), 'app'));
+    return ucwords(t(param('menu_item'), 'app'));
 }
 
 function sysMenuItemAdd()
@@ -209,7 +209,7 @@ function sysMenuItemMarkupPrice()
 
 function sysMenuInventory()
 {
-    return strtoupper(t(param('menu_inventory'), 'app'));
+    return ucwords(t(param('menu_inventory'), 'app'));
 }
 
 function sysMenuInventoryAdd()
@@ -239,7 +239,7 @@ function sysMenuInventoryTransfer()
 
 function sysMenuPurchase()
 {
-    return strtoupper(t(param('menu_purchase'), 'app'));
+    return ucwords(t(param('menu_purchase'), 'app'));
 }
 
 function sysMenuPurchaseReceive()
@@ -354,7 +354,7 @@ function sysMenuAuthorization()
 
 function sysMenuSetting()
 {
-    return strtoupper(t(param('menu_setting'), 'app'));
+    return ucwords(t(param('menu_setting'), 'app'));
 }
 
 function sysMenuCategory()

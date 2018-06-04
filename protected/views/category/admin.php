@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs = array(
-    Yii::t('app', ucfirst(get_class($model))) => array('admin'),
+    sysMenuCategory() => array('admin'),
     Yii::t('app', 'Manage'),
 );
 ?>

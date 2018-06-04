@@ -84,6 +84,7 @@ class PriceBookController extends Controller
     }
 
     public function actionView($id,$name=''){
+        authorized('pricebook.read');
         $priceBook=PriceBook::getPriceBookDetail($id);
         $data['data']=$priceBook;
         $data['count_title']='pricebook';

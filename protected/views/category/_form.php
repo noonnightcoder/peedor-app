@@ -18,7 +18,7 @@
         <div class="col-sm-11 col-md-11">
             <div class="form-group">
                 <?php echo CHtml::label('Parent', 1, array('class' => 'control-label')); ?>
-                <select class="form-control" id="db-category" onchange="showDialog(event.target.value)">
+                <select class="form-control" id="db-category" onchange="showCategoryDialog(event.target.value)">
                     <option value="">--Choose Parent--</option>
                     <!-- <?php foreach($parent as $key=>$value):?>
 

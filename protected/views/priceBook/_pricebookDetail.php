@@ -15,7 +15,7 @@
 		        $_GET['name'] =='General' ? '' : TbHtml::buttonGroup(
 		            array(
 		                array('label' => Yii::t('app','Edit'),'url' => Yii::app()->createUrl('pricebook/EditPriceBook',array('id'=>$_GET['id'])),'icon'=>'fa fa-pencil-square-o white'),
-		            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+		            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL,'style'=>ckacc('priceBook.update') ? '' : 'display:none')
 		        ),
 		    ),
         )); ?>
