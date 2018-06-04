@@ -51,14 +51,15 @@
         </div>
     </div>
 </div>
+
 <div>
     <div class="row">
-        <div class="col-sm-11">
+        <div class="col-sm-12">
             <h4>Item Count</h4>  
             <hr> 
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-5">
+                    <div class="col-sm-4">
                         <div class="col-sm-5 margin-3">
                             <div class="form-group">
                                 <input type="hidden" class="txt-pro-id">
@@ -104,8 +105,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6">
-                        <div class="col-sm-12" id="lasted-count">
+
+                    <div class="col-sm-7">
+                        <div class="col-sm-11" id="lasted-count">
                             <?php if(isset($_SESSION['latestCount'])):?>
                                 <table class="table">
                                     <thead>
@@ -138,15 +140,16 @@
                             <?php endif;?>
                         </div>
                     </div>
+
                 </div>
-            </div>
-            <div class="row">
-                
             </div>
         </div>
     </div>
 </div>
+
 <?php $this->endWidget(); ?>
+
+
 <style type="text/css">
     .margin-3{
         margin:0px 3px 0px 3px;
@@ -164,7 +167,8 @@
         $('.btn-count').prop('disabled',true);
         $('.txt-pro-name').keyup(function(e){
             $('.btn-count').prop('disabled',true);
-        })
+        });
+
         // $('#btn-review').attr('disabled',true); 
         $('#InventoryCount_count_name').keypress(function(){
             var countDate=$('#InventoryCount_count_date').val();
@@ -187,6 +191,7 @@
             }
         })
     });
+
     function inventoryCount(opt,idx){
         var url='addCount';
         var countDate=$('#InventoryCount_created_date').val();

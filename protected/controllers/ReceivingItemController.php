@@ -129,7 +129,11 @@ class ReceivingItemController extends Controller
     }
 
 
-    public function actionInventoryCountCreate(){
+    public function actionInventoryCountCreate()
+    {
+
+        $this->layout = '//layouts/columntree';
+
         //$invcount=new InventoryCount;
         $model = new InventoryCount('search');
         $item = new Item('search');
