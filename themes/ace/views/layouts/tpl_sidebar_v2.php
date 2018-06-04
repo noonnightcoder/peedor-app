@@ -55,13 +55,13 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . sysMenuInventory() . '</span>',
             'icon' => 'menu-icon '  . sysMenuInventoryIcon(),
             //'url' => url('receivingItem/index'),
-            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' || $this->id . '/' . $this->action->id == 'receivingItem/InventoryCountCreate',
+            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' || $this->id . '/' . $this->action->id == 'receivingItem/inventoryCountCreate',
             'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete'),
             'items' => array(
                 array('label' => sysMenuInventoryCount(),
                     'icon' => 'menu-icon '  . sysMenuInventoryCountIcon(),
                     'url' => url('receivingItem/index', array('trans_mode' => 'physical_count')),
-                    'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/physical_count',
+                    'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') == 'receivingItem/index/physical_count' || $this->id . '/' . $this->action->id == 'receivingItem/inventoryCountCreate',
                     'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
                 ),
             )),

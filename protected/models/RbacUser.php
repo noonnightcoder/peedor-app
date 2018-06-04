@@ -46,13 +46,15 @@ class RbacUser extends CActiveRecord
     public $employees;
     public $role_name;
 
-    protected $auth_items;
+   //protected $auth_items;
 
-    public function __construct()
+    /*public function __construct()
     {
-        $this->items = array();
-    }
-
+        foreach ($this->authItemPermission() as $item) {
+            $this->$item = array();
+        }
+        //$this->items = array();
+    }*/
 
     public static function model($className = __CLASS__)
     {
@@ -74,10 +76,11 @@ class RbacUser extends CActiveRecord
             array('user_name', 'unique'),
             array('PasswordConfirm', 'compare', 'compareAttribute' => 'Password'),
             //'message'=>"Passwords don't match"),
-            array('group_id, employee_id, deleted, status, created_by', 'numerical', 'integerOnly' => true),
+            array('group_id, employee_id, deleted, created_by', 'numerical', 'integerOnly' => true),
             array('user_name', 'length', 'max' => 60),
             array('user_password', 'length', 'max' => 128),
             array('date_entered, modified_date, PasswordOld, Password, ResetPassword', 'safe'),
+            //array('items','boolean','allowEmpty'=>true),
             array(
                 'date_entered',
                 'default',
@@ -99,10 +102,8 @@ class RbacUser extends CActiveRecord
                 'setOnEmpty' => false,
                 'on' => 'update'
             ),
-            // The following rule is used by search().
-            // Please remove those attributes that should not be searched.
             array(
-                'id, user_name, group_id, employee_id, user_password, deleted,PasswordOld, ResetPassword, status, date_entered, modified_date, created_by',
+                'id, user_name, group_id, employee_id, user_password, deleted,PasswordOld, ResetPassword, date_entered, modified_date, created_by',
                 'safe',
                 'on' => 'search'
             ),
@@ -229,7 +230,6 @@ class RbacUser extends CActiveRecord
         }
 
         return $auth_items;
-
     }
 
 

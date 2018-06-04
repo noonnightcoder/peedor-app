@@ -94,6 +94,11 @@ class EmployeeController extends Controller
         $model = new Employee;
         $user = new RbacUser;
         $disabled = "";
+        $auth_items = array();
+
+        foreach ($this->authItemPermission() as $item) {
+            $user->$item = $auth_items;
+        }
 
         if (isset($_POST['Employee'])) {
             $model->attributes = $_POST['Employee'];
@@ -116,40 +121,43 @@ class EmployeeController extends Controller
                     if ($model->save()) {
                         $user->employee_id = $model->id;
 
-                        if ($user->save()) {
+                        if (!$user->save()) {
+                            print_r($user->errors);
+                            Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Error during Authassignment to User table.' . $user->id);
+                            $transaction->rollback();
+                            exit;
+                        }
 
-                            $assign_items = $this->authItemPermission();
+                        $assign_items = $this->authItemPermission();
+                        foreach ($assign_items as $assign_item) {
+                            if (!empty($_POST['RbacUser'][$assign_item])) {
+                                foreach ($_POST['RbacUser'][$assign_item] as $item_id) {
+                                    $auth_assignment = new Authassignment;
+                                    $auth_assignment->userid = $user->id;
+                                    $auth_assignment->itemname = $item_id;
 
-                            foreach ($assign_items as $assign_item) {
-                                if (!empty($_POST['RbacUser'][$assign_item])) {
-                                    foreach ($_POST['RbacUser'][$assign_item] as $itemId) {
-                                        $auth_assignment = new Authassignment;
-                                        $auth_assignment->userid = $user->id;
-                                        $auth_assignment->itemname = $itemId;
-
-                                        if (!$auth_assignment->save()) {
-                                            $transaction->rollback();
-                                            print_r($auth_assignment->errors);
-                                        }
+                                    if (!$auth_assignment->save()) {
+                                        print_r($auth_assignment->errors);
+                                        Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Error during Authassignment to User table.' . $user->id);
+                                        $transaction->rollback();
+                                        exit;
                                     }
                                 }
-
                             }
-                            $transaction->commit();
-                            Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
-                            $this->redirect(array('admin'));
-                        } else {
-                            Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.');
                         }
+
+                        $transaction->commit();
+                        Yii::app()->user->setFlash('success', '<strong>Well done!</strong> successfully saved.');
+                        $this->redirect(array('admin'));
+
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
-                    Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Change a few things up and try submitting again.' . $e);
+                    Yii::app()->user->setFlash('error', '<strong>Oh snap!</strong> Catch Exception error and try submitting again.' . $e);
+                    exit;
                 }
             }
         }
-
-        $auth_items = array();
 
         $data['model'] = $model;
         $data['user'] = $user;
@@ -178,13 +186,12 @@ class EmployeeController extends Controller
             $auth_items[] = $auth_item->itemname;
         }
 
-        $user->items = $auth_items;
+        //$user->items = $auth_items;
 
-        /*
         foreach ($this->authItemPermission() as $item) {
-            $user->items = $auth_items;
+            $user->$item = $auth_items;
         }
-        */
+
 
         //$user->items = $auth_items;
         //$user->pricebooks = $auth_items;

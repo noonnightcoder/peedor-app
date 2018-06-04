@@ -11,16 +11,14 @@
 
     <?php $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
         'id' => 'employee-form',
-        'enableAjaxValidation'=>true,
+        //'enableAjaxValidation'=>true,
         //'action'=>$this->createUrl('Item/Create'),
         'enableClientValidation'=>true,
-        /*
         'clientOptions' => array(
             'validateOnSubmit'=>true,
             'validateOnChange'=>true,
             'validateOnType'=>true,
         ),
-        */
         'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
 
     )); ?>

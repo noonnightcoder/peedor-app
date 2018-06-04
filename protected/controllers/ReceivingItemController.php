@@ -80,15 +80,16 @@ class ReceivingItemController extends Controller
             $data['grid_id'] = strtolower(get_class($model)) . '-grid';
             $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
             $data['page_size'] = $page_size;
-            $data['create_url'] = 'InventoryCountCreate';
+            $data['create_url'] = 'inventoryCountCreate';
 
             $data['grid_columns'] = InventoryCount::getItemColumns();
 
             $data['data_provider'] = $model->search();
             $this->render('_list',$data);
-        } elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='count_detail'){
 
-            authorized('inventorycountdetail.read');
+        } elseif (Yii::app()->user->checkAccess('stockcount.read') && Yii::app()->receivingCart->getMode()=='count_detail'){
+
+            authorized('stockcount.read');
 
             $model = InventoryCountDetail::getInventoryCountDetail($_GET['id']);
 
@@ -114,7 +115,7 @@ class ReceivingItemController extends Controller
             $data['grid_id'] = strtolower('InventoryCountDetail') . '-grid';
             $data['main_div_id'] = strtolower('InventoryCountDetail') . '_cart';
             $data['page_size'] = $page_size;
-            $data['create_url'] = 'InventoryCountCreate';
+            $data['create_url'] = 'inventoryCountCreate';
 
             $data['grid_columns'] = InventoryCountDetail::getItemColumns();
 
@@ -157,7 +158,7 @@ class ReceivingItemController extends Controller
         $data['grid_id'] = strtolower(get_class($model)) . '-grid';
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
-        $data['create_url'] = 'InventoryCountCreate';
+        $data['create_url'] = 'inventoryCountCreate';
 
         $data['grid_columns'] = InventoryCount::getItemColumns();
 

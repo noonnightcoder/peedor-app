@@ -12,7 +12,7 @@ $this->breadcrumbs=array(
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/CountReview'),'icon'=>'fa fa-check-square  white','id'=>'btn-review'),
+                array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/countReview'),'icon'=>'fa fa-check-square  white','id'=>'btn-review'),
             ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
         ),
     ),

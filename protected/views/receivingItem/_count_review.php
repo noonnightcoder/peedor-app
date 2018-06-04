@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs = array(
-	    Yii::t('app', ucfirst('inventory count')) => array('InventoryCountCreate'),
+	    Yii::t('app', ucfirst('inventory count')) => array('inventoryCountCreate'),
 	    Yii::t('app', 'Review'),
 	);
 ?>
@@ -11,7 +11,7 @@
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app','Save'),'url' => Yii::app()->createUrl('receivingItem/SaveCount'),'icon'=>'fa fa-floppy-o white'),
+                array('label' => Yii::t('app','Save'),'url' => Yii::app()->createUrl('receivingItem/saveCount'),'icon'=>'fa fa-floppy-o white'),
             ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
         ),
     ),
