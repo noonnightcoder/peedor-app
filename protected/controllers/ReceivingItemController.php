@@ -302,10 +302,10 @@ class ReceivingItemController extends Controller
             //save to inventory
             $sql = "insert into inventory
             (trans_items,trans_user,trans_date,trans_comment,trans_inventory,trans_qty,qty_b4_trans,qty_af_trans) 
-            values(" .$value['itemId']. ",'".$employeeid."','" .$header['created_date']. "','" .$header['name']. "','".$value['expected']."','".$value['countNum']."','" .$qty_b4_trans. "','".$qty_af_trans."')";
+            values(" .$value['itemId']. ",'".$employeeid."','" .$header['created_date']. "','" .'IPC'. "','".$value['expected']."','".$value['countNum']."','" .$qty_b4_trans. "','".$qty_af_trans."')";
             $command1 = $connection->createCommand($sql);
             $insert1 = $command1->execute(); // execute the non-query SQL
-
+            //IPC stand for Iventory Physical Count
             //update item quantity
             $updateSql="update item set quantity=".$value['countNum']." where id=".$value['itemId'];
             $command2 = $connection->createCommand($updateSql);

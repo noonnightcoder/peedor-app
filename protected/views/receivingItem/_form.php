@@ -57,7 +57,6 @@
         <div class="col-sm-12">
             <h4>Item Count</h4>  
             <hr> 
-            <div class="container">
                 <div class="row">
                     <div class="col-sm-4">
                         <div class="col-sm-5 margin-3">
@@ -106,8 +105,8 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-7">
-                        <div class="col-sm-11" id="lasted-count">
+                    <div class="col-sm-12">
+                        <div class="col-sm-12" id="lasted-count">
                             <?php if(isset($_SESSION['latestCount'])):?>
                                 <table class="table">
                                     <thead>
@@ -142,7 +141,6 @@
                     </div>
 
                 </div>
-            </div>
         </div>
     </div>
 </div>
