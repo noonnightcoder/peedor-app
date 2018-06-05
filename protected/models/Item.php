@@ -113,7 +113,7 @@ class Item extends CActiveRecord
             'supplier_id' => Yii::t('app', 'Supplier'),
             'cost_price' => Yii::t('app', 'Buy Price'),
             'unit_price' => Yii::t('app', 'Sell Price'),
-            'quantity' => Yii::t('app', 'Quantity'),
+            'quantity' => Yii::t('app', 'Opening Quantity'),
             'reorder_level' => Yii::t('app', 'Reorder Level'),
             'location' => Yii::t('app', 'Location'),
             'allow_alt_description' => Yii::t('app', 'Alt Description'),

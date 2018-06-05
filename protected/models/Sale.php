@@ -315,9 +315,12 @@ class Sale extends CActiveRecord
     {
         // Saving sale item to sale_item table
         foreach ($items as $line => $item) {
+
             $cur_item_info = Item::model()->findbyPk($item['item_id']);
             $qty_in_stock = $cur_item_info->quantity;
 
+            // to remove
+            /*
             if (substr($item['discount'], 0, 1) == '$') {
                 $discount_amount = substr($item['discount'], 1);
                 $discount_type = '$';
@@ -325,7 +328,13 @@ class Sale extends CActiveRecord
                 $discount_amount = $item['discount'];
                 $discount_type = '%';
             }
-            $sale_item_data=array(
+            */
+
+            $discount_data = Common::Discount($item['discount']);
+            $discount_amount=$discount_data[0];
+            $discount_type=$discount_data[1];
+
+            $sale_item_data = array(
                 'sale_id'=>$sale_id,
                 'item_id'=>$item['item_id'],
                 'line'=>$line,
@@ -336,13 +345,15 @@ class Sale extends CActiveRecord
                 'discount_amount'=>$discount_amount == null ? 0 : $discount_amount,
                 'discount_type'=>$discount_type
             );
+
             $this->saveSaleTransaction(new SaleItem,$sale_item_data);
 
             $qty_afer_transaction = $qty_in_stock - $item['quantity'];
 
             $qty_buy = -$item['quantity'];
             $sale_remarks = 'POS ' . $sale_id;
-            $inventory_data=array(
+
+            $inventory_data = array(
                 'trans_items' => $item['item_id'],
                 'trans_user' => $employee_id,
                 'trans_comment' => $sale_remarks,
@@ -352,11 +363,14 @@ class Sale extends CActiveRecord
                 'qty_af_trans' => $qty_afer_transaction,
                 'trans_date' => date('Y-m-d H:i:s')
             );
+
             $this->saveSaleTransaction(new Inventory,$inventory_data);
+
             //Update quantity in expiry table
             $this->updateStockExpire($item['item_id'], $item['quantity'], $sale_id);
         }
     }
+
     public function updateItemQuantity($item_id,$tran_quantity){
         $cur_item_info=Item::model()->findByPk($item_id);
         $qty_in_stock=$cur_item_info->quantity;
@@ -364,12 +378,14 @@ class Sale extends CActiveRecord
         $cur_item_info->quantity=$qty_afer_transaction;
         $cur_item_info->save();
     }
+
     public function saveSaleTransaction($model,$data){
         foreach($data as $k=>$v){
             $model->$k=$v;
         }
         $model->save();
     }
+
     public function updateStockExpire($item_id, $quantity, $sale_id)
     {
         $sql = "SELECT `id`,`item_id`,`expire_date`,`quantity`

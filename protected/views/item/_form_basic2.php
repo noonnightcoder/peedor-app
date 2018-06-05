@@ -124,7 +124,12 @@ $option=Category::model()->buildOptions($arr,null);
                 <?= $form->textFieldControlGroup($model,'item_number',array('class'=>'span3 form-control','maxlength'=>255,'data-rel'=>'tooltip','title'=>'Twelve digit unique number associated with barcode(Universal Product Code)')); ?>
             </div>
             <div class="col-sm-6">
-                <?= $form->textFieldControlGroup($model,'isbn',array('class'=>'span3 txt-barcode','maxlength'=>32,'data-rel'=>'tooltip','title'=>'Thirteen digit unique commercial book identifier(International Standard Book Number')); ?>
+                <?= $form->textFieldControlGroup($model,'isbn',array(
+                        'class'=>'span3 txt-barcode',
+                        'maxlength'=>32,
+                        'data-rel'=>'tooltip',
+                        'title'=>'Thirteen digit unique commercial book identifier(International Standard Book Number')
+                ); ?>
             </div>
             
         </div>
@@ -148,7 +153,13 @@ $option=Category::model()->buildOptions($arr,null);
                 </div>
             </div>
             <div class="col-sm-6">
-                <?php echo $form->textFieldControlGroup($model, 'quantity', array('class' => 'span3')); ?>
+                <?php echo $form->textFieldControlGroup($model, 'quantity', array(
+                        'class' => 'span3',
+                        'data-rel'=>'tooltip',
+                        'title'=>'Opening Quantity is refer to quantity of the item on hand before you start tracking inventory for the item in the Peedorify system'
+                    )
+                );
+                ?>
             </div>
         </div>
 

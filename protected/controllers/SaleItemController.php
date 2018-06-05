@@ -620,18 +620,19 @@ class SaleItemController extends Controller
 
         ajaxRequest();
         
-        if($status==1){
+        if($status==param('sale_complete_status')){
             $sale_item=SaleItem::model()->findAll(array(
                 'condition'=>'`sale_id`=:sale_id',
                 'params'=>array(':sale_id'=>$sale_id)
             ));
+
             foreach($sale_item as $value){
                 //echo $value->quantity;
                 Sale::model()->updateItemQuantity($value->item_id,$value->quantity);
             }
         }
+
         Sale::model()->updateSaleStatus($sale_id,$status);
-        
 
     }
 
