@@ -40,25 +40,19 @@ class ReceivingItemController extends Controller
         Yii::app()->receivingCart->setMode($trans_mode);
         
         /* To check on performance issue here */
-        if ( Yii::app()->user->checkAccess('purchasereceive.read') && Yii::app()->receivingCart->getMode()=='receive' )  {
-            $this->reload(); 
-        } else if (Yii::app()->user->checkAccess('purchasereturn.read') && Yii::app()->receivingCart->getMode()=='return') {
+        if ((ckacc('purchasereceive.read') || ckacc('purchasereceive.create') || ckacc('purchasereceive.update')) && Yii::app()->receivingCart->getMode()=='receive') {
+            $this->reload();
+        } else if ((ckacc('purchasereturn.read') || ckacc('purchasereturn.create') || ckacc('purchasereturn.update'))&& Yii::app()->receivingCart->getMode()=='return') {
             $this->reload(); 
         } elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
             $this->reload(); 
         } elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
-            $this->reload();    
-        } 
-        // elseif (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
-        //     $this->reload(); 
-        // } 
-        elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='physical_count') {
-            //$this->reload(); 
-            authorized('stockcount.create');
+            $this->reload();
+        } elseif ((ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update')) && Yii::app()->receivingCart->getMode()=='physical_count') {
 
             $model = new InventoryCount('search');
 
-            $model->unsetAttributes();  // clear any default values
+            $model->unsetAttributes();
             if (isset($_GET['InventoryCount'])) {
                 $model->attributes = $_GET['InventoryCount'];
             }
@@ -75,7 +69,6 @@ class ReceivingItemController extends Controller
                 array('class' => 'change-pagesize')
             );
 
-
             $data['model'] = $model;
             $data['grid_id'] = strtolower(get_class($model)) . '-grid';
             $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
@@ -87,9 +80,7 @@ class ReceivingItemController extends Controller
             $data['data_provider'] = $model->search();
             $this->render('_list',$data);
 
-        } elseif (Yii::app()->user->checkAccess('stockcount.read') && Yii::app()->receivingCart->getMode()=='count_detail'){
-
-            authorized('stockcount.read');
+        } elseif (ckacc('stockcount.read') && Yii::app()->receivingCart->getMode()=='count_detail') {
 
             $model = InventoryCountDetail::getInventoryCountDetail($_GET['id']);
 
@@ -110,7 +101,6 @@ class ReceivingItemController extends Controller
                 array('class' => 'change-pagesize')
             );
 
-
             $data['model'] = $model;
             $data['grid_id'] = strtolower('InventoryCountDetail') . '-grid';
             $data['main_div_id'] = strtolower('InventoryCountDetail') . '_cart';
@@ -123,11 +113,9 @@ class ReceivingItemController extends Controller
             $data['count_title']=$_GET['name'];
 
             $this->render('_detail',$data);
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
         }
-    }
 
+    }
 
     public function actionInventoryCountCreate()
     {
@@ -320,15 +308,15 @@ class ReceivingItemController extends Controller
     {   
         //$data=array();
         $item_id = $_POST['ReceivingItem']['item_id'];
-        if (Yii::app()->user->checkAccess('purchase.receive') && Yii::app()->receivingCart->getMode()=='receive') {
+        if ((ckacc('purchasereceive.read') || ckacc('purchasereceive.create') || ckacc('purchasereceive.update')) && Yii::app()->receivingCart->getMode()=='receive') {
             $data['warning']=$this->addItemtoCart($item_id);
-        } else if (Yii::app()->user->checkAccess('purchase.return') && Yii::app()->receivingCart->getMode()=='return') {
+        } else if ((ckacc('purchasereturn.read') || ckacc('purchasereturn.create') || ckacc('purchasereturn.update'))&& Yii::app()->receivingCart->getMode()=='return') {
            $data['warning']=$this->addItemtoCart($item_id);
         } else if (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
            $data['warning']=$this->addItemtoCart($item_id);  
         } else if (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
            $data['warning']=$this->addItemtoCart($item_id);   
-        } else if (Yii::app()->user->checkAccess('stock.count') && Yii::app()->receivingCart->getMode()=='physical_count') {
+        } else if ((ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update')) && Yii::app()->receivingCart->getMode()=='physical_count') {
             $data['warning']=$this->addItemtoCart($item_id);     
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
@@ -508,7 +496,6 @@ class ReceivingItemController extends Controller
         $data=$this->sessionInfo($data);
         
         //echo $data['trans_header']; die();
-        
         //$data['n_item_expire']=ItemExpir::model()->count('item_id=:item_id and quantity>0',array('item_id'=>(int)$item_id));
         
         $model->comment = $data['comment'];
@@ -521,27 +508,8 @@ class ReceivingItemController extends Controller
             //$data['full_name'] = $supplier->first_name . ' ' . $supplier->last_name;
             //$data['mobile_no'] = $supplier->mobile_no;
         }
-           
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-                'bootstrap.min.js' => false,
-                'jquery-ui.min.js' => false,
-                //'jquery.mask.js' => false,
-                'EModalDlg.js'=>false,
-            );
 
-            Yii::app()->clientScript->scriptMap['jquery-ui.css'] = false; 
-            Yii::app()->clientScript->scriptMap['box.css'] = false; 
-            $this->renderPartial('index', $data, false, true);
-        } else {
-            $this->render('index', $data);
-        }
+        loadview('index','index',$data);
     }
 
     public function actionCancelRecv()

@@ -20,17 +20,11 @@
  */
 class Receiving extends CActiveRecord
 {
-    /**
-     * @return string the associated database table name
-     */
     public function tableName()
     {
         return 'receiving';
     }
 
-    /**
-     * @return array validation rules for model attributes.
-     */
     public function rules()
     {
         // NOTE: you should only define rules for those attributes that
@@ -59,9 +53,6 @@ class Receiving extends CActiveRecord
         );
     }
 
-    /**
-     * @return array relational rules.
-     */
     public function relations()
     {
         // NOTE: you may need to adjust the relation name and the related
@@ -71,9 +62,6 @@ class Receiving extends CActiveRecord
         );
     }
 
-    /**
-     * @return array customized attribute labels (name=>label)
-     */
     public function attributeLabels()
     {
         return array(
@@ -88,24 +76,11 @@ class Receiving extends CActiveRecord
         );
     }
 
-    /**
-     * Retrieves a list of models based on the current search/filter conditions.
-     *
-     * Typical usecase:
-     * - Initialize the model fields with values from filter form.
-     * - Execute this method to get CActiveDataProvider instance which will filter
-     * models according to data in model fields.
-     * - Pass data provider to CGridView, CListView or any similar widget.
-     *
-     * @return CActiveDataProvider the data provider that can return the models
-     * based on the search/filter conditions.
-     */
     public function search()
     {
         // @todo Please modify the following code to remove attributes that should not be searched.
 
         $criteria = new CDbCriteria;
-
         $criteria->compare('id', $this->id);
         $criteria->compare('receive_time', $this->receive_time, true);
         $criteria->compare('supplier_id', $this->supplier_id);
@@ -120,12 +95,6 @@ class Receiving extends CActiveRecord
         ));
     }
 
-    /**
-     * Returns the static model of the specified AR class.
-     * Please note that you should have this exact method in all your CActiveRecord descendants!
-     * @param string $className active record class name.
-     * @return Receiving the static model class
-     */
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
@@ -192,7 +161,6 @@ class Receiving extends CActiveRecord
             }
         }
     }
-
 
     protected function updateAccount($supplier_id, $purchase_amount)
     {
@@ -300,7 +268,8 @@ class Receiving extends CActiveRecord
         $trans_qty,
         $qty_b4_trans,
         $qty_af_trans
-    ) {
+    )
+    {
         $inventory = new Inventory;
         $inventory->trans_items = $item_id;
         $inventory->trans_user = $employee_id;

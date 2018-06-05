@@ -11,19 +11,6 @@
                 ));
                 ?>
                 <div align="right">
-                    <?php /*
-                        echo TbHtml::linkButton(Yii::t('app', 'Suspend Sale'), array(
-                            'color' => TbHtml::BUTTON_COLOR_WARNING,
-                            'size' => TbHtml::BUTTON_SIZE_SMALL,
-                            'icon' => 'glyphicon-pause white',
-                            'url' => Yii::app()->createUrl('SaleItem/SuspendSale/'),
-                            'class' => 'suspend-sale',
-                            //'title' => Yii::t('app', 'Suspend Sale'),
-                        ));
-                         *
-                        */
-                    ?>
-
                     <?php
                     echo TbHtml::linkButton(Yii::t('app', 'Cancel'), array(
                         'color' => TbHtml::BUTTON_COLOR_DANGER,
@@ -45,22 +32,31 @@
     <div class="row">
         <div class="sidebar-nav" id="supplier_cart">
             <?php
-            if ($trans_mode == 'physical_count' || $trans_mode = 'adjustment_out' || $trans_mode ='adjustment_iut') {
+            if ($trans_mode == 'physical_count' || $trans_mode == 'adjustment_out' || $trans_mode =='adjustment_out') {
                 $this->widget('yiiwheels.widgets.box.WhBox', array(
                     'title' => Yii::t('app', $trans_header) . ' By : ' . ucwords(Yii::app()->session['emp_fullname']),
                     'headerIcon' => 'menu-icon fa fa-users',
                     'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
-                    'content' => $this->renderPartial('partial/_employee',
-                        array('model' => $model, 'supplier' => $supplier, 'count_item' => $count_item, 'trans_mode' => $trans_mode), true)
+                    'content' => $this->renderPartial('partial/_employee', array(
+                            'model' => $model,
+                            'supplier' => $supplier,
+                            'count_item' => $count_item,
+                            'trans_mode' => $trans_mode
+                        ), true
+                    )
                 ));
+
             } else {
                 if (isset($supplier)) {
                     $this->widget('yiiwheels.widgets.box.WhBox', array(
                         'title' => Yii::t('app', 'Supplier Info'),
                         'headerIcon' => 'menu-icon fa fa-info-circle',
                         'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
-                        'content' => $this->renderPartial('partial/_supplier_selected',
-                            array('model' => $model, 'supplier' => $supplier, 'trans_mode' => $trans_mode), true),
+                        'content' => $this->renderPartial('partial/_supplier_selected', array(
+                                'model' => $model,
+                                'supplier' => $supplier,
+                                'trans_mode' => $trans_mode), true
+                        ),
                     ));
                 } else {
                     $this->widget('yiiwheels.widgets.box.WhBox', array(
@@ -68,8 +64,11 @@
                         'headerIcon' => 'menu-icon fa fa-users',
                         'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
                         'content' => $this->renderPartial('partial/_supplier',
-                            array('model' => $model, 'supplier' => $supplier, 'count_item' => $count_item, 'trans_mode' => $trans_mode),
-                            true)
+                            array('model' => $model,
+                                'supplier' => $supplier,
+                                'count_item' => $count_item,
+                                'trans_mode' => $trans_mode
+                            ), true)
                     ));
                 }
             }

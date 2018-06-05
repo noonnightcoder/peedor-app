@@ -131,6 +131,7 @@ class UnitMeasurable extends CActiveRecord
 
         return $id;
     }
+
     public function saveUnitMeasurable2($name)
     {
         $id = null;

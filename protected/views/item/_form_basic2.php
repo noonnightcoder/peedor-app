@@ -180,7 +180,6 @@ $option=Category::model()->buildOptions($arr,null);
                         <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]" onchange="showMeasurableDialog(event.target.value)">
                             <option value=""></option>
                             <?php foreach($measurable as $key=>$value):?>
-
                                 <option value="<?=$value['id']?>" <?php echo $model['unit_measurable_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
                             <?php endforeach;?>
                             <optgroup >

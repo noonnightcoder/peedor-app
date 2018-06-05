@@ -21,6 +21,7 @@
     </div>
   </div>
 </div>
+
 <?php $this->renderPartial('partial/_js',array(
   'btnSave'=>'btn-measurable',
   'name'=>'Measurable_Name',
