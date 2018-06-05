@@ -1031,7 +1031,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Update Invoice'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => '$data["status"] !== param("sale_complete_status")',
+                        'visible' => '$data["status"] !== param("sale_complete_status") && ckacc("sale.update")',
                     ),
                     'invalid' => array(
                         'label' => 'Invoice Invalid',
@@ -1044,7 +1044,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Invalid'),
                             'class' => 'btn-order btn-order-invalid btn btn-xs btn-danger',
                         ),
-                        'visible' => '$data["status"] == param("sale_submit_status") && ckacc("sale.review")',
+                        'visible' => '$data["status"] == param("sale_submit_status") && ckacc("sale.validate")',
                     ),
                     'validate' => array(
                         'label' => 'Validate',
@@ -1056,7 +1056,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Validate'),
                             'class' => 'btn-order btn-order-approve btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]== param("sale_submit_status") && ckacc("sale.review")',
+                        'visible' => '$data["status"]== param("sale_submit_status") && ckacc("sale.validate")',
                     ),
                     'reject' => array(
                         'label' => 'reject',
