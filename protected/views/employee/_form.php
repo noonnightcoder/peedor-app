@@ -95,6 +95,7 @@
                 array('header_title' => 'Sales', 'header_icon' => 'fa fa-cart-arrow-down',
                     'grid_items' => array (
                         array('grid_title' => 'Sale Order',  'permission' => 'sale', 'control_name' => 'saleorders'),
+                        array('grid_title' => 'Sale Order Delivery',  'permission' => 'shipmentorder', 'control_name' => 'shipmentorders'),
                         array('grid_title' => 'Customer Payment', 'permission' => 'customerpayment.', 'control_name' => 'customerpayments'),
                     )
                 ),

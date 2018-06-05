@@ -102,7 +102,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                             'title' => sysMenuSaleOrderToValidate(),
                     )),
                     'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('status') == 'saleItem/list/' .  param('sale_submit_status'),
-                    'visible' => ckacc('sale.read.all') || ckacc('sale.read')
+                    'visible' => ckacc('sale.validate')
                 ),
                 array('label' => sysMenuSaleOrderToInvoice(),
                     'icon' => 'menu-icon '  . sysMenuSaleOrderInvoiceIcon(),
@@ -124,7 +124,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     )),
                     'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('status') == 'saleItem/list/' .  param('sale_complete_status'),
                     //'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
-                    'visible' => ckacc('stock.count') || ckacc('stock.in')
+                    'visible' => ckacc('shipmentorder.read') || ckacc('shipmentorder.create') || ckacc('shipmentorder.update') || ckacc('shipmentorder.delete')
                 ),
             ),
         ),

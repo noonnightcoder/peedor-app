@@ -46,10 +46,11 @@ class SaleItemController extends Controller
     /** To remove change using CRUD name convension List, Create, Update, Delete */
     public function actionIndex($tran_type='1')
     {
+        authorized('sale.read') || authorized('sale.create');
+
         Yii::app()->shoppingCart->setMode($tran_type);
 
         if (ckacc('sale.create') || ckacc('sale.read') || ckacc('sale.update') || ckacc('sale.delete')) {
-
             $this->reload();
         } else {
             throw new CHttpException(403, 'You are not authorized to perform this action');
