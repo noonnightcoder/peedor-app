@@ -145,7 +145,7 @@ class PriceBook extends CActiveRecord
                    and pb.group_id=cg.id
                    AND pb.id=:id";
         $rawData = Yii::app()->db->createCommand($sql1)->queryAll(true, array(':id' => $id));
-        $sql2 = "SELECT name,i.id,cost_price,markup 'markup(%)',discount 'discount(%)',retail_price 'retail price',min_unit 'from quantity',case when max_unit=9999 then '' else max_unit end 'to quantity'
+        $sql2 = "SELECT name,i.id,cost_price,markup 'markup(%)',discount 'discount(%)',retail_price 'retail price',case when min_unit=9999 then '' else min_unit end 'from quantity',case when max_unit=9999 then '' else max_unit end 'to quantity'
                    FROM item i ,pricings p 
                    WHERE i.id=p.item_id";
              

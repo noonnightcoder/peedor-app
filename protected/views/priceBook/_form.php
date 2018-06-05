@@ -98,7 +98,7 @@
                             'pluginOptions' => array(
                                 'format' => 'yyyy-mm-dd',
                             ),
-                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['end_date']) ? $_POST['PiceBook']['end_date'] : isset($_SESSION['pricebookHeader']['end_date']) ? $_SESSION['pricebookHeader']['end_date'] : date('Y-m-d H:i:s'))
+                            'htmlOptions'=>array('value'=>isset($_POST['PiceBook']['end_date']) ? $_POST['PiceBook']['end_date'] : isset($_SESSION['pricebookHeader']['end_date']) ? $_SESSION['pricebookHeader']['end_date'] : date('2050-12-30 00:00:00'))
                         ));
                     ?>
                 </div>

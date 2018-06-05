@@ -61,7 +61,7 @@
                             </td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> textbox form-control" value="<?=$value['min_qty']?>">
+                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> textbox form-control" value="<?=$value['min_qty']<9999 ? $value['min_qty'] : ''?>">
                                 </div>
                             </td>
                             <td width="130">

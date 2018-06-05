@@ -133,7 +133,7 @@ class PriceBookController extends Controller
 
             $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date,'customer_group'=>$group_id);
            
-            $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>0,'min_qty'=>'','max_qty'=>'');
+            $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>$info['unit_price'],'min_qty'=>'','max_qty'=>'');
          
             $this->session['itemsApplied']=$data;//after update or add item to data then update the session
         }elseif($_POST['opt']==2){//remove counted item
@@ -269,7 +269,7 @@ class PriceBookController extends Controller
 
                         $invSql="insert into pricings
                         (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
-                        values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".($value['max_qty']>0 ? $value['max_qty'] : 9999).")";
+                        values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".($value['min_qty']>0 ? $value['min_qty'] : 9999).",".($value['max_qty']>0 ? $value['max_qty'] : 9999).")";
                         $command = $connection->createCommand($invSql);
                         $insert = $command->execute(); // execute the non-query SQL
                         //echo $invSql;
