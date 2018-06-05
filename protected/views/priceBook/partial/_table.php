@@ -66,7 +66,7 @@
                             </td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> textbox form-control" value="<?=$value['max_qty']?>">
+                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> textbox form-control" value="<?=$value['max_qty']<9999 ? $value['max_qty'] : ''?>">
                                 </div>
                             </td>
                             <td width="80" align="center">

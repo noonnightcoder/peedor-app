@@ -133,7 +133,7 @@ class PriceBookController extends Controller
 
             $this->session['pricebookHeader']=array('name'=>$price_book_name,'outlet'=>$outlet,'start_date'=>$start_date,'end_date'=>$end_date,'customer_group'=>$group_id);
            
-            $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>0,'min_qty'=>0,'max_qty'=>0);
+            $data[]=array('itemId'=>$itemId,'name'=>$itemName,'cost'=>$info['cost_price'],'markup'=>0,'discount'=>0,'retail_price'=>0,'min_qty'=>'','max_qty'=>'');
          
             $this->session['itemsApplied']=$data;//after update or add item to data then update the session
         }elseif($_POST['opt']==2){//remove counted item
@@ -168,8 +168,8 @@ class PriceBookController extends Controller
                         if($val=='markup' || $val=='discount'){
 
                             $data[$k]['markup']=$_POST['markup'];
-                            $retailAfMarkup=$data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100));
-                            $discount=$retailAfMarkup*($_POST['discount']/100);
+                            $retailAfMarkup=round(($data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100))),4);
+                            $discount=round(($retailAfMarkup*($_POST['discount']/100)),2);
                             $data[$k]['retail_price']=$retailAfMarkup-$discount;
                             $data[$k]['discount']=$_POST['discount'];
 
@@ -180,7 +180,7 @@ class PriceBookController extends Controller
 
                             $data[$k]['retail_price']=$_POST['retail_price'];
 
-                            $data[$k]['markup']=(($_POST['retail_price']*100)/$data[$k]['cost'])-100;//update array data
+                            $data[$k]['markup']=round(((($_POST['retail_price']*100)/$data[$k]['cost'])-100),2);//update array data
                         }
                         if($val=='min_qty'){
 
@@ -221,7 +221,7 @@ class PriceBookController extends Controller
         $this->setSession(Yii::app()->session);
         $data = $this->session['itemsApplied'];//initail data from session
         //$header=$this->session['pricebookHeader'];//initail data from session
-        echo $group_id;
+        //echo $group_id;
         //save inventory count
         $priceBook=new PriceBook;
         //$pricing=new Pricing;
@@ -269,7 +269,7 @@ class PriceBookController extends Controller
 
                         $invSql="insert into pricings
                         (price_book_id,item_id,cost,markup,discount,retail_price,min_unit,max_unit)
-                        values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".$value['max_qty'].")";
+                        values(".$price_book_id.",".$value['itemId'].",".$value['cost'].",".$value['markup'].",".$value['discount'].",".$value['retail_price'].",".$value["min_qty"].",".($value['max_qty']>0 ? $value['max_qty'] : 9999).")";
                         $command = $connection->createCommand($invSql);
                         $insert = $command->execute(); // execute the non-query SQL
                         //echo $invSql;

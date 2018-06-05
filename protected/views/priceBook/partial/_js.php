@@ -3,13 +3,15 @@
     $(document).ready(function()
     {
         $('.input-mask-date').mask('99:99:99');
-        // $('.btn-count').prop('disabled',true);
-        // $('.txt-pro-name').keyup(function(e){
-        //     $('.btn-count').prop('disabled',true);
-        // })
+         $(window).keydown(function(event){
+            if(event.keyCode == 13) {
+              event.preventDefault();
+              return false;
+            }
+          });
         $(".textbox").keypress(function (e) {
             //if the letter is not digit then display error and don't type anything
-            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+            if ((e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) && $(this).val().indexOf('.')!=-1) {
                 //display error message
                 //$("#errmsg").html("Digits Only").show().fadeOut("slow");
                 return false;

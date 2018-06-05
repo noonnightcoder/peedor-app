@@ -188,7 +188,7 @@ class Sale extends CActiveRecord
                 $trans_status = $total > 0 ? 'N' : 'R'; // If Return Sale Transaction Type = 'CHSALE' same but Transaction Status = 'R' reverse
                 
                 // Saving Sale Item (Sale & Sale Item gotta save firstly even for Suspended Sale)
-                $this->saveSaleItem($items, $sale_id, $employee_id);
+                $this->saveSaleItem($items, $sale_id, $employee_id,$status);
                 
                 // We only save Sale Payment, Account Receivable transaction and update Account (outstanding balance) of completed sale transaction
                 if ( $status == self::sale_complete_status ) {
@@ -311,7 +311,7 @@ class Sale extends CActiveRecord
     }
 
     // Saving into Sale_Item table for each item purchased
-    protected function saveSaleItem($items, $sale_id, $employee_id)
+    protected function saveSaleItem($items, $sale_id, $employee_id,$status='')
     {
         // Saving sale item to sale_item table
         foreach ($items as $line => $item) {
@@ -325,46 +325,51 @@ class Sale extends CActiveRecord
                 $discount_amount = $item['discount'];
                 $discount_type = '%';
             }
+            $sale_item_data=array(
+                'sale_id'=>$sale_id,
+                'item_id'=>$item['item_id'],
+                'line'=>$line,
+                'quantity'=>$item['quantity'],
+                'cost_price'=>$cur_item_info->cost_price,
+                'unit_price'=>$cur_item_info->unit_price,
+                'price'=>$item['price'],// The exact selling price
+                'discount_amount'=>$discount_amount == null ? 0 : $discount_amount,
+                'discount_type'=>$discount_type
+            );
+            $this->saveSaleTransaction(new SaleItem,$sale_item_data);
 
-            $sale_item = new SaleItem;
-
-            $sale_item->sale_id = $sale_id;
-            $sale_item->item_id = $item['item_id'];
-            $sale_item->line = $line;
-            $sale_item->quantity = $item['quantity'];
-            $sale_item->cost_price = $cur_item_info->cost_price;
-            $sale_item->unit_price = $cur_item_info->unit_price;
-            $sale_item->price = $item['price']; // The exact selling price
-            $sale_item->discount_amount = $discount_amount == null ? 0 : $discount_amount;
-            $sale_item->discount_type = $discount_type;
-
-            $sale_item->save();
-            
             $qty_afer_transaction = $qty_in_stock - $item['quantity'];
 
-            //Updating stock quantity
-            $cur_item_info->quantity = $qty_afer_transaction;
-            $cur_item_info->save();
-            
-            //Ramel Inventory Tracking
-            $inventory = new Inventory;
             $qty_buy = -$item['quantity'];
             $sale_remarks = 'POS ' . $sale_id;
-            $inventory->trans_items = $item['item_id'];
-            $inventory->trans_user = $employee_id;
-            $inventory->trans_comment = $sale_remarks;
-            $inventory->trans_inventory = $qty_buy;
-            $inventory->trans_qty = $item['quantity'];
-            $inventory->qty_b4_trans = $qty_in_stock;  // for tracking purpose recording the qty before operation effected
-            $inventory->qty_af_trans = $qty_afer_transaction;
-            $inventory->trans_date = date('Y-m-d H:i:s');
-            $inventory->save();
-            
+            $inventory_data=array(
+                'trans_items' => $item['item_id'],
+                'trans_user' => $employee_id,
+                'trans_comment' => $sale_remarks,
+                'trans_inventory' => $qty_buy,
+                'trans_qty' => $item['quantity'],
+                'qty_b4_trans' => $qty_in_stock , // for tracking purpose recording the qty before operation effected
+                'qty_af_trans' => $qty_afer_transaction,
+                'trans_date' => date('Y-m-d H:i:s')
+            );
+            $this->saveSaleTransaction(new Inventory,$inventory_data);
             //Update quantity in expiry table
             $this->updateStockExpire($item['item_id'], $item['quantity'], $sale_id);
         }
     }
-
+    public function updateItemQuantity($item_id,$tran_quantity){
+        $cur_item_info=Item::model()->findByPk($item_id);
+        $qty_in_stock=$cur_item_info->quantity;
+        $qty_afer_transaction=$cur_item_info->quantity-$tran_quantity;
+        $cur_item_info->quantity=$qty_afer_transaction;
+        $cur_item_info->save();
+    }
+    public function saveSaleTransaction($model,$data){
+        foreach($data as $k=>$v){
+            $model->$k=$v;
+        }
+        $model->save();
+    }
     public function updateStockExpire($item_id, $quantity, $sale_id)
     {
         $sql = "SELECT `id`,`item_id`,`expire_date`,`quantity`

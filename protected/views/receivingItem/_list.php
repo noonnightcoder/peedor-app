@@ -15,12 +15,14 @@
             
         	<!-- Admin Header layouts.admin._header -->
             <div class="page-header">
+                <?php if(Yii::app()->user->checkAccess('recivingItem.create')):?>
                 <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                     'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                     'size' => TbHtml::BUTTON_SIZE_SMALL,
                     'icon' => 'ace-icon fa fa-plus white',
-                    'url' => $this->createUrl('InventoryCountCreate'),
+                    'url' =>  $this->createUrl('InventoryCountCreate'),
                 )); ?>
+                <?php endif;?>
             </div>
             <!-- Flash message layouts.partial._flash_message -->
             <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>

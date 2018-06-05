@@ -102,21 +102,11 @@ class Category extends CActiveRecord
 
     }
 
-    public function search2()
+    public function search2($search)
     {
 
         $criteria=new CDbCriteria;
-        $cate_array=explode(',', Category::model()->buildCategoryView(Category::model()->buildTree(Category::model()->findAll()),null));
-        $data=array();
-
-        foreach($cate_array as $v){
-            $category=explode('|', $v);
-
-            if($category[0]!='' ){
-                $data[]=array('id'=>$category[1],'status'=>$category[0],'modified_date'=>$category[2],'name'=>$category[3]);
-            }
-
-        }
+        
         // $dataP=new CArrayDataProvider ("grid");
         // $dataP->setData($data);
 
@@ -125,16 +115,32 @@ class Category extends CActiveRecord
         if  ( Yii::app()->user->getState('category_archived', Yii::app()->params['defaultArchived'] ) == 'true' ) {
             $criteria->condition = 'name like :search';
             $criteria->params = array(
-                ':search' => '%' . $this->search . '%',
+                ':search' => '%' . $search . '%',
             );
         } else {
             $criteria->condition = 'status=:active_status AND (name like :search)';
             $criteria->params = array(
                 ':active_status' => Yii::app()->params['active_status'],
-                ':search' => '%' . $this->search . '%',
+                ':search' => '%' . $search . '%',
             );
         }
+        $cate_array=explode(',', Category::model()->buildCategoryView(Category::model()->buildTree(Category::model()->findAll($criteria)),null));
+        $data=array();
+        // $cate_array=array_search('Drink', $cate_array);
+        foreach($cate_array as $v){
+            $category=explode('|', $v);
 
+            if($category[0]!='' ){
+                $data[]=array('id'=>$category[1],'status'=>$category[0],'modified_date'=>$category[2],'name'=>$category[3]);
+            }
+
+        }
+        // $data=array_filter(
+        //     $data,
+        //     function ($search){
+        //         return ($search & 1);
+        //     }
+        // );
         return new CArrayDataProvider($data, array(
             'pagination' => array(
                 'pageSize' => Yii::app()->user->getState('category_page_size', Common::defaultPageSize()),
@@ -143,7 +149,6 @@ class Category extends CActiveRecord
         ));
 
     } 
-
     protected function getCategoryInfo()
     {
         return $this->name;

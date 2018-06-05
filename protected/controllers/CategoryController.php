@@ -219,7 +219,10 @@ class CategoryController extends Controller
 
 
         $model = new Category('search2');
-
+        $search='';
+        if(isset($_GET['Category'])){
+            $search = $_GET['Category']['search'];
+        }
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Category']))
             $model->attributes = $_GET['Category'];
@@ -253,7 +256,7 @@ class CategoryController extends Controller
 
         $data['grid_columns'] = Category::getCategoryColumn();
 
-        $data['data_provider'] = $model->search2();
+        $data['data_provider'] = $model->search2($search);
 
         $this->render('admin', $data);
         
