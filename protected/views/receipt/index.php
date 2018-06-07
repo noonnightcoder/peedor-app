@@ -49,7 +49,15 @@ if (isset($error_message))
 ?>
 
 <div class="container" id="receipt_wrapper">
-
+    <?php if(isset($_GET['print'])):?>
+        <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
+            'sale_id'=>$sale_id,
+            'customer_id'=>$customer_id,
+            'paid_amount'=>$paid_amount,
+            'status'=>$status
+        ))?>
+    <?php endif;?>
+    
     <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_header_view,
         array(
             'sale_id' => $sale_id,
@@ -120,7 +128,8 @@ if (isset($error_message))
     ?>
 
     <?php } ?>
-
-    <?php $this->renderPartial('//receipt/partial/_js'); ?>
+    <?php if(!isset($_GET['print'])):?>
+        <?php $this->renderPartial('//receipt/partial/_js'); ?>
+    <?php endif;?>
 
 </div>

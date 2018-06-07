@@ -4,7 +4,7 @@
 		<div class="media search-media">
 			<div class="media-left">
 				<a href="<?=Yii::app()->createUrl('Item/ItemSearch?result='.$row['id'])?>">
-					<img class="media-object" src="<?=$baseUrl.'/images/'.($row['image'] ? $row['image'] : 'noimage.gif')?>" width="120px" />
+					<img class="media-object" src="<?=$row['image'] ? $baseUrl.'/'.$row['id'].'/'.$row['image'] : Yii::app()->baseUrl.'/images/noimage.gif'?>" width="120px" />
 				</a>
 			</div>
 

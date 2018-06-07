@@ -1016,8 +1016,26 @@ class ReportColumn extends CModel
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => 'Action',
-                'template' => '<div class="btn-group">{edit}{invalid}{validate}{reject}{complete}{print}{printdo}</div>',
+                'template' => '<div class="btn-group">{view}{edit}{invalid}{validate}{reject}{complete}{print}{printdo}</div>',
                 'buttons' => array(
+                    'view' => array(
+                        'label' => 'View',
+                        'icon' => 'fa fa-eye',
+                        'url' => 'Yii::app()->createUrl("saleItem/ViewSaleInvoice",array(
+                                   "sale_id" => $data["sale_id"],
+                                   "customer_id" => $data["client_id"],
+                                   "employee_id" => $data["employee_id"],
+                                   "paid_amount" => 0,
+                                   "print"=>"false",
+                                   "status"=>$data["status"]
+                                    )
+                        )',
+                        'options' => array(
+                            'title' => Yii::t('app', 'View Invoice'),
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                        'visible' => 'true',
+                    ),
                     'edit' => array(
                         'label' => 'Edit',
                         'icon' => 'fa fa-edit',

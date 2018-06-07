@@ -88,9 +88,8 @@ $option=Category::model()->buildOptions($arr,null);
                                      
                                     <?php foreach($item_image as $i=>$image):?>
                                         <span class="ace-file-name" data-file="<?=$image['filename']?>">
-                                            <img class="middle" src='<?=Yii::app()->baseUrl.'/images/'.$image['filename']?>' height="50px">
+                                            <img class="middle" src='<?=Yii::app()->baseUrl.'/ximages/'. strtolower(get_class($model)) . '/' . $model->id.'/'.$image['filename']?>' height="50px">
                                         </span>
-                                        
                                     <?php endforeach;?>
 
                                 </span>

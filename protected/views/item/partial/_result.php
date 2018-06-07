@@ -1,4 +1,4 @@
-<?php $baseUrl = Yii::app()->baseUrl?>
+<?php $baseUrl = Yii::app()->baseUrl.'/ximages/'.strtolower(get_class($model))?>
 <h5 class="blue smaller">
 	<!-- <i class="fa fa-tags"></i> -->
 	Category: <?=$category?>

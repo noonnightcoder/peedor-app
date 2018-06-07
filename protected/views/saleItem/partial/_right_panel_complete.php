@@ -4,8 +4,10 @@
         <?php //if ($amount_change<=0) { ?>
 
         <td colspan="3" style='text-align:right'>
+            <?php $type=Yii::app()->session['tran_type'];?>
+            <?php $btn_text = $type==param('sale_submit_status') ? 'Save & Confirm' : ($type==param('sale_validate_status') ? 'Save & Validate' : ($type==param('sale_complete_status') ? 'Save & Approve' :''));?>
             <?php
-            echo TbHtml::linkButton(Yii::t('app', 'Complete Sale'), array(
+            echo TbHtml::linkButton(Yii::t('app', $btn_text), array(
                 'color' => $color_style,
                 'icon' => 'glyphicon glyphicon-off white',
                 //'url' => Yii::app()->createUrl('SaleItem/CompleteSale/'),

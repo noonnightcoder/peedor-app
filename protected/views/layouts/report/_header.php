@@ -24,6 +24,9 @@
     <?php $this->renderPartial('//layouts/report/_header_view_btn', array(
     )); ?>
 
+    <?php $this->renderPartial('//layouts/report/_header_back_btn', array(
+    )); ?>
+
     <?php $this->endWidget(); ?>
 
 </div>

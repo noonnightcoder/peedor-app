@@ -126,6 +126,12 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     //'active' => $this->id . '/' . $this->action->id == 'saleItem/approve',
                     'visible' => ckacc('shipmentorder.read') || ckacc('shipmentorder.create') || ckacc('shipmentorder.update') || ckacc('shipmentorder.delete')
                 ),
+                array('label' => sysMenuSaleCreateInvoice(),
+                    'icon' => 'menu-icon '  . sysMenuSaleAddIcon(),
+                    'url' => url('saleItem'),
+                    'active' => $this->id . '/' . $this->action->id == 'saleItem/create',
+                    'visible' => ckacc('sale.create')
+                ),
             ),
         ),
         array('label' => '<span class="menu-text">' . strtoupper(sysMenuSalePayment()) . '</span>',

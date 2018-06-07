@@ -16,14 +16,14 @@
 	<div class="col-sm-4">
 		
 		<div class="thumbnail search-thumbnail" id="big-image">
-				<img class="media-object" src="<?= baseurl() .'/images/'.($model[0]['image'] ? $model[0]['image'] : 'noimage.gif')?>" />
+				<img class="media-object" src="<?= Yii::app()->baseUrl .'/ximages/'.strtolower(get_class($item)).'/'.$model[0]['id'].'/'.($model[0]['image'] ? $model[0]['image'] : 'noimage.gif')?>" />
 		</div>
 		<div class="row">
 			<?php if(!empty($item_image)):?>
 				<?php foreach($item_image as $image):?>
 					<div class="col-sm-4">
 						<div class="thumbnail search-thumbnail">
-							<img class="media-object" style="" onclick="changeImage(event.target.src)" src="<?= baseurl() .'/images/'.$image['filename']?>" />
+							<img class="media-object" style="" onclick="changeImage(event.target.src)" src="<?= Yii::app()->baseUrl .'/ximages/'.strtolower(get_class($item)).'/'.$model[0]['id'].'/'.$image['filename']?>" />
 						</div>
 					</div>
 				<?php endforeach;?>

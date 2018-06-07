@@ -21,7 +21,7 @@
                 'title' => Yii::t('app', 'Select Customer (Optional)'),
                 'headerIcon' => 'ace-icon fa fa-users',
                 'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-                'content' => $this->renderPartial('partial/_client', array('model' => $model), true)
+                'content' => $this->renderPartial('partial/_client', array('model' => $model), true),
             ));
         }
         ?>

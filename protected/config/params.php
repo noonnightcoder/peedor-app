@@ -61,6 +61,7 @@ return array(
     'menu_sale_payment' => 'payment',
     'menu_sale_order' => 'order', // sale order shot cut to order we continuous main menu Sale
     'menu_sale_order_add' => 'order add', // sale order add => order ad
+    'menu_sale_create_invoice'=>'create invoice',
     'menu_sale_order_view' =>  'order view', // sale order view => order view
     'menu_invoicing' => 'invoicing',
     'menu_sale_order_to_validate' => 'order to validate',

@@ -272,6 +272,11 @@ function sysMenuSaleOrderAdd()
     return ucwords(t(param('menu_sale_order_add'), 'app'));
 }
 
+function sysMenuSaleCreateInvoice()
+{
+    return ucwords(t(param('menu_sale_create_invoice'), 'app'));
+}
+
 function sysMenuSaleOrderView()
 {
     return ucwords(t(param('menu_sale_order_view'), 'app'));

@@ -265,7 +265,7 @@ class ItemController extends Controller
 
                         if($model->id>0){//check if item id exist after saved to table
                             //save image
-                            $this->multipleImageUpload($model->id,$item_image,'image','images');
+                            $this->multipleImageUpload($model->id,$model,'image');
 
                             $connection = Yii::app()->db;//initial connection to run raw sql 
                             if(isset($_POST['Item']['tags'])){
@@ -379,13 +379,13 @@ class ItemController extends Controller
                                     if($img!=''){
                                         $cur_image=ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
                                         foreach($cur_image as $img){
-                                            $img_file=Yii::app()->basePath.'/../images/'.$img['filename'];
+                                            $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
                                             if(file_exists($img_file)){
                                                 unlink($img_file);
                                             }
                                         }
                                         ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$id)));
-                                        $this->multipleImageUpload($id,$item_image,'image','images');
+                                        $this->multipleImageUpload($id,$model,'image');
                                         break;
                                     }
                                 }
@@ -1057,6 +1057,7 @@ class ItemController extends Controller
 
     public function actionGetProductByCategory($category_id,$view){
         $this->setSession(Yii::app()->session);
+        $model=new Item;
         if($category_id>0){
             $this->session['result']=Item::model()->itemByCategory($category_id);
             $this->session['cate_arr']=Category::model()->findAll('id = :category_id ORDER by id desc',array(':category_id'=>$category_id)
@@ -1067,6 +1068,7 @@ class ItemController extends Controller
         }
         $paretn_cate=Category::model()->getCategoryById($category_id);
         $arr = Category::model()->buildTree($this->session['cate_arr'],$paretn_cate['parent_id']);
+        $data['model']=$model;
         $data['data']=$this->session['result'];
         $data['view']=$this->session['view'];
         $data['category']=Category::model()->buildCategoryBreadcrumb($arr,null,$paretn_cate['name']!=NULL ? $paretn_cate['name'].' / ' :'',$category_id);
@@ -1076,28 +1078,34 @@ class ItemController extends Controller
     public function actionItemSearch($result){
 
         $model=Item::model()->itemDetail($result);
+        $item=new Item;
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
         $this->render('_result_detail',array(
             'model'=>$model,
+            'item'=>$item,
             'item_image'=>$item_image
         ));
     }
 
-    public function multipleImageUpload($item_id,$model,$attr_name,$path_to_save){
+    public function multipleImageUpload($item_id,$model,$attr_name){
 
         $msg=null;
         $images=CUploadedFile::getInstancesByName($attr_name);
         if(isset($images) && count($images)>0){
             
             foreach($images as $img=>$pic){
-               $rnd = rand(0,9999);  // generate random number between 0-9999
-               $fileName = "{$rnd}-{$pic}"; 
-               $save_pic=$pic->saveAs(Yii::app()->basePath.'/../'.$path_to_save.'/'.$fileName);
+                $rnd = rand(0,9999);  // generate random number between 0-9999
+                $fileName = "{$rnd}-{$pic}"; 
+                $path = Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $model->id;
+                $name = $path . '/' . $fileName;
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0777, true);
+                }
+
+                $save_pic=$pic->saveAs($name);  // image will uplode to rootDirectory/ximages/{ModelName}/{Model->id}
+               //$save_pic=$pic->saveAs(Yii::app()->basePath.'/../'.$path_to_save.'/'.$fileName);
                if($save_pic){
-                    // $model->item_id=$item_id;
-                    // $model->filename=$fileName;
-                    // $model->save();
-                    //$msg=true;
                     ItemImage::model()->saveItemImage($item_id,$fileName);
                }else{
                     //$msg=false;                    

@@ -24,7 +24,7 @@ class SaleItemController extends Controller
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
                 'actions' => array('Add', 'RemoveCustomer', 'SetComment', 'DeleteItem', 'AddItem',
-                    'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale',
+                    'ViewSaleInvoice','EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelSale',
                     'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer',
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
@@ -392,6 +392,33 @@ class SaleItemController extends Controller
         exit;
     }
 
+    public function actionViewSaleInvoice($sale_id, $customer_id,$employee_id, $paid_amount,$status)
+    {
+        authorized('sale.view') || authorized('sale.create') ;
+
+        $this->layout = '//layouts/column_receipt';
+            Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
+            //Yii::app()->shoppingCart->clearAll();
+            Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+            $data=$this->sessionInfo();
+
+            $data['sale_id'] = $sale_id;
+            $data['customer_id'] = $customer_id;
+            $data['paid_amount'] = $paid_amount;
+            $data['status'] = $status;
+
+            //Sale::model()->updatePrinter($sale_id,$status);
+
+            if (count($data['items']) == 0) {
+                $data['error_message'] = 'Sale Transaction Failed';
+            }
+
+            $this->renderRecipe($data);
+            Yii::app()->shoppingCart->clearAll();
+
+    }
+
     public function actionEditSale($sale_id, $customer_id, $paid_amount)
     {
         authorized('sale.update') || authorized('sale.create') ;
@@ -728,7 +755,7 @@ class SaleItemController extends Controller
         $data['receipt_footer_view'] = null;*/
 
         $data['tran_type'] = getTransType();
-        $data['sale_header'] = $data['tran_type']=='1'? 'View Sale Invoice':'View Sale Order';
+        $data['sale_header'] = $data['tran_type']=='1'? 'Create Sale Invoice':'Create Sale Order';
         $data['sale_header_icon'] = $data['tran_type']=='1'? sysMenuInvoiceIcon():sysMenuSaleIcon();
         $data['sale_save_url'] = $data['tran_type']=='1'? 'saleItem/CompleteSale':'saleItem/CompleteSale';
         $data['sale_redirect_url'] = $data['tran_type']=='1'? 'saleItem/SaleInvoice':'saleItem/SaleOrder';
@@ -835,6 +862,11 @@ class SaleItemController extends Controller
     protected function renderRecipe($data)
     {
         $this->render('//receipt/'. 'index', $data);
+    }
+
+    protected function renderViewRecipe($data)
+    {
+        $this->renderPartial('//receipt/'. 'index_view', $data);
     }
 
     private function invoiceData() {
