@@ -282,11 +282,6 @@ function sysMenuSaleOrderView()
     return ucwords(t(param('menu_sale_order_view'), 'app'));
 }
 
-function sysMenuInvoicing()
-{
-    return ucwords(t(param('menu_invoicing'), 'app'));
-}
-
 function sysMenuSaleOrderToValidate()
 {
     return ucwords(t(param('menu_sale_order_to_validate'), 'app'));
@@ -300,6 +295,21 @@ function sysMenuSaleOrderToInvoice()
 function sysMenuSaleOrderToDeliver()
 {
     return ucwords(t(param('menu_sale_order_to_deliver'), 'app'));
+}
+
+function sysMenuInvoice()
+{
+    return ucwords(t(param('menu_invoice'), 'app'));
+}
+
+function sysMenuInvoiceAdd()
+{
+    return ucwords(t(param('menu_invoice_add'), 'app'));
+}
+
+function sysMenuInvoiceView()
+{
+    return ucwords(t(param('menu_invoice_view'), 'app'));
 }
 
 function sysMenuSaleAdd()
@@ -320,11 +330,6 @@ function sysMenuSaleApprove()
 function sysMenuSalePayment()
 {
     return ucwords(t(param('menu_sale_payment'), 'app'));
-}
-
-function sysMenuInvoice()
-{
-    return ucwords(t(param('menu_invoicing'), 'app'));
 }
 
 function sysMenuReport()

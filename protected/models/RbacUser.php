@@ -33,6 +33,7 @@ class RbacUser extends CActiveRecord
     public $pricebooks;
     public $categories;
     public $saleorders;
+    public $invoices;
     public $customerpayments;
     public $customers;
     public $suppliers;
