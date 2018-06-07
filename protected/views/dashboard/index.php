@@ -22,7 +22,7 @@ $this->breadcrumbs=array(
                         <div class="col-xs-12 widget-container-col summary_header">
                             <div class="infobox infobox-green">
                                 <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-shopping-cart"></i>
+                                    <i class="ace-icon fa fa-money"></i>
                                 </div>
                                 <div class="infobox-data">
                                     <span class="infobox-data-number"><?=  $report->totalSaleSPD(); ?></span>
@@ -30,13 +30,37 @@ $this->breadcrumbs=array(
                                 </div>
                             </div>
 
-                            <div class="infobox infobox-blue">
+                            <div class="infobox infobox-purple">
                                 <div class="infobox-icon">
-                                    <i class="ace-icon fa fa-shopping-cart"></i>
+                                    <i class="ace-icon fa fa-money"></i>
                                 </div>
 
                                 <div class="infobox-data">
-                                    <span class="infobox-data-number"><?php echo $report->totalSale2Y(),Common::getDecimalPlace(); ?></span>
+                                    <span class="infobox-data-number"><?= $report->totalSale2Date('WEEK'),Common::getDecimalPlace(); ?></span>
+
+                                    <div class="infobox-content">This Week Sales</div>
+                                </div>
+                            </div>
+
+                            <div class="infobox infobox-pink">
+                                <div class="infobox-icon">
+                                    <i class="ace-icon fa fa-money"></i>
+                                </div>
+
+                                <div class="infobox-data">
+                                    <span class="infobox-data-number"><?= $report->totalSale2Date('MONTH'),Common::getDecimalPlace(); ?></span>
+
+                                    <div class="infobox-content">This Month Sales</div>
+                                </div>
+                            </div>
+
+                            <div class="infobox infobox-blue">
+                                <div class="infobox-icon">
+                                    <i class="ace-icon fa fa-money"></i>
+                                </div>
+
+                                <div class="infobox-data">
+                                    <span class="infobox-data-number"><?= $report->totalSale2Y(),Common::getDecimalPlace(); ?></span>
 
                                     <div class="infobox-content">This Year Sales</div>
                                 </div>

@@ -22,6 +22,22 @@ class Dashboard extends CFormModel
         return number_format($result,Common::getDecimalPlace());
     }
 
+    public function totalSale2Date($date_func)
+    {
+        $sql = "SELECT IFNULL(SUM(sub_total),0) sale_amount
+                FROM v_sale
+                WHERE $date_func(sale_time) = $date_func(CURDATE())
+                AND `status`=:status";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':status' => param('sale_complete_status')));
+
+        foreach ($result as $record) {
+            $result = $record['sale_amount'];
+        }
+
+        return number_format($result,Common::getDecimalPlace());
+    }
+
     public function totalSale2Y()
     {
         $sql = "SELECT IFNULL(SUM(sub_total),0) sale_amount
@@ -29,7 +45,7 @@ class Dashboard extends CFormModel
                 WHERE YEAR(sale_time) = YEAR(CURDATE())
                 AND `status`=:status";
 
-        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':status' => Yii::app()->params['sale_complete_status']));
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':status' => param('sale_complete_status')));
 
         foreach ($result as $record) {
             $result = $record['sale_amount'];
@@ -84,7 +100,6 @@ class Dashboard extends CFormModel
 
         return $result;
     }
-
 
     public function saleDailyChart()
     {
