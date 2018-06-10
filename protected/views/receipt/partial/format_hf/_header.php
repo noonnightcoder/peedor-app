@@ -14,9 +14,9 @@
 
 </div>
 
-<div class="container text-center">
+<div class="container text-center" style="">
     <div class="col-lg-4 col-lg-offset-4">
-        <h2>វិក្កយបត្រ <br>
-            Invoice</h2>
+        <h2><span class="receipt-title-kh-font"><?=$receipt_header_title_kh?></span> <br>
+            <?=$receipt_header_title_en?></h2>
     </div>
 </div>

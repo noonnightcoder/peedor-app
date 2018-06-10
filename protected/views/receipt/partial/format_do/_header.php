@@ -16,6 +16,6 @@
 
 <div class="container text-center">
     <div class="col-lg-4 col-lg-offset-4">
-        <h2>ប័ណ្ណបញ្ជូនទំនិញ</h2>
+        <h2 class="receipt-title-kh-font">ប័ណ្ណបញ្ជូនទំនិញ</h2>
     </div>
 </div>

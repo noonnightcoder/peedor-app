@@ -1027,7 +1027,7 @@ class ReportColumn extends CModel
                                    "employee_id" => $data["employee_id"],
                                    "paid_amount" => 0,
                                    "print"=>"false",
-                                   "status"=>$data["status"]
+                                   "tran_type"=>$data["status"]
                                     )
                         )',
                         'options' => array(
@@ -1043,6 +1043,7 @@ class ReportColumn extends CModel
                                    "sale_id" => $data["sale_id"],
                                    "customer_id" => $data["client_id"],
                                    "paid_amount" => 0,
+                                   "tran_type"=>$data["status"]
                                     )
                         )',
                         'options' => array(
@@ -1056,7 +1057,7 @@ class ReportColumn extends CModel
                         'icon' => 'fa fa-times',
                         'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                             "sale_id" => $data["sale_id"], 
-                            "status" => param("sale_reject_status")))',
+                            "tran_type" => param("sale_reject_status")))',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'Invalid'),
@@ -1069,7 +1070,7 @@ class ReportColumn extends CModel
                         'icon' => sysMenuSaleOrderToValidateIcon(),
                         'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
-                                    "status" => param("sale_validate_status")))',
+                                    "tran_type" => param("sale_validate_status")))',
                         'options' => array(
                             'title' => Yii::t('app', 'Validate'),
                             'class' => 'btn-order btn-order-approve btn btn-xs btn-success',
@@ -1081,7 +1082,7 @@ class ReportColumn extends CModel
                         'icon' => 'fa fa-ban',
                         'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                             "sale_id"=>$data["sale_id"], 
-                            "status" => param("sale_reject_status")))',
+                            "tran_type" => param("sale_reject_status")))',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'Reject'),
@@ -1094,7 +1095,7 @@ class ReportColumn extends CModel
                         'icon' => sysMenuSaleOrderInvoiceIcon(),
                         'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
-                                    "status" => param("sale_complete_status")))',
+                                    "tran_type" => param("sale_complete_status")))',
                         /*'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
                                     "status" => param("sale_complete_status"),
@@ -1113,7 +1114,7 @@ class ReportColumn extends CModel
                         'icon' => 'fa fa-print',
                         'url' => 'Yii::app()->createUrl("saleItem/printing", array(
                                     "sale_id" => $data["sale_id"],
-                                    "status" => param("sale_print_status"),
+                                    "tran_type" => param("sale_print_status"),
                                     "format" => "format_hf",
                                 )
                          )',
@@ -1129,7 +1130,7 @@ class ReportColumn extends CModel
                         'icon' => 'fa fa-book',
                         'url' => 'Yii::app()->createUrl("saleItem/printing", array(
                                     "sale_id"=>$data["sale_id"],
-                                    "status" => param("sale_do_status"),
+                                    "tran_type" => param("sale_do_status"),
                                     "format"=>"format_do",
                                 )
                          )',

@@ -23,7 +23,6 @@
             </div>
         -->
         <?php //} ?>
-
         </tbody>
     </table>
 <?php } ?>

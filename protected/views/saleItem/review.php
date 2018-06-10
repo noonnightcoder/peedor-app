@@ -1,7 +1,7 @@
 <?php
 $this->breadcrumbs=array(
-    'Sale Orders' => array('create'),
-    'Create',
+    isset($_GET['title']) ? $_GET['title'] : 'Sale Order' ,
+    'List',
 );
 ?>
 

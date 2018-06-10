@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    'Sales'=>array('index'),
+    'Sales Order'=>array('index'),
     'Sale Order',
 );
 ?>

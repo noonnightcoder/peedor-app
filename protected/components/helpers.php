@@ -379,12 +379,17 @@ function sysMenuPriceTier()
 
 function sysMenuSaleIcon()
 {
-    return 'fa fa-usd';
+    return 'fa fa-cart-plus';
 }
 
 function sysMenuSaleAddIcon()
 {
     return 'fa fa-pencil pink';
+}
+
+function sysMenuInvoiceAddIcon()
+{
+    return 'fa fa-file-text-o pink';
 }
 
 function sysMenuSaleViewIcon()
@@ -399,7 +404,7 @@ function sysMenuSalePaymentIcon()
 
 function sysMenuInvoiceIcon()
 {
-    return 'fa fa-usd';
+    return 'fa fa-file-text-o';
 }
 
 function sysMenuItemIcon()

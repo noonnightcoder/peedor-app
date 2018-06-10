@@ -1,7 +1,10 @@
 <?php
+$tran_type=isset($_GET['tran_type']) ? $_GET['tran_type'] : 2;
+$breadcrumb_text=$tran_type==param('sale_submit_status') && $this->action->id!='create' ? 'Order To Validate' : ($tran_type==param('sale_validate_status')  && $this->action->id!='create' ? 'Sale To Invoice' : ($tran_type==param('sale_validate_status') && $this->action->id=='create' ? 'Invoice' : 'Sale Order'));
+
 $this->breadcrumbs=array(
-    'Sale Orders' => array('#'),
-    'Create' => array('create'),
+    $breadcrumb_text => array($url_back),
+    $this->action->id=='create' ? 'Create' : 'Edit',
 );
 ?>
 

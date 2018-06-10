@@ -155,14 +155,16 @@ class Sale extends CActiveRecord
             $old_total = $this->getOldSaleTotal($in_sale_id);
 
             //Rolling back the Sale Total of old / previous Sale & Saving Change / Edit Sale into [account receivable] table
-            if ($account && $in_sale_id) {
-                AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $in_sale_id, -$old_total,$trans_date,'Edit Sale', 'CHASALE','R');
-                Account::model()->withdrawAccountBal($account,$old_total);
-            }
+            // if ($account && $in_sale_id) {
+            //     AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $in_sale_id, -$old_total,$trans_date,'Edit Sale', 'CHASALE','R');
+            //     Account::model()->withdrawAccountBal($account,$old_total);
+            // }
             
             //Saving existing Sale Item to Inventory table and removing it out
             $this->updateSale($in_sale_id, $employee_id,$trans_date);
-
+            if($status==1){
+                $this->updateInvoiceItemQuantity($in_sale_id);
+            }
             //Create new sequence for invoice number every 1st day of the year
             $new_id=$this->createSequence(date(invNumInterval()));
 
@@ -272,7 +274,7 @@ class Sale extends CActiveRecord
     }
 
     // In Sale Update Transaction
-    protected function updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id)
+    protected function updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id,$tran_type=2)
     {
             $sql = "INSERT INTO inventory(trans_items,trans_user,trans_date,trans_comment,trans_inventory,t)
                     SELECT si.item_id,:employee_id trans_user,:trans_date trans_date,:trans_comment trans_comment,si.quantity
@@ -299,17 +301,22 @@ class Sale extends CActiveRecord
             $command->execute();
 
             // Rolling back previous sale Item Quantity to stock
-            $sql1 = "UPDATE item t1 
-                        INNER JOIN sale_item t2 
-                             ON t1.id = t2.item_id
-                    SET t1.quantity = t1.quantity+t2.quantity
-                    WHERE t2.sale_id=:sale_id";
 
-            $command1 = Yii::app()->db->createCommand($sql1);
-            $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
-            $command1->execute();
+            
     }
 
+
+    protected function updateInvoiceItemQuantity($in_sale_id){
+        $sql1 = "UPDATE item t1 
+                    INNER JOIN sale_item t2 
+                         ON t1.id = t2.item_id
+                SET t1.quantity = t1.quantity+t2.quantity
+                WHERE t2.sale_id=:sale_id";
+
+        $command1 = Yii::app()->db->createCommand($sql1);
+        $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
+        $command1->execute();
+    }
     // Saving into Sale_Item table for each item purchased
     protected function saveSaleItem($items, $sale_id, $employee_id,$status='')
     {
@@ -370,7 +377,15 @@ class Sale extends CActiveRecord
             $this->updateStockExpire($item['item_id'], $item['quantity'], $sale_id);
         }
     }
-
+    public function getPreviouseSaleItem($sale_id,$item_id,$previous_qty){
+        $sql="select sale_id,:previous_qty-quantity quantity,item_id
+        from sale_item
+        where sale_id=:sale_id
+        and item_id=:item_id";
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(':sale_id' => $sale_id, ':item_id' => $item_id,':previous_qty'=>$previous_qty));
+            return $result;
+    }
     public function updateItemQuantity($item_id,$tran_quantity){
         $cur_item_info=Item::model()->findByPk($item_id);
         $qty_in_stock=$cur_item_info->quantity;
@@ -378,7 +393,13 @@ class Sale extends CActiveRecord
         $cur_item_info->quantity=$qty_afer_transaction;
         $cur_item_info->save();
     }
-
+    public function rolebackItemQuantity($item_id,$tran_quantity){
+        $cur_item_info=Item::model()->findByPk($item_id);
+        $qty_in_stock=$cur_item_info->quantity;
+        $qty_afer_transaction=$cur_item_info->quantity+$tran_quantity;
+        $cur_item_info->quantity=$qty_afer_transaction;
+        $cur_item_info->save();
+    }
     public function saveSaleTransaction($model,$data){
         foreach($data as $k=>$v){
             $model->$k=$v;

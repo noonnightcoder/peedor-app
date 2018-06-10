@@ -230,10 +230,10 @@
 		}
 		$('#id-input-file-3').ace_file_input({
 					style: 'well',
-					btn_choose: 'Drop files here or click to choose',
+					btn_choose: 'Click to choose image to upload',
 					btn_change: null,
 					no_icon: 'ace-icon fa fa-cloud-upload',
-					droppable: true,
+					droppable: false,
 					thumbnail: 'small',//large | fit
 					maxSize: 2000000,//bytes
 					allowExt: ["jpeg", "jpg", "png", "gif"],

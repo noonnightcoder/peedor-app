@@ -38,6 +38,9 @@
         margin: 0 15px;
     }
 
+    .receipt-title-kh-font{
+        font-family: 'khmer os';
+    }
 </style>
 
 <?php
@@ -49,14 +52,14 @@ if (isset($error_message))
 ?>
 
 <div class="container" id="receipt_wrapper">
-    <?php if(isset($_GET['print'])):?>
+    <?php //if(isset($_GET['print'])):?>
         <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
             'sale_id'=>$sale_id,
             'customer_id'=>$customer_id,
-            'paid_amount'=>$paid_amount,
-            'status'=>$status
+            'paid_amount'=>isset($paid_amount) ? $paid_amount : 0,
+            'status'=>isset($status) ? $status : Yii::app()->session['tran_type']
         ))?>
-    <?php endif;?>
+    <?php //endif;?>
     
     <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_header_view,
         array(
@@ -71,7 +74,9 @@ if (isset($error_message))
             'cust_notes' => $cust_notes,
             'salerep_fullname' => $salerep_fullname,
             'salerep_tel' => $salerep_tel,
-            'invoice_no_prefix' => $invoice_no_prefix
+            'invoice_no_prefix' => $invoice_no_prefix,
+            'receipt_header_title_kh'=>$receipt_header_title_kh,
+            'receipt_header_title_en'=>$receipt_header_title_en
         ));
     ?>
 
@@ -88,7 +93,7 @@ if (isset($error_message))
             'cust_notes' => $cust_notes,
             'salerep_fullname' => $salerep_fullname,
             'salerep_tel' => $salerep_tel,
-            'invoice_no_prefix' => $invoice_no_prefix
+            'invoice_no_prefix' => $invoice_no_prefix,
         ));
     ?>
 
@@ -128,7 +133,7 @@ if (isset($error_message))
     ?>
 
     <?php } ?>
-    <?php if(!isset($_GET['print'])):?>
+    <?php if(isset($_GET['print']) && $_GET['print'] == 1):?>
         <?php $this->renderPartial('//receipt/partial/_js'); ?>
     <?php endif;?>
 

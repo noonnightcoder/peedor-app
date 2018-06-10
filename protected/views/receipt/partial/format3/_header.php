@@ -57,7 +57,7 @@
 
 <div class="container text-center">
     <div class="col-lg-4 col-lg-offset-4">
-        <h4><u>វិកយបត្រអាករ</u></h4>
+        <h4><u class="receipt-title-kh-font">វិកយបត្រអាករ</u></h4>
     </div>
     <div class="col-lg-4 col-lg-offset-4">
         <h4><u>TAX INVOICE</u></h4>

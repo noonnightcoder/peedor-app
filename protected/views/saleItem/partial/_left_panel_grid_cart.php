@@ -1,5 +1,8 @@
 <div class="grid-view" id="grid_cart">
-
+    <?php 
+    //echo json_encode(Yii::app()->session['pre']);
+    // echo json_encode(Yii::app()->session['deleted_item']);
+    ?>
     <table class="table table-hover table-condensed">
         <thead>
         <tr><th><?php echo Yii::t('app', 'Item Name'); ?></th>
@@ -68,7 +71,7 @@
                         'color'=>TbHtml::BUTTON_COLOR_DANGER,
                         'size' => TbHtml::BUTTON_SIZE_MINI,
                         'icon' => 'glyphicon glyphicon-trash ',
-                        'url' => array('DeleteItem', 'item_id' => $item_id),
+                        'url' => array('DeleteItem', 'item_id' => $item_id,'quantity'=>$item['quantity']),
                         'class' => 'delete-item',
                         'title' => Yii::t('app', 'Remove'),
                     ));
