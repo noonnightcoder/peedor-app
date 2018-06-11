@@ -159,12 +159,14 @@ class Sale extends CActiveRecord
             //     AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $in_sale_id, -$old_total,$trans_date,'Edit Sale', 'CHASALE','R');
             //     Account::model()->withdrawAccountBal($account,$old_total);
             // }
-            
-            //Saving existing Sale Item to Inventory table and removing it out
-            $this->updateSale($in_sale_id, $employee_id,$trans_date);
-            if($status==1){
-                $this->updateInvoiceItemQuantity($in_sale_id);
+            if($status==param('sale_complete_status')){
+
+                $this->rolebackItemQuantity($in_sale_id);
+                //Saving existing Sale Item to Inventory table and removing it out
+                $this->updateSale($in_sale_id, $employee_id,$trans_date);   
             }
+            
+            
             //Create new sequence for invoice number every 1st day of the year
             $new_id=$this->createSequence(date(invNumInterval()));
 
@@ -306,7 +308,7 @@ class Sale extends CActiveRecord
     }
 
 
-    protected function updateInvoiceItemQuantity($in_sale_id){
+    protected function rolebackItemQuantity($in_sale_id){
         $sql1 = "UPDATE item t1 
                     INNER JOIN sale_item t2 
                          ON t1.id = t2.item_id
@@ -393,13 +395,7 @@ class Sale extends CActiveRecord
         $cur_item_info->quantity=$qty_afer_transaction;
         $cur_item_info->save();
     }
-    public function rolebackItemQuantity($item_id,$tran_quantity){
-        $cur_item_info=Item::model()->findByPk($item_id);
-        $qty_in_stock=$cur_item_info->quantity;
-        $qty_afer_transaction=$cur_item_info->quantity+$tran_quantity;
-        $cur_item_info->quantity=$qty_afer_transaction;
-        $cur_item_info->save();
-    }
+    
     public function saveSaleTransaction($model,$data){
         foreach($data as $k=>$v){
             $model->$k=$v;

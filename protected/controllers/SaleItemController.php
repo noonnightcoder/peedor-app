@@ -63,7 +63,7 @@ class SaleItemController extends Controller
 
         authorized('sale.create');
         $this->setSession(Yii::app()->session);
-        unset($this->session['pre']);
+        //unset($this->session['pre']);
         $this->reload();
     }
 
@@ -72,24 +72,24 @@ class SaleItemController extends Controller
         Yii::app()->shoppingCart->setMode($tran_type);
 
         authorized('sale.create');
-        $this->setSession(Yii::app()->session);
-        unset($this->session['deleted_item']);
-        if($tran_type==param('sale_complete_status')){
+        //$this->setSession(Yii::app()->session);
+        //unset($this->session['deleted_item']);
+        // if($tran_type==param('sale_complete_status')){
             
-            $data['cart']['item']=$this->session['cart'];
-            $data['cart']['sale_id']=$sale_id;
-            // $this->session['previous_cart']=$data;
-            $previous_cart=array();
-            if(count($data['cart']['item'])>0){
-                foreach($data as $cart){
-                    foreach($cart['item'] as $item){
-                        $previous_cart+=array($item['item_id']=>array('sale_id'=>$cart['sale_id'],'item_id'=>$item['item_id'],'quantity'=>0)); 
-                    }
-                }
-                $this->session['pre']=$previous_cart;
-            } 
+        //     $data['cart']['item']=$this->session['cart'];
+        //     $data['cart']['sale_id']=$sale_id;
+        //     // $this->session['previous_cart']=$data;
+        //     $previous_cart=array();
+        //     if(!empty($data['cart']['item']) or $data['cart']['item'] !=null){
+        //         foreach($data as $cart){
+        //             foreach($cart['item'] as $item){
+        //                 $previous_cart+=array($item['item_id']=>array('sale_id'=>$cart['sale_id'],'item_id'=>$item['item_id'],'quantity'=>0)); 
+        //             }
+        //         }
+        //         $this->session['pre']=$previous_cart;
+        //     } 
               
-        }
+        // }
         $this->reload();
     }
 
@@ -112,7 +112,7 @@ class SaleItemController extends Controller
             //$data['warning'] = 'Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory!';
             Yii::app()->user->setFlash('warning', 'Desired Quantity is Insufficient. You can still process the sale, but check your inventory!');
         }
-        $this->editSaleTranType1($item_id,1);  
+        //$this->editSaleTranType1($item_id,1);  
         $this->reload($data);
       
     }
@@ -134,11 +134,11 @@ class SaleItemController extends Controller
         ajaxRequestPost();
 
         //new line added on 10/06/2018 by snak
-        $this->setSession(Yii::app()->session);
-        $deleted_item=$this->session['deleted_item'];//to store deleted item to be roleback quantity
-        $deleted_item[]=array('item_id'=>$item_id,'quantity'=>$quantity);//add delete item info into array
-        $this->session['deleted_item']=$deleted_item;//pass deleted_item to store in session
-        //end ==================================================
+        // $this->setSession(Yii::app()->session);
+        // $deleted_item=$this->session['deleted_item'];//to store deleted item to be roleback quantity
+        // $deleted_item[]=array('item_id'=>$item_id,'quantity'=>$quantity);//add delete item info into array
+        // $this->session['deleted_item']=$deleted_item;//pass deleted_item to store in session
+        // //end ==================================================
         Yii::app()->shoppingCart->deleteItem($item_id);
         
         
@@ -164,7 +164,7 @@ class SaleItemController extends Controller
             // $price_tier_id=Yii::app()->session['pricebook'];
             // echo "<script>alert('$price_tier_id')</script>";
             // Yii::app()->shoppingCart->setPriceTier($price_tier_id);
-            $this->editSaleTranType1($item_id,$quantity);
+            // $this->editSaleTranType1($item_id,$quantity);
             Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
             Yii::app()->shoppingCart->f5ItemPriceTier();
             
@@ -732,30 +732,42 @@ class SaleItemController extends Controller
         if($ajax==true){
             ajaxRequest();
         }
-        $this->setSession(Yii::app()->session);
-        $deleted_item=$this->session['deleted_item'];
-        if($tran_type==param('sale_complete_status')){
-            $item_id='';
+        // $this->setSession(Yii::app()->session);
+        // $deleted_item=$this->session['deleted_item'];
+        // if($tran_type==param('sale_complete_status')){
+        //     $item_id='';
             
-            if(count($this->session['pre'])>0){
-                foreach($this->session['pre'] as $key=>$value){
-                    Sale::model()->updateItemQuantity($value['item_id'],$value['quantity']);
-                }    
-            }else{
-                $sale_item=SaleItem::model()->findAll(array(
-                            'condition'=>'`sale_id`=:sale_id',
-                            'params'=>array(
-                                ':sale_id'=>$sale_id
-                            )
-                        ));    
-                foreach($sale_item as $sale){
-                    Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
-                }
-            }
-            if(!empty($deleted_item) or $deleted_item != null){
-                foreach ($deleted_item as $d => $i) {
-                    Sale::model()->rolebackItemQuantity($i['item_id'],$i['quantity']);
-                }
+        //     if(count($this->session['pre'])>0){
+        //         foreach($this->session['pre'] as $key=>$value){
+        //             Sale::model()->updateItemQuantity($value['item_id'],$value['quantity']);
+        //         }    
+        //     }else{
+        //         $sale_item=SaleItem::model()->findAll(array(
+        //                     'condition'=>'`sale_id`=:sale_id',
+        //                     'params'=>array(
+        //                         ':sale_id'=>$sale_id
+        //                     )
+        //                 ));    
+        //         foreach($sale_item as $sale){
+        //             Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
+        //         }
+        //     }
+        //     if(!empty($deleted_item) or $deleted_item != null){
+        //         foreach ($deleted_item as $d => $i) {
+        //             Sale::model()->rolebackItemQuantity($i['item_id'],$i['quantity']);
+        //         }
+        //     }
+        // }
+        // Sale::model()->updateInvoiceItemQuantity($sale_id);
+        if($tran_type==param('sale_complete_status')){
+            $sale_item=SaleItem::model()->findAll(array(
+                                'condition'=>'`sale_id`=:sale_id',
+                                'params'=>array(
+                                    ':sale_id'=>$sale_id
+                                )
+                            ));    
+            foreach($sale_item as $sale){
+                Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
             }
         }
         Sale::model()->updateSaleStatus($sale_id,$tran_type);
@@ -856,7 +868,7 @@ class SaleItemController extends Controller
         $data['tran_type'] = getTransType();
         $tran_type=isset($_GET['tran_type']) ? $_GET['tran_type'] : $data['tran_type'];
         $data['url_back']='saleItem/list?tran_type='.$tran_type.'&user_id='.getEmployeeId().'&title='.$data['title'];
-        $data['sale_header'] = $data['tran_type']==param('sale_complete_status')? 'Create Invoice':'Create Sale Order';
+        $data['sale_header'] = isset($_GET['sale_id']) ? ($data['tran_type']==param('sale_complete_status') ? 'Edit Invoice':'Edit Sale Order') : ($data['tran_type']==param('sale_complete_status') ? 'Create Invoice':'Create Sale Order');
         $data['sale_header_icon'] = $data['tran_type']==param('sale_complete_status')? sysMenuInvoiceIcon():sysMenuSaleIcon();
         $data['sale_save_url'] = $data['tran_type']==param('sale_complete_status') ? 'saleItem/CompleteSale':'saleItem/CompleteSale';
         $data['sale_redirect_url'] = $data['tran_type']==param('sale_complete_status')? 'saleItem/SaleInvoice':'saleItem/SaleOrder';
