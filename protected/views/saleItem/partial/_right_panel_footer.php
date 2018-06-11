@@ -56,17 +56,19 @@
                 </span>
             </td>
         </tr>
-        <tr>
-            <td colspan="2" align="right">
-                Choose Invoice Format
-                <?php echo $form->dropDownList($model,'employee_id', Common::arrayFactory('invoice_format'),
-                    array(
-                        'id'=>'invoice_format_id',
-                        'options'=>array(Yii::app()->shoppingCart->getInvoiceFormat()=>array('selected'=>true),
-                        ))
-                );?>
-            </td>
-        </tr>
+        <?php if($_GET['tran_type']==1):?>
+            <tr>
+                <td colspan="2" align="right">
+                    Choose Invoice Format
+                    <?php echo $form->dropDownList($model,'employee_id', Common::arrayFactory('invoice_format'),
+                        array(
+                            'id'=>'invoice_format_id',
+                            'options'=>array(Yii::app()->shoppingCart->getInvoiceFormat()=>array('selected'=>true),
+                            ))
+                    );?>
+                </td>
+            </tr>
+        <?php endif;?>
         </tbody>
     </table>
 
