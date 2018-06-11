@@ -1,6 +1,6 @@
 <?php
-$tran_type=isset($_GET['tran_type']) ? $_GET['tran_type'] : 2;
-$breadcrumb_text=$tran_type==param('sale_submit_status') && isset($_GET['sale_id']) ? 'Order To Validate' : ($tran_type==param('sale_validate_status')  && isset($_GET['sale_id']) ? 'Sale To Invoice' : ($tran_type==param('sale_validate_status') && isset($_GET['sale_id']) ? 'Invoice' : 'Sale Order'));
+$tran_type=getTransType();
+$breadcrumb_text=$tran_type==param('sale_submit_status') && isset($_GET['sale_id']) ? 'Order To Validate' : ($tran_type==param('sale_validate_status')  && isset($_GET['sale_id']) ? 'Sale To Invoice' : ($tran_type==param('sale_complete_status') ? 'Invoice' : 'Sale Order'));
 
 $this->breadcrumbs=array(
     $breadcrumb_text => array($url_back),

@@ -208,7 +208,8 @@ class PriceBookController extends Controller
         $data['outlet'] = $outlet;
         $data['items']=$this->session['itemsApplied'];
         $data['customer_group'] = $customer_group;
-        $this->renderPartial('partial/_table',$data);
+        // $this->renderPartial('partial/_table',$data);
+        loadview('priceBook','partial/_table',$data);
         
     }
 

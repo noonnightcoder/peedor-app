@@ -41,7 +41,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 array('label' => sysMenuPriceBookView(),
                     'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
                     'url' => url('priceBook/index'),
-                    'active' => $this->id . '/' . $this->action->id == 'priceBook/index',
+                    'active' => $this->id . '/' . $this->action->id == 'priceBook/index' || $this->id . '/' .$this->action->id == 'priceBook/create',
                     'visible' => ckacc('pricebook.create') || ckacc('pricebook.read') || ckacc('pricebook.update') || ckacc('pricebook.delete'),
                 ),
                 array('label' => sysMenuItemFinder(),
@@ -68,7 +68,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . strtoupper(sysMenuPurchase()) . '</span>',
             'icon' => 'menu-icon '  . sysMenuPurchaseIcon(),
             'url' => url('receivingItem/index'),
-            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index',
+            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' && $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('trans_mode') != 'receivingItem/index/physical_count',
             'visible' => ckacc('purchasereceive.read') || ckacc('purchasereturn.read') || ckacc('purchase.update') || ckacc('purchase.delete') || ckacc('purchase.receive') || ckacc('purchase.return'),
             'items' => array(
                 array('label' => sysMenuPurchaseReceive(),

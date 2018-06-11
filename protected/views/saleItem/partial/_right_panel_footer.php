@@ -56,7 +56,7 @@
                 </span>
             </td>
         </tr>
-        <?php if($_GET['tran_type']==1):?>
+        <?php if(getTransType()==param('sale_complete_status')):?>
             <tr>
                 <td colspan="2" align="right">
                     Choose Invoice Format

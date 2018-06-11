@@ -364,70 +364,69 @@ class ItemController extends Controller
             $model->attributes = $_POST['Item'];
             $this->session['tags']=$_POST['Item']['tags'];
 
-            // if ($model->validate()) {
-            //     $transaction = Yii::app()->db->beginTransaction();
-            //     try {
-            //         if ($model->save()) {
+            if ($model->validate()) {
+                $transaction = Yii::app()->db->beginTransaction();
+                try {
+                    if ($model->save()) {
 
-            //             if (isset($_POST['Item']['count_interval'])) {
-            //                 Item::model()->saveItemCounSchedule($model->id);
-            //             }
+                        if (isset($_POST['Item']['count_interval'])) {
+                            Item::model()->saveItemCounSchedule($model->id);
+                        }
                                
-            //             if($model->id>0){//check if item id exist after saved to table
-            //                 if(isset($_FILES['image'])){
-            //                     foreach($_FILES['image']['name'] as $img){
-            //                         if($img!=''){
-            //                             $cur_image=ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
-            //                             foreach($cur_image as $img){
-            //                                 $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
-            //                                 if(file_exists($img_file)){
-            //                                     unlink($img_file);
-            //                                 }
-            //                             }
-            //                             ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$id)));
-            //                             $this->multipleImageUpload($id,$model,'image');
-            //                             break;
-            //                         }
-            //                     }
-            //                 }
-            //                 $connection = Yii::app()->db;//initial connection to run raw sql 
-            //                 if(isset($_POST['Item']['tags'])){
-            //                     $sql="DELETE t,pt
-            //                     FROM tag t JOIN product_tag pt
-            //                     ON t.id=pt.tag_id JOIN item i
-            //                     ON pt.product_id=i.id
-            //                     WHERE i.id=".$id;
-            //                     $command = $connection->createCommand($sql);
-            //                     $command->execute();
-            //                     $str = $_POST['Item']['tags'];
-            //                     $tagsArry=explode(",",$str);
-            //                     foreach($tagsArry as $key=>$value){//loop data from price quantity
+                        if($model->id>0){//check if item id exist after saved to table
+                            if(isset($_FILES['image'])){
+                                foreach($_FILES['image']['name'] as $img){
+                                    if($img!=''){
+                                        $cur_image=ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
+                                        foreach($cur_image as $img){
+                                            $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
+                                            if(file_exists($img_file)){
+                                                unlink($img_file);
+                                            }
+                                        }
+                                        ItemImage::model()->deleteAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$id)));
+                                        $this->multipleImageUpload($id,$model,'image');
+                                        break;
+                                    }
+                                }
+                            }
+                            $connection = Yii::app()->db;//initial connection to run raw sql 
+                            if(isset($_POST['Item']['tags'])){
+                                $sql="DELETE t,pt
+                                FROM tag t JOIN product_tag pt
+                                ON t.id=pt.tag_id JOIN item i
+                                ON pt.product_id=i.id
+                                WHERE i.id=".$id;
+                                $command = $connection->createCommand($sql);
+                                $command->execute();
+                                $str = $_POST['Item']['tags'];
+                                $tagsArry=explode(",",$str);
+                                foreach($tagsArry as $key=>$value){//loop data from price quantity
                                     
-            //                         $tagID=Tag::model()->saveTag($value);
+                                    $tagID=Tag::model()->saveTag($value);
                                     
-            //                         $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
-            //                         //echo $ptagSql;
-            //                         $command = $connection->createCommand($ptagSql);
-            //                         $insertProductTag = $command->execute(); // execute the non-query SQL
-            //                         // }
+                                    $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
+                                    //echo $ptagSql;
+                                    $command = $connection->createCommand($ptagSql);
+                                    $insertProductTag = $command->execute(); // execute the non-query SQL
+                                    // }
                                     
-            //                     }
-            //                 }
-            //             }
-            //             unset($this->session['tags']);
-            //             $this->addImages($model);
-            //             $transaction->commit();
-            //             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-            //                 'Item Id : <strong>' . $model->name . '</strong> have been saved successfully!');
-            //             $this->redirect(array('admin'));
-            //         }
-            //     } catch (Exception $e) {
-            //         $transaction->rollback();
-            //         //print_r($e);
-            //         Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
-            //     }
-            // }
-            print_r($_FILES['image']);
+                                }
+                            }
+                        }
+                        unset($this->session['tags']);
+                        $this->addImages($model);
+                        $transaction->commit();
+                        Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+                            'Item Id : <strong>' . $model->name . '</strong> have been saved successfully!');
+                        $this->redirect(array('admin'));
+                    }
+                } catch (Exception $e) {
+                    $transaction->rollback();
+                    //print_r($e);
+                    Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
+                }
+            }
         }
 
         $data['model'] = $model;

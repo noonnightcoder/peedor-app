@@ -18,7 +18,6 @@
             }
         });
         
-        
         var itemId=$('.txt-pro-id').val();
         $('.txt-count'+itemId).keypress(function(e){
             if(e.which == 13) {
@@ -27,6 +26,7 @@
             }
         })
     });
+
     function priceBook(opt,idx){
         var url='<?=Yii::app()->createUrl('/PriceBook/AddItem')?>';
         var start_date=$('#PriceBook_start_date').val();
@@ -52,8 +52,23 @@
         }
         
     }
+
+    function updateOnChange(itemId,val,idx){
+        refreshItem(itemId,val,idx)
+    }
+
+    function updateOnEnter(itemId,val,idx){
+        
+        var x = event.which || event.keyCode
+
+        if(x==13){
+            refreshItem(itemId,val,idx)    
+        }
+        
+    }
+
     var timer=null;
-    function updateItem(itemId,val,idx){
+    function refreshItem(itemId,val,idx){
         var opt=3;
         var url='<?=Yii::app()->createUrl('/PriceBook/AddItem')?>';
         var markup=$('.txt-markup'+idx).val();
@@ -63,46 +78,40 @@
         var retail_price=$('.txt-retail-price'+idx).val();
         var min_qty=$('.txt-min-qty'+idx).val();
         var max_qty=$('.txt-max-qty'+idx).val();
-        var x = event.which || event.keyCode
-        if(x == 13){
-            //clearTimeout(timer)
-            //timer=setTimeout(function(){
-            $.ajax({url:url,
-                type : 'post',
-                data:{opt,itemId,markup,markupall,discount,discountall,retail_price,min_qty,max_qty,val,idx},
-                beforeSend: function() { $('.waiting').slideDown(); },
-                complete: function() { $('.waiting').slideUp(); },
-                success : function(data) {
-                    $('#lasted-count').html(data);
-                    switch(val){
-                        case 'markup':
-                        $('#discount'+idx).focus();
-                        $('#discount'+idx).select();
-                        break;
-                        case 'discount':
-                        $('#retail_price'+idx).focus();
-                        $('#retail_price'+idx).select();
-                        break;
-                        case 'retail_price':
-                        $('#min_qty'+idx).focus();
-                        $('#min_qty'+idx).select();
-                        break;
-                        case 'min_qty':
-                        $('#max_qty'+idx).focus();
-                        $('#max_qty'+idx).select();
-                        break;
-                        case 'max_qty':
-                        $('.txt-pro-name').focus();
-                        //$('#markup'+idx).select();
-                        break;
-                    }
-                }
-            });
-                //},700   
-            //)
-        }
         
+        $.ajax({url:url,
+            type : 'post',
+            data:{opt,itemId,markup,markupall,discount,discountall,retail_price,min_qty,max_qty,val,idx},
+            beforeSend: function() { $('.waiting').slideDown(); },
+            complete: function() { $('.waiting').slideUp(); },
+            success : function(data) {
+                $('#lasted-count').html(data);
+                switch(val){
+                    case 'markup':
+                    $('.txt-discount'+idx).focus();
+                    $('.txt-discount'+idx).select();
+                    break;
+                    case 'discount':
+                    $('.txt-retail-price'+idx).focus();
+                    $('.txt-retail-price'+idx).select();
+                    break;
+                    case 'retail_price':
+                    $('.txt-min-qty'+idx).focus();
+                    $('.txt-min-qty'+idx).select();
+                    break;
+                    case 'min_qty':
+                    $('.txt-max-qty'+idx).focus();
+                    $('.txt-max-qty'+idx).select();
+                    break;
+                    case 'max_qty':
+                    $('.txt-pro-name').focus();
+                    //$('#markup'+idx).select();
+                    break;
+                }
+            }
+        });
     }
+
     function validateBeforeSubmit(){
         var price_book_name=$('#PriceBook_name').val();
         var url = '<?=Yii::app()->createUrl('/PriceBook/SavePriceBook')?>';

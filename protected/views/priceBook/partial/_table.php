@@ -38,12 +38,12 @@
                             <td><?=$value['cost']?></td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'markup',<?=$key?>)" class="txt-markup<?=$key?> textbox form-control" value="<?=$value['markup']?>">
+                                    <input type="text" onchange="updateOnChange(<?=$value['itemId']?>,'markup',<?=$key?>)" onkeyup="updateOnEnter(<?=$value['itemId']?>,'markup',<?=$key?>)" class="txt-markup<?=$key?> textbox form-control" value="<?=$value['markup']?>">
                                 </div>
                             </td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'discount',<?=$key?>)" class="txt-discount<?=$key?> textbox form-control" value="<?=$value['discount']?>">
+                                    <input type="text" onchange="updateOnChange(<?=$value['itemId']?>,'discount',<?=$key?>)" class="txt-discount<?=$key?> textbox form-control" value="<?=$value['discount']?>">
                                 </div>
                             </td>
                             <td width="130">
@@ -56,17 +56,17 @@
                             		
                             	 ?>
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'retail_price',<?=$key?>)" class="txt-retail-price<?=$key?> textbox form-control" value="<?=$value['retail_price']?>">
+                                    <input type="text" onchange="updateOnChange(<?=$value['itemId']?>,'retail_price',<?=$key?>)" class="txt-retail-price<?=$key?> textbox form-control" value="<?=$value['retail_price']?>">
                                 </div>
                             </td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> textbox form-control" value="<?=$value['min_qty']<9999 ? $value['min_qty'] : ''?>">
+                                    <input type="text" onchange="updateOnChange(<?=$value['itemId']?>,'min_qty',<?=$key?>)" class="txt-min-qty<?=$key?> textbox form-control" value="<?=$value['min_qty']<9999 ? $value['min_qty'] : ''?>">
                                 </div>
                             </td>
                             <td width="130">
                                 <div class="col-sm-12">
-                                    <input type="text" onkeyup="updateItem(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> textbox form-control" value="<?=$value['max_qty']<9999 ? $value['max_qty'] : ''?>">
+                                    <input type="text" onchange="updateOnChange(<?=$value['itemId']?>,'max_qty',<?=$key?>)" class="txt-max-qty<?=$key?> textbox form-control" value="<?=$value['max_qty']<9999 ? $value['max_qty'] : ''?>">
                                 </div>
                             </td>
                             <td width="80" align="center">

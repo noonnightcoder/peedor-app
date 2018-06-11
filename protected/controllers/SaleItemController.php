@@ -63,7 +63,6 @@ class SaleItemController extends Controller
 
         authorized('sale.create');
         $this->setSession(Yii::app()->session);
-        //unset($this->session['pre']);
         $this->reload();
     }
 
@@ -72,24 +71,6 @@ class SaleItemController extends Controller
         Yii::app()->shoppingCart->setMode($tran_type);
 
         authorized('sale.create');
-        //$this->setSession(Yii::app()->session);
-        //unset($this->session['deleted_item']);
-        // if($tran_type==param('sale_complete_status')){
-            
-        //     $data['cart']['item']=$this->session['cart'];
-        //     $data['cart']['sale_id']=$sale_id;
-        //     // $this->session['previous_cart']=$data;
-        //     $previous_cart=array();
-        //     if(!empty($data['cart']['item']) or $data['cart']['item'] !=null){
-        //         foreach($data as $cart){
-        //             foreach($cart['item'] as $item){
-        //                 $previous_cart+=array($item['item_id']=>array('sale_id'=>$cart['sale_id'],'item_id'=>$item['item_id'],'quantity'=>0)); 
-        //             }
-        //         }
-        //         $this->session['pre']=$previous_cart;
-        //     } 
-              
-        // }
         $this->reload();
     }
 
@@ -98,10 +79,7 @@ class SaleItemController extends Controller
        
         $data=array();
         $item_id = $_POST['SaleItem']['item_id'];
-        // $cart=$this->session['cart'];
-        // if(array_key_exists($item_id, $cart)){
-        //     $this->editSaleTranType1($item_id,1);//update item quantity if item already exist
-        // }
+        
         
         if (!Yii::app()->shoppingCart->addItem($item_id)) {
             $data['warning'] = 'Unable to add item to sale';
@@ -112,10 +90,10 @@ class SaleItemController extends Controller
             //$data['warning'] = 'Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory!';
             Yii::app()->user->setFlash('warning', 'Desired Quantity is Insufficient. You can still process the sale, but check your inventory!');
         }
-        //$this->editSaleTranType1($item_id,1);  
         $this->reload($data);
       
-    }
+
+}
 
     public function actionIndexPara($item_id)
     {
@@ -133,15 +111,8 @@ class SaleItemController extends Controller
     {
         ajaxRequestPost();
 
-        //new line added on 10/06/2018 by snak
-        // $this->setSession(Yii::app()->session);
-        // $deleted_item=$this->session['deleted_item'];//to store deleted item to be roleback quantity
-        // $deleted_item[]=array('item_id'=>$item_id,'quantity'=>$quantity);//add delete item info into array
-        // $this->session['deleted_item']=$deleted_item;//pass deleted_item to store in session
-        // //end ==================================================
         Yii::app()->shoppingCart->deleteItem($item_id);
-        
-        
+
         $this->reload();
     }
 
@@ -164,7 +135,6 @@ class SaleItemController extends Controller
             // $price_tier_id=Yii::app()->session['pricebook'];
             // echo "<script>alert('$price_tier_id')</script>";
             // Yii::app()->shoppingCart->setPriceTier($price_tier_id);
-            // $this->editSaleTranType1($item_id,$quantity);
             Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
             Yii::app()->shoppingCart->f5ItemPriceTier();
             
@@ -179,40 +149,7 @@ class SaleItemController extends Controller
         $this->reload($data);
 
     }
-    protected function editSaleTranType1($item_id,$quantity){
-        $this->setSession(Yii::app()->session);
-        $pre=$this->session['pre'];
-        $cart=$this->session['cart'];
-        $sale_id=0;
-        if(!empty($pre) or $pre != null){
-            foreach($pre as $i){
-                $sale_id=$i['sale_id'];//get sale id
-                break;
-            }
-            if(array_key_exists($item_id, $pre)){//check if item is already exist in previous cart
-               
-                if(strtolower($this->action->id)=='edititem'){//check if action is edit
-                    $quantity=$quantity;//if action is edit then set quantity equal to quantity 
-                }elseif(strtolower($this->action->id=='add')){//if action is edit then set quantity equal to quantity in cart plus one
-                    //when user add new item to sale system automatic add quantity = 1
-                    $quantity=$cart[$item_id]['quantity']+1;
-                }
-                //get previous sale item function use to get previous quantity to be calculate when
-                //user made adjustment on any item when in editing mode
-                $item=Sale::model()->getPreviouseSaleItem($pre[$item_id]['sale_id'],$item_id,$quantity);
-                //set previous quantity equal to new quantity
-                //Ex. if the previous sale of item A=4 then user increase quantity to 5
-                //then we will get 5-4 = 1 to update in item quantity
-                $pre[$item_id]['quantity']=isset($item[0]['quantity']) ? $item[0]['quantity'] : $quantity;
-                
-            }else{
-                //if item not exist in previous sale this is happen when user edit invoice and add some new item
-                //so we need to add that item to this cart to merge it as one transaction
-                $pre+=array($cart[$item_id]['item_id']=>array('sale_id'=>$sale_id,'item_id'=>$cart[$item_id]['item_id'],'quantity'=>$cart[$item_id]['quantity'])); 
-            }
-            $this->session['pre']=$pre;
-        }      
-    }
+
     public function actionAddPayment()
     {
         ajaxRequestPost();
@@ -399,8 +336,7 @@ class SaleItemController extends Controller
                 $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
                 $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
                 $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term']);
-                $data['receipt_header_title_kh']=$this->getInvoiceTitle($data['tran_type'],'kh');
-                $data['receipt_header_title_en']=$this->getInvoiceTitle($data['tran_type'],'en');
+                
 
                 if($data['tran_type']==param('sale_complete_status')){
 
@@ -418,18 +354,17 @@ class SaleItemController extends Controller
                 Yii::app()->shoppingCart->clearAll();
             }
         }
-
-        unset($this->session['pre']);
-        unset($this->session['deleted_item']);
     }
-    private function getInvoiceTitle($status,$lang)
+
+    private function getInvoiceTitle($status,$lang='en')
     {
         if($lang=='kh'){
-            return $status==param('sale_submit_status') ? 'ការបញ្ជាទិញ' : 'វិក័យប័ត្រ';    
+            return $status==param('sale_submit_status') || $status==param('sale_validate_status') ? 'ការបញ្ជាទិញ' : 'វិក័យប័ត្រ';    
         }else{
-             return $status==param('sale_submit_status') ? 'Sale Order' : 'Invoice';    
+             return $status==param('sale_submit_status')  || $status==param('sale_validate_status') ? 'Sale Order' : 'Invoice'.$status;    
         }
     }
+
     public function actionListSuspendedSale()
     {
         $model = new Sale;
@@ -489,8 +424,8 @@ class SaleItemController extends Controller
             $data['customer_id'] = $customer_id;
             $data['paid_amount'] = $paid_amount;
             $data['status'] = $tran_type;
-            $data['receipt_header_title_kh']=$this->getInvoiceTitle($tran_type,'kh');
-                $data['receipt_header_title_en']=$this->getInvoiceTitle($tran_type,'en');
+            $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'kh');
+                $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'en');
 
             //Sale::model()->updatePrinter($sale_id,$status);
 
@@ -860,7 +795,8 @@ class SaleItemController extends Controller
         $data['invoice_footer_view'] = '_footer';
         $data['invoice_no_prefix'] = Common::getInvoicePrefix();
         //$data['invoice_folder'] = invFolderPath();
-
+        $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'kh');
+        $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'en');
         /*$data['receipt_header_view'] =  '_header';
         $data['receipt_body_view'] =  '_body';
         $data['receipt_footer_view'] = null;*/
