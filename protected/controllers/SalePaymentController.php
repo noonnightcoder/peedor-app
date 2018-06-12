@@ -46,10 +46,6 @@ class SalePaymentController extends Controller
         );
     }
 
-    /**
-     * Displays a particular model.
-     * @param integer $id the ID of the model to be displayed
-     */
     public function actionView($id)
     {
         $this->render('view', array(
@@ -112,7 +108,7 @@ class SalePaymentController extends Controller
 
     public function actionIndex()
     {
-        authorized('sale.payment');
+        authorized('customerpayment.create') || authorized('customerpayment.read');
 
         $this->reload();
 
