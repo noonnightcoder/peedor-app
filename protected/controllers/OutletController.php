@@ -104,7 +104,14 @@ class OutletController extends Controller
     {
         ajaxRequestPost();
 
-        Outlet::model()->updateStatus($id,$status);
+        $outlet = Outlet::model()->findByPk((int)$id);
+
+        if ($outlet->id == 1) {
+            throw new CHttpException(400, 'Cannot delete default outlet system. Please do not repeat this request again.');
+        } else {
+            Outlet::model()->updateStatus($id, $status);
+        }
+
         if (!isset($_GET['ajax'])) {
             $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
         }
@@ -170,10 +177,6 @@ class OutletController extends Controller
 		return $model;
 	}
 
-	/**
-	 * Performs the AJAX validation.
-	 * @param Outlet $model the model to be validated
-	 */
 	protected function performAjaxValidation($model)
 	{
 		if (isset($_POST['ajax']) && $_POST['ajax']==='outlet-form') {

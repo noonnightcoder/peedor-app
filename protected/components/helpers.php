@@ -347,6 +347,11 @@ function sysMenuCustomer()
     return ucwords(t(param('menu_customer'), 'app'));
 }
 
+function sysMenuCustomerGroup()
+{
+    return ucwords(t(param('menu_customer_group'), 'app'));
+}
+
 function sysMenuEmployee()
 {
     return ucwords(t(param('menu_employee'), 'app'));
@@ -493,6 +498,11 @@ function sysMenuReportStockIcon()
 function sysMenuCustomerIcon()
 {
     return 'fa fa-user';
+}
+
+function sysMenuCustomerGroupIcon()
+{
+    return 'fa fa-users';
 }
 
 function sysMenuEmployeeIcon()

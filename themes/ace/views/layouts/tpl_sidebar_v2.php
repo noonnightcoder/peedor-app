@@ -274,13 +274,19 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . strtoupper(Yii::t('app', 'PIM')) . '</span>',
             'icon' => 'menu-icon '  . 'menu-icon fa fa-group',
             'url' => url('client/admin'),
-            'active' => $this->id == 'employee' || $this->id == 'supplier' || $this->id == 'client' || $this->id == 'publisher',
+            'active' => $this->id == 'employee' || $this->id == 'supplier' || $this->id == 'client' || $this->id == 'publisher' || $this->id == 'customerGroup',
             'visible' => ckacc('customer.read') || ckacc('supplier.read') || ckacc('employee.read'),
             'items' => array(
                 array('label' => sysMenuCustomer(),
                     'icon' => 'menu-icon '  . sysMenuCustomerIcon(),
                     'url' => url('client/admin'),
                     'active' => $this->id == 'client',
+                    'visible' => ckacc('customer.read') || ckacc('customer.create') || ckacc('customer.update') || ckacc('client.delete')
+                ),
+                array('label' => sysMenuCustomerGroup(),
+                    'icon' => 'menu-icon '  . sysMenuCustomerGroupIcon(),
+                    'url' => url('customerGroup/admin'),
+                    'active' => $this->id == 'customerGroup',
                     'visible' => ckacc('customer.read') || ckacc('customer.create') || ckacc('customer.update') || ckacc('client.delete')
                 ),
                 array('label' => sysMenuEmployee(),
@@ -302,11 +308,13 @@ $this->widget('bootstrap.widgets.TbNav', array(
             'active' => strtolower($this->id) == 'default' || $this->id == 'store' || $this->id == 'settings' || $this->id == 'outlet' || $this->id == 'user' || $this->id == 'tax' || $this->id == 'role' || $this->id == 'employee' ,
             'visible' => ckacc('setting.outlet') || ckacc('setting.tax') || ckacc('setting.user'),
             'items' => array(
+                    /*
                 array('label' => sysMenuPriceTier(),
                     'icon' => 'menu-icon '  . sysMenuPriceTierIcon(),
                     'url' => url('priceTier/admin'),
                     'active' => $this->id . '/' . $this->action->id == 'priceTier/admin',
                     'visible' => ckacc('store.update')),
+                 */
                 //array('label'=>Yii::t('app','Location'),'icon'=> TbHtml::ICON_MAP_MARKER, 'url'=>url('location/admin'), 'active'=>$this->id .'/'. $this->action->id=='location/admin','visible'=>ckacc('store.update')),
                 array('label' => Yii::t('app', 'Outlet'),
                     'icon' => 'menu-icon '  . 'fa fa-building',

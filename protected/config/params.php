@@ -74,6 +74,7 @@ return array(
     'menu_report_sale_hourly' => 'sale hourly',
     'menu_report_sale_summary' => 'sale summary',
     'menu_customer' => 'customer',
+    'menu_customer_group' => 'customer group',
     'menu_employee' => 'employee',
     'menu_supplier' => 'supplier',
     'menu_setting' => 'setting',
