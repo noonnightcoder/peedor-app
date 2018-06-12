@@ -258,7 +258,7 @@ class Report extends CFormModel
 
         if ($this->search_id !== '') {
 
-            $sql = "SELECT sale_id,sale_time,client_name,0 current_balance,
+            $sql = "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                         employee_name,employee_id,client_id,quantity,sub_total,
                         discount_amount,vat_amount,total,paid,balance,status,status_f
                     FROM v_sale_invoice_2
