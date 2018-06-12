@@ -412,9 +412,9 @@ class SaleItemController extends Controller
 
     public function actionViewSaleInvoice($sale_id, $customer_id,$employee_id, $paid_amount,$tran_type)
     {
-        authorized('sale.view') || authorized('sale.create') ;
+            authorized('sale.read') || authorized('sale.create') ;
 
-        $this->layout = '//layouts/column_receipt';
+            $this->layout = '//layouts/column_receipt';
             Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
             //Yii::app()->shoppingCart->clearAll();
             Yii::app()->shoppingCart->copyEntireSale($sale_id);
