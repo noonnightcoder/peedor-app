@@ -80,10 +80,10 @@ class PriceBookController extends Controller
     public function actionView($id,$name=''){
         authorized('pricebook.read');
         $priceBook=PriceBook::getPriceBookDetail($id,$name);
-        var_dump($priceBook);
+
         $data['data']=$priceBook;
         $data['count_title']='pricebook';
-        //$this->render('_pricebookDetail',$data);
+        $this->render('_pricebookDetail',$data);
     }
 
     public function actionCreate() {
@@ -429,3 +429,4 @@ class PriceBookController extends Controller
     }
 
 }
+

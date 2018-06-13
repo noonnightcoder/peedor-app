@@ -50,7 +50,9 @@
 									<?php foreach($header['item'] as $k=>$item):?>
 									<tr>
 										<?php foreach($item as $col=>$row):?>
-											<th><?=strtoupper($col)?></th>
+											<?php if($col!='id'):?>
+												<th><?=strtoupper($col)?></th>
+											<?php endif;?>
 										<?php endforeach;?>
 									</tr>
 									<?php break;?>
@@ -63,7 +65,9 @@
 												<?php if($col=='name'):?>
 													<td><a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$item['id']?>"><?=$row?></a></td>	
 												<?php else:?>
-												<td><?=$row?></td>
+													<?php if($col!='id'):?>
+														<td><?=$row?></td>
+													<?php endif;?>
 												<?php endif?>
 											<?php endforeach;?>
 										</tr>
