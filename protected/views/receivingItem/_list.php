@@ -15,7 +15,7 @@
             
         	<!-- Admin Header layouts.admin._header -->
             <div class="page-header">
-                <?php if(Yii::app()->user->checkAccess('recivingItem.create')):?>
+                <?php if(Yii::app()->user->checkAccess('stockcount.create')):?>
                 <?php echo TbHtml::linkButton(Yii::t('app', 'Add New'), array(
                     'color' => TbHtml::BUTTON_COLOR_PRIMARY,
                     'size' => TbHtml::BUTTON_SIZE_SMALL,
