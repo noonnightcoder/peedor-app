@@ -169,6 +169,8 @@ class TaxController extends Controller
         $data['page_size'] = $page_size;
         $data['create_url'] = 'create';
 
+        $data['create_permission']='setting.tax';
+        
         $data['grid_columns'] = Tax::getTaxColumns();
 
         $data['data_provider'] = $model->search();

@@ -172,7 +172,7 @@ class OutletController extends Controller
         $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
         $data['page_size'] = $page_size;
         $data['create_url'] = 'create';
-
+        $data['create_permission']='setting.outlet';
         $data['grid_columns'] = Outlet::getOutletColumns();
 
         $data['data_provider'] = $model->search();
