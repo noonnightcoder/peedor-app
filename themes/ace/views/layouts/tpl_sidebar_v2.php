@@ -316,8 +316,8 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'visible' => ckacc('store.update')),
                  */
                 //array('label'=>Yii::t('app','Location'),'icon'=> TbHtml::ICON_MAP_MARKER, 'url'=>url('location/admin'), 'active'=>$this->id .'/'. $this->action->id=='location/admin','visible'=>ckacc('store.update')),
-                array('label' => Yii::t('app', 'Outlet'),
-                    'icon' => 'menu-icon '  . 'fa fa-building',
+                array('label' => sysMenuOutlet(),
+                    'icon' => 'menu-icon '  . sysMenuOutletIcon(),
                     'url' => url('outlet/admin'),
                     'active' => $this->id == 'outlet',
                 ),

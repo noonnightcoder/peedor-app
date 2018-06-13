@@ -382,6 +382,11 @@ function sysMenuPriceTier()
     return ucwords(t(param('menu_price_tier'), 'app'));
 }
 
+function sysMenuOutlet()
+{
+    return ucwords(t(param('menu_outlet'), 'app'));
+}
+
 function sysMenuSaleIcon()
 {
     return 'fa fa-cart-plus';
@@ -554,6 +559,12 @@ function sysMenuSaleOrderInvoiceIcon()
 {
     return 'fa fa-paper-plane-o';
 }
+
+function sysMenuOutletIcon()
+{
+    return 'fa fa-home';
+}
+
 
 function sysMenuUserIcon()
 {

@@ -82,4 +82,5 @@ return array(
     'menu_price_tier' => 'price tier',
     'menu_authorization' => 'authorization',
     'menu_about_us' => 'about us',
+    'menu_outlet' => 'Branch',
 );
