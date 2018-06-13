@@ -304,6 +304,7 @@ class Employee extends CActiveRecord
                         'options' => array(
                             'class' => 'btn btn-xs btn-info',
                         ),
+                        'visible' => 'Yii::app()->user->checkAccess("employee.update")',
                     ),
                     'delete' => array(
                         'label' => 'Delete',

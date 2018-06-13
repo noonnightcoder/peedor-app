@@ -352,7 +352,7 @@ class ReportController extends Controller
     public function actionPayment()
     {
         //$this->canViewReport();
-        authorized('report.accounting');
+        authorized('report.account');
 
         $report = new Report;
         $report->unsetAttributes();  // clear any default values
@@ -389,7 +389,7 @@ class ReportController extends Controller
     public function actionPaymentReceiveByEmployee()
     {
         //$this->canViewReport();
-        authorized('report.accounting');
+        authorized('report.account');
 
         $grid_id = 'rpt-payment-by-employee-grid';
         $title = 'Payment Receive By Employee';
@@ -405,7 +405,7 @@ class ReportController extends Controller
 
     public function actionProfitDailySum()
     {
-        authorized('report.accounting');
+        authorized('report.account');
 
         $grid_id = 'rpt-profit-daily-sum-grid';
         $title = 'Profit Daily Sum';
@@ -421,7 +421,7 @@ class ReportController extends Controller
     public function actionProfitByInvoice($id)
     {
         //$this->canViewReport();
-        authorized('report.accounting');
+        authorized('report.account');
 
         $report = new Report;
 
@@ -665,7 +665,7 @@ class ReportController extends Controller
     public function actionOutStandingInvoice()
     {
         //$this->canViewReport();
-        authorized('report.accounting');
+        authorized('report.account');
 
         $grid_id = 'rpt-outstanding-inv-grid';
         $title = 'Outstanding Balance';
