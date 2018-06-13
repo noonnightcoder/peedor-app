@@ -22,7 +22,7 @@ class PriceBookController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('Index','View','Create','AddItem','SavePriceBook','EditPriceBook'),
+                'actions' => array('Index','View','Create','AddItem','Admin','SavePriceBook','EditPriceBook'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -35,7 +35,7 @@ class PriceBookController extends Controller
         );
     }
     
-    public function actionIndex() 
+    public function actionAdmin() 
     {  
         authorized('pricebook.read');
 
@@ -79,10 +79,11 @@ class PriceBookController extends Controller
 
     public function actionView($id,$name=''){
         authorized('pricebook.read');
-        $priceBook=PriceBook::getPriceBookDetail($id);
+        $priceBook=PriceBook::getPriceBookDetail($id,$name);
+        var_dump($priceBook);
         $data['data']=$priceBook;
         $data['count_title']='pricebook';
-        $this->render('_pricebookDetail',$data);
+        //$this->render('_pricebookDetail',$data);
     }
 
     public function actionCreate() {
@@ -146,6 +147,7 @@ class PriceBookController extends Controller
                 $retailAfMarkup=0;
                 $discount=0;
                 foreach($data as $k=>$v){
+                    $cost=$data[$k]['cost']>0 ? $data[$k]['cost'] : 1;
                     if($val=='markupall' || $val=='discountall'){
 
                         $markupall=$_POST['markupall']>0 ? $_POST['markupall'] : 0;
@@ -156,7 +158,7 @@ class PriceBookController extends Controller
                         if($val=='discountall'){
                             $data[$k]['discount']=$discountall;    
                         }
-                        $retailAfMarkup=$data[$k]['cost']+($data[$k]['cost']*($data[$k]['markup']/100));
+                        $retailAfMarkup=$cost+($cost*($data[$k]['markup']/100));
                         $discount=$retailAfMarkup*($data[$k]['discount']/100);
                         $data[$k]['retail_price']=$retailAfMarkup-$discount;
                         
@@ -166,9 +168,9 @@ class PriceBookController extends Controller
                     if($k==$idx){//update number of quantity count when item already counted
 
                         if($val=='markup' || $val=='discount'){
-
+                            
                             $data[$k]['markup']=$_POST['markup'];
-                            $retailAfMarkup=round(($data[$k]['cost']+($data[$k]['cost']*($_POST['markup']/100))),4);
+                            $retailAfMarkup=round(($cost+($cost*($_POST['markup']/100))),4);
                             $discount=round(($retailAfMarkup*($_POST['discount']/100)),2);
                             $data[$k]['retail_price']=$retailAfMarkup-$discount;
                             $data[$k]['discount']=$_POST['discount'];
@@ -180,7 +182,7 @@ class PriceBookController extends Controller
 
                             $data[$k]['retail_price']=$_POST['retail_price'];
 
-                            $data[$k]['markup']=round(((($_POST['retail_price']*100)/$data[$k]['cost'])-100),2);//update array data
+                            $data[$k]['markup']=round(((($_POST['retail_price']*100)/$cost)-100),2);//update array data
                         }
                         if($val=='min_qty'){
 
@@ -282,7 +284,7 @@ class PriceBookController extends Controller
                 unset(Yii::app()->session['pricebookHeader']);
                 Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
                                 'Price book : <strong>' . $price_book_name . '</strong> have been saved successfully!');
-                $this->redirect(array('/pricebook'));
+                $this->redirect(array('/priceBook/admin'));
             }
         }catch (Exception $e) {
             $transaction->rollback();

@@ -18,46 +18,46 @@
 
 class PriceBook extends CActiveRecord
 {
-	public $search;
+    public $search;
     public $pricebook_archived;
         
         /**
-	 * @return string the associated database table name
-	 */
-	public function tableName()
-	{
-		return 'price_book';
-	}
+     * @return string the associated database table name
+     */
+    public function tableName()
+    {
+        return 'price_book';
+    }
 
-	/**
-	 * @return array validation rules for model attributes.
-	 */
-	public function rules()
-	{
-		// NOTE: you should only define rules for those attributes that
-		// will receive user inputs.
-		return array(
-			array('price_book_name, outlet_id', 'required'),
+    /**
+     * @return array validation rules for model attributes.
+     */
+    public function rules()
+    {
+        // NOTE: you should only define rules for those attributes that
+        // will receive user inputs.
+        return array(
+            array('price_book_name, outlet_id', 'required'),
             array('price_book_name', 'unique'),
-			array('price_book_name,search', 'safe', 'on'=>'search'),
-		);
-	}
+            array('price_book_name,search', 'safe', 'on'=>'search'),
+        );
+    }
 
-	/**
-	 * @return array relational rules.
-	 */
-	public function relations()
-	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
-		return array(
-			'pricings' => array(self::HAS_MANY, 'Pricing', 'price_book_id'),
-		);
-	}
+    /**
+     * @return array relational rules.
+     */
+    public function relations()
+    {
+        // NOTE: you may need to adjust the relation name and the related
+        // class name for the relations automatically generated below.
+        return array(
+            'pricings' => array(self::HAS_MANY, 'Pricing', 'price_book_id'),
+        );
+    }
 
-	/**
-	 * @return array customized attribute labels (name=>label)
-	 */
+    /**
+     * @return array customized attribute labels (name=>label)
+     */
     public function attributeLabels()
     {
         return array(
@@ -69,7 +69,7 @@ class PriceBook extends CActiveRecord
         );
     }
 
-	public function search()
+    public function search()
     {
         $criteria=new CDbCriteria;
 
@@ -124,10 +124,10 @@ class PriceBook extends CActiveRecord
         return $list;
     }
 
-	public static function model($className=__CLASS__)
-	{
-		return parent::model($className);
-	}
+    public static function model($className=__CLASS__)
+    {
+        return parent::model($className);
+    }
 
     public function getPriceBook($id)
     {
@@ -170,7 +170,7 @@ class PriceBook extends CActiveRecord
 
     public static function getPriceBookEdit($id){
 
-	    $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,cg.id customer_group,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
+        $sql1 = "SELECT pb.id  price_book_id,price_book_name name,o.id outlet,cg.id customer_group,date_format(start_date,'%d-%m-%Y') start_date,date_format(end_date,'%d-%m-%Y') end_date
                    FROM price_book pb ,outlet o,customer_group cg
                    WHERE pb.outlet_id=o.id
                    and pb.group_id=cg.id
@@ -195,16 +195,16 @@ class PriceBook extends CActiveRecord
         return array(
             array(
                 'name' => 'price_book_name',
-                'value' => '$data->status=="1" ? CHtml::link($data->price_book_name, Yii::app()->createUrl("pricebook/view",array("id"=>$data->primaryKey,"name"=>$data->price_book_name))) : "<s class=\"red\">  $data->price_book_name <span>" ',
+                'value' => '$data->status=="1" ? CHtml::link($data->price_book_name, Yii::app()->createUrl("priceBook/view",array("id"=>$data->primaryKey,"name"=>$data->price_book_name))) : "<s class=\"red\">  $data->price_book_name <span>" ',
                 'type' => 'raw',
                 'filter' => '',
             ),
             array(
-            	'name'=>'Valid From',
-            	'value'=>'$data->start_date',
-            	'type'=>'raw',
-            	'filter'=>''
-        	),
+                'name'=>'Valid From',
+                'value'=>'$data->start_date',
+                'type'=>'raw',
+                'filter'=>''
+            ),
             array(
                 'name'=>'Valid To',
                 'value'=>'$data->end_date',

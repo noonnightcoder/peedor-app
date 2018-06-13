@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    'Price Book' =>array('/pricebook'),
+    'Price Book' =>array('/priceBook/admin'),
     'Create',
 );
 ?>
@@ -12,7 +12,7 @@ $this->breadcrumbs=array(
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(
-                array('label' => Yii::t('app','Cancel'),'url' => Yii::app()->createUrl('/priceBook'),'icon'=>'fa fa-window-close  white','id'=>'btn-review'),
+                array('label' => Yii::t('app','Cancel'),'url' => Yii::app()->createUrl('/priceBook/admin'),'icon'=>'fa fa-window-close  white','id'=>'btn-review'),
             ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
         ),
     ),

@@ -40,8 +40,8 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 ),
                 array('label' => sysMenuPriceBookView(),
                     'icon' => 'menu-icon '  . 'menu-icon fa fa-plus pink',
-                    'url' => url('priceBook/index'),
-                    'active' => $this->id . '/' . $this->action->id == 'priceBook/index' || $this->id . '/' .$this->action->id == 'priceBook/create',
+                    'url' => url('priceBook/admin'),
+                    'active' => $this->id . '/' . $this->action->id == 'priceBook/admin' || $this->id . '/' .$this->action->id == 'priceBook/create',
                     'visible' => ckacc('pricebook.create') || ckacc('pricebook.read') || ckacc('pricebook.update') || ckacc('pricebook.delete'),
                 ),
                 array('label' => sysMenuItemFinder(),
@@ -130,7 +130,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' => 'menu-icon '  . sysMenuInvoiceAddIcon(),
                     'url' => url('saleItem/create',array('tran_type'=>param('sale_complete_status'))),
                     'active' => $this->id . '/' . $this->action->id.'/'.Yii::app()->request->getQuery('tran_type') == 'saleItem/create/'.param('sale_complete_status'),
-                    'visible' => ckacc('sale.create')
+                    'visible' => ckacc('invoice.create')
                 ),
             ),
         ),

@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs = array(
-	    Yii::t('app', ucfirst('Price Book')) => array('/priceBook'),
+	    Yii::t('app', ucfirst('Price Book')) => array('/priceBook/admin'),
 	    Yii::t('app', 'List'),
 	);
 ?>

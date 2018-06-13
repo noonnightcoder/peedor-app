@@ -42,13 +42,13 @@
 
 								&nbsp;
 								<div id="toggle-result-format" class="btn-group btn-overlap" data-toggle="buttons">
-									<label title="Thumbnail view" class="btn btn-lg btn-white btn-success <?=isset($_SESSION['view']) ? ($_SESSION['view']=='k' ? 'btn-success active' : '') : ''?>" data-class="btn-success" aria-pressed="true">
+									<label title="Thumbnail view" class="btn btn-lg btn-white btn-success <?=isset(Yii::app()->session['view']) ? (Yii::app()->session['view']=='k' ? 'btn-success active' : '') : ''?>" data-class="btn-success" aria-pressed="true">
 										<input type="radio" name="display" onchange="loadProduct('','k')" checked="" autocomplete="off" />
 										<i class="icon-only ace-icon fa fa-th"></i>
 									</label>
 
-									<label title="List view" class="btn btn-lg btn-white btn-success <?=isset($_SESSION['view']) ? ($_SESSION['view']=='g' ? 'btn-success active' : '') : ''?>" data-class="btn-primary">
-										<input type="radio" name="display" onchange="loadProduct('','g')" value="1" checked autocomplete="off" />
+									<label title="List view" class="btn btn-lg btn-white btn-success  <?=isset(Yii::app()->session['view']) ? (Yii::app()->session['view']=='g' ? 'btn-success active' : '') : ''?>" data-class="btn-primary">
+										<input type="radio" name="display" onchange="loadProduct('','g')" value="1" autocomplete="off" />
 										<i class="icon-only ace-icon fa fa-list"></i>
 									</label>
 								</div>

@@ -167,7 +167,7 @@
             </div>-->
 
             <div class="form-actions">
-                <?php echo TbHtml::submitButton($model->isNewRecord ? Yii::t('app','Create') : Yii::t('app','Save'),array(
+                <?php echo TbHtml::submitButton(isset($_GET['id']) ? Yii::t('app','Save') : Yii::t('app','Create'),array(
                     'color'=>TbHtml::BUTTON_COLOR_PRIMARY,
                     //'size'=>TbHtml::BUTTON_SIZE_SMALL,
                     'onClick'=> 'form.submit()'

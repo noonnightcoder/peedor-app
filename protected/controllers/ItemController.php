@@ -1054,17 +1054,18 @@ class ItemController extends Controller
         echo json_encode($arr);
     }
 
-    public function actionGetProductByCategory($category_id,$view){
+    public function actionGetProductByCategory($category_id,$view=''){
         $this->setSession(Yii::app()->session);
+        if($view!=''){
+            $this->session['view']=$view;
+        }
         $model=new Item;
         if($category_id>0){
             $this->session['result']=Item::model()->itemByCategory($category_id);
             $this->session['cate_arr']=Category::model()->findAll('id = :category_id ORDER by id desc',array(':category_id'=>$category_id)
             );
         }
-        if($view!=''){
-            $this->session['view']=$view;
-        }
+        
         $paretn_cate=Category::model()->getCategoryById($category_id);
         $arr = Category::model()->buildTree($this->session['cate_arr'],$paretn_cate['parent_id']);
         $data['model']=$model;

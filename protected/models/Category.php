@@ -255,12 +255,10 @@ class Category extends CActiveRecord
 
     public function buildTreeView( $ar, $pid = null ) {
          $op = array();
-         Yii::app()->session;
-         $view=isset($this->session['view']) ? $this->session['view'] : '';
         foreach( $ar as $item ) {
             if( $item['parent_id'] == $pid ) {
                 $op[$item['name']] = array(
-                    'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
+                    'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\'\')">'.$item['name'].'</span>',
                     'icon-class'=>'orange',
                     'type'=>'folder',
                     //'parent_id' => $item['parent_id']
@@ -274,7 +272,7 @@ class Category extends CActiveRecord
                     $op[$item['name']]['additionalParameters']['children'] = $children;
                 }else{
                     $op[$item['name']] = array(
-                        'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\''.$view.'\')">'.$item['name'].'</span>',
+                        'text' => '<span style="display:inline-block;width:50%;" onclick="loadProduct('.$item['id'].',\'\')">'.$item['name'].'</span>',
                         'icon-class'=>'orange',
                         'type'=>'item',
                     );
@@ -349,14 +347,12 @@ class Category extends CActiveRecord
 
     public function buildCategoryBreadcrumb($arr, $target, $parent = NULL,$id) {
         $html = "";
-        Yii::app()->session;
-        $view=isset($this->session['view']) ? $this->session['view'] : '';
         foreach ( $arr as $key => $v )
         {
             if ( $key == $target)
-                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']},\"$view\")'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.",\"$view\")'> {$v['name']}</span>";
+                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']})'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.")'> {$v['name']}</span>";
             else
-                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']},\"$view\")'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.",\"$view\")'> {$v['name']}</span>";
+                $html .= "<span class='cate-hover' onclick='loadProduct({$v['parent_id']})'>$parent</span><span class='cate-hover' onclick='loadProduct(".$id.")'> {$v['name']}</span>";
 
             if (array_key_exists('children', $v))
                 $html .=$this->buildCategoryBreadcrumb($v['children'],$target,$parent . $v['name']." / ",$id);

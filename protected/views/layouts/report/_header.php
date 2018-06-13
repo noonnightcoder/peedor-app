@@ -3,7 +3,7 @@
         'id' => 'report-form',
         'method' => 'get',
         'action' => Yii::app()->createUrl($this->route,array(
-            'status' => $status,
+            'tran_type' => $status,
             'user_id' => $user_id,
             'title' => $title,
         )),

@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs = array(
-	    Yii::t('app', ucfirst('Price Book')) => array('/pricebook'),
+	    Yii::t('app', ucfirst('Price Book')) => array('/priceBook/admin'),
 	    Yii::t('app', 'View'),
 	);
 ?>
@@ -14,7 +14,7 @@
 		    'headerButtons' => array(
 		        $_GET['name'] =='General' ? '' : TbHtml::buttonGroup(
 		            array(
-		                array('label' => Yii::t('app','Edit'),'url' => Yii::app()->createUrl('pricebook/EditPriceBook',array('id'=>$_GET['id'])),'icon'=>'fa fa-pencil-square-o white'),
+		                array('label' => Yii::t('app','Edit'),'url' => Yii::app()->createUrl('priceBook/EditPriceBook',array('id'=>$_GET['id'])),'icon'=>'fa fa-pencil-square-o white'),
 		            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL,'style'=>ckacc('priceBook.update') ? '' : 'display:none')
 		        ),
 		    ),

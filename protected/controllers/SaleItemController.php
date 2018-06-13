@@ -361,7 +361,7 @@ class SaleItemController extends Controller
         if($lang=='kh'){
             return $status==param('sale_submit_status') || $status==param('sale_validate_status') ? 'ការបញ្ជាទិញ' : 'វិក័យប័ត្រ';    
         }else{
-             return $status==param('sale_submit_status')  || $status==param('sale_validate_status') ? 'Sale Order' : 'Invoice'.$status;    
+             return $status==param('sale_submit_status')  || $status==param('sale_validate_status') ? 'Sale Order' : 'Invoice';    
         }
     }
 
