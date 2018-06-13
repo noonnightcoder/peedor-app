@@ -1,4 +1,4 @@
-<?php echo $form->textFieldControlGroup($user,'user_name',array('class'=>'span8','maxlength'=>60,'placeholder'=>'User name', 'autocomplete'=>'off','data-required'=>'true','disabled' => $disabled)); ?>
+    <?php echo $form->textFieldControlGroup($user,'user_name',array('class'=>'span8','maxlength'=>60,'placeholder'=>'User name', 'autocomplete'=>'off','data-required'=>'true','disabled' => $disabled)); ?>
 
 <?php if ($model->isNewRecord) { ?>
 
@@ -11,6 +11,9 @@
 <?php } elseif (Yii::app()->user->isAdmin) { ?>
     <?php echo $form->passwordFieldControlGroup($user,'ResetPassword',array('class'=>'span8','maxlength'=>128,'placeholder'=>'User Password','autocomplete'=>'off')); ?>
 <?php } ?>
+
+    <?php //echo $form->dropDownListControlGroup($model,'outlet_id', Outlet::model()->getOutlet()); ?>
+
 
 <?php //if ($n_location>1) { ?>
 <?php //echo $form->inlineCheckBoxListControlGroup($model, 'visit_location', Location::model()->getLocationChk(),array('class'=>'ace-checkbox-2')); ?>

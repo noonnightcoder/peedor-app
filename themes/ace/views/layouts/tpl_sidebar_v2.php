@@ -320,11 +320,13 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' => 'menu-icon '  . sysMenuOutletIcon(),
                     'url' => url('outlet/admin'),
                     'active' => $this->id == 'outlet',
+                    'visible'=> ckacc('setting.outlet')
                 ),
                 array('label' => Yii::t('app', 'Tax'),
                     'icon' => 'menu-icon '  . 'fa fa-taxi',
                     'url' => url('tax/admin'),
                     'active' => $this->id == 'tax',
+                    'visible'=> ckacc('setting.tax')
                 ),
                 /*
                 array('label' => Yii::t('app', 'User'),
@@ -338,9 +340,10 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id == 'role',
                 ),
                 */
-                array('label' => Yii::t('app', 'Shop Setting'), 'icon' => 'menu-icon '  . TbHtml::ICON_COG, 'url' => url('settings/index'),
+                array('label' => Yii::t('app', 'Shop Setting'), 'icon' => 'menu-icon '  . TbHtml::ICON_COG,
+                    'url' => url('settings/index'),
                     'active' => $this->id == 'settings',
-                    //'visible'=> Yii::app()->user->isAdmin
+                    'visible'=> ckacc('setting.setting')
                 ),
                 //'visible'=>ckacc('store.update')),
                 //array('label'=>Yii::t('app','Branch'),'icon'=> TbHtml::ICON_HOME, 'url'=>url('store/admin'), 'active'=>$this->id .'/'. $this->action->id=='store/admin','visible'=>ckacc('store.update')),

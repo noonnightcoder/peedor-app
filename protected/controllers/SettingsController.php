@@ -39,9 +39,12 @@ class SettingsController extends Controller
     public function actionIndex()
     {
 
+        authorized('setting.setting');
+        /*
         if (!Yii::app()->user->checkAccess('store.update')) {
             $this->redirect(array('site/ErrorException','err_no'=>403));
         }
+        */
 
         $settings = Yii::app()->settings;
 

@@ -49,6 +49,8 @@ class OutletController extends Controller
 
 	public function actionCreate()
 	{
+	    authorized('setting.outlet');
+
 		$model=new Outlet;
 
 		$this->performAjaxValidation($model);
@@ -68,6 +70,8 @@ class OutletController extends Controller
 
 	public function actionUpdate($id)
 	{
+        authorized('setting.outlet');
+
 		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
@@ -87,6 +91,8 @@ class OutletController extends Controller
 
 	public function actionDelete($id)
 	{
+        authorized('setting.outlet');
+
 		if (Yii::app()->request->isPostRequest) {
 			// we only allow deletion via POST request
 			$this->loadModel($id)->delete();
@@ -102,6 +108,8 @@ class OutletController extends Controller
 
     public function actionUpdateStatus($id,$status)
     {
+        authorized('setting.outlet');
+
         ajaxRequestPost();
 
         $outlet = Outlet::model()->findByPk((int)$id);
@@ -120,7 +128,9 @@ class OutletController extends Controller
 
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Outlet');
+        authorized('setting.outlet');
+
+	    $dataProvider=new CActiveDataProvider('Outlet');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -128,6 +138,8 @@ class OutletController extends Controller
 
 	public function actionAdmin()
 	{
+        authorized('setting.outlet');
+
         $model = new Outlet('search');
 
         $model->unsetAttributes();  // clear any default values
