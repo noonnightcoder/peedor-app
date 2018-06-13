@@ -27,7 +27,8 @@ function bizVision()
 
 function companyName()
 {
-    return param('company_name');
+    //return param('company_name');
+    return Yii::app()->settings->get('site', 'companyName');
 }
 
 function companyNameUpper()
