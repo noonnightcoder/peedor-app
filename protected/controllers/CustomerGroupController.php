@@ -46,7 +46,7 @@ class CustomerGroupController extends Controller
 
 	    $model=new CustomerGroup;
 
-        // $this->performAjaxValidation($model);
+        //$this->performAjaxValidation($model);
 
         if (isset($_POST['CustomerGroup'])) {
             $model->attributes = $_POST['CustomerGroup'];
@@ -54,7 +54,6 @@ class CustomerGroupController extends Controller
             if ($model->validate()) {
                 $transaction = $model->dbConnection->beginTransaction();
                 try {
-                    $model->modified_date=date('Y-m-d H:i:s');
                     if ($model->save()) {
                         $transaction->commit();
                         Yii::app()->clientScript->scriptMap['jquery.js'] = false;
