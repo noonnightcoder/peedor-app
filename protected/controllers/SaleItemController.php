@@ -66,12 +66,19 @@ class SaleItemController extends Controller
         $this->reload();
     }
 
-    public function actionUpdate($sale_id,$tran_type='2')
+    public function actionUpdate($sale_id=0,$tran_type='2')
     {
-        Yii::app()->shoppingCart->setMode($tran_type);
+        if($sale_id>0){
+            Yii::app()->shoppingCart->setMode($tran_type);
 
-        authorized('sale.create');
-        $this->reload();
+            authorized('sale.create');
+
+            $this->reload();
+        }else{
+            Yii::app()->shoppingCart->clearAll();
+            $this->redirect(array('/saleItem/create','tran_type'=>2));
+        }
+        
     }
 
     public function actionAdd()
