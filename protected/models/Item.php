@@ -745,7 +745,7 @@ class Item extends CActiveRecord
                         'icon' => 'ace-icon fa fa-edit',
                         'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->id))',
                         'options' => array(
-                            'class' => 'btn btn-xs btn-info',
+                            'class' => 'btn-xs btn-info',
                         ),
                         'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.cost") || Yii::app()->user->checkAccess("item.update"))',
                     ),
