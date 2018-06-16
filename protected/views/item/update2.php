@@ -47,12 +47,3 @@ $this->breadcrumbs=array(
 )); ?>
 
 <?php $this->endWidget(); ?>
-
-
-<?php /*$this->renderPartial('_form', array(
-    'model' => $model,
-    'price_tiers' => $price_tiers,
-    'item_price_quantity' => $item_price_quantity));
-*/?>
-
-<?php //$this->renderPartial('//layouts/partial/_form_js'); ?>

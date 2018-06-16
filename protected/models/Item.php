@@ -687,10 +687,9 @@ class Item extends CActiveRecord
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => Yii::t('app','Action'),
-                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}{update}{print_barcode}</div>',
+                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}{edit}{print_barcode}</div>',
                 'buttons' => array(
                     'detail' => array(
-                        'click' => 'updateDialogOpen',
                         'label' => Yii::t('app', 'Stock'),
                         'url' => 'Yii::app()->createUrl("Inventory/admin", array("item_id"=>$data->id))',
                         'options' => array(
@@ -699,10 +698,10 @@ class Item extends CActiveRecord
                             'class' => 'btn btn-xs btn-pink',
                             'title' => 'Stock History',
                         ),
-                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.index") ',
+                        'click' => 'updateDialogOpen',
+                        'visible' => '$data->status=="1" && Yii::app()->user->checkAccess("item.read") ',
                     ),
                     'cost' => array(
-                        'click' => 'updateDialogOpen',
                         'label' => Yii::t('app', 'Cost'),
                         'url' => 'Yii::app()->createUrl("Item/CostHistory", array("item_id"=>$data->id))',
                         'options' => array(
@@ -710,11 +709,10 @@ class Item extends CActiveRecord
                             'class' => 'btn btn-xs btn-info',
                             'title' => 'Cost History',
                         ),
+                        'click' => 'updateDialogOpen',
                         'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update") || Yii::app()->user->checkAccess("item.cost"))',
                     ),
                     'price' => array(
-                        'click' => 'updateDialogOpen',
-                        //'label'=>"<span class='text-info'>" . Yii::t('app','Price') . "</span><i class='icon-info-sign'></i> ",
                         'label' => Yii::t('app', 'Price'),
                         'url' => 'Yii::app()->createUrl("Item/PriceHistory", array("item_id"=>$data->id))',
                         'options' => array(
@@ -722,11 +720,12 @@ class Item extends CActiveRecord
                             'class' => 'btn btn-xs btn-success',
                             'title' => 'Price History',
                         ),
+                        'click' => 'updateDialogOpen',
                         'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update"))',
                     ),
                     'delete' => array(
                         'label' => Yii::t('app', 'Delete Item'),
-                        'icon' => 'bigger-120 fa fa-trash',
+                        'icon' => 'ace-icon fa fa-trash',
                         'options' => array(
                             'class' => 'btn btn-xs btn-danger',
                         ),
@@ -735,29 +734,33 @@ class Item extends CActiveRecord
                     'undeleted' => array(
                         'label' => Yii::t('app', 'Restore Item'),
                         'url' => 'Yii::app()->createUrl("Item/UndoDelete", array("id"=>$data->id))',
-                        'icon' => 'bigger-120 glyphicon-refresh',
+                        'icon' => 'ace-icon fa glyphicon-refresh',
                         'options' => array(
                             'class' => 'btn btn-xs btn-warning btn-undodelete',
                         ),
                         'visible' => '$data->status=="0" && Yii::app()->user->checkAccess("item.delete")',
                     ),
-                    'update' => array(
-                        'icon' => 'ace-icon fa fa-edit',
+                    'edit' => array(
+                        'label' => Yii::t('app', 'Update Item'),
                         'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->id))',
+                        'icon' => 'ace-icon fa fa-edit',
                         'options' => array(
-                            'class' => 'btn-xs btn-info',
+                            'class' => 'bt btn-xs btn-info',
+                            'data-update-dialog-title' => 'Update Item',
+                            'title' => 'Update Item',
                         ),
-                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.cost") || Yii::app()->user->checkAccess("item.update"))',
+                        //'click' => 'updateDialogOpen',
+                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.update"))',
                     ),
                     'print_barcode' => array(
-                        'click' => 'updateDialogOpen',
-                        'icon' => 'ace-icon fa fa-barcode',
                         'url' => 'Yii::app()->createUrl("item/GetBarcodeNum",array("item_id"=>$data->id))',
+                        'icon' => 'ace-icon fa fa-barcode',
                         'options' => array(
                             'data-update-dialog-title' => Yii::t('app', 'How many barcode you want to print'),
                             'class' => 'btn btn-xs btn-primary text-white bg-dark',
                             'title' => 'Print UPC(Barcode)',
                         ),
+                        'click' => 'updateDialogOpen',
                         'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update"))',
                     ),
                 )
@@ -828,7 +831,6 @@ class Item extends CActiveRecord
         return $result;
     }
 
-    /* bracode */
     public static function getItemBarcode($valueArray) {
         $elementId = $valueArray['itemId'] . "_bcode"; /*the div element id*/
         $value = $valueArray['barocde'];

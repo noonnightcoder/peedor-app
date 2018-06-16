@@ -121,6 +121,37 @@ function loadview($view_name,$partial_view='_grid',$data) {
     }
 }
 
+function loadviewJson($view_name,$partial_view='_grid',$grid_id,$data) {
+    if (Yii::app()->request->isAjaxRequest) {
+        $cs = Yii::app()->clientScript;
+        $cs->scriptMap = array(
+            'jquery.js' => false,
+            'bootstrap.js' => false,
+            'jquery.ba-bbq.min.js' => false,
+            'jquery.yiigridview.js' => false,
+            'bootstrap.min.js' => false,
+            'jquery.min.js' => false,
+            'bootstrap.notify.js' => false,
+            'bootstrap.bootbox.min.js' => false,
+        );
+
+        Yii::app()->clientScript->scriptMap['*.js'] = false;
+
+        if (isset($_GET['ajax']) && $_GET['ajax'] == $grid_id) {
+            Yii::app()->controller->render($partial_view,$data);
+        } else {
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => Yii::app()->controller->renderPartial($partial_view,$data,
+                    true, true),
+            ));
+            Yii::app()->end();
+        }
+    } else {
+        Yii::app()->controller->render($view_name,$data);
+    }
+}
+
 function ajaxRequest() {
     if (!Yii::app()->request->isAjaxRequest) {
         throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');

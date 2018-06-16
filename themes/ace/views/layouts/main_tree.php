@@ -75,10 +75,8 @@
     <script data-pace-options='{ "ajax": true, "document": true, "eventLag": false, "elements": false }' src="<?php echo $baseUrl ?>/js/pace.js"></script>
     
     <!-- ace settings handler -->
-    <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
-    
-    <?php //$this->widget( 'ext.modaldlg.EModalDlg' ); ?>
-   
+    <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?>
+
     <?php
         $cs->registerScriptFile($baseUrl.'/js/bootstrap-tag.js',CClientScript::POS_BEGIN);
         $cs->registerScriptFile($baseUrl.'/js/elements.typeahead.js',CClientScript::POS_BEGIN);

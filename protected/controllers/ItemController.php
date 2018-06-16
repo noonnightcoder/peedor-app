@@ -173,13 +173,6 @@ class ItemController extends Controller
 
         $model = new Item('search');
 
-        /*
-        if (!ckacc(strtolower(get_class($model)) . '.read') || !ckacc(strtolower(get_class($model)) . '.create') || !ckacc(strtolower(get_class($model)) . '.update') || !ckacc(strtolower(get_class($model)) . '.delete')) {
-            //throw new CHttpException(403, 'You are not authorized to perform this action');
-            $this->redirect(array('site/ErrorException', 'err_no' => 403));
-        }
-        */
-
         $model->unsetAttributes();  // clear any default values
         if (isset($_GET['Item'])) {
             $model->attributes = $_GET['Item'];
@@ -324,20 +317,18 @@ class ItemController extends Controller
     public function actionAddPriceQty()
     {
         $this->setSession(Yii::app()->session);
-        
-        //$data[]=$this->setCart($data,'priceQty');
+
         $data=$this->session['priceQty'];
         $data[]=array('From'=>$_POST['from'],'To'=>$_POST['to'],'Price'=>$_POST['price']);
         $id=0;
         $this->session['priceQty']=$data;
-        //unset($_SESSION['priceQty'][0]); 
-        //return $this->render('_form_price_qty');
     }
 
     public function actionUpdateImage($id, $item_number_flag = '0')
     {
-        $this->layout = '//layouts/columntree';
         authorized('item.update');
+
+        $this->layout = '//layouts/columntree';
 
         $imageModel=new ItemImage;
 
@@ -349,7 +340,6 @@ class ItemController extends Controller
 
         $this->setSession(Yii::app()->session);
         $tagsArry=Tag::model()->getTagByItemId($id);
-        //$tagsItem=implode(",", $tagsArry);
         $tagsItem='';
 
         foreach($tagsArry as $value){
@@ -364,7 +354,6 @@ class ItemController extends Controller
         $next_disable = $next_id === null ? 'disabled' : '';
         $previous_disable = $previous_id === null ? 'disabled' : '';
 
-        // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
@@ -432,15 +421,12 @@ class ItemController extends Controller
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
-                    //print_r($e);
                     Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_WARNING, 'Oop something wrong : <strong>' . $e);
                 }
             }
         }
 
         $data['model'] = $model;
-        // $data['price_tiers'] = $price_tiers;
-        // $data['item_price_quantity'] = $item_price_quantity;
         $data['next_disable'] = $next_disable;
         $data['previous_disable'] = $previous_disable;
         $data['item_image'] = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
@@ -783,47 +769,13 @@ class ItemController extends Controller
         $item = Item::model()->getItemInfo((int)$item_id);
         $avg_cost = Item::model()->avgCost((int)$item_id);
 
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.ba-bbq.min.js' => false,
-                'jquery.yiigridview.js' => false,
-                'bootstrap.min.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
+        $data['model'] = $model;
+        $data['item'] = $item;
+        $data['item_id'] = $item_id;
+        $data['avg_cost'] = $avg_cost;
 
-            Yii::app()->clientScript->scriptMap['*.js'] = false;
-            //Yii::app()->clientScript->scriptMap['*.css'] = false;
+        loadviewJson('cost_history','_cost_history','costhistory-grid',$data);
 
-            if (isset($_GET['ajax']) && $_GET['ajax'] == 'costhistory-grid') {
-                $this->render('_cost_history', array(
-                    'model' => $model,
-                    'item_id' => $item_id,
-                    'item' => $item,
-                    'avg_cost' => $avg_cost
-                ));
-            } else {
-                echo CJSON::encode(array(
-                    'status' => 'render',
-                    'div' => $this->renderPartial('_cost_history',
-                        array('model' => $model, 'item_id' => $item_id, 'item' => $item, 'avg_cost' => $avg_cost), true,
-                        true),
-                ));
-
-                Yii::app()->end();
-            }
-        } else {
-            $this->render('_cost_history', array(
-                'model' => $model,
-                'item_id' => $item_id,
-                'item' => $item,
-                'avg_cost' => $avg_cost
-            ));
-        }
     }
 
     public function actionPriceHistory($item_id)
@@ -833,84 +785,43 @@ class ItemController extends Controller
 
         $item = Item::model()->getItemInfo($item_id);
 
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.ba-bbq.min.js' => false,
-                'jquery.yiigridview.js' => false,
-                'bootstrap.min.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
+        $data['model'] = $model;
+        $data['item'] = $item;
+        $data['item_id'] = $item_id;
 
-            Yii::app()->clientScript->scriptMap['*.js'] = false;
-            //Yii::app()->clientScript->scriptMap['*.css'] = false;
-
-            if (isset($_GET['ajax']) && $_GET['ajax'] == 'pricehistory-grid') {
-                $this->render('_price_history', array(
-                    'model' => $model,
-                    'item_id' => $item_id,
-                    'item' => $item
-                ));
-            } else {
-                echo CJSON::encode(array(
-                    'status' => 'render',
-                    'div' => $this->renderPartial('_price_history', array(
-                        'model' => $model,
-                        'item_id' => $item_id,
-                        'item' => $item
-                    ),
-                        true, true),
-                ));
-
-                Yii::app()->end();
-            }
-        } else {
-            $this->render('_price_history', array(
-                'model' => $model,
-                'item_id' => $item_id,
-                'item' => $item
-            ));
-        }
+        loadviewJson('price_history','_price_history','pricehistory-grid',$data);
     }
 
     public function actionLowStock()
     {
-        if (Yii::app()->user->checkAccess('item.index')) {
+        authorized('item.read');
 
-            $model = new Item('lowstock');
-            $model->unsetAttributes();  // clear any default values
-            if (isset($_GET['Item'])) {
-                $model->attributes = $_GET['Item'];
-            }
-
-            $this->render('_low_stock', array(
-                'model' => $model,
-            ));
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+        $model = new Item('lowstock');
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['Item'])) {
+            $model->attributes = $_GET['Item'];
         }
+
+        $this->render('_low_stock', array(
+            'model' => $model,
+        ));
+
     }
 
     public function actionOutStock()
     {
-        if (Yii::app()->user->checkAccess('item.index')) {
+        authorized('item.index');
 
-            $model = new Item('outstock');
-            $model->unsetAttributes();  // clear any default values
-            if (isset($_GET['Item'])) {
-                $model->attributes = $_GET['Item'];
-            }
-
-            $this->render('_out_stock', array(
-                'model' => $model,
-            ));
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+        $model = new Item('outstock');
+        $model->unsetAttributes();  // clear any default values
+        if (isset($_GET['Item'])) {
+            $model->attributes = $_GET['Item'];
         }
+
+        $this->render('_out_stock', array(
+            'model' => $model,
+        ));
+
     }
 
     protected function addImages($model)
@@ -988,8 +899,6 @@ class ItemController extends Controller
     {
         $this->setSession(Yii::app()->session);
         $this->session[$session_name] = $cart_data;
-        //$session=Yii::app()->session;
-        //$session['cartRecv']=$cart_data;
     }
     
     public function actionSaveCategory(){
@@ -1032,10 +941,12 @@ class ItemController extends Controller
         $this->renderPartial('partialList/_category_reload2',array('model'=>$model,'cid'=>$id));
     }
 
-    public function actionParentReload(){
-        $categories=Category::model()->findAll();
+    public function actionParentReload()
+    {
+        $categories =Category::model()->findAll();
         $arr = Category::model()->buildTree($categories);
-        $option=Category::model()->buildOptions($arr,null);
+        $option = Category::model()->buildOptions($arr,null);
+
         echo '
             <option value="" selected></option>'
             .$option.'
@@ -1047,14 +958,18 @@ class ItemController extends Controller
         ';
     }
 
-    public function actionItemFinder(){
+    public function actionItemFinder()
+    {
+        authorized('item.read');
 
         $this->layout = '//layouts/columntree';
 
         $this->setSession(Yii::app()->session);
-        $this->session['view']=isset($this->session['view']) ? $this->session['view'] :'k';
-        $model=Category::model()->findAll();
-        $data=array('model'=>$model);
+        $this->session['view'] = isset($this->session['view']) ? $this->session['view'] :'k';
+        $model = Category::model()->findAll();
+
+        $data['model']= $model;
+
         $this->render('item_finder',$data);
     }
 
@@ -1202,7 +1117,6 @@ class ItemController extends Controller
 
     }
 
-    
     public function actionDeleteItemBarcode($item_id,$number_of_barcode){
         ajaxRequestPost();
 

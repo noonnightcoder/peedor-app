@@ -46,7 +46,7 @@ class CustomerGroupController extends Controller
 
 	    $model=new CustomerGroup;
 
-        //$this->performAjaxValidation($model);
+        $this->performAjaxValidation($model);
 
         if (isset($_POST['CustomerGroup'])) {
             $model->attributes = $_POST['CustomerGroup'];
@@ -70,21 +70,9 @@ class CustomerGroupController extends Controller
             }
         }
 
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
-            echo CJSON::encode(array(
-                'status' => 'render',
-                'div' => $this->renderPartial('_form', array('model' => $model), true, true),
-            ));
-            Yii::app()->end();
-        }
+        $data['model'] = $model;
+
+        loadviewJson('create','_form','customergroup-grid',$data);
 
 	}
 
@@ -118,23 +106,10 @@ class CustomerGroupController extends Controller
             }
         }
 
-        if (Yii::app()->request->isAjaxRequest) {
-            $cs = Yii::app()->clientScript;
-            $cs->scriptMap = array(
-                'jquery.js' => false,
-                'bootstrap.js' => false,
-                'jquery.min.js' => false,
-                'bootstrap.notify.js' => false,
-                'bootstrap.bootbox.min.js' => false,
-            );
-            echo CJSON::encode(array(
-                'status' => 'render',
-                'div' => $this->renderPartial('_form', array('model' => $model), true, true),
-            ));
-            Yii::app()->end();
-        } else {
-            $this->render('update', array('model' => $model));
-        }
+        $data['model'] = $model;
+        
+        loadviewJson('update','_form','customergroup-grid',$data);
+
 	}
 
     public function actionUpdateStatus($id,$status)
