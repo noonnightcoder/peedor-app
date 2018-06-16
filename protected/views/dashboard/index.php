@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-	Yii::t('app','Dashboard'),
+	sysMenuDashboard(),
 );
 ?>
 <?php

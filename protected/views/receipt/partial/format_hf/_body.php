@@ -39,6 +39,29 @@
                 </tr>
             <?php endforeach; ?>
 
+
+            <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/'  . $invoice_body_footer_view,
+                array(
+                    'salerep_fullname' => $salerep_fullname,
+                    'cust_fullname' => $cust_fullname,
+                    'sale_id' => $sale_id,
+                    'transaction_date' => $transaction_date,
+                    'transaction_time' => $transaction_time,
+                    'items' => $items,
+                    'colspan' => $colspan,
+                    'total_discount' => $total_discount,
+                    'discount_amount' => $discount_amount,
+                    'sub_total' => $sub_total,
+                    'total' => $total,
+                    'total_khr_round' => $total_khr_round,
+                    'amount_change' => $amount_change,
+                    'amount_change_khr_round' => $amount_change_khr_round,
+                    'cust_address1' => $cust_address1,
+                    'invoice_no_prefix' => $invoice_no_prefix,
+                    'gst_amount' => $gst_amount,
+                ));
+            ?>
+
             </tbody>
         </table>
     </div>

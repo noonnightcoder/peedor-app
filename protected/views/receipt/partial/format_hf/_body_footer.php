@@ -1,6 +1,6 @@
 <tbody>
     <tr class="gift_receipt_element">
-        <td colspan="4" style='text-align:left;border-top:2px solid #000000;'></td>
+        <td colspan="3" style='text-align:left;border-top:2px solid #000000;'></td>
         <td colspan="" style='text-align:right;border-top:2px solid #000000;'>
             សរុប <br>
             <?= Yii::t('app','Sub Total'); ?>
@@ -9,7 +9,7 @@
     </tr>
 
     <tr class="gift_receipt_element">
-        <td colspan="4" style='text-align:left;'></td>
+        <td colspan="3" style='text-align:left;'></td>
         <td colspan="<?php //echo $colspan; */ ?>" style='text-align:right;'>
             <?= $total_discount . '%' . Yii::t('app', 'Discount');  ?>
         </td>
@@ -19,7 +19,7 @@
     </tr>
 
     <tr class="gift_receipt_element">
-        <td colspan="4" style='text-align:left;'></td>
+        <td colspan="3" style='text-align:left;'></td>
         <td colspan="<?php //echo $colspan; */ ?>" style='text-align:right;'>
             អាករតំលៃបន្ថៃម ១០% <br>
             <?= Yii::t('app', 'VAT (10%)');  ?>
@@ -30,7 +30,7 @@
     </tr>
 
     <tr class="gift_receipt_element">
-        <td colspan="4" style='text-align:left;'></td>
+        <td colspan="3" style='text-align:left;'></td>
         <td colspan="<?php //echo $colspan; */ ?>" style='text-align:right;'>
             សរុបរួម <br>
             <?= TbHtml::b(Yii::t('app','Grand Total'));  ?>

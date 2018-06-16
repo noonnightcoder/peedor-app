@@ -62,7 +62,7 @@ class SaleItemController extends Controller
         Yii::app()->shoppingCart->setMode($tran_type);
 
         authorized('sale.create');
-        $this->setSession(Yii::app()->session);
+        //$this->setSession(Yii::app()->session);
         $this->reload();
     }
 
@@ -314,13 +314,11 @@ class SaleItemController extends Controller
         $this->layout = '//layouts/column_receipt';
 
         $data = $this->sessionInfo();
-        //$customer = $this->customerInfo($data['customer_id']);
-        //$data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
 
         /*
          * Check if there is payment is less than total sale - Customer Must be defined
          */
-        $this->setSession(Yii::app()->session);
+        //$this->setSession(Yii::app()->session);
         if ($data['amount_change'] > 0 && $data['customer'] == null) {
             $data['warning'] = Yii::t('app', 'Plz, Select Customer');
             Yii::app()->user->setFlash('warning', 'Plz, Select Customer');
@@ -330,15 +328,6 @@ class SaleItemController extends Controller
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
-            //Save transaction to db
-            /*
-            $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
-                $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
-                $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
-                $data['total_gst'],$data['salerep_id'],$data['qtytotal']);
-            */
-                // $status=getTransType();
-                
                 $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
                 $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
                 $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
@@ -384,15 +373,10 @@ class SaleItemController extends Controller
 
         $data=$this->sessionInfo();
 
-        //Save transaction to db
-       //$data['sale_id'] = 'POS ' . Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'], $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['comment'], Yii::app()->params['sale_suspend_status'], $data['total_discount']);
        $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
            $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
            $data['comment'], param('sale_suspend_status'), $data['discount_amt'],$data['discount_symbol'],
            $data['total_gst'],$data['salerep_id'],$data['qtytotal']);
-
-        //$customer = $this->customerInfo($data['customer_id']);
-        //$data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
 
         if ($data['sale_id'] == 'POS -1') {
             echo "NOK";
@@ -423,7 +407,6 @@ class SaleItemController extends Controller
 
             $this->layout = '//layouts/column_receipt';
             Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
-            //Yii::app()->shoppingCart->clearAll();
             Yii::app()->shoppingCart->copyEntireSale($sale_id);
             $data=$this->sessionInfo();
 
@@ -432,9 +415,7 @@ class SaleItemController extends Controller
             $data['paid_amount'] = $paid_amount;
             $data['status'] = $tran_type;
             $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'kh');
-                $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'en');
-
-            //Sale::model()->updatePrinter($sale_id,$status);
+            $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'en');
 
             if (count($data['items']) == 0) {
                 $data['error_message'] = 'Sale Transaction Failed';
@@ -468,55 +449,28 @@ class SaleItemController extends Controller
 
     public function actionReceipt($sale_id)
     {
-        if (Yii::app()->user->checkAccess('invoice.print')) {
-           
-            $this->layout = '//layouts/column_receipt';
+        authorized('invoice.print');
 
-            Yii::app()->shoppingCart->clearAll();
-            Yii::app()->shoppingCart->copyEntireSale($sale_id);
+        $this->layout = '//layouts/column_receipt';
 
-            $data=$this->sessionInfo();
-            
-            $data['sale_id'] = $sale_id;
+        Yii::app()->shoppingCart->clearAll();
+        Yii::app()->shoppingCart->copyEntireSale($sale_id);
 
-            //$customer = $this->customerInfo($data['customer_id']);
-            //$data['customer'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : '';
-         
-            if (count($data['items']) == 0) {
-                $data['error_message'] = 'Sale Transaction Failed';
-            }
-            
-           //$this->render('//receipt/index', $data);
-            $this->renderRecipe($data);
-            //$this->render('//receipt/'. $data['receipt_folder'] .'index', $data);
-            //Yii::app()->shoppingCart->clearAll();
-        } else {
-            throw new CHttpException(403, 'You are not authorized to perform this action');
+        $data=$this->sessionInfo();
+
+        $data['sale_id'] = $sale_id;
+
+        if (count($data['items']) == 0) {
+            $data['error_message'] = 'Sale Transaction Failed';
         }
-        
+        $this->renderRecipe($data);
     }
 
     /*
         To remove name changing using CRUD name convension List, Create, Update, Delete
     */
     public function actionSaleOrder()
-
     {
-        /*
-        $model = new Sale;
-        $grid_columns = Sale::getSaleOrderColumns();
-
-        $data = $this->saleTypeData();
-        $data['model'] = $model;
-        $data['sale_status'] = param('sale_suspend_status');
-        $data['box_title'] = 'Sale Order';
-        $data['color_style'] = TbHtml::BUTTON_COLOR_PRIMARY;
-        $data['sale_header_icon'] = sysMenuSaleIcon();
-        $data['grid_columns'] = $grid_columns;
-
-
-        $this->render('list', $data);
-        */
 
         $grid_id = 'sale-order-grid';
         $title = 'Sale Order';
@@ -558,7 +512,6 @@ class SaleItemController extends Controller
 
     }
 
-    //public function actionList($status,$user_id=null,$title='Sale Order')
     public function actionList()
     {
         $grid_id = 'sale-order-grid';
@@ -585,49 +538,8 @@ class SaleItemController extends Controller
         loadview('review','//layouts/report/_grid',$data);
     }
 
-    // Old one to be delete too complicated to do process base or wizard form here
-    /*
-    public function actionList()
-    {
-        $grid_id = 'sale-order-grid';
-        $title = 'Sale Order';
-
-        $data = $this->commonData($grid_id,$title,'show');
-
-        $data['grid_columns'] = ReportColumn::getSaleOrderColumns();
-        $data['data_provider'] = $data['report']->saleListAll();
-        $data['data_provider2'] = $data['report']->saleListByStatusUser(param('sale_submit_status'), getEmployeeId());
-        $data['data_provider3'] = $data['report']->saleListByStatus(param('sale_approve_status'));
-        $data['data_provider1'] = $data['report']->saleListByStatus(param('sale_complete_status'));
-        $data['grid_id'] = $grid_id;
-        $data['grid_id2'] = 'sale-order-wait-grid';
-        $data['grid_id3'] = 'sale-order-review-grid';
-        $data['grid_id1'] = 'sale-order-complete-grid';
-        $data['sale_submit_n'] = $data['report']->saleCountByStatus('2');
-        $data['sale_approve_n'] = $data['report']->saleCountByStatus('3');
-        $data['sale_complete_n'] = $data['report']->saleCountByStatus('1');
-
-        loadview('report','partialList/_grid',$data);
-
-    }
-    */
-
     public function actionSaleInvoice()
     {
-        /*
-        $model = new Sale;
-        $grid_columns = $grid_columns = Sale::getInvoiceColumns();
-
-        $data = $this->saleTypeData();
-        $data['model'] = $model;
-        $data['sale_status'] = param('sale_complete_status');
-        $data['box_title'] = 'Invoice';
-        $data['color_style'] = TbHtml::BUTTON_COLOR_SUCCESS;
-        $data['sale_header_icon'] = sysMenuInvoiceIcon();
-        $data['grid_columns'] = $grid_columns;
-
-        $this->render('list', $data);
-        */
         $grid_id = 'sale-invoice-grid';
         $title = 'Sale Invoice';
 
@@ -674,40 +586,15 @@ class SaleItemController extends Controller
         if($ajax==true){
             ajaxRequest();
         }
-        // $this->setSession(Yii::app()->session);
-        // $deleted_item=$this->session['deleted_item'];
-        // if($tran_type==param('sale_complete_status')){
-        //     $item_id='';
-            
-        //     if(count($this->session['pre'])>0){
-        //         foreach($this->session['pre'] as $key=>$value){
-        //             Sale::model()->updateItemQuantity($value['item_id'],$value['quantity']);
-        //         }    
-        //     }else{
-        //         $sale_item=SaleItem::model()->findAll(array(
-        //                     'condition'=>'`sale_id`=:sale_id',
-        //                     'params'=>array(
-        //                         ':sale_id'=>$sale_id
-        //                     )
-        //                 ));    
-        //         foreach($sale_item as $sale){
-        //             Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
-        //         }
-        //     }
-        //     if(!empty($deleted_item) or $deleted_item != null){
-        //         foreach ($deleted_item as $d => $i) {
-        //             Sale::model()->rolebackItemQuantity($i['item_id'],$i['quantity']);
-        //         }
-        //     }
-        // }
-        // Sale::model()->updateInvoiceItemQuantity($sale_id);
         if($tran_type==param('sale_complete_status')){
+
             $sale_item=SaleItem::model()->findAll(array(
                                 'condition'=>'`sale_id`=:sale_id',
                                 'params'=>array(
                                     ':sale_id'=>$sale_id
                                 )
-                            ));    
+                            ));
+
             foreach($sale_item as $sale){
                 Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
             }
@@ -794,7 +681,7 @@ class SaleItemController extends Controller
         //$data['receipt_biz_name'] = Yii::app()->params['biz_name'] !='' ? Yii::app()->params['biz_name'] . '/' : '';
 
         //$data['receipt_folder'] = Yii::app()->params['biz_name'] !='' ? Yii::app()->params['biz_name'] . '/' : '';
-        $data['title']=getTransType()==param('sale_submit_status') ? 'Order To Validate' : (getTransType()==param('sale_validate_status') ? 'Order To Invoice' : (getTransType()==param('sale_complete_status') ? 'Order To Deliver' : 'Sale Order'));
+        $data['title']= getTransType() ==param('sale_submit_status') ? 'Order To Validate' : (getTransType()==param('sale_validate_status') ? 'Order To Invoice' : (getTransType()==param('sale_complete_status') ? 'Order To Deliver' : 'Sale Order'));
         $data['invoice_header_view'] = '_header';
         $data['invoice_header_body_view'] = '_header_body';
         $data['invoice_body_view'] = '_body';
@@ -970,9 +857,9 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    public function setSession($value)
+    /*public function setSession($value)
     {
         $this->session = $value;
-    }
+    }*/
 
 }

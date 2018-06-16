@@ -120,17 +120,19 @@ if (isset($error_message))
         ));
     ?>
 
-    <?php if ($invoice_body_footer_view !== null) { ?>
+    <?php if ($invoice_body_footer_view != null) { ?>
 
-    <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_footer_view,
-        array(
-            'sub_total' => $sub_total,
-            'total' => $total,
-            'total_discount' => $total_discount,
-            'discount_amount' => $discount_amount,
-            'cust_fullname' => $cust_fullname,
-        ));
-    ?>
+        <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_footer_view,
+            array(
+                'sub_total' => $sub_total,
+                'total' => $total,
+                'total_discount' => $total_discount,
+                'discount_amount' => $discount_amount,
+                'cust_fullname' => $cust_fullname,
+                'gst_amount' => $gst_amount,
+                //'colspan' => $colspan,
+            ));
+        ?>
 
     <?php } ?>
     <?php if(isset($_GET['print']) && $_GET['print'] == 'true'):?>
