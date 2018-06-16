@@ -340,20 +340,23 @@ class ItemController extends Controller
         authorized('item.update');
 
         $imageModel=new ItemImage;
+
         if ($item_number_flag == '0') {
             $model = $this->loadModel($id);
         } else {
             $model = Item::model()->find('item_number=:item_number or (sku=:item_number or mpn=:item_number or isbn=:item_number)', array(':item_number' => $id));
         }
+
         $this->setSession(Yii::app()->session);
         $tagsArry=Tag::model()->getTagByItemId($id);
         //$tagsItem=implode(",", $tagsArry);
         $tagsItem='';
+
         foreach($tagsArry as $value){
             // $value.=",".$value;
             $tagsItem.=",".$value['tag_name'];
         }
-        //echo substr($tagsItem, 2);
+
         $this->session['tags']=substr($tagsItem, 1);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
         $next_id = Item::model()->getNextId($id);
@@ -365,8 +368,7 @@ class ItemController extends Controller
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
-            
-            
+
             $old_price = $model->unit_price;
             $model->attributes = $_POST['Item'];
             $this->session['tags']=$_POST['Item']['tags'];
@@ -447,6 +449,7 @@ class ItemController extends Controller
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
         $data['image']=$imageModel;
+
         $this->render('update2', $data);
     }
 

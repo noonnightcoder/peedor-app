@@ -180,7 +180,7 @@ var updateDialog = {
 
       // Callback on image delete
       case 'success_redirect':
-        console.log('redirect');
+        //console.log('redirect');
         window.location.href=redirectUrl;
         break;
       
@@ -270,11 +270,7 @@ var updateDialog = {
   
   }
 
-  
- 
-  
 };
-
 
 
 /**
