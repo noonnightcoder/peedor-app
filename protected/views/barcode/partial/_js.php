@@ -36,6 +36,7 @@ Yii::app()->clientScript->registerScript( 'deleteItem', "
                 $('#suspend_sale_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
             }
         });
+        
 
     });
 

@@ -7,5 +7,8 @@
     		'items'=>$items
     	)); ?>
     <!-- #/section:right.panel.header -->
-
+    <?php $this->renderPartial('//barcode/partial/_right_panel_footer',
+    	array(
+    		'items'=>$items
+    	)); ?>
 </div>

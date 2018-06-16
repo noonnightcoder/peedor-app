@@ -2,19 +2,15 @@
     'title'         =>  'Barcode Label',
     'headerIcon'    => 'fa fa-barcode',
     'headerButtons' => array(
-        TbHtml::buttonGroup(
-            array(
-                    /*array('label' => Yii::t('app',$sale_header),
-                        'url' =>Yii::app()->createUrl('SaleItem/list'),
-                        'icon'=>'ace-icon fa fa-eye'),*/
-                //array('label'=>' | '),
-                array('label' => Yii::t('app','Preview'),
-                    'url' =>Yii::app()->createUrl('Item/PreviewItemBarcode',array('preview'=>'1')),
-                    'icon'=>'ace-icon fa fa-eye white',
-                    'visible' => ckacc('item.create')
-                ),
-            ),array('color' => TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
-        ),
+        // TbHtml::buttonGroup(
+        //     array(
+        //         array('label' => Yii::t('app','Preview'),
+        //             'url' =>Yii::app()->createUrl('Item/PreviewItemBarcode',array('preview'=>'1')),
+        //             'icon'=>'ace-icon fa fa-eye white',
+        //             'visible' => ckacc('item.create')
+        //         ),
+        //     ),array('color' => TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+        // ),
     ),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
 ));
