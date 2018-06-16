@@ -181,18 +181,27 @@ function sysMenuCategoryView()
 {
     return ucwords(t(param('menu_categories_view'), 'app'));
 }
+
 function sysMenuPriceBookView()
 {
     return ucwords(t(param('menu_pricebook_view'), 'app'));
 }
+
 function sysMenuItemView()
 {
     return ucwords(t(param('menu_item_view'), 'app'));
 }
+
 function sysMenuItemFinder()
 {
     return ucwords(t(param('menu_item_finder'), 'app'));
 }
+
+function sysMenuBarcode()
+{
+    return ucwords(t(param('menu_barcode'), 'app'));
+}
+
 function sysMenuItemImpExp()
 {
     return ucwords(t(param('menu_item_imp_exp'), 'app'));

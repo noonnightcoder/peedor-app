@@ -17,6 +17,7 @@ class Item extends CActiveRecord
     public $markup;
     public $tags;
     public $sku;
+    public $number_of_barcode;
 
     /**
      * Returns the static model of the specified AR class.
@@ -686,7 +687,7 @@ class Item extends CActiveRecord
             array(
                 'class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => Yii::t('app','Action'),
-                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}{update}</div>',
+                'template' => '<div class="hidden-sm hidden-xs btn-group">{detail}{cost}{price}{delete}{undeleted}{update}{print_barcode}</div>',
                 'buttons' => array(
                     'detail' => array(
                         'click' => 'updateDialogOpen',
@@ -744,11 +745,22 @@ class Item extends CActiveRecord
                         'icon' => 'ace-icon fa fa-edit',
                         'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->id))',
                         'options' => array(
-                            'class' => 'btn-xs btn-info',
+                            'class' => 'btn btn-xs btn-info',
                         ),
                         'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.cost") || Yii::app()->user->checkAccess("item.update"))',
                     ),
-                ),
+                    'print_barcode' => array(
+                        'click' => 'updateDialogOpen',
+                        'icon' => 'ace-icon fa fa-barcode',
+                        'url' => 'Yii::app()->createUrl("item/GetBarcodeNum",array("item_id"=>$data->id))',
+                        'options' => array(
+                            'data-update-dialog-title' => Yii::t('app', 'How many barcode you want to print'),
+                            'class' => 'btn btn-xs btn-primary text-white bg-dark',
+                            'title' => 'Print UPC(Barcode)',
+                        ),
+                        'visible' => '$data->status=="1"  && (Yii::app()->user->checkAccess("item.create") || Yii::app()->user->checkAccess("item.update"))',
+                    ),
+                )
             ),
         );
     }
@@ -793,7 +805,7 @@ class Item extends CActiveRecord
     public function itemByCategory($category_id)
     {
         $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,
-(SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
+        (SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
         FROM `item` i JOIN `category` c
         ON (i.category_id=c.id) 
         WHERE (c.id=:category_id  or c.parent_id=:category_id)";
@@ -802,6 +814,7 @@ class Item extends CActiveRecord
 
         return $result;
     }
+
     public function itemDetail($id){
         $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
         FROM `item` i left join `brand` b
@@ -813,6 +826,29 @@ class Item extends CActiveRecord
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':id' => (int)$id));
 
         return $result;
+    }
+
+    /* bracode */
+    public static function getItemBarcode($valueArray) {
+        $elementId = $valueArray['itemId'] . "_bcode"; /*the div element id*/
+        $value = $valueArray['barocde'];
+        $type = $valueArray['type']; 
+
+        self::getBarcode(
+            array(
+                'elementId' => $valueArray['itemId'] . "_bcode", 
+                'value' => $valueArray['barocde'], 
+                'type' => $valueArray['type'],
+                'settings' => $valueArray['settings'],
+            )
+        ); 
+        return CHtml::tag('span', array('id' => $elementId));
+      
+    }
+
+    public static function getBarcode($optionsArray) {
+ 
+        Yii::app()->getController()->widget('ext.barcode.Barcode', $optionsArray);
     }
 
 }

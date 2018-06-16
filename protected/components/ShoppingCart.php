@@ -49,6 +49,21 @@ class ShoppingCart extends CApplicationComponent
         //$session['cart']=$cart_data;
     }
 
+    public function getItemBarcode()
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session['item_barcode'])) {
+            $this->setItemBarcode(array());
+        }
+        return $this->session['item_barcode'];
+    }
+
+    public function setItemBarcode($item_barcode_data)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session['item_barcode'] = $item_barcode_data;
+    }
+
     /*
      * To get payment session
      * $return $session['payment']
@@ -341,7 +356,76 @@ class ShoppingCart extends CApplicationComponent
         $this->setCart($items);
         return true;
     }
+
+    public function addItemBarcode($item_id,$number_of_barcode=1)
+    {
+        $this->setSession(Yii::app()->session);
+        //Get all items in the cart so far...
+        $items = $this->getItemBarcode();
+        $models=Item::model()->findAll(array('condition'=>'`id`=:item_id','params'=>array(':item_id'=>$item_id)));
+
+        if (!$models) {
+            return false;
+        }
+
+        foreach ($models as $model) {
+            if($model['item_number']!='' || $model['item_number']!=null){
+                $item_data = array((int)$item_id =>
+                    array(
+                        'item_id' => $model["id"],
+                        'name' => $model["name"],
+                        'item_number' => $model["item_number"],
+                        'number_of_barcode' => $number_of_barcode,
+                        'price' => round($model["unit_price"], Common::getDecimalPlace()),
+                    )
+                );    
+            }else{
+                $item_data=array();
+            }
+            
+        }
+
+       if (isset($items[$item_id])) {
+            $items[$item_id]['number_of_barcode']+=$number_of_barcode;
+        } else {
+            $items += $item_data;
+        }
+        $this->setItemBarcode($items); 
+
+        return true;
+    }
+
+    public function editItemBarcode($item_id, $number_of_barcode)
+    {
+        $items = $this->getItemBarcode();
+        if (isset($items[$item_id])) {
+
+            $items[$item_id]['number_of_barcode'] = $number_of_barcode !=null ? $number_of_barcode : $items[$item_id]['number_of_barcode'];    
+
+        }else{
+            if($item_id=='all' && $number_of_barcode>0){
+                foreach ($items as $key => $value) {
+                    $items[$value['item_id']]['number_of_barcode']=$number_of_barcode;
+                }
+            }
+        }
+        $this->setItemBarcode($items);
+        return false;
+    }
     
+    public function deleteItemBarcode($item_id)
+    {
+        $items = $this->getItemBarcode();
+        unset($items[$item_id]);
+        $this->setItemBarcode($items);
+    }
+
+    public function emptyItemBarcode()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['item_barcode']);
+    }
+
     public function f5ItemPriceTier()
     {
         $this->setSession(Yii::app()->session);

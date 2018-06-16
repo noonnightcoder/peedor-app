@@ -55,7 +55,14 @@ class ItemController extends Controller
                     'CategoryTree',
                     'GetProductByCategory',
                     'ItemSearch',
-                    'TestImageUpload'
+                    'GetBarcodeNum',
+                    'PreviewBarcode',
+                    'PrintBarcodeLabel',
+                    'AddItemBarcode',
+                    'DeleteItemBarcode',
+                    'EditItemBarcode',
+                    'PreviewItemBarcode',
+                    'resetItemBarcode'
                 ),
                 'users' => array('@'),
             ),
@@ -1113,6 +1120,128 @@ class ItemController extends Controller
             }    
         }
         //echo $msg;
+    }
+
+    public function actionGetBarcodeNum($item_id){
+        // $this->layout = '//layouts/column_receipt';
+        $model=Item::model()->findAll(array('condition'=>'`id`=:id','params'=>array(':id'=>$item_id)));
+        // $this->render('//barcode/index',array('model'=>$model));
+        if (isset($_POST['Barcode'])) {
+            $num=$_POST['Barcode'];
+            Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+            echo CJSON::encode(array(
+                'status' => 'success_redirect',
+                'redirectUrl'=>Yii::app()->createUrl('item/PreviewBarcode',array('item_id'=>$item_id,'num'=>$num,'preview'=>'1')),
+                'div' => "<div class=alert alert-info fade in> Successfully added ! </div>",
+            ));
+
+            Yii::app()->end(); 
+
+        }
+
+        if (Yii::app()->request->isAjaxRequest) {
+            $cs = Yii::app()->clientScript;
+            $cs->scriptMap = array(
+                'jquery.js' => false,
+                'bootstrap.js' => false,
+                'jquery.min.js' => false,
+                'bootstrap.notify.js' => false,
+                'bootstrap.bootbox.min.js' => false,
+            );
+            echo CJSON::encode(array(
+                'status' => 'render',
+                'div' => $this->renderPartial('//barcode/partial/_barcode_number', array('model' => $model), true, true),
+            ));
+            Yii::app()->end();
+        }
+
+    }
+
+    public function actionPreviewBarcode($item_id,$num=1,$preview=1){
+
+        $this->layout = '//layouts/column_receipt';
+
+        $model=Item::model()->findAll(array('condition'=>'`id`=:id','params'=>array(':id'=>$item_id)));
+
+        $data['view']='_one_item_barcode';
+        $data['data']=array('model' => $model,'item_id'=>$item_id,'num'=>$num);
+
+        $this->render('//barcode/index', $data);
+
+    }
+
+    public function actionPrintBarcodeLabel(){
+        $this->layout = '//layouts/column_receipt';
+        $this->reload();
+    }
+
+    public function actionAddItemBarcode(){
+        $data=array();
+        $item_id = $_POST['Item']['id'];
+        
+        if (!Yii::app()->shoppingCart->addItemBarcode($item_id)) {
+            $data['warning'] = 'Unable to add item to sale';
+            Yii::app()->user->setFlash('warning', 'Unable to add item to sale');
+        }
+        $this->reload($data);
+    }
+
+    public function actionEditItemBarcode($item_id){
+
+        ajaxRequestPost();
+        $data = array();
+
+        $number_of_barcode = isset($_POST['Item']['number_of_barcode']) ? $_POST['Item']['number_of_barcode'] : null;
+
+        Yii::app()->shoppingCart->editItemBarcode($item_id, $number_of_barcode);
+            
+        $this->reload($data);
+
+    }
+
+    
+    public function actionDeleteItemBarcode($item_id,$number_of_barcode){
+        ajaxRequestPost();
+
+        Yii::app()->shoppingCart->deleteItemBarcode($item_id);
+
+        $this->reload();
+    }
+
+    public function actionPreviewItemBarcode(){
+
+        $this->layout = '//layouts/column_receipt';
+
+        $items=Yii::app()->shoppingCart->getItemBarcode();
+
+        $data['view']='/partial/_preview_barcode';
+        $data['data']=array('items'=>$items);
+
+        $this->render('//barcode/index',$data);
+    }
+
+    public function actionResetItemBarcode(){
+
+        ajaxRequestPost();
+
+        Yii::app()->shoppingCart->emptyItemBarcode();
+        $this->reload();
+    }
+
+    private function reload($data=array())
+    {
+
+        $this->layout = '//layouts/column1';
+
+        $model = new Item;
+
+        $items = Yii::app()->shoppingCart->getItemBarcode();
+
+        $data['view']='_select_item_barcode';
+        $data['data']=array('model' => $model,'items'=>$items,'status'=>'success');
+
+        loadview('//barcode/index','//barcode/index',$data);
+
     }
 
     public function setSession($value)

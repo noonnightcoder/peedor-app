@@ -26,7 +26,7 @@ var updateDialog = {
    * @var int The timeout for callback function in milliseconds.
    */
   timeout: 1000,
-    
+  
   /**
    * Add loaded contents to UpdateDialog.
    * @param string url the url of the page to load. 
@@ -149,7 +149,7 @@ var updateDialog = {
    * Set callback function based on status.
    * @param string status the status returned by form submit.
    */
-  callback : function( status ){
+  callback : function( status,redirectUrl ){
    // Switch between callback status
     switch( status )
     {    
@@ -176,6 +176,12 @@ var updateDialog = {
       // Callback on image delete
       case 'imagedeleted':
         setTimeout( this.imageDeletedCallback, this.timeout );
+        break;
+
+      // Callback on image delete
+      case 'success_redirect':
+        console.log('redirect');
+        window.location.href=redirectUrl;
         break;
       
       // Callback on image delete
@@ -235,7 +241,7 @@ var updateDialog = {
         updateDialog.dialogContent.html( data.div );
        
         // Run the callback function
-        updateDialog.callback( data.status );
+        updateDialog.callback( data.status,data.redirectUrl );
         
       },
       'cache': false
@@ -263,6 +269,8 @@ var updateDialog = {
     
   
   }
+
+  
  
   
 };
