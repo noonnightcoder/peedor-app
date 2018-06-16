@@ -6,11 +6,11 @@ $this->breadcrumbs=array(
     $breadcrumb_text => array($url_back),
     isset($_GET['sale_id']) ? 'Edit' : 'Create',
 );
+
 ?>
 
 <div id="register_container">
 
-    <?/*= $sale_save_url */?>
     <?php $this->renderPartial('partial/_left_panel',
         array(
             'model' => $model,

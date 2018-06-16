@@ -80,10 +80,9 @@ class CustomerGroupController extends Controller
 	{
 	    authorized('customer.update');
 
-		$model=$this->loadModel($id);
+		$model = $this->loadModel($id);
 
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($model);
+        $this->performAjaxValidation($model);
 
         if (isset($_POST['CustomerGroup'])) {
             $model->attributes = $_POST['CustomerGroup'];
@@ -107,7 +106,7 @@ class CustomerGroupController extends Controller
         }
 
         $data['model'] = $model;
-        
+
         loadviewJson('update','_form','customergroup-grid',$data);
 
 	}

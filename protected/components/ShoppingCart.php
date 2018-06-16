@@ -739,7 +739,7 @@ class ShoppingCart extends CApplicationComponent
     {
         $this->setSession(Yii::app()->session);
         if (!isset($this->session['invoiceformat'])) {
-            $this->setInvoiceFormat('format1');
+            $this->setInvoiceFormat(getDefaultInvoiceLayout());
         }
         return $this->session['invoiceformat'];
     }

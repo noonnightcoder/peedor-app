@@ -117,7 +117,7 @@ Class Common
                 'format1' => 'No logo no VAT',
                 'format2' => 'Logo no VAT',
                 'format3' => 'Logo & VAT',
-            ), //https://goo.gl/tkYZR1
+            ),
             'payment_term' => array(
                 'COD' => t('Cash on delivery','app'),
                 'CONSIGN' => t('Consignment','app'),

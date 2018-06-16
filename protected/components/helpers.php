@@ -591,6 +591,11 @@ function getEmployeeId()
     return Yii::app()->session['employeeid'];
 }
 
+function getDefaultInvoiceLayout()
+{
+    return Yii::app()->settings->get('receipt', 'printLayout');
+}
+
 function sysFormatNumberDecimal($value)
 {
     return number_format($value, Common::getDecimalPlace());

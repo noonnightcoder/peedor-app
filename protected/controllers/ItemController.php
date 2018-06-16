@@ -342,7 +342,7 @@ class ItemController extends Controller
         $tagsArry=Tag::model()->getTagByItemId($id);
         $tagsItem='';
 
-        foreach($tagsArry as $value){
+        foreach($tagsArry as $value) {
             // $value.=",".$value;
             $tagsItem.=",".$value['tag_name'];
         }
@@ -943,7 +943,7 @@ class ItemController extends Controller
 
     public function actionParentReload()
     {
-        $categories =Category::model()->findAll();
+        $categories = Category::model()->findAll();
         $arr = Category::model()->buildTree($categories);
         $option = Category::model()->buildOptions($arr,null);
 

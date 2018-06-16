@@ -59,10 +59,9 @@ class SaleItemController extends Controller
 
     public function actionCreate($tran_type='2')
     {
-        Yii::app()->shoppingCart->setMode($tran_type);
-
         authorized('sale.create');
-        //$this->setSession(Yii::app()->session);
+
+        Yii::app()->shoppingCart->setMode($tran_type);
         $this->reload();
     }
 
@@ -324,7 +323,6 @@ class SaleItemController extends Controller
             Yii::app()->user->setFlash('warning', 'Plz, Select Customer');
             $this->reload($data);
         } elseif (empty($data['items'])) {
-            //$data['warning'] = Yii::t('app','There is no item in cart');
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
@@ -335,7 +333,6 @@ class SaleItemController extends Controller
                 
 
                 if($data['tran_type']==param('sale_complete_status')){
-
                     $this->actionSaleUpdateStatus($data['sale_id'],$data['tran_type'],false);
                 }
                 
@@ -345,7 +342,6 @@ class SaleItemController extends Controller
                 $this->redirect(Yii::app()->user->returnUrl);
                 $this->reload($data);
             } else {
-                //$this->render('//receipt/index', $data);
                 $this->renderRecipe($data);
                 Yii::app()->shoppingCart->clearAll();
             }

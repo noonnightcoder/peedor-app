@@ -104,7 +104,7 @@ class SettingsForm extends CFormModel
             'printtransactionTime'=> Yii::t('app','Show Transaction Time'),
             'printSignature' => Yii::t('app','Show Signature (Customer & Chashier)'),
             'printSaleRep' => Yii::t('app','Show Sale Representative Info'),
-            'printLayout' => Yii::t('app','Show Sale Representative Info'),
+            'printLayout' => Yii::t('app','Default Print Layout'),
             'itemNumberPerPage' => Yii::t('app','Number of Items Per Page'),
             'itemExpireDate' => Yii::t('app','Track Item Expire Date'),
         );
