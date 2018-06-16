@@ -1231,7 +1231,7 @@ class ItemController extends Controller
     private function reload($data=array())
     {
 
-        $this->layout = '//layouts/column1';
+        $this->layout = '//layouts/column_sale';
 
         $model = new Item;
 

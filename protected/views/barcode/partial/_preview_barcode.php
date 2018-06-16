@@ -27,7 +27,7 @@
 					'rectangular'=> true /* true or false*/
 				);
 			?>
-			<div style="border: solid 1px #333; width: auto !important; display: inline-block; text-align: center;margin-bottom: 3px;">
+			<div style="border: solid 1px #333; width: auto !important;padding:0px 3px 0px 3px; display: inline-block; text-align: center;margin-bottom: 3px;">
 				<small><?=substr($item['name'],0,20)?>...</small><br>
 				<small>Price: <?=$item['price']?></small><br>
 					<?=Item::getItemBarcode($optionsArray)?>
