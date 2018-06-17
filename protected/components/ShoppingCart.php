@@ -380,6 +380,7 @@ class ShoppingCart extends CApplicationComponent
                     )
                 );    
             }else{
+                Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have barcode!!!');
                 $item_data=array();
             }
             
