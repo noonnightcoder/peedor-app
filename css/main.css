@@ -113,6 +113,10 @@ div.flash-error a
 	color:#8a1f11;
 }
 
+table.table > tr > td{
+	border:solid 1px #cccccc !important;
+}
+
 div.flash-notice a
 {
 	color:#514721;

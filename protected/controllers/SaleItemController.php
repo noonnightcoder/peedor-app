@@ -28,7 +28,7 @@ class SaleItemController extends Controller
                     'CompleteSale', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectCustomer',
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
-                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing','ExportPdf',
+                    'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
                     'list','update','create',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve'),
                 'users' => array('@'),
@@ -396,7 +396,7 @@ class SaleItemController extends Controller
         exit;
     }
 
-    public function actionViewSaleInvoice($sale_id, $customer_id,$employee_id, $paid_amount,$tran_type)
+    public function actionViewSaleInvoice($sale_id, $customer_id,$employee_id='', $paid_amount='',$tran_type,$pdf=0)
     {
             authorized('sale.read') || authorized('sale.create') ;
 
@@ -415,8 +415,16 @@ class SaleItemController extends Controller
             if (count($data['items']) == 0) {
                 $data['error_message'] = 'Sale Transaction Failed';
             }
-
-            $this->renderRecipe($data);
+            if($pdf>0){
+                $css=Yii::getPathOfAlias('webroot.css') . '/receipt.css';
+                $paper='A4';
+                $receipt=$this->renderPartial('//receipt/'. 'index', $data,true);
+                $filename=$data['receipt_header_title_en'] . '_' . $data['transaction_date'];
+                Yii::app()->pdfGenerator->PdfCreate($receipt,$paper,$css,$filename); 
+            }else{
+                $this->renderRecipe($data);
+            }
+            
             Yii::app()->shoppingCart->clearAll();
 
     }
@@ -799,7 +807,7 @@ class SaleItemController extends Controller
 
     protected function renderRecipe($data)
     {
-        $this->render('//receipt/'. 'index', $data);
+        $this->render('//receipt/'. 'index', $data); 
     }
 
     protected function renderViewRecipe($data)
@@ -850,30 +858,6 @@ class SaleItemController extends Controller
         $data['report']->search_id = $data['search_id'];
 
         return $data;
-    }
-
-    public function actionExportPdf($sale_id, $customer_id,$tran_type,$pdf)
-    {
-            $this->layout = '//layouts/column_receipt';
-            Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
-            Yii::app()->shoppingCart->copyEntireSale($sale_id);
-            $data=$this->sessionInfo();
-
-            $data['sale_id'] = $sale_id;
-            $data['customer_id'] = $customer_id;
-            $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'kh');
-            $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'en');
-
-            if (count($data['items']) == 0) {
-                $data['error_message'] = 'Sale Transaction Failed';
-            }
-        
-        $c=Yii::app()->pdfGenerator->PdfCreate('',$this->renderPartial('//receipt/index', $data,true)); 
-        
-    }
-
-    public function renderRecipeToPdf($data){
-        $this->render('//receipt/'. 'index', $data);
     }
 
 

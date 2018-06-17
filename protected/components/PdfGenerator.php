@@ -6,19 +6,29 @@ class PdfGenerator extends CApplicationComponent
 {
 
 
-	public function PdfCreate($render,$renderPartial,$paper='A4'){
+	public function PdfCreate($renderPartial,$paper='A4',$css,$filename='peedor'){
+
+		/*
+			- renderPartial parameter: a part of page wish to export
+			- $paper parameter: paper style A4, A5, ...
+			- $css parameter: full path of stylesheet that will style the page to write into pdf file
+
+			***Why renderPartial: because when render full page mpdf have problem with some css property
+			and cause error when call function WriteHTML***
+	
+		*/
 
 		# mPDF
         $mPDF1 = Yii::app()->ePdf->mpdf();
 
         # You can easily override default constructor's params
-        $mPDF1 = Yii::app()->ePdf->mpdf('hello', $paper);
+        $mPDF1 = Yii::app()->ePdf->mpdf('', $paper);
 
         # render (full page)
         // $mPDF1->WriteHTML($render);
 
         # Load a stylesheet
-        $stylesheet = file_get_contents(Yii::getPathOfAlias('webroot.css') . '/receipt.css');
+        $stylesheet = file_get_contents($css);
         $mPDF1->WriteHTML($stylesheet, 1);
 
         // # renderPartial (only 'view' of current controller)
@@ -28,7 +38,7 @@ class PdfGenerator extends CApplicationComponent
         // $mPDF1->WriteHTML(CHtml::image(Yii::getPathOfAlias('webroot.css') . '/bg.gif' ));
 
         # Outputs ready PDF
-        return $mPDF1->Output();
+        return $mPDF1->Output($filename,'I');
 
 	}
 
