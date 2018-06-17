@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <table class="table" id="receipt_items">
+        <table class="table kh-font" id="receipt-items">
             <thead>
             <tr>
                 <th><?= 'ល.រ'  ?></th>

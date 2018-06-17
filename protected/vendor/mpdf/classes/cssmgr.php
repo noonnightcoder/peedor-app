@@ -1293,24 +1293,24 @@ class cssmgr
 	{
 		$p = array();
 		$zp = array();
-
+		$attr = is_array($attr) ? $attr : [];
 		$classes = array();
-		// if (isset($attr['CLASS'])) {
-		// 	$classes = preg_split('/\s+/', $attr['CLASS']);
-		// }
-		// if (!isset($attr['ID'])) {
-		// 	$attr['ID'] = '';
-		// }
-		// // mPDF 6
-		// $shortlang = '';
-		// if (!isset($attr['LANG'])) {
-		// 	$attr['LANG'] = '';
-		// } else {
-		// 	$attr['LANG'] = strtolower($attr['LANG']);
-		// 	if (strlen($attr['LANG']) == 5) {
-		// 		$shortlang = substr($attr['LANG'], 0, 2);
-		// 	}
-		// }
+		if (isset($attr['CLASS'])) {
+			$classes = preg_split('/\s+/', $attr['CLASS']);
+		}
+		if (!isset($attr['ID'])) {
+			$attr['ID'] = '';
+		}
+		// mPDF 6
+		$shortlang = '';
+		if (!isset($attr['LANG'])) {
+			$attr['LANG'] = '';
+		} else {
+			$attr['LANG'] = strtolower($attr['LANG']);
+			if (strlen($attr['LANG']) == 5) {
+				$shortlang = substr($attr['LANG'], 0, 2);
+			}
+		}
 		//===============================================
 		/* -- TABLES -- */
 		// Set Inherited properties

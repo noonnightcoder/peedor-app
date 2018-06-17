@@ -62,7 +62,8 @@ class ItemController extends Controller
                     'DeleteItemBarcode',
                     'EditItemBarcode',
                     'PreviewItemBarcode',
-                    'resetItemBarcode'
+                    'resetItemBarcode', 
+                    'Pdf'
                 ),
                 'users' => array('@'),
             ),
@@ -1143,6 +1144,13 @@ class ItemController extends Controller
 
         Yii::app()->shoppingCart->emptyItemBarcode();
         $this->reload();
+    }
+
+    public function actionPdf(){
+        $file=$this->renderPartial('_to_delete/_test_pdf', array('name'), true);
+        $c=Yii::app()->pdfGenerator->PdfCreate($file);        
+        // Yii::app()->pdfGenerator->PdfToEmail('test','sovotanakpath579@gmail.com','sovotanakpath579@gmail.com',$file,'Hello','A4');
+
     }
 
     private function reload($data=array())

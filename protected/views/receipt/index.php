@@ -1,21 +1,19 @@
 <style>
-    #sale_return_policy {
+    #sale-return-policy {
         width: 80%;
         margin: 0 auto;
         text-align: center;
     }
 
-    /*Receipt styles start*/
-    #receipt_wrapper {
-        font-family: Arial;
+    #receipt-wrapper {
+        font-family: 'Arial','khmer os';
         width: 92% !important;
         font-size: 11px !important;
-        margin: 0 auto !important;
         padding: 0 !important;
     }
 
-    #receipt_items td {
-    //position: relative;
+    #receipt-items td {
+        position: relative;
         padding: 3px;
     }
 
@@ -38,7 +36,7 @@
         margin: 0 15px;
     }
 
-    .receipt-title-kh-font{
+    .kh-font{
         font-family: 'khmer os';
     }
 </style>
@@ -51,8 +49,8 @@ if (isset($error_message))
 }
 ?>
 
-<div class="container" id="receipt_wrapper">
-    <?php if((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])):?>
+<div class="container" id="receipt-wrapper">
+    <?php if(((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])) && !isset($_GET['pdf'])):?>
         <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
             'sale_id'=>$sale_id,
             'customer_id'=>$customer_id,

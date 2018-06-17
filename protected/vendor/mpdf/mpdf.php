@@ -14988,11 +14988,19 @@ class mPDF
 		} else {
 
 			if ($Hhtml) {
+			    if (empty($this->HTMLHeader)) $this->HTMLHeader = array();
 				$this->HTMLHeader['html'] = $Hhtml;
 				$this->HTMLHeader['h'] = $height;
 			} else {
 				$this->HTMLHeader = '';
 			}
+			
+			// if ($Hhtml) {
+			// 	$this->HTMLHeader['html'] = $Hhtml;
+			// 	$this->HTMLHeader['h'] = $height;
+			// } else {
+			// 	$this->HTMLHeader = '';
+			// }
 		}
 		if (!$this->mirrorMargins && $OE == 'E') {
 			return;

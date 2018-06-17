@@ -1,0 +1,92 @@
+#sale-return-policy {
+	width: 80%;
+	margin: 0 auto;
+	text-align: center;
+}
+
+#receipt-wrapper {
+	font-family: Arial;
+	width: 92% !important;
+	font-size: 11px !important;
+	padding: 0 !important;
+}
+
+#receipt-items{
+	width:100% !important;
+}
+
+#receipt-items tr{
+	border-bottom:solid 1px #ccc;
+}
+
+#receipt-items td {
+	position: relative;
+	padding: 3px;
+}
+
+@media print {
+	body {
+		position: relative;
+	}
+
+	#footer {
+		position: fixed;
+		bottom: 0;
+		width:100%;
+	}
+}
+
+.box-left{
+	display:inline-block;
+	width:200px;
+	float:left;
+}
+.box-right{
+	text-align:right;
+	display:inline-block;
+	width:200px;
+	float:right;
+}
+#print-footer{
+	position:absolute !important;
+	display:block;
+	bottom:0px;
+	background:#000;
+}
+
+.center{
+	text-align:center;
+}
+
+.text-right{
+	text-align:right;
+}
+
+.font-10-px{
+	font-size:10px;
+}
+
+.border-gray{
+	border-bottom:solid 1px #ccc;
+}
+
+.gift-receipt-element{
+	font-size:11px;
+}
+
+.col-xs-5,.col-xs-6{
+	display:inline-block;
+	width:auto;
+	float:left;
+}
+
+.row-bordered {
+	content: "";
+	display: block;
+	border-bottom: 2px solid #000000;
+	margin: 0 15px;
+}
+
+.receipt-title-kh-font{
+	font-family: 'khmer os';
+}

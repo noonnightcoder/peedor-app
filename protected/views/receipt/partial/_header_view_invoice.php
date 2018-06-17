@@ -35,6 +35,9 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
             <i class="ace-icon fa fa-edit bigger-120 white"></i>Edit
         </a>
     <?php endif;?>
+    <a href="<?=Yii::app()->createUrl('saleItem/ExportPdf',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
+        <i class="ace-icon fa fa-file-pdf-o bigger-120 white"></i>PDF
+    </a>
     
 </nav>
 <div style="margin-top: 60px !important;"></div>
