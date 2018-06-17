@@ -50,7 +50,7 @@ if (isset($error_message))
 ?>
 
 <div class="container" id="receipt-wrapper">
-    <?php if(((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])) && !isset($_GET['pdf'])):?>
+    <?php if(((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])) && !isset($_GET['pdf']) && !isset($_GET['email'])):?>
         <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
             'sale_id'=>$sale_id,
             'customer_id'=>$customer_id,
@@ -58,7 +58,7 @@ if (isset($error_message))
             'status'=>isset($status) ? $status : Yii::app()->session['tran_type']
         ))?>
     <?php endif;?>
-    
+    <?php $this->renderPartial('//layouts/alert/_flash'); ?>
     <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_header_view,
         array(
             'sale_id' => $sale_id,

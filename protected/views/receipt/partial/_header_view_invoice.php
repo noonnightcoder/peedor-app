@@ -38,9 +38,13 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
     <a href="<?=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
         <i class="ace-icon fa fa-file-pdf-o bigger-120 white"></i>PDF
     </a>
+    <a href="<?=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1))?>" class="btn btn-primary pull-right">
+        <i class="ace-icon fa fa-envelope-o bigger-120 white"></i>Send Email
+    </a>
     
 </nav>
 <div style="margin-top: 60px !important;"></div>
+<?php $this->renderPartial('//layouts/alert/' . sysNotificationType()); ?>
 <script type="text/javascript">
 	jQuery(function ($) {
         $('div#receipt_wrapper').on('click', 'a.btn-order', function (e) {

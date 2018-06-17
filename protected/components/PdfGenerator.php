@@ -42,7 +42,7 @@ class PdfGenerator extends CApplicationComponent
 
 	}
 
-	public function PdfToEmail($subject,$from,$to,$content,$body,$paper='A4'){
+	public function PdfToEmail($subject,$from,$to,$renderPartial,$filename,$body,$paper='A4',$css){
 
 		# mPDF
         $mPDF1 = Yii::app()->ePdf->mpdf();
@@ -54,30 +54,29 @@ class PdfGenerator extends CApplicationComponent
         //$mPDF1->WriteHTML($this->render($content, array(), true));
 
         # Load a stylesheet
-        $stylesheet = file_get_contents(Yii::getPathOfAlias('webroot.css') . '/main.css');
+        $stylesheet = file_get_contents($css);
         $mPDF1->WriteHTML($stylesheet, 1);
 
         // # renderPartial (only 'view' of current controller)
-        $mPDF1->WriteHTML($content);
+        $mPDF1->WriteHTML($renderPartial);
 
         // # Renders image
-        $mPDF1->WriteHTML(CHtml::image(Yii::getPathOfAlias('webroot.css') . '/bg.gif' ));
+        // $mPDF1->WriteHTML(CHtml::image(Yii::getPathOfAlias('webroot.css') . '/bg.gif' ));
 
         # Outputs ready PDF
         // $mPDF1->Output();
 
-		$content_PDF = $mPDF1->Output('', EYiiPdf::OUTPUT_TO_STRING);
+		$content_PDF = $mPDF1->Output($filename.'.pdf');
 
-        require_once(dirname(__FILE__).'/pjmail/pjmail.class.php');
-
-        $mail = new PJmail();
-        $mail->setAllFrom($from, "My personal site");
-        $mail->addrecipient($to);
-        $mail->addsubject($subject);
-        $mail->text = $body;
-        $mail->addbinattachement("my_document.pdf", $content_PDF);
-        $res = $mail->sendmail();
-
+        $message            = new YiiMailMessage;
+        $message->subject    = $subject;
+        $message->setBody($body, 'text/html');                
+        $message->addTo($to);
+        $message->from = $from;  
+        // $swiftAttachment = Swift_Attachment::fromPath(Yii::getPathOfAlias('webroot.css').'/main.css');
+        $swiftAttachment = Swift_Attachment::fromPath($filename.'.pdf',$content_PDF);              
+        $message->attach($swiftAttachment);
+        $res=Yii::app()->mail->send($message);
         return $res;
 
 	}
