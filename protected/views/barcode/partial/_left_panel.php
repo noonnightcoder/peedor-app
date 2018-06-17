@@ -1,7 +1,5 @@
 <!-- #section:left.panel-->
 <div class="col-xs-12 col-sm-9 widget-container-col">
-    <?php $this->renderPartial('//layouts/alert/_flash'); ?>
-
     <!-- #section:left.panel.header-->
     <?php $this->renderPartial('//barcode/partial/_left_panel_header',
         array(

@@ -9,6 +9,8 @@
                 echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,array(0=>'0',1=>'1',2=>'2',3=>'3',4=>'4'));
             } else if ($key === 'invoiceNumInterval') {
                 echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,Common::arrayFactory('inv_number_interval'));
+            } else if ($key === 'notificationType') {
+                echo CHtml::dropDownList(get_class($model) . '[' . $category . '][' . $key . ']',$val,Common::arrayFactory('notification_type'));
             } else  {
                 echo CHtml::textField(get_class($model) . '[' . $category . '][' . $key . ']', $val, array('class'=>'span4')); 
             }

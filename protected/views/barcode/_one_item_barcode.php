@@ -25,9 +25,9 @@ for($i=0;$i<$num;$i++):?>
 	);
 ?>
 <div style="border: solid 1px #333; width: auto !important; display: inline-block; text-align: center;margin-bottom: 3px;">
-	<small><?=substr($model[0]['name'],0,20)?>...</small><br>
-	<small>Price: <?=$model[0]['unit_price']?></small><br>
-		<?=Item::getItemBarcode($optionsArray)?>
+	<small><?= substr($model[0]['name'],0,20)?>...</small><br>
+	<small> Price: <?=$model[0]['unit_price'] ?></small><br>
+		<?= Item::getItemBarcode($optionsArray) ?>
 </div>
 <?php endfor;?>
 </div>

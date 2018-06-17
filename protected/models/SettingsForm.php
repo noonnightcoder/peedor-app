@@ -32,6 +32,7 @@ class SettingsForm extends CFormModel
         'language' => '',
         'decimalPlace'=>'',
         'invoiceNumInterval' => '',
+        'notificationType' => '',
     );
     public $sale = array(
         'saleCookie'=>'',
@@ -107,6 +108,7 @@ class SettingsForm extends CFormModel
             'printLayout' => Yii::t('app','Default Print Layout'),
             'itemNumberPerPage' => Yii::t('app','Number of Items Per Page'),
             'itemExpireDate' => Yii::t('app','Track Item Expire Date'),
+            'notificationType' => Yii::t('app','Notification Type')
         );
  
         if(array_key_exists($key, $keys)) {

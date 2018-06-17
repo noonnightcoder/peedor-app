@@ -1,6 +1,8 @@
 <!-- PAGE CONTENT ENDS -->
 <div id="register_container">
 
+    <?php $this->renderPartial('//layouts/alert/' . sysNotificationType()); ?>
+
     <!--left.panel-->
     <?php $this->renderPartial('partial/_left_panel',
         array(

@@ -56,6 +56,7 @@
     
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery-ui-1.10.4.custom.min.css" />
+    <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/jquery.gritter.css" />
     
     <!-- ace settings handler -->
     <?php //$cs->registerScriptFile($baseUrl.'/js/bootstrap.min.js',CClientScript::POS_END); ?> 
@@ -64,7 +65,7 @@
         $cs->registerScriptFile($baseUrl.'/js/ace-extra.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery-ui.custom.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.ui.touch-punch.min.js',CClientScript::POS_END);
-        //$cs->registerScriptFile($baseUrl.'/js/jquery.gritter.min.js',CClientScript::POS_END);
+        $cs->registerScriptFile($baseUrl.'/js/jquery.gritter.min.js',CClientScript::POS_END);
         //$cs->registerScriptFile($baseUrl.'/js/jquery.slimscroll.min.js',CClientScript::POS_END); 
         //$cs->registerScriptFile($baseUrl.'/js/jquery.bxslider.min.js',CClientScript::POS_END); 
         //$cs->registerScriptFile($baseUrl.'/js/jquery.colorbox-min.js',CClientScript::POS_END);
@@ -142,7 +143,7 @@
                 <div class="row">
                   <div class="col-xs-12">
                     <!-- Include content pages -->
-                    <?php echo $content; ?>
+                      <?php echo $content; ?>
                   </div>
                 </div>
             </div>

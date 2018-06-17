@@ -141,6 +141,10 @@ Class Common
                 'm' => 'Every month',
                 'Y' => 'Every Year'
             ),
+            'notification_type' => array(
+                '_flash' => 'Bootstrap Alert',
+                '_gritter' => 'Gritter Notification'
+            )
         );
 
         if (isset($code)) {

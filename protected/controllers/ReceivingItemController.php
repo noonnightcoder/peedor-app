@@ -170,7 +170,7 @@ class ReceivingItemController extends Controller
         // var_dump($info['quantity']);
         $this->setSession(Yii::app()->session);
         
-        $data=$this->session['latestCount'];//initail data from session
+        $data=$this->session['latestCount'];
         $exist="";
         if($_POST['opt']==1){
             $itemId=$_POST['itemId'];
@@ -259,8 +259,8 @@ class ReceivingItemController extends Controller
 
     public function actionSaveCount(){
         $this->setSession(Yii::app()->session);
-        $data=$this->session['latestCount'];//initail data from session
-        $header=$this->session['countheader'];//initail data from session
+        $data=$this->session['latestCount'];
+        $header=$this->session['countheader'];
         $employeeid=Yii::app()->session['employeeid'];
 
         //save inventory count
@@ -272,12 +272,14 @@ class ReceivingItemController extends Controller
         //save detail and history
         $connection = Yii::app()->db;
         foreach($data as $key=>$value){
+
             if($value['expected']<0){
                 $qty_b4_trans=(-1)*($value['countNum'])-$value['expected'];
                 $qty_b4_trans=(-1)*$qty_b4_trans;
             }else{
                 $qty_b4_trans=$value['countNum']-$value['expected'];
             }
+
             $qty_af_trans=$qty_b4_trans+$value['expected'];
             $cost=$qty_b4_trans*$value['cost'];
             $invSql="insert into inventory_count_detail

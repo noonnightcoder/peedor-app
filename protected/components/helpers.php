@@ -601,4 +601,9 @@ function sysFormatNumberDecimal($value)
     return number_format($value, Common::getDecimalPlace());
 }
 
+function sysNotificationType()
+{
+    return Yii::app()->settings->get('system', 'notificationType')!==null ? Yii::app()->settings->get('system', 'notificationType') : '_flash';
+}
+
 

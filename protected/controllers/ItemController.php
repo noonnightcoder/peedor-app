@@ -389,7 +389,9 @@ class ItemController extends Controller
                                     }
                                 }
                             }
-                            $connection = Yii::app()->db;//initial connection to run raw sql 
+
+                            $connection = Yii::app()->db;
+
                             if(isset($_POST['Item']['tags'])){
                                 $sql="DELETE t,pt
                                 FROM tag t JOIN product_tag pt
@@ -405,7 +407,6 @@ class ItemController extends Controller
                                     $tagID=Tag::model()->saveTag($value);
                                     
                                     $ptagSql="insert into product_tag(product_id,tag_id) values(".$model->id.",".$tagID.")";
-                                    //echo $ptagSql;
                                     $command = $connection->createCommand($ptagSql);
                                     $insertProductTag = $command->execute(); // execute the non-query SQL
                                     // }
@@ -1041,10 +1042,10 @@ class ItemController extends Controller
         //echo $msg;
     }
 
-    public function actionGetBarcodeNum($item_id){
-        // $this->layout = '//layouts/column_receipt';
-        $model=Item::model()->findAll(array('condition'=>'`id`=:id','params'=>array(':id'=>$item_id)));
-        // $this->render('//barcode/index',array('model'=>$model));
+    public function actionGetBarcodeNum($item_id)
+    {
+        $model = Item::model()->findAll(array('condition'=>'`id`=:id','params'=>array(':id'=>$item_id)));
+
         if (isset($_POST['Barcode'])) {
             $num=$_POST['Barcode'];
             Yii::app()->clientScript->scriptMap['jquery.js'] = false;
@@ -1058,6 +1059,10 @@ class ItemController extends Controller
 
         }
 
+        $data['model'] = $model;
+
+        //loadviewJson('//barcode/partial/_bar_code_number','//barcode/partial/_barcode_number','barcode-id',$data);
+
         if (Yii::app()->request->isAjaxRequest) {
             $cs = Yii::app()->clientScript;
             $cs->scriptMap = array(
@@ -1069,14 +1074,15 @@ class ItemController extends Controller
             );
             echo CJSON::encode(array(
                 'status' => 'render',
-                'div' => $this->renderPartial('//barcode/partial/_barcode_number', array('model' => $model), true, true),
+                'div' => $this->renderPartial('//barcode/partial/_barcode_number', $data, true, true),
             ));
             Yii::app()->end();
         }
 
     }
 
-    public function actionPreviewBarcode($item_id,$num=1,$preview=1){
+    public function actionPreviewBarcode($item_id,$num=1,$preview=1)
+    {
 
         $this->layout = '//layouts/column_receipt';
 
@@ -1089,18 +1095,19 @@ class ItemController extends Controller
 
     }
 
-    public function actionPrintBarcodeLabel(){
-        $this->layout = '//layouts/column_receipt';
+    public function actionPrintBarcodeLabel()
+    {
+        $this->layout = '//layouts/column_sale';
         $this->reload();
     }
 
-    public function actionAddItemBarcode(){
+    public function actionAddItemBarcode()
+    {
         $data=array();
         $item_id = $_POST['Item']['id'];
         
         if (!Yii::app()->shoppingCart->addItemBarcode($item_id)) {
-            $data['warning'] = 'Unable to add item to sale';
-            Yii::app()->user->setFlash('warning', 'Unable to add item to sale');
+            Yii::app()->user->setFlash('warning', 'Unable to add item to cart');
         }
         $this->reload($data);
     }
@@ -1118,7 +1125,8 @@ class ItemController extends Controller
 
     }
 
-    public function actionDeleteItemBarcode($item_id,$number_of_barcode){
+    public function actionDeleteItemBarcode($item_id,$number_of_barcode)
+    {
         ajaxRequestPost();
 
         Yii::app()->shoppingCart->deleteItemBarcode($item_id);
@@ -1126,7 +1134,8 @@ class ItemController extends Controller
         $this->reload();
     }
 
-    public function actionPreviewItemBarcode(){
+    public function actionPreviewItemBarcode()
+    {
 
         $this->layout = '//layouts/column_receipt';
 
@@ -1155,15 +1164,12 @@ class ItemController extends Controller
 
     private function reload($data=array())
     {
-
         $this->layout = '//layouts/column_sale';
-
         $model = new Item;
-
         $items = Yii::app()->shoppingCart->getItemBarcode();
 
-        $data['view']='_select_item_barcode';
-        $data['data']=array('model' => $model,'items'=>$items,'status'=>'success');
+        $data['view'] ='_select_item_barcode';
+        $data['data'] = array('model' => $model,'items'=>$items,'status'=>'success');
 
         loadview('//barcode/index','//barcode/index',$data);
 

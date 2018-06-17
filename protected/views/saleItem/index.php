@@ -9,6 +9,8 @@ $this->breadcrumbs=array(
 
 ?>
 
+<?php $this->renderPartial('//layouts/alert/' . sysNotificationType()); ?>
+
 <div id="register_container">
 
     <?php $this->renderPartial('partial/_left_panel',

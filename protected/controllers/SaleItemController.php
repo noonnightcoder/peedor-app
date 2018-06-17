@@ -88,7 +88,6 @@ class SaleItemController extends Controller
         
         
         if (!Yii::app()->shoppingCart->addItem($item_id)) {
-            $data['warning'] = 'Unable to add item to sale';
             Yii::app()->user->setFlash('warning', 'Unable to add item to sale');
         }
 
@@ -853,8 +852,8 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    public function actionExportPdf($sale_id, $customer_id,$tran_type,$pdf){
-
+    public function actionExportPdf($sale_id, $customer_id,$tran_type,$pdf)
+    {
             $this->layout = '//layouts/column_receipt';
             Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
             Yii::app()->shoppingCart->copyEntireSale($sale_id);
