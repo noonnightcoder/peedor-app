@@ -21,7 +21,8 @@ $this->breadcrumbs=array(
             'discount_symbol' => $discount_symbol,
             'sale_header' => $sale_header,
             'sale_header_icon' => $sale_header_icon,
-            'color_style' => $color_style
+            'color_style' => $color_style,
+            'count_item' => $count_item,
         )); ?>
 
     <?php $this->renderPartial('partial/_right_panel', array(

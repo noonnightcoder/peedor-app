@@ -20,7 +20,7 @@
 ));
 ?>
     <div class="widget-main">
-        <div id="itemlookup">
+        <div id="itemlookup" class="col-xs-12 col-sm-10">
             <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
                 'action'=>Yii::app()->createUrl('saleItem/add'),
                 'method'=>'post',
@@ -72,6 +72,32 @@
 
             <?php $this->endWidget(); ?>
         </div>
+
+        <div class="col-xs-12 col-sm-2" id="cancel_cart">
+            <?php if ($count_item <> 0) { ?>
+                <?php
+                $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+                    'id' => 'suspend_sale_form',
+                    'action' => Yii::app()->createUrl('saleItem/cancelSale/'),
+                    'enableAjaxValidation' => false,
+                    'layout' => TbHtml::FORM_LAYOUT_INLINE,
+                ));
+                ?>
+                    <?php
+                    echo TbHtml::linkButton(Yii::t('app', ''), array(
+                        'color' => TbHtml::BUTTON_COLOR_DANGER,
+                        'size' => TbHtml::BUTTON_SIZE_SMALL,
+                        'icon' => 'bigger-140 fa fa-trash',
+                        'url' => Yii::app()->createUrl('saleItem/cancelSale/'),
+                        'class' => 'cancel-sale',
+                        'id' => 'cancel_sale_button',
+                        //'title' => Yii::t('app', 'Cancel Sale'),
+                    ));
+                    ?>
+                <?php $this->endWidget(); ?>
+            <?php } ?>
+        </div>
+
     </div>
 
 <?php $this->endWidget(); ?>

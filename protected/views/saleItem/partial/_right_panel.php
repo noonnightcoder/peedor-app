@@ -2,9 +2,9 @@
 <div class="col-xs-12 col-sm-4 widget-container-col">
 
     <!-- #section:right.panel.header -->
-    <?php $this->renderPartial('partial/_right_panel_header', array(
+    <?php /*$this->renderPartial('partial/_right_panel_header', array(
         'count_item' => $count_item,
-    )); ?>
+    )); */?>
     <!-- #/section:right.panel.header -->
 
     <!-- #section:right.panel.client -->

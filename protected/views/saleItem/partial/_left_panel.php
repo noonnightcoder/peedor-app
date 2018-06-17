@@ -9,6 +9,7 @@
               'sale_header' => $sale_header,
               'sale_header_icon' => $sale_header_icon,
               'color_style' => $color_style,
+              'count_item' => $count_item,
         ));
     ?>
     <!-- /section:left.panel.header-->
