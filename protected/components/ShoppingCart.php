@@ -796,5 +796,3 @@ class ShoppingCart extends CApplicationComponent
     }
 
 }
-
-?>

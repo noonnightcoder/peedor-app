@@ -85,20 +85,17 @@ class SaleItemController extends Controller
        
         $data=array();
         $item_id = $_POST['SaleItem']['item_id'];
-        
-        
+
         if (!Yii::app()->shoppingCart->addItem($item_id)) {
             Yii::app()->user->setFlash('warning', 'Unable to add item to sale');
         }
 
         if (Yii::app()->shoppingCart->outofStock($item_id)) {
-            //$data['warning'] = 'Warning, Desired Quantity is Insufficient. You can still process the sale, but check your inventory!';
-            Yii::app()->user->setFlash('warning', 'Desired Quantity is Insufficient. You can still process the sale, but check your inventory!');
+                Yii::app()->user->setFlash('warning', 'Desired Quantity is Insufficient. You can still process the sale, but check your inventory!');
         }
-        $this->reload($data);
-      
 
-}
+        $this->reload($data);
+    }
 
     public function actionIndexPara($item_id)
     {
@@ -318,25 +315,23 @@ class SaleItemController extends Controller
          */
         //$this->setSession(Yii::app()->session);
         if ($data['amount_change'] > 0 && $data['customer'] == null) {
-            $data['warning'] = Yii::t('app', 'Plz, Select Customer');
             Yii::app()->user->setFlash('warning', 'Plz, Select Customer');
             $this->reload($data);
         } elseif (empty($data['items'])) {
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
+
                 $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
                 $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
                 $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
                 $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term']);
-                
 
                 if($data['tran_type']==param('sale_complete_status')){
                     $this->actionSaleUpdateStatus($data['sale_id'],$data['tran_type'],false);
                 }
                 
             if (substr($data['sale_id'], 0, 2) == '-1') {
-                $data['warning'] = $data['sale_id'];
                 Yii::app()->user->setFlash('warning', $data['sale_id']);
                 $this->redirect(Yii::app()->user->returnUrl);
                 $this->reload($data);
@@ -421,6 +416,7 @@ class SaleItemController extends Controller
             $renderPartial=$this->renderPartial('//receipt/'. 'index', $data,true);
             $filename=$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
 
+            // Generate PDF
             if($pdf>0){
                 Yii::app()->pdfGenerator->PdfCreate($renderPartial,$paper,$css,$filename); 
             }else if($email>0){
@@ -855,6 +851,12 @@ class SaleItemController extends Controller
         Yii::app()->pdfGenerator->PdfToEmail($subject, $from, $to, $content, $filename, $body, $paper = 'A4', $css);
     }
 
+    public function actionModal()
+    {
+        $data['title'] ='My ttitle';
+        loadviewJson('hello_delete','hello_delete','',$data);
+    }
+
     protected function renderRecipe($data)
     {
         $this->render('//receipt/'. 'index', $data); 
@@ -886,6 +888,7 @@ class SaleItemController extends Controller
         return $data;
     }
 
+
     protected function commonData($grid_id,$title,$title_icon,$advance_search=null,$header_view='_header',$grid_view='_grid')
     {
         $report = new Report;
@@ -909,7 +912,6 @@ class SaleItemController extends Controller
 
         return $data;
     }
-
 
     /*public function setSession($value)
     {

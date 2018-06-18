@@ -1169,7 +1169,11 @@ class ItemController extends Controller
         $items = Yii::app()->shoppingCart->getItemBarcode();
 
         $data['view'] ='_select_item_barcode';
-        $data['data'] = array('model' => $model,'items'=>$items,'status'=>'success');
+        $data['data'] = array(
+            'model' => $model,
+            'items'=>$items,
+            'status'=>'success'
+        );
 
         loadview('//barcode/index','//barcode/index',$data);
 

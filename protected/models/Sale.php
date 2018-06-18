@@ -237,9 +237,9 @@ class Sale extends CActiveRecord
     {
         $total = 0;
         $sql = "SELECT format(total,2) total
-               FROM v_sale
-               WHERE id=:sale_id
-               AND `status`=:status";
+                FROM v_sale
+                WHERE id=:sale_id
+                AND `status`=:status";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true,
             array(':sale_id' => $in_sale_id, ':status' => Yii::app()->params['sale_complete_status']));
@@ -319,6 +319,7 @@ class Sale extends CActiveRecord
         $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
         $command1->execute();
     }
+
     // Saving into Sale_Item table for each item purchased
     protected function saveSaleItem($items, $sale_id, $employee_id,$status='')
     {

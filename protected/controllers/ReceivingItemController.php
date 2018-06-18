@@ -158,27 +158,30 @@ class ReceivingItemController extends Controller
         $this->render('create',$data);
     }
 
-    public function actionGetItemInfo(){
+    public function actionGetItemInfo()
+    {
         $item_id = $_POST['ReceivingItem']['item_id'];
         $model = Item::model()->findbyPk($item_id);
         var_dump($model);
 
     }
 
-    public function actionAddCount(){
+    public function actionAddCount()
+    {
         $info=Item::model()->findbyPk($_POST['itemId']);
         // var_dump($info['quantity']);
         $this->setSession(Yii::app()->session);
         
         $data=$this->session['latestCount'];
         $exist="";
+
         if($_POST['opt']==1){
-            $itemId=$_POST['itemId'];
-            $itemName=$_POST['name'];
-            $countNum=$_POST['countNum'];
-            $countDate=$_POST['countDate'];
-            $countTime=$_POST['countTime'] ? $_POST['countTime'] : date('H:i:s');
-            $countName=$_POST['countName'];
+            $itemId = $_POST['itemId'];
+            $itemName = $_POST['name'];
+            $countNum = $_POST['countNum'];
+            $countDate = $_POST['countDate'];
+            $countTime = $_POST['countTime'] ? $_POST['countTime'] : date('H:i:s');
+            $countName = $_POST['countName'];
             $this->session['countheader']=array('name'=>$countName.' '.$countTime,'created_date'=>$countDate.' '.$countTime);
             if(!empty($data)){//check if data is not empty
 
