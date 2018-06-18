@@ -830,29 +830,29 @@ class SaleItemController extends Controller
         $this->layout = '//layouts/column_receipt';
         Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
         Yii::app()->shoppingCart->copyEntireSale(123);
-        $data=$this->sessionInfo();
+        $data = $this->sessionInfo();
 
         $data['sale_id'] = 123;
         $data['customer_id'] = 3;
         $data['paid_amount'] = 0;
         $data['status'] = 2;
-        $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2,'kh');
-        $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2,'en');
+        $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2, 'kh');
+        $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2, 'en');
 
         if (count($data['items']) == 0) {
             $data['error_message'] = 'Sale Transaction Failed';
         }
-        
-        $css=Yii::getPathOfAlias('webroot.css') . '/receipt.css';
-        $paper='A4';
-        $content=$this->renderPartial('//receipt/'. 'index', $data,true);
-        $filename=$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
-        $from='test@peedor.com';
-        $to='test@peedor.com';
-        $subject='test attachment';
-        $body='Hello';
+
+        $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
+        $paper = 'A4';
+        $content = $this->renderPartial('//receipt/' . 'index', $data, true);
+        $filename = $data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
+        $from = 'test@peedor.com';
+        $to = 'test@peedor.com';
+        $subject = 'test attachment';
+        $body = 'Hello';
         // Yii::app()->pdfGenerator->PdfCreate($receipt,$paper,$css,$filename); 
-        Yii::app()->pdfGenerator->PdfToEmail($subject,$from,$to,$content,$filename,$body,$paper='A4',$css);
+        Yii::app()->pdfGenerator->PdfToEmail($subject, $from, $to, $content, $filename, $body, $paper = 'A4', $css);
     }
 
     protected function renderRecipe($data)
