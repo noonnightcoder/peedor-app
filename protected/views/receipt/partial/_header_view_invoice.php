@@ -38,9 +38,20 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
     <a href="<?=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
         <i class="ace-icon fa fa-file-pdf-o bigger-120 white"></i>PDF
     </a>
-    <a href="<?=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1))?>" class="btn btn-primary pull-right">
+
+    <!--<a href="<?/*=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1))*/?>" class="btn btn-primary pull-right">
         <i class="ace-icon fa fa-envelope-o bigger-120 white"></i>Send Email
-    </a>
+    </a>-->
+
+    <?php echo TbHtml::linkButton(Yii::t('app', 'Send Mail'), array(
+        'color' => TbHtml::BUTTON_COLOR_PRIMARY,
+        'size' => TbHtml::BUTTON_SIZE_SMALL,
+        'icon' => 'ace-icon fa fa-plus white',
+        'url' => $this->createUrl('model'),
+        'class' => 'update-dialog-open-link',
+        'data-update-dialog-title' => 'Send Email',
+        'data-refresh-grid-id'=> 'email',
+    )); ?>
     
 </nav>
 <div style="margin-top: 60px !important;"></div>
@@ -71,3 +82,4 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
     });
 
 </script>
+<?php $this->widget('ext.modaldlg.EModalDlg'); ?>

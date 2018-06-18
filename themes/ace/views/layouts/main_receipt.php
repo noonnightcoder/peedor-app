@@ -10,7 +10,7 @@
         $baseUrl = Yii::app()->theme->baseUrl;
         $cs = Yii::app()->getClientScript();
     ?>
-    <?php //Yii::app()->bootstrap->register(); ?>
+    <?php Yii::app()->bootstrap->register(); ?>
      <script>
         var BASE_URL="<?php print Yii::app()->request->baseUrl;?>";
     </script>
