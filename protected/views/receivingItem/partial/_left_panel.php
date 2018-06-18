@@ -5,7 +5,8 @@
 
     <?php $this->renderPartial('partial/_left_panel_header', array(
         'model' => $model,
-        'trans_header' => Yii::t('menu', $trans_header)
+        'trans_header' => Yii::t('menu', $trans_header),
+        'count_item' => $count_item,
     )); ?>
 
     <div class="grid-view" id="grid_cart">

@@ -28,12 +28,12 @@
                 ));
         ?>  
 
-       <?php echo TbHtml::linkButton(Yii::t( 'app', 'New' ),array(
+       <?php /*echo TbHtml::linkButton(Yii::t( 'app', 'New' ),array(
             'color'=>TbHtml::BUTTON_COLOR_INFO,
             'size'=>TbHtml::BUTTON_SIZE_SMALL,
             'icon'=>'glyphicon-plus white',
             'url'=>$this->createUrl('Supplier/Create/',array('recv_mode'=>'Y','trans_mode'=>$trans_mode)),
-        )); ?>
+        )); */?>
 
         <div id="comment_content">
             <?php //echo $form->textFieldControlGroup($model,'comment',array('rows'=>1, 'cols'=>10,'class'=>'span1','maxlength'=>250,'id'=>'comment_id')); ?>

@@ -1,18 +1,18 @@
 <div class="col-xs-12 col-sm-4 widget-container-col">
     <!-- #section:canel-cart.layout -->
-    <div class="row">
+    <!--<div class="row">
         <div id="cancel_cart">
-            <?php if ($count_item <> 0) { ?>
+            <?php /*if ($count_item <> 0) { */?>
                 <?php
-                $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+/*                $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
                     'id' => 'cancel_recv_form',
                     'action' => Yii::app()->createUrl('receivingItem/cancelRecv/'),
                     'layout' => TbHtml::FORM_LAYOUT_INLINE,
                 ));
-                ?>
+                */?>
                 <div align="right">
                     <?php
-                    echo TbHtml::linkButton(Yii::t('app', 'Cancel'), array(
+/*                    echo TbHtml::linkButton(Yii::t('app', 'Cancel'), array(
                         'color' => TbHtml::BUTTON_COLOR_DANGER,
                         'size' => TbHtml::BUTTON_SIZE_SMALL,
                         'icon' => '	glyphicon-remove white',
@@ -21,12 +21,12 @@
                         'id' => 'cancel_receiving_button',
                         //'title' => Yii::t('app', 'Cancel Receiving'),
                     ));
-                    ?>
+                    */?>
                 </div>
-                <?php $this->endWidget(); ?>
-            <?php } ?>
+                <?php /*$this->endWidget(); */?>
+            <?php /*} */?>
         </div>
-    </div>
+    </div>-->
     <!-- #section:canel-cart.layout -->
 
     <div class="row">
@@ -63,6 +63,16 @@
                         'title' => Yii::t('app', 'Select Supplier (Optional)'),
                         'headerIcon' => 'menu-icon fa fa-users',
                         'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
+                        'headerButtons' => array(
+                            TbHtml::buttonGroup(
+                                array(
+                                    array('label' => Yii::t('app','New'),
+                                        'url'=>$this->createUrl('Supplier/Create/',array('recv_mode'=>'Y','trans_mode'=>$trans_mode)),
+                                        'icon'=>'fa fa-plus white',
+                                    ),
+                                ),array('color'=>TbHtml::BUTTON_COLOR_INFO,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+                            ),
+                        ),
                         'content' => $this->renderPartial('partial/_supplier',
                             array('model' => $model,
                                 'supplier' => $supplier,

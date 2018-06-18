@@ -1,4 +1,3 @@
-<!-- PAGE CONTENT ENDS -->
 <div id="register_container">
 
     <?php $this->renderPartial('//layouts/alert/' . sysNotificationType()); ?>
@@ -14,6 +13,7 @@
             'items' => $items,
             'disable_discount' => $disable_discount,
             'discount_symbol' => $discount_symbol,
+            'count_item' => $count_item,
         )); ?>
     <!--/left.panel-->
 
@@ -30,5 +30,5 @@
         )); ?>
     <!--/right.panel-->
 
-<div class="waiting"><!-- Place at bottom of page --></div>
+    <?php $this->renderPartial('partial/_js'); ?>
 
