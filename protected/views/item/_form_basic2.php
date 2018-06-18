@@ -59,7 +59,7 @@ $option=Category::model()->buildOptions($arr,null);
                     'model'=>$model,
                     'attribute'=>'description',
                     'language'=>'en',
-                    'editorTemplate'=>'full',
+                    'editorTemplate'=>'basic',
                     'htmlOptions'=>array('placeholder'=>'Description')
                 )); ?>
             </div>

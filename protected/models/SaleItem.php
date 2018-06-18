@@ -38,6 +38,12 @@ class SaleItem extends CActiveRecord
     public $invoice_format;
     public $payment_term;
     //public $total_discount;
+    public $mail_from;
+    public $mail_to;
+    public $mail_cc;
+    public $mail_body;
+    public $mail_subject;
+    public $attach_receipt;
 
     /**
      * Returns the static model of the specified AR class.
@@ -65,14 +71,14 @@ class SaleItem extends CActiveRecord
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            //array('sale_id, item_id, unit_price, quantity', 'required'),
-            //array('quantity', 'required'),
+            array('mail_to,mail_from,', 'required'),
+            array('mail_from,mail_to,mail_cc', 'email'),
             array('sale_id, item_id, line', 'numerical', 'integerOnly' => true),
             array('quantity, cost_price, unit_price, price, discount_amount,total_gst', 'numerical'),
-            array('description, discount_type', 'safe'),
+            array('mail_body,description, discount_type', 'safe'),
             // The following rule is used by search().
             // Please remove those attributes that should not be searched.
-            array('sale_id, item_id, description, line, quantity, cost_price, unit_price, price, discount_amount, discount_type, total_discount,total_gst', 'safe', 'on' => 'search'),
+            array('sale_id, item_id, description, line, quantity, cost_price, unit_price, price, discount_amount, discount_type, total_discount,total_gst,mail_body', 'safe', 'on' => 'search'),
         );
     }
 
@@ -107,6 +113,12 @@ class SaleItem extends CActiveRecord
             'discount_type' => Yii::t('app', 'model.saleitem.discount_type'),//'Discount Type',
             'name' => Yii::t('app', 'model.saleitem.name'),
             'payment_type' => Yii::t('app', 'model.saleitem.paymentype'),
+            'mail_from' => 'From',
+            'mail_to' => 'To',
+            'mail_subject' => 'Subject',
+            'mail_cc' => 'CC',
+            'mail_body' => 'Body',
+            'attach_receipt' => 'Send with receipt attachment?'
         );
     }
 

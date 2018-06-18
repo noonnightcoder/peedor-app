@@ -29,7 +29,7 @@ class SaleItemController extends Controller
                     'AddCustomer', 'Receipt', 'UnsuspendSale', 'EditSale', 'Receipt', 'Suspend',
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
                     'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
-                    'list','update','create','testEmail',// UNLEASED name convenstion it's all about CRUD
+                    'list','update','create','SendEmail','exportPdf',// UNLEASED name convenstion it's all about CRUD
                     'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve'),
                 'users' => array('@'),
             ),
@@ -395,50 +395,13 @@ class SaleItemController extends Controller
     {
             authorized('sale.read') || authorized('sale.create') ;
 
-            $this->layout = '//layouts/column_receipt';
-            Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
-            Yii::app()->shoppingCart->copyEntireSale($sale_id);
-            $data=$this->sessionInfo();
-
-            $data['sale_id'] = $sale_id;
-            $data['customer_id'] = $customer_id;
-            $data['paid_amount'] = $paid_amount;
-            $data['status'] = $tran_type;
-            $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'kh');
-            $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type,'en');
+            $data = $this->receiptData($sale_id,$customer_id,$tran_type);
 
             if (count($data['items']) == 0) {
                 $data['error_message'] = 'Sale Transaction Failed';
             }
 
-            $css=Yii::getPathOfAlias('webroot.css') . '/receipt.css';
-            $paper='A4';
-            $renderPartial=$this->renderPartial('//receipt/'. 'index', $data,true);
-            $filename=$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
-
-            // Generate PDF
-            if($pdf>0){
-                Yii::app()->pdfGenerator->PdfCreate($renderPartial,$paper,$css,$filename); 
-            }else if($email>0){
-                $from='test@peedor.com';
-                $to='test@peedor.com';
-                $subject='test attachment';
-                $body='Hello';
-                $sent=Yii::app()->pdfGenerator->PdfToEmail($subject,$from,$to,$renderPartial,$filename,$body,$paper='A4',$css);
-                if($sent){
-                    Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_INFO, 'Email sent success');
-                    $this->redirect(array(
-                        'saleItem/viewSaleInvoice',
-                        'sale_id'=>$sale_id,
-                        'customer_id'=>$customer_id,
-                        'employee_id'=>getEmployeeId(),
-                        'paid_amount'=>$paid_amount,
-                        'tran_type'=>$tran_type
-                    ));
-                }
-            }else{
-                $this->renderRecipe($data);
-            }
+            $this->renderRecipe($data);
             
             Yii::app()->shoppingCart->clearAll();
 
@@ -820,38 +783,90 @@ class SaleItemController extends Controller
         return $model;
     }
 
-    public function actionTestEmail()
+    public function actionSendEmail($sale_id, $customer_id,$employee_id='', $paid_amount='',$tran_type,$pdf=0,$email=0)
     {
 
-        $this->layout = '//layouts/column_receipt';
-        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
-        Yii::app()->shoppingCart->copyEntireSale(123);
-        $data = $this->sessionInfo();
+        $data=$this->receiptData($sale_id,$customer_id,$tran_type);
 
-        $data['sale_id'] = 123;
-        $data['customer_id'] = 3;
-        $data['paid_amount'] = 0;
-        $data['status'] = 2;
-        $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2, 'kh');
-        $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : 2, 'en');
+        $model=new SaleItem;
 
-        if (count($data['items']) == 0) {
-            $data['error_message'] = 'Sale Transaction Failed';
+        $this->performAjaxValidation($model);
+
+        if (isset($_POST['SaleItem'])) 
+        {
+            $model->attributes = $_POST['SaleItem'];
+
+            if ($model->validate()) {
+               
+                $from = $_POST['SaleItem']['mail_from'];
+                $to = $_POST['SaleItem']['mail_to'];
+                $cc = $_POST['SaleItem']['mail_cc'] !='' ? $_POST['SaleItem']['mail_cc'] : '';
+                $subject = $_POST['SaleItem']['mail_subject'] !='' ? $_POST['SaleItem']['mail_subject'] : '';
+                $body = $_POST['SaleItem']['mail_body'] !='' ? $_POST['SaleItem']['mail_body'] : '';
+                $attach_receipt = $_POST['SaleItem']['attach_receipt'] > 0 ? $_POST['SaleItem']['attach_receipt'] : 0;
+
+                if($attach_receipt>0)
+                {
+                    
+                    $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
+                    $paper = 'A4';
+                    $renderPartial = $this->renderPartial('//receipt/' . 'index', $data, true);
+                    $filename = $data['cust_fullname'].'_'.$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
+                    $is_sent = Yii::app()->sendEmail->sendPdfEmail($from,$to, $renderPartial, $filename,$css, $paper, $body,$subject,$cc );
+
+                    if($is_sent)
+                    {
+                        unlink(Yii::getPathOfAlias('webroot').'/'.$filename.'.pdf');
+                    }
+
+                }
+                else
+                {
+
+                    $is_sent=Yii::app()->sendEmail->sendTextEmail($from,$to,$subject,$body,$cc); 
+
+                }
+
+                if($is_sent)
+                {
+                    Yii::app()->clientScript->scriptMap['jquery.js'] = false;
+                    echo CJSON::encode(array(
+                        'status' => 'success',
+                        'div' => '<div class="alert alert-success">Email Sent</div>'
+                    ));
+                    Yii::app()->shoppingCart->clearAll();
+                    Yii::app()->end();
+                }else
+                {
+
+                    Yii::app()->user->setFlash('warning', 'Unable to sent email');
+                }
+            }
+        
         }
 
-        $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
-        $paper = 'A4';
-        $content = $this->renderPartial('//receipt/' . 'index', $data, true);
-        $filename = $data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
-        $from = 'test@peedor.com';
-        $to = 'test@peedor.com';
-        $subject = 'test attachment';
-        $body = 'Hello';
-        // Yii::app()->pdfGenerator->PdfCreate($receipt,$paper,$css,$filename); 
-        Yii::app()->pdfGenerator->PdfToEmail($subject, $from, $to, $content, $filename, $body, $paper = 'A4', $css);
+        $data['model'] = $model;
+
+        loadviewJson('saleItem','_mail_form','',$data);
+        
     }
 
-    public function actionModal()
+    public function actionExportPdf($sale_id,$customer_id,$tran_type,$pdf)
+    {
+
+        $data=$this->receiptData($sale_id,$customer_id,$tran_type);
+
+        $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
+                    $paper = 'A4';
+        $renderPartial = $this->renderPartial('//receipt/' . 'index', $data, true);
+        $filename = $data['cust_fullname'].'_'.$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
+
+        $is_export=Yii::app()->pdfGenerator->PdfCreate($renderPartial,$css,$paper,$filename);
+        Yii::app()->shoppingCart->clearAll();  
+        
+    }
+
+    public function action()
     {
         $data['title'] ='My ttitle';
         loadviewJson('hello_delete','hello_delete','',$data);
@@ -867,7 +882,8 @@ class SaleItemController extends Controller
         $this->renderPartial('//receipt/'. 'index_view', $data);
     }
 
-    private function invoiceData() {
+    private function invoiceData() 
+    {
 
         $data['invoice_header_view'] = '_header';
         $data['invoice_header_body_view'] = '_header_body';
@@ -879,7 +895,8 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    private function saleTypeData() {
+    private function saleTypeData() 
+    {
 
         $data['tran_type'] = getTransType();
         $data['sale_header'] = $data['tran_type']=='1'? sysMenuInvoice():sysMenuSale();
@@ -888,6 +905,30 @@ class SaleItemController extends Controller
         return $data;
     }
 
+    protected function receiptData($sale_id,$customer_id,$tran_type,$paid_amount=0)
+    {
+
+        $this->layout = '//layouts/column_receipt';
+
+        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
+        Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+        $data = $this->sessionInfo();
+
+        $data['sale_id'] = $sale_id;
+        $data['customer_id'] = $customer_id;
+        $data['paid_amount'] = $paid_amount;
+        $data['status'] = $tran_type;
+        $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'kh');
+        $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'en');
+
+        if (count($data['items']) == 0) {
+            $data['error_message'] = 'Sale Transaction Failed';
+        }
+
+        return $data;
+
+    }
 
     protected function commonData($grid_id,$title,$title_icon,$advance_search=null,$header_view='_header',$grid_view='_grid')
     {
@@ -913,9 +954,16 @@ class SaleItemController extends Controller
         return $data;
     }
 
-    /*public function setSession($value)
+    /**
+     * Performs the AJAX validation.
+     * @param CustomerGroup $model the model to be validated
+     */
+    protected function performAjaxValidation($model)
     {
-        $this->session = $value;
-    }*/
+        if (isset($_POST['ajax']) && $_POST['ajax']==='customer-group-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+    }
 
 }

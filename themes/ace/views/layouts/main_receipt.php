@@ -10,7 +10,9 @@
         $baseUrl = Yii::app()->theme->baseUrl;
         $cs = Yii::app()->getClientScript();
     ?>
+
     <?php Yii::app()->bootstrap->register(); ?>
+
      <script>
         var BASE_URL="<?php print Yii::app()->request->baseUrl;?>";
     </script>
@@ -42,7 +44,7 @@
     <link rel="stylesheet" type="text/css" href="<?php echo $baseUrl ?>/css/loading_animation.css" />
     
     <!-- <link rel="stylesheet" type="text/css" href="<?php //echo Yii::app()->request->baseUrl ?>/css/custom.css" /> -->
-   
+   <script data-pace-options='{ "ajax": true, "document": true, "eventLag": false, "elements": false }' src="<?php echo baseurl() ?>/js/pace.js"></script>
     <?php 
         if (Yii::app()->components['user']->loginRequiredAjaxResponse){
             Yii::app()->clientScript->registerScript('ajaxLoginRequired', '
@@ -56,6 +58,7 @@
             ');
         }
     ?>
+     
 </head>
 
 <body class="no-skin">

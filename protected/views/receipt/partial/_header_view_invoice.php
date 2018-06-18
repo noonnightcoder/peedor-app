@@ -35,28 +35,25 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
             <i class="ace-icon fa fa-edit bigger-120 white"></i>Edit
         </a>
     <?php endif;?>
-    <a href="<?=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
+    <a href="<?=Yii::app()->createUrl('saleItem/exportPdf',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
         <i class="ace-icon fa fa-file-pdf-o bigger-120 white"></i>PDF
     </a>
-
-    <!--<a href="<?/*=Yii::app()->createUrl('saleItem/viewSaleInvoice',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1))*/?>" class="btn btn-primary pull-right">
-        <i class="ace-icon fa fa-envelope-o bigger-120 white"></i>Send Email
-    </a>-->
 
     <?php echo TbHtml::linkButton(Yii::t('app', 'Send Mail'), array(
         'color' => TbHtml::BUTTON_COLOR_PRIMARY,
         'size' => TbHtml::BUTTON_SIZE_SMALL,
-        'icon' => 'ace-icon fa fa-plus white',
-        'url' => $this->createUrl('model'),
-        'class' => 'update-dialog-open-link',
+        'icon' => 'ace-icon fa fa-envelope-o bigger-120 white',
+        'url' => Yii::app()->createUrl('saleItem/SendEmail',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1)),
+        'class' => 'update-dialog-open-link btn btn-primary pull-right',
         'data-update-dialog-title' => 'Send Email',
         'data-refresh-grid-id'=> 'email',
     )); ?>
     
 </nav>
 <div style="margin-top: 60px !important;"></div>
-<?php $this->renderPartial('//layouts/alert/' . sysNotificationType()); ?>
+
 <script type="text/javascript">
+    $('.update-dialog-open-link').removeClass('btn-sm');
 	jQuery(function ($) {
         $('div#receipt_wrapper').on('click', 'a.btn-order', function (e) {
             e.preventDefault();

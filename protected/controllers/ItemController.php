@@ -92,32 +92,6 @@ class ItemController extends Controller
         $this->render('readExcel', array('model' => $model));
     }
 
-    public function actionUploadFile()
-    {
-        $model = new TestExcel();
-        $employee = new Employee();
-        $criteria = new CDbCriteria;
-        if (isset($_POST['btnread'])) {
-            $sheet_array = Yii::app()->yexcel->readActiveSheet($_FILES['fileUpload']['tmp_name']);
-            $empFirstName = '';
-            $empLastName = '';
-            foreach ($sheet_array as $key => $value) {
-                $connection = Yii::app()->db;
-                $sql = "insert into sale_import_tmp(NoR ,Sale_Date ,Sale_Month ,Invoice ,Saleman ,Customer ,Address ,Tel ,Products ,Landed_cost ,Selling_price ,Qty_In_CTN ,IN_BTT_PCK ,Discount ,Su_IN_CTN ,IN_PCS ,Cost_of_Sample ,Total_Amount ,Total_Landed_Cost ,Transportation ,Total_Expense ,Return_in_QTY ,Returned_amount ,Profit_Lost ,Payment_Status) values('" . $value['A'] . "','" . $value['B'] . "','" . $value['C'] . "','" . $value['D'] . "','" . $value['E'] . "','" . $value['F'] . "','" . $value['G'] . "','" . $value['H'] . "','" . $value['I'] . "','" . $value['J'] . "','" . $value['K'] . "','" . $value['L'] . "','" . $value['M'] . "','" . $value['N'] . "','" . $value['O'] . "','" . $value['P'] . "','" . $value['Q'] . "','" . $value['R'] . "','" . $value['S'] . "','" . $value['T'] . "','" . $value['U'] . "','" . $value['V'] . "','" . $value['W'] . "','" . $value['X'] . "','" . $value['Y'] . "')";
-                $command = $connection->createCommand($sql);
-                $insert = $command->execute(); // execute the non-query SQL
-                $message = array();
-                if ($insert) {
-                    $message = array('message' => 'Data imported successfully');
-                } else {
-                    $message = array('message' => 'Failed to import data');
-                }
-
-            }
-            $this->render('readExcel', $message);
-        }
-    }
-
     public function actionAddProduct()
     {
         $this->render('_form_product');
