@@ -10891,7 +10891,9 @@ class mPDF
 	{
 		$filter = ($this->compress) ? '/Filter /FlateDecode ' : '';
 		reset($this->images);
-		while (list($file, $info) = each($this->images)) {
+		//while (list($file, $info) = each($this->images)) {
+        /* -- Fix The each() function is deprecated --*/
+        foreach ($this->images as $file => $info) {
 			$this->_newobj();
 			$this->images[$file]['n'] = $this->n;
 			$this->_out('<</Type /XObject');
@@ -13037,8 +13039,9 @@ class mPDF
 	function _putformobjects()
 	{
 		reset($this->formobjects);
-		while (list($file, $info) = each($this->formobjects)) {
-			$this->_newobj();
+		//while (list($file, $info) = each($this->formobjects)) {
+        foreach ($this->formobjects as $file => $info) {
+            $this->_newobj();
 			$this->formobjects[$file]['n'] = $this->n;
 			$this->_out('<</Type /XObject');
 			$this->_out('/Subtype /Form');
