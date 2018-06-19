@@ -856,7 +856,7 @@ class SaleItemController extends Controller
 
         $data['model'] = $model;
 
-        loadview('_mail_form','_mail_form',$data);
+        loadviewJson('_mail_form','//mail/_mail_form','',$data);
         
     }
 

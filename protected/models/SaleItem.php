@@ -38,6 +38,12 @@ class SaleItem extends CActiveRecord
     public $invoice_format;
     public $payment_term;
     //public $total_discount;
+    public $mail_from;
+    public $mail_to;
+    public $mail_cc;
+    public $mail_body;
+    public $mail_subject;
+    public $attach_receipt;
 
     /**
      * Returns the static model of the specified AR class.

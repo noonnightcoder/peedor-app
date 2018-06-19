@@ -3,7 +3,7 @@
     <?php $this->renderPartial('//layouts/alert/_flash'); ?>
 
     <?php $form = $this->beginWidget('\TbActiveForm', array(
-        'id' => 'mail-form',
+        'id' => 'fff',
         'enableAjaxValidation' => false,
         'action' => $this->createUrl('saleItem/sendEmail', array(
             'sale_id' => $_GET['sale_id'],
@@ -49,20 +49,16 @@
     </div>
     <?php $this->endWidget(); ?>
 </div>
-<!--
+
 <script type="text/javascript">
     $(document).ready(function (e) {
         $('.btn-send').click(function () {
             $(this).text('Sending...');
         })
     })
-</script>-->
+</script>
 <style type="text/css">
     #errmsg {
         color: #ff0000;
-    }
-
-    .mail-box-footer {
-        margin-bottom: 30px;
     }
 </style>
