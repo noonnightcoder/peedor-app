@@ -20,12 +20,13 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
     <?php if($status==param('sale_submit_status') && ckacc("sale.validate")):?>
         <a href="<?=Yii::app()->createUrl('saleItem/SaleUpdateStatus',array('sale_id'=>$sale_id,'tran_type'=>param('sale_validate_status')))?>" class="btn btn-primary pull-right btn-order btn-order-approve">
             <i class="ace-icon fa <?=$icon?> bigger-120 white"></i>
-            <?=isset($_GET['sale_id'])? 'Confirm' : 'Validate'?>
+            Validate
         </a>
     <?php endif;?>
     <?php if($status==param('sale_validate_status') && ckacc("sale.approve")):?>
         <a href="<?=Yii::app()->createUrl('saleItem/SaleUpdateStatus',array('sale_id'=>$sale_id,'tran_type'=>param('sale_complete_status')))?>" class="btn btn-primary pull-right btn-order btn-order-approve">
-            <i class="ace-icon fa <?=$icon?> bigger-120 white"></i>Approve
+            <i class="ace-icon fa <?=$icon?> bigger-120 white"></i>
+            Approve
         </a>
     <?php endif;?>
 

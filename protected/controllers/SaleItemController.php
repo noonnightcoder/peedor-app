@@ -563,10 +563,10 @@ class SaleItemController extends Controller
         $this->reload();
     }
 
-    public function actionSaleUpdateStatus($sale_id,$tran_type,$ajax=true) {
-        if($ajax==true){
-            ajaxRequest();
-        }
+    public function actionSaleUpdateStatus($sale_id,$tran_type) {
+        
+        ajaxRequest();
+        
         if($tran_type==param('sale_complete_status')){
 
             $sale_item=SaleItem::model()->findAll(array(

@@ -1,18 +1,18 @@
 <style>
-    #sale-return-policy {
+    #sale_return_policy {
         width: 80%;
         margin: 0 auto;
         text-align: center;
     }
 
-    #receipt-wrapper {
+    #receipt_wrapper {
         font-family: 'Arial','khmer os';
         width: 92% !important;
         font-size: 11px !important;
         padding: 0 !important;
     }
 
-    #receipt-items td {
+    #receipt_items td {
         position: relative;
         padding: 3px;
     }
@@ -49,7 +49,7 @@ if (isset($error_message))
 }
 ?>
 
-<div class="container" id="receipt-wrapper">
+<div class="container" id="receipt_wrapper">
     <?php if(((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])) && !isset($_GET['pdf']) && !isset($_GET['email'])):?>
         <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
             'sale_id'=>$sale_id,
