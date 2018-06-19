@@ -44,13 +44,30 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
         'color' => TbHtml::BUTTON_COLOR_PRIMARY,
         'size' => TbHtml::BUTTON_SIZE_SMALL,
         'icon' => 'ace-icon fa fa-envelope-o bigger-120 white',
-        'url' => Yii::app()->createUrl('saleItem/SendEmail',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>0,'email'=>1)),
+        'url' => Yii::app()->createUrl('saleItem/SendEmail', array(
+            'sale_id' => $sale_id,
+            'customer_id' => $customer_id,
+            'tran_type' => $status,
+            'pdf' => 0,
+            'email' => 1)
+        ),
         'class' => 'update-dialog-open-link btn btn-primary pull-right',
         'data-update-dialog-title' => 'Send Email',
+        'data-refresh-grid-id' => 'email-grid',
+    )); ?>
+
+    <?php echo TbHtml::linkButton(Yii::t('app', 'Test Modal'), array(
+        'color' => TbHtml::BUTTON_COLOR_PRIMARY,
+        'size' => TbHtml::BUTTON_SIZE_SMALL,
+        'icon' => 'ace-icon fa fa-envelope-o bigger-120 white',
+        'url' => Yii::app()->createUrl('saleItem/loadTest'),
+        'class' => 'update-dialog-open-link btn btn-primary pull-right',
+        'data-update-dialog-title' => 'Customer Group',
         'data-refresh-grid-id'=> 'email',
     )); ?>
     
 </nav>
+
 <div style="margin-top: 60px !important;"></div>
 
 <script type="text/javascript">

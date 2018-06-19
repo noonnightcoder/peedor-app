@@ -155,6 +155,7 @@ var updateDialog = {
     {    
       // Callback on render
       case 'render':
+        console.log(status);
         setTimeout( this.renderCallback, this.timeout );
         break;
       
@@ -256,12 +257,10 @@ var updateDialog = {
     /* console.log(updateDialog.gridId + ' : '  + updateDialog.title); */
     
     if( typeof updateDialog.gridId === 'undefined' )
-    {  
-          
+    {
           updateDialog.close();
           location.reload(true); 
-    }
-    else 
+    } else
     {
        $.fn.yiiGridView.update(updateDialog.gridId);
        updateDialog.close();

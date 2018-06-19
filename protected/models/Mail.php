@@ -1,4 +1,4 @@
-<?php
+1<?php
 
 /**
  * This is the model class for table "sale_item".

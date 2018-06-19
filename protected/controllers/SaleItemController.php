@@ -30,7 +30,7 @@ class SaleItemController extends Controller
                     'ListSuspendedSale', 'SetPriceTier', 'SetTotalDiscount', 'DeleteSale', 'SetSaleRep', 'SetGST', 'SetInvoiceFormat',
                     'saleOrder','SaleInvoice','SaleApprove','SetPaymentTerm','saleUpdateStatus','Printing',
                     'list','update','create','SendEmail','exportPdf',// UNLEASED name convenstion it's all about CRUD
-                    'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve'),
+                    'REST.GET', 'REST.PUT', 'REST.POST', 'Review','Approve','loadTest'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -783,7 +783,16 @@ class SaleItemController extends Controller
         return $model;
     }
 
-    public function actionSendEmail($sale_id, $customer_id,$employee_id='', $paid_amount='',$tran_type,$pdf=0,$email=0)
+    public function actionloadTest()
+    {
+        $model=new  CustomerGroup();
+        $data['model'] = $model;
+
+        loadviewJson('_hello','//customerGroup//_form','',$data);
+    }
+
+
+    public function actionSendEmail($sale_id, $customer_id,$tran_type,$pdf=0,$email=0)
     {
 
         $data=$this->receiptData($sale_id,$customer_id,$tran_type);
@@ -792,7 +801,7 @@ class SaleItemController extends Controller
 
         $this->performAjaxValidation($model);
 
-        if (isset($_POST['Mail'])) 
+        if (isset($_POST['Mail']))
         {
             $model->attributes = $_POST['Mail'];
 
@@ -839,7 +848,6 @@ class SaleItemController extends Controller
                     Yii::app()->end();
                 }else
                 {
-
                     Yii::app()->user->setFlash('warning', 'Unable to sent email');
                 }
             }
@@ -848,7 +856,7 @@ class SaleItemController extends Controller
 
         $data['model'] = $model;
 
-        loadviewJson('saleItem','_mail_form','',$data);
+        loadview('_mail_form','_mail_form',$data);
         
     }
 
@@ -858,7 +866,7 @@ class SaleItemController extends Controller
         $data=$this->receiptData($sale_id,$customer_id,$tran_type);
 
         $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
-                    $paper = 'A4';
+        $paper = 'A4';
         
         
         $renderPartial = $this->renderPartial('//receipt/' . 'index', $data, true);
@@ -870,11 +878,6 @@ class SaleItemController extends Controller
         
     }
 
-    public function action()
-    {
-        $data['title'] ='My ttitle';
-        loadviewJson('hello_delete','hello_delete','',$data);
-    }
 
     protected function renderRecipe($data)
     {

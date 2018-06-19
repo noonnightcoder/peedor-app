@@ -69,5 +69,3 @@ class SendEmail extends CApplicationComponent
     }
 
 }
-
-?>
