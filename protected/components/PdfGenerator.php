@@ -25,8 +25,8 @@ class PdfGenerator extends CApplicationComponent
         # You can easily override default constructor's params
         $mPDF1 = Yii::app()->ePdf->mpdf('', $paper);
 
-        # render (full page)
-        // $mPDF1->WriteHTML($render);
+        $footer='<table style="border:none;margin-bottom:70px;" width="100%"><tr><td align="left">Left</td><td align="right">Right</td></tr></table>';
+        $mPDF1->SetFooter($footer);
 
         # Load a stylesheet
         $stylesheet = file_get_contents($css);

@@ -124,19 +124,39 @@ class SupplierController extends Controller
 	}
     public function actionSaveSupplier(){
         $model=new Supplier;
+
+        $this->performAjaxValidation($model);
+        $name=$_POST['name'];
+        $first_name=$_POST['first_name'];
+        $last_name=$_POST['last_name'];
         $data=array(
-            'company_name'=>$_POST['name'],
-            'first_name'=>$_POST['first_name'],
-            'last_name'=>$_POST['last_name']
+            'company_name'=>$name,
+            'first_name'=>$first_name,
+            'last_name'=>$last_name
         );
         $id = $model->saveSupplier($data);
-        if($id){
-            echo 'success';
-            //print_r($model);
-            $this->renderPartial('partialList/_supplier_reload',array('model'=>Supplier::model()->findAll(),'id'=>$id));
-        }else{
-            echo 'existed'; 
-        }
+        
+            if($first_name==''){
+
+                echo 'null_first_name';
+
+            }elseif($last_name==''){
+
+                echo 'null_last_name';
+
+            }else{
+                
+                if($id>0){
+
+                echo 'success';
+
+                $this->renderPartial('partialList/_supplier_reload',array('model'=>Supplier::model()->findAll(),'id'=>$id));
+                }else{
+                    echo 'existed'; 
+                }
+            }
+
+        
     }
     public function actionUpdate($id, $recv_mode = 'N', $trans_mode = null)
     {

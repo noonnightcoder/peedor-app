@@ -137,7 +137,7 @@ $option=Category::model()->buildOptions($arr,null);
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="Item_supplier"><?= Yii::t('app','Supplier') ?></label>
                     <div class="col-sm-9">
-                        <select class="form-control" id="db-supplier" name="Item[supplier_id]" onchange="showSupplierDialog(event.target.value)">
+                        <select class="form-control" id="db-supplier" name="Item[supplier_id]">
                             <option value=""></option>
                             <?php foreach($supplier as $key=>$value):?>
                                 <option value="<?=$value['id']?>" <?php echo $model['supplier_id']==$value['id'] ? 'selected' : ''?>><?=$value['company_name']?></option>
@@ -187,7 +187,7 @@ $option=Category::model()->buildOptions($arr,null);
                 <div class="form-group">
                     <label class="col-sm-3 control-label" for="Item_unit_measurable"><?= Yii::t('app','Unit Of Measurable') ?></label>
                     <div class="col-sm-9">
-                        <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]" onchange="showMeasurableDialog(event.target.value)">
+                        <select class="form-control" id="db-measurable" name="Item[unit_measurable_id]">
                             <option value=""></option>
                             <?php foreach($measurable as $key=>$value):?>
                                 <option value="<?=$value['id']?>" <?php echo $model['unit_measurable_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>

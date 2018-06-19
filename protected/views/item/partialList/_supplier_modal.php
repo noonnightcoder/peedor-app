@@ -20,13 +20,13 @@
           <div class="row">
             <div class="col-sm-6">
               <?php echo CHtml::label('First Name', 1, array('class' => 'control-label')); ?>
-              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'first_name'));?>
-              <span id="error" class="errorMsgf"></span>
+              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control txt-box','id'=>'first_name'));?>
+              <span id="error" class="error_first_name"></span>
             </div>
             <div class="col-sm-6">
               <?php echo CHtml::label('Last Name', 1, array('class' => 'control-label')); ?>
-              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control','id'=>'last_name'));?>
-              <span id="error" class="errorMsgl"></span>
+              <?php echo CHtml::TextField('Supplier','',array('class'=>'form-control  txt-box','id'=>'last_name'));?>
+              <span id="error" class="error_last_name"></span>
             </div>
           </div>
       </div>

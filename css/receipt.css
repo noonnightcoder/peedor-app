@@ -106,3 +106,14 @@
 .receipt-title-kh-font{
 	font-family: 'khmer os';
 }
+
+.receipt-footer{
+	display:block;
+	height:50px;
+}
+
+.seller-name,.buyer-name{
+	display:inline-block;
+	height:50px;
+	width:50%;
+}

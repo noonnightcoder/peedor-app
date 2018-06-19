@@ -5,7 +5,7 @@
             <h3 id="success">Data Successfully saved.</h3>
                 <div class="form-group">
                     <?php echo CHtml::label('Category Name', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('Category',$category_name,array('class'=>'form-control','id'=>'Category_Name'));?>
+                    <?php echo CHtml::TextField('Category',$category_name,array('class'=>'form-control txt-box','id'=>'Category_Name'));?>
                     <span id="error" class="errorMsg<?=($i-1)?>"></span>
             </div>
         </div>

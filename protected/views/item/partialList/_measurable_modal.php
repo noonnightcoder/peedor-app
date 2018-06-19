@@ -11,7 +11,7 @@
       </div>
       <div class="modal-body">
         <?php echo CHtml::label('Name', 1, array('class' => 'control-label')); ?>
-        <?php echo CHtml::TextField('UnitMeasurable','',array('class'=>'form-control','id'=>'Measurable_Name'));?>
+        <?php echo CHtml::TextField('UnitMeasurable','',array('class'=>'form-control txt-box','id'=>'Measurable_Name'));?>
         <span id="error" class="errorMsg"></span>
       </div>
       <div class="modal-footer">

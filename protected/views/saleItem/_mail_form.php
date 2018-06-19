@@ -31,7 +31,6 @@
         </div>
         <div class="row">
             <div class="col-sm-11">
-                <label>Body</label>
                 <?php echo $form->textAreaControlGroup($model,'mail_body',array('size'=>60,'maxlength'=>1000,'class'=>'span3',)); ?>
             </div>
         </div>

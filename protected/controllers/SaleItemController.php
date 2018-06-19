@@ -788,22 +788,22 @@ class SaleItemController extends Controller
 
         $data=$this->receiptData($sale_id,$customer_id,$tran_type);
 
-        $model=new SaleItem;
+        $model=new Mail;
 
         $this->performAjaxValidation($model);
 
-        if (isset($_POST['SaleItem'])) 
+        if (isset($_POST['Mail'])) 
         {
-            $model->attributes = $_POST['SaleItem'];
+            $model->attributes = $_POST['Mail'];
 
             if ($model->validate()) {
                
-                $from = $_POST['SaleItem']['mail_from'];
-                $to = $_POST['SaleItem']['mail_to'];
-                $cc = $_POST['SaleItem']['mail_cc'] !='' ? $_POST['SaleItem']['mail_cc'] : '';
-                $subject = $_POST['SaleItem']['mail_subject'] !='' ? $_POST['SaleItem']['mail_subject'] : '';
-                $body = $_POST['SaleItem']['mail_body'] !='' ? $_POST['SaleItem']['mail_body'] : '';
-                $attach_receipt = $_POST['SaleItem']['attach_receipt'] > 0 ? $_POST['SaleItem']['attach_receipt'] : 0;
+                $from = $_POST['Mail']['mail_from'];
+                $to = $_POST['Mail']['mail_to'];
+                $cc = $_POST['Mail']['mail_cc'] !='' ? $_POST['Mail']['mail_cc'] : '';
+                $subject = $_POST['Mail']['mail_subject'] !='' ? $_POST['Mail']['mail_subject'] : '';
+                $body = $_POST['Mail']['mail_body'] !='' ? $_POST['Mail']['mail_body'] : '';
+                $attach_receipt = $_POST['Mail']['attach_receipt'] > 0 ? $_POST['Mail']['attach_receipt'] : 0;
 
                 if($attach_receipt>0)
                 {

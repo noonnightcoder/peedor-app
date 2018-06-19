@@ -118,7 +118,7 @@ if (isset($error_message))
         ));
     ?>
 
-    <?php if ($invoice_body_footer_view != null) { ?>
+    <?php if ($invoice_body_footer_view != null && !isset($_GET['pdf']) && !isset($_GET['email'])) { ?>
 
         <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_footer_view,
             array(

@@ -23,9 +23,12 @@
         var first_name=$('#<?=@$first_name?>').val();
         var last_name=$('#<?=@$last_name?>').val();
         var url="<?=$url?>"
-        ajaxSave(url,{name,first_name,last_name},name,$('#<?=$modal?>'),$('#<?=$list?>'),$('#<?=$name?>'))
-        $('#<?=@$first_name?>').val('');
-        $('#<?=@$last_name?>').val('');
+        var save=ajaxSave(url,{name,first_name,last_name},name,$('#<?=$modal?>'),$('#<?=$list?>'),$('#<?=$name?>'));
+        if(save){
+          $('#<?=@$first_name?>').val('');
+          $('#<?=@$last_name?>').val('');  
+        }
+        
       })
     } else{
       $('#<?=$btnSave?>').click(function(v){
@@ -61,24 +64,52 @@
         $('.errorMsg').html('<span style="color:green;">Processing...</span>')
       },
       success:function(data){
+
         if(data=='error'){
           
           $('#success').html('');
+
+        }else if(data=='null_first_name'){
+
+          $('.error_last_name').html('');
+
+          $('.error_first_name').html('<span style="color:red;">First Name is required.</span>');
+
+          $('.errorMsg').html('')
+
+        }else if(data=='null_last_name'){
+
+           $('.error_first_name').html('');
+
+          $('.error_last_name').html('<span style="color:red;">Last Name is required.</span>');
+
+          $('.errorMsg').html('')
+
         }else if(data=='existed'){
+
+          $('.error_first_name').html('');
+
+          $('.error_last_name').html('');
+
           $('.errorMsg').html('<span style="color:red;">Name "'+field+'" has already been taken.</span>');
-          $('#success').html('');
+
         }else if(data.indexOf('success')>=0){
+
           $('.errorMsg').html('');
+
           modal.modal('hide');
-          //$('#modal').modal('hide');
+          $('.txt-box').val('');
           textbox.val('');
+
           $('body').removeClass('modal-open');
+
           dblist.html(data);
+
         }
         
       }
     })
-    }
-    
   }
+    
+}
 </script>
