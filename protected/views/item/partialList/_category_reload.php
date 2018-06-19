@@ -15,15 +15,6 @@
                 <?php echo CHtml::label('Parent', 1, array('class' => 'control-label'));?>
                 <select class="form-control" id="db-category<?=($i-1)?>" onchange="showDialog(event.target.value)">
                     <option value="">--Choose Parent--</option>
-                    <!-- <?php $selected='';foreach($model as $key=>$value):?>
-                        <?php if($value['id']==$parent_id):?>
-                            <?php echo $parent_id;?>
-                            <?php $selected='selected';?>
-                                <option value="<?=$value['id']?>" <?=$selected?>><?=$value['name']?></option>
-                        <?php else:?>
-                                <option value="<?=$value['id']?>"><?=$value['name']?></option>
-                        <?php endif;?>
-                    <?php endforeach;?> -->
                     <?=Category::model()->buildOptions($arr,$parent_id)?>
                     <optgroup >
                         <option value="addnew">

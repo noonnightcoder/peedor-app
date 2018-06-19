@@ -108,12 +108,24 @@
 }
 
 .receipt-footer{
-	display:block;
-	height:50px;
+	position:fixed;
+	height:100px;
+	bottom:100px;
 }
 
 .seller-name,.buyer-name{
 	display:inline-block;
 	height:50px;
 	width:50%;
+	float:left;
+	font-weight:normal;
+}
+
+.buyer-name{
+	text-align:right;
+}
+
+
+.seller-name{
+	text-align:left;
 }

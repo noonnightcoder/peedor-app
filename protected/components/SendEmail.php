@@ -5,7 +5,7 @@ if (!defined('YII_PATH'))
 class SendEmail extends CApplicationComponent
 {
 
-	public function sendPdfEmail($from,$to,$renderPartial,$filename,$css,$paper='A4',$body='',$subject='',$cc='')
+	public function sendPdfEmail($from,$to,$renderPartial,$footer,$filename,$css,$paper='A4',$body='',$subject='',$cc='')
     {
 
 		# mPDF
@@ -13,6 +13,10 @@ class SendEmail extends CApplicationComponent
 
         # You can easily override default constructor's params
         $mPDF1 = Yii::app()->ePdf->mpdf('', $paper);
+
+        $mPDF1->defaultfooterline=0;//remove footer line
+
+        $mPDF1->SetFooter($footer);//set footer 
 
         # Load a stylesheet
         $stylesheet = file_get_contents($css);

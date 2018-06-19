@@ -811,8 +811,9 @@ class SaleItemController extends Controller
                     $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
                     $paper = 'A4';
                     $renderPartial = $this->renderPartial('//receipt/' . 'index', $data, true);
-                    $filename = $data['cust_fullname'].'_'.$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
-                    $is_sent = Yii::app()->sendEmail->sendPdfEmail($from,$to, $renderPartial, $filename,$css, $paper, $body,$subject,$cc );
+                    $footer = $this->renderPartial('//receipt/partial/' . $data['invoice_format'] . '/_footer', array(), true);
+                    $filename = $data['filename'];
+                    $is_sent = Yii::app()->sendEmail->sendPdfEmail($from,$to, $renderPartial,$footer, $filename,$css, $paper, $body,$subject,$cc );
 
                     if($is_sent)
                     {
@@ -858,10 +859,13 @@ class SaleItemController extends Controller
 
         $css = Yii::getPathOfAlias('webroot.css') . '/receipt.css';
                     $paper = 'A4';
+        
+        
         $renderPartial = $this->renderPartial('//receipt/' . 'index', $data, true);
-        $filename = $data['cust_fullname'].'_'.$data['receipt_header_title_en'] . '_' . str_replace('/', '_', $data['transaction_date']);
+        $footer = $this->renderPartial('//receipt/partial/' .$data['invoice_format']. '/_footer', array(), true);
+        $filename = $data['filename'];
 
-        $is_export=Yii::app()->pdfGenerator->PdfCreate($renderPartial,$css,$paper,$filename);
+        $is_export=Yii::app()->pdfGenerator->PdfCreate($renderPartial,$footer,$css,$paper,$filename);
         Yii::app()->shoppingCart->clearAll();  
         
     }
@@ -921,6 +925,9 @@ class SaleItemController extends Controller
         $data['status'] = $tran_type;
         $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'kh');
         $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'en');
+        $data['invoice_format'] = Yii::app()->shoppingCart->getInvoiceFormat();
+        $data['invoice_prefix'] = $tran_type == param('sale_complete_status') ? 'INV' : 'SO';
+        $data['filename'] = $data['invoice_prefix']. '_' . $sale_id . '_' . str_replace('/', '_', $data['transaction_date']);
 
         if (count($data['items']) == 0) {
             $data['error_message'] = 'Sale Transaction Failed';

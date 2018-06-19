@@ -24,7 +24,7 @@
 
         #footer {
             position: fixed;
-            bottom: 0;
+            bottom: 50px;
             width:100%;
         }
     }

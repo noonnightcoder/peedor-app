@@ -6,7 +6,7 @@ class PdfGenerator extends CApplicationComponent
 {
 
 
-	public function PdfCreate($renderPartial,$css,$paper='A4',$filename='peedor')
+	public function PdfCreate($renderPartial,$footer,$css,$paper='A4',$filename='peedor')
     {
 
 		/*
@@ -25,8 +25,10 @@ class PdfGenerator extends CApplicationComponent
         # You can easily override default constructor's params
         $mPDF1 = Yii::app()->ePdf->mpdf('', $paper);
 
-        $footer='<table style="border:none;margin-bottom:70px;" width="100%"><tr><td align="left">Left</td><td align="right">Right</td></tr></table>';
-        $mPDF1->SetFooter($footer);
+        $mPDF1->defaultfooterline=0;//remove footer line
+
+        $mPDF1->SetFooter($footer);//set footer 
+        
 
         # Load a stylesheet
         $stylesheet = file_get_contents($css);
