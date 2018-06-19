@@ -907,7 +907,6 @@ class SaleItemController extends Controller
 
     protected function receiptData($sale_id,$customer_id,$tran_type,$paid_amount=0)
     {
-
         $this->layout = '//layouts/column_receipt';
 
         Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
