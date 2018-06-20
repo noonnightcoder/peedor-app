@@ -54,6 +54,7 @@
     $(document).ready(function (e) {
         $('.btn-send').click(function () {
             $(this).text('Sending...');
+            //$(':input[type="submit"]').prop('disabled', true);
         })
     })
 </script>

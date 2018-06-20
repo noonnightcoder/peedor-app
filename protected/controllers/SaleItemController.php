@@ -783,15 +783,6 @@ class SaleItemController extends Controller
         return $model;
     }
 
-    public function actionloadTest()
-    {
-        $model=new  CustomerGroup();
-        $data['model'] = $model;
-
-        loadviewJson('_hello','//customerGroup//_form','',$data);
-    }
-
-
     public function actionSendEmail($sale_id, $customer_id,$tran_type,$pdf=0,$email=0)
     {
 
@@ -856,8 +847,7 @@ class SaleItemController extends Controller
 
         $data['model'] = $model;
 
-        loadviewJson('_mail_form','//mail/_mail_form','',$data);
-        
+        loadviewJson('_mail_form','_mail_form','email-grid',$data);
     }
 
     public function actionExportPdf($sale_id,$customer_id,$tran_type,$pdf)

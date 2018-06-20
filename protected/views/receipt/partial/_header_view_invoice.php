@@ -36,6 +36,7 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
             <i class="ace-icon fa fa-edit bigger-120 white"></i>Edit
         </a>
     <?php endif;?>
+
     <a href="<?=Yii::app()->createUrl('saleItem/exportPdf',array('sale_id'=>$sale_id,'customer_id'=>$customer_id,'tran_type'=>$status,'pdf'=>1))?>" class="btn btn-primary pull-right">
         <i class="ace-icon fa fa-file-pdf-o bigger-120 white"></i>PDF
     </a>
@@ -56,15 +57,6 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
         'data-refresh-grid-id' => 'email-grid',
     )); ?>
 
-    <?php echo TbHtml::linkButton(Yii::t('app', 'Test Modal'), array(
-        'color' => TbHtml::BUTTON_COLOR_PRIMARY,
-        'size' => TbHtml::BUTTON_SIZE_SMALL,
-        'icon' => 'ace-icon fa fa-envelope-o bigger-120 white',
-        'url' => Yii::app()->createUrl('saleItem/loadTest'),
-        'class' => 'update-dialog-open-link btn btn-primary pull-right',
-        'data-update-dialog-title' => 'Customer Group',
-        'data-refresh-grid-id'=> 'email',
-    )); ?>
     
 </nav>
 
