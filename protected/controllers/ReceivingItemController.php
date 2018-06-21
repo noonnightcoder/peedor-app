@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -115,6 +115,27 @@ class ReceivingItemController extends Controller
             $this->render('_detail',$data);
         }
 
+    }
+
+    public function actionList($tran_type,$user_id)
+
+    {
+        $grid_id = 'receiving-item-grid';
+        $title = ($tran_type==1 ? 'Receiving' : 'Return').' Item Report';
+
+        $data = $this->commonData($grid_id,$title,'show','show');
+
+        $data['grid_columns'] = ReportColumn::getReceivingItemColumns();
+        $data['user_id'] = $user_id;
+        $data['tran_type'] = $tran_type;
+        $data['title'] = $title;
+
+
+        $data['data_provider'] = $data['report']->receivingListByStatusUser($tran_type,$user_id);
+       
+        $data['grid_id'] = $grid_id;
+        // var_dump($data['data_provider']);
+        loadview('review','//layouts/report/_grid',$data);
     }
 
     public function actionInventoryCountCreate()
@@ -648,6 +669,69 @@ class ReceivingItemController extends Controller
     public function setSession($value)
     {
         $this->session = $value;
+    }
+
+    protected function commonData($grid_id,$title,$title_icon,$advance_search=null,$header_view='_header',$grid_view='_grid')
+    {
+        $report = new Report;
+
+        $data['report'] = $report;
+        $data['from_date'] = isset($_GET['Report']['from_date']) ? $_GET['Report']['from_date'] : date('d-m-Y');
+        $data['to_date'] = isset($_GET['Report']['to_date']) ? $_GET['Report']['to_date'] : date('d-m-Y');
+        $data['search_id'] = isset($_GET['Report']['search_id']) ? $_GET['Report']['search_id'] : '';
+        $data['advance_search'] = $advance_search;
+        $data['header_tab'] = '';
+
+        $data['grid_id'] = $grid_id;
+        $data['title'] = Yii::t('app', $title) . ' ' . Yii::t('app',
+                'From') . ' ' . $data['from_date'] . '  ' . Yii::t('app', 'To') . ' ' . $data['to_date'];
+        $data['header_view'] = $header_view;
+        $data['grid_view'] = $grid_view;
+
+        $data['report']->from_date = $data['from_date'];
+        $data['report']->to_date = $data['to_date'];
+        $data['report']->search_id = $data['search_id'];
+
+        return $data;
+    }
+
+    public function actionreceivingItemDetail($id)
+    {
+       authorized('report.sale');
+
+        $report = new Report;
+
+        $data['report'] = $report;
+        $data['receive_id'] = $id;
+
+        $data['grid_id'] = 'rpt-receiving-item-grid';
+        $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
+
+        $data['grid_columns'] = ReportColumn::getReceivingItemDetailColumns();
+
+        $report->receive_id = $id;
+        $data['data_provider'] = $report->receivingItemDetail();
+
+        $this->renderView($data);
+
+    }
+
+    protected function renderView($data, $view_name='index')
+    {
+        if (Yii::app()->request->isAjaxRequest && !isset($_GET['ajax']) ) {
+            Yii::app()->clientScript->scriptMap['*.css'] = false;
+            Yii::app()->clientScript->scriptMap['*.js'] = false;
+
+            /*
+            echo CJSON::encode(array(
+                'status' => 'success',
+                'div' => $this->renderPartial('partial/_grid', $data, true, false),
+            ));
+            */
+            $this->renderPartial('partial/_grid', $data);
+        } else {
+            $this->render($view_name, $data);
+        }
     }
 
 }

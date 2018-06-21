@@ -223,7 +223,7 @@ class ItemController extends Controller
         $this->layout = '//layouts/columntree';
 
         $model = new Item;
-        $item_image=new ItemImage;
+        $item_image = new ItemImage;
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
@@ -282,6 +282,8 @@ class ItemController extends Controller
         $data['model'] = $model;
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['categories']=Category::model()->findAll();
+        $data['product_types']=ProductType::model()->findAll();
+        $data['product_models']=ProductModel::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
         $data['image']=$item_image;
@@ -407,6 +409,8 @@ class ItemController extends Controller
         $data['previous_disable'] = $previous_disable;
         $data['item_image'] = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
         $data['categories']=Category::model()->findAll();
+        $data['product_types']=ProductType::model()->findAll();
+        $data['product_models']=ProductModel::model()->findAll();
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();

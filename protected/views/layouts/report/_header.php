@@ -24,7 +24,7 @@
     <?php $this->renderPartial('//layouts/report/_header_view_btn', array(
     )); ?>
 
-    <?php $this->renderPartial('//layouts/report/_header_new_btn', array(
+    <?php $this->renderPartial('//layouts/report/_header_new_btn', array('url'=>isset($url) ? $url : $this->createUrl('saleItem/create')
     )); ?>
 
     <?php $this->endWidget(); ?>

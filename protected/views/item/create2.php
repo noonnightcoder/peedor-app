@@ -15,7 +15,9 @@ $this->breadcrumbs=array(
             'supplier' => $supplier,
             'measurable'=>$measurable,
             'categories'=>$categories,
-            'image'=>$image
+            'product_types'=>$product_types,
+            'product_models'=>$product_models,
+            'image'=>$image,
     ), true),
 )); ?>
 

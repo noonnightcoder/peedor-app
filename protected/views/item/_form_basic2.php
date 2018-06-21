@@ -161,7 +161,44 @@ $option=Category::model()->buildOptions($arr,null);
                 ?>
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Item_product-type"><?= Yii::t('app','Type') ?></label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="db-product-type" name="Item[type_id]" >
+                             <option value=""></option>
+                            <?php foreach($product_types as $key=>$value):?>
+                                <option value="<?=$value['id']?>" <?php echo $model['type_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
+                            <?php endforeach;?>
+                            <optgroup >
+                                <option value="addnew">
+                                    Create New
+                                </option>
+                            </optgroup >
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label" for="Item_product_model"><?= Yii::t('app','Model') ?></label>
+                    <div class="col-sm-9">
+                        <select class="form-control" id="db-product-model" name="Item[model_id]">
+                            <option value=""></option>
+                            <?php foreach($product_models as $key=>$value):?>
+                                <option value="<?=$value['id']?>" <?php echo $model['model_id']==$value['id'] ? 'selected' : ''?>><?=$value['name']?></option>
+                            <?php endforeach;?>
+                            <optgroup >
+                                <option value="addnew">
+                                    Create New
+                                </option>
+                            </optgroup >
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
@@ -237,8 +274,10 @@ $option=Category::model()->buildOptions($arr,null);
 <?php $this->endWidget(); ?>
 
 <?php $this->renderPartial('partialList/_measurable_modal',array('measurable'=>$measurable)); ?>
-<?php $this->renderPartial('partialList/_supplier_modal',array('measurable'=>$measurable)); ?>
+<?php $this->renderPartial('partialList/_supplier_modal',array('supplier'=>$supplier)); ?>
 <?php $this->renderPartial('partialList/_brand_modal',array('brand'=>$brand)); ?>
+<?php $this->renderPartial('partialList/_product_type_modal',array('product_types'=>$product_types)); ?>
+<?php $this->renderPartial('partialList/_product_model_modal',array('product_models'=>$product_models)); ?>
 
 </div>
 

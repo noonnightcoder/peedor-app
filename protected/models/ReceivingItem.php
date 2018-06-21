@@ -25,6 +25,7 @@ class ReceivingItem extends CActiveRecord
     public $discount;
     public $sub_total;
     public $expire_date;
+    public $search;
     public $total_discount;
         
         /**
@@ -64,7 +65,7 @@ class ReceivingItem extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'item' => array(self::BELONGS_TO, 'Item', 'item_id'),
-			'receiving' => array(self::BELONGS_TO, 'Receiving', 'receiving_id'),
+			'receiving' => array(self::BELONGS_TO, 'Receiving', 'receive_id'),
 		);
 	}
 
@@ -101,7 +102,7 @@ class ReceivingItem extends CActiveRecord
 	 * @return CActiveDataProvider the data provider that can return the models
 	 * based on the search/filter conditions.
 	 */
-	public function search($receive_id)
+	public function search($status)
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
 
@@ -118,11 +119,19 @@ class ReceivingItem extends CActiveRecord
 		//$criteria->compare('discount_amount',$this->discount_amount);
 		//$criteria->compare('discount_type',$this->discount_type,true);
                 
-                $criteria->condition="receive_id=:receive_id";
-                $criteria->params = array(':receive_id' => $receive_id);
+        $criteria->condition="receive_id=:receive_id";
+        $criteria->params = array(':receive_id' => $this->search);
 
 		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
+			'criteria'=>array(
+	            'with'=>array(
+		            'item', 'receiving' 
+		        ),
+            	'together'=>true,  
+            	'condition'=>'receiving.status=:status',
+            	'params'=>array(':status'=>$status)
+            ),
+
 		));
 	}
 
@@ -143,4 +152,70 @@ class ReceivingItem extends CActiveRecord
 
         return $model;
     }
+
+    public function getItemTransactionColumn()
+    {
+    	return array(
+            array(
+                'name' => 'name',
+                'value' => '$data->receiving["name"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'quantity',
+                'value' => '$data->quantity',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'supplier',
+                'value' => '$data->receiving["supplier"]["company_name"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'class' => 'bootstrap.widgets.TbButtonColumn',
+                'header' => Yii::t('app','Action'),
+                'template' => '<div class="hidden-sm hidden-xs btn-group">{view}{edit}{print}</div>',
+                'buttons' => array(
+                    'edit' => array(
+                        'label' => Yii::t('app', 'Update Item'),
+                        'url' => 'Yii::app()->createUrl("Item/updateImage", array("id"=>$data->receive_id))',
+                        'icon' => 'ace-icon fa fa-edit',
+                        'options' => array(
+                            'class' => 'btn btn-xs btn-info',
+                            'data-update-dialog-title' => 'Update Item',
+                            'title' => 'Update Item',
+                        ),
+                        //'click' => 'updateDialogOpen',
+                        'visible' => '(Yii::app()->user->checkAccess("purchasereceive.update"))',
+                    ),
+                    'view' => array(
+                        'label' => 'View',
+                        'icon' => 'fa fa-eye',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("employee_id"=>$data->receive_id,"print"=>"true"))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                        // 'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                    ),
+                    'print' => array(
+                        'label' => 'print',
+                        'icon' => 'glyphicon-print',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("employee_id"=>$data->receive_id,"print"=>"true"))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                        // 'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                    ),
+                )
+            ),
+        );
+    }
+
 }

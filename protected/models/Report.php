@@ -1352,4 +1352,73 @@ class Report extends CFormModel
         return $data;
     }
 
+    public function receivingListByStatusUser($tran_type='2',$user_id) {
+
+
+        if ($this->search_id !== '') {
+            $sql= "SELECT receive_id,DATE(receive_time) receive_time,status,created_by,employee_id
+               FROM v_receiving_item
+               WHERE receive_time=:search_id
+               AND status=:tran_type
+               AND employee_id=:user_id
+               group by receive_id,DATE(receive_time),status,created_by,employee_id";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':search_id' => $this->search_id,
+                    ':tran_type' => $tran_type,
+                    ':user_id' => $user_id)
+            );
+
+        } else {
+            $sql= "SELECT receive_id,DATE(receive_time) receive_time,status,status_desc,created_by,employee_id
+               FROM v_receiving_item
+               WHERE receive_time>=str_to_date(:from_date,'%d-%m-%Y')
+               AND receive_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND status=:tran_type
+               AND employee_id=:user_id
+               group by receive_id,DATE(receive_time),status,created_by,employee_id";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                    ':tran_type' => $tran_type,
+                    ':user_id' => $user_id)
+            );
+        }
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'receive_id',
+            'sort' => array(
+                'attributes' => array(
+                    'receive_id', 'receive_time',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public function receivingItemDetail()
+    {
+        $sql= "SELECT receive_id,item_name,quantity ,cost,price,supplier,
+                    receive_time,`status`,status_desc,created_by,employee_id
+               FROM v_receiving_item
+               WHERE receive_id=:receive_id";
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':receive_id' => $this->receive_id));
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'receive_id',
+            'sort' => array(
+                'attributes' => array(
+                    'receive_id', 'receive_time',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
 }

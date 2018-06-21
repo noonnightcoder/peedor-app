@@ -59,6 +59,7 @@ class Receiving extends CActiveRecord
         // class name for the relations automatically generated below.
         return array(
             'items' => array(self::MANY_MANY, 'Item', 'receiving_item(receive_id, item_id)'),
+            'supplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_id'),
         );
     }
 

@@ -54,7 +54,7 @@ class Item extends CActiveRecord
             ),
             array('name', 'unique'),
             array(
-                'category_id, supplier_id,brand_id, unit_id, unit_measurable_id, allow_alt_description, is_serialized, is_expire, count_interval',
+                'category_id, supplier_id,brand_id,type_id,model_id, unit_id, unit_measurable_id, allow_alt_description, is_serialized, is_expire, count_interval',
                 'numerical',
                 'integerOnly' => true
             ),

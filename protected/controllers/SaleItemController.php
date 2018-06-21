@@ -497,9 +497,9 @@ class SaleItemController extends Controller
     {
         $grid_id = 'sale-order-grid';
        //$title = 'Order To Invoice';
-        $title = $_GET['title'];
-        $tran_type = $_GET['tran_type'];
-        $user_id = $_GET['user_id'];
+        $title = isset($_GET['title']) ? $_GET['title'] : '';
+        $tran_type = isset($_GET['tran_type']) ? $_GET['tran_type'] : '';
+        $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
 
         $data = $this->commonData($grid_id,$title,'show','show');
 
@@ -783,6 +783,15 @@ class SaleItemController extends Controller
         return $model;
     }
 
+    public function actionloadTest()
+    {
+        $model=new  CustomerGroup();
+        $data['model'] = $model;
+
+        loadviewJson('_hello','//customerGroup//_form','',$data);
+    }
+
+
     public function actionSendEmail($sale_id, $customer_id,$tran_type,$pdf=0,$email=0)
     {
 
@@ -847,7 +856,8 @@ class SaleItemController extends Controller
 
         $data['model'] = $model;
 
-        loadviewJson('_mail_form','_mail_form','email-grid',$data);
+        loadviewJson('_mail_form','//mail/_mail_form','',$data);
+        
     }
 
     public function actionExportPdf($sale_id,$customer_id,$tran_type,$pdf)
