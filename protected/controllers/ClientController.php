@@ -96,10 +96,10 @@ class ClientController extends Controller
             $model->attributes = $_POST['Client'];
             $contact->attributes = $_POST['Contact'];
 
-            if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
-                $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
-                $model->dob = $dob;
-            }
+            // if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
+            //     $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
+            //     $model->dob = $dob;
+            // }
 
             // validate BOTH $a and $b
             $valid = $model->validate();
@@ -119,8 +119,9 @@ class ClientController extends Controller
                         $client_id = $model->id;
                         $client_fname = $model->first_name . ' ' . $model->last_name;
                         $price_tier_id = $model->price_tier_id;
-
+                        $this->multipleImageUpload($model->id,$model,'image');
                         Account::model()->saveAccount($client_id, $client_fname);
+
                         $transaction->commit();
 
                         if ($sale_mode == 'Y') {
@@ -208,6 +209,7 @@ class ClientController extends Controller
         authorized('customer.update');
 
         $model = $this->loadModel($id);
+        $client_image = new ClientImage;
         $contact = Contact::model()->conatctByID($model->contact_id);
         $has_error = "";
 
@@ -219,10 +221,10 @@ class ClientController extends Controller
             $model->attributes = $_POST['Client'];
             $contact->attributes = $_POST['Contact'];
 
-            if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
-                $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
-                $model->dob = $dob;
-            }
+            // if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
+            //     $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
+            //     $model->dob = $dob;
+            // }
 
             // validate BOTH $a and $b
             $valid = $model->validate();
@@ -243,17 +245,46 @@ class ClientController extends Controller
                         Account::model()->saveAccount($model->id, $client_fname);
                         $price_tier_id = $model->price_tier_id;
 
+                        if(isset($_FILES['image'])){
+;
+                            foreach($_FILES['image']['name'] as $img){
+
+                                if($img!=''){
+
+                                    $cur_image=ClientImage::model()->findAllByAttributes(array('client_id'=>$id));
+
+                                    foreach($cur_image as $img){
+
+                                        $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
+                                        
+                                        if(file_exists($img_file)){
+
+                                            unlink($img_file);
+
+                                        }
+
+                                    }
+
+                                    ClientImage::model()->deleteAll(array('condition'=>'`client_id`=:client_id','params'=>array(':client_id'=>$id)));
+                                    $this->multipleImageUpload($id,$model,'image');
+                                    break;
+                                }
+
+                            }
+
+                        }
+
                         $transaction->commit();
 
-                        if ($sale_mode == 'Y') {
-                            Yii::app()->shoppingCart->setCustomer($id);
-                            Yii::app()->shoppingCart->setPriceTier($price_tier_id);
-                            $this->redirect(array('saleItem/index'));
-                        } else {
-                            Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
-                                '<strong>' . ucfirst($model->first_name) . '</strong> have been saved successfully!');
-                            $this->redirect(array('admin'));
-                        }
+                        // if ($sale_mode == 'Y') {
+                        //     Yii::app()->shoppingCart->setCustomer($id);
+                        //     Yii::app()->shoppingCart->setPriceTier($price_tier_id);
+                        //     $this->redirect(array('saleItem/index'));
+                        // } else {
+                        //     Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
+                        //         '<strong>' . ucfirst($model->first_name) . '</strong> have been saved successfully!');
+                        //     $this->redirect(array('admin'));
+                        // }
                     }
                 } catch (Exception $e) {
                     $transaction->rollback();
@@ -266,6 +297,7 @@ class ClientController extends Controller
 
         $data['model'] = $model;
         $data['contact'] = $contact;
+        $data['client_image'] = ClientImage::model()->findAllByAttributes(array('client_id'=>$id));
         $data['has_error'] = $has_error;
 
         loadview('update', '_form', $data);
@@ -477,6 +509,35 @@ class ClientController extends Controller
             echo CHtml::tag('option',
                 array('value'=>$value),CHtml::encode($name),true);
         }
+    }
+
+    public function multipleImageUpload($client_id,$model,$attr_name){
+
+        $msg=null;
+        $images=CUploadedFile::getInstancesByName($attr_name);
+        if(isset($images) && count($images)>0){
+            
+            foreach($images as $img=>$pic){
+                $rnd = rand(0,9999);  // generate random number between 0-9999
+                $fileName = "{$rnd}-{$pic}"; 
+                $path = Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $model->id;
+                $name = $path . '/' . $fileName;
+
+                if (!is_dir($path)) {
+                    mkdir($path, 0777, true);
+                }
+                $save_pic=$pic->saveAs($name);  // image will uplode to rootDirectory/ximages/{ModelName}/{Model->id}
+                // echo $save_pic;
+               //$save_pic=$pic->saveAs(Yii::app()->basePath.'/../'.$path_to_save.'/'.$fileName);
+               if($save_pic){
+                    // echo $client_id;
+                    ClientImage::model()->saveClientImage($client_id,$fileName);
+               }else{
+                    //$msg=false;                    
+               }
+            }    
+        }
+        //echo $msg;
     }
 
 

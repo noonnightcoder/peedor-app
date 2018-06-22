@@ -64,16 +64,17 @@ class CategoryController extends Controller
         $category_name=isset($_POST['category_name']) ? $_POST['category_name']:'';
         $parent_id=$_POST['parent_id'];
         $category=new Category;
-        $criteria = new CDbCriteria();
-        $criteria->condition = 'name=:name';
-        $criteria->params = array(':name'=>$category_name);
-        $exists = $category->exists($criteria);
+        // $criteria = new CDbCriteria();
+        // $criteria->condition = 'name=:name';
+        // $criteria->params = array(':name'=>$category_name);
+        // $exists = $category->exists($criteria);
         $model=Category::model()->findAll();
-        $errorMsg='';
-        if($exists){
-            echo 'existed'; 
-            //$errorMsg='Name "'.$category_name.'" has already been taken.';
-        }else if($category_name==''){
+
+        // if($exists){
+        //     echo 'existed'; 
+        //     //$errorMsg='Name "'.$category_name.'" has already been taken.';
+        // }
+        if($category_name==''){
             echo 'error';
             //$errorMsg='Category name is required';
         }else{

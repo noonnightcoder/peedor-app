@@ -36,6 +36,7 @@ class Client extends CActiveRecord
     public $month; // Month : MM
     public $year; // Year - YYYY
     public $client_archived;
+    public $image;
     
         /**
 	 * @return string the associated database table name
@@ -93,7 +94,7 @@ class Client extends CActiveRecord
     {
         return array(
             'id' => 'ID',
-            'first_name' => Yii::t('app', 'First Name'),
+            'first_name' => Yii::t('app', 'Business Name'),
             'last_name' => Yii::t('app', 'Last Name'),
             'mobile_no' => Yii::t('app', 'Mobile No'),
             'address1' => Yii::t('app', 'Address1'),

@@ -6,6 +6,10 @@
    <title><?= bizNameFirstUpper() . ' ' . bizTitleUcWord() . ' - ' . companySloganUcwords() ?></title>
     <meta name="description" content="overview &amp; stats" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+     <?php
+        $baseUrl = Yii::app()->theme->baseUrl;
+        $cs = Yii::app()->getClientScript();
+    ?>
     <?php Yii::app()->bootstrap->register(); ?>
     
     <!--<link rel="icon" type="image/ico" href="<?php /*echo baseurl() */?>/css/img/bakouicon.ico" />-->
@@ -61,6 +65,10 @@
         cs()->registerScriptFile(baseurl().'/js/ace.min.js',CClientScript::POS_END);;
         cs()->registerScriptFile(baseurl().'/js/jquery.form.min.js',CClientScript::POS_END);
         cs()->registerScriptFile(baseurl().'/js/jquery-ui.min.js',CClientScript::POS_END);
+        $cs->registerScriptFile($baseUrl.'/js/ace.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/elements.fileinput.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/chosen.jquery.js',CClientScript::POS_BEGIN);
+        $cs->registerScriptFile($baseUrl.'/js/fine-upload.js',CClientScript::POS_BEGIN);
     ?>
 
     <?php

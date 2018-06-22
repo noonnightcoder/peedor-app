@@ -11,7 +11,7 @@ $this->breadcrumbs=array(
               'title' => Yii::t('app','Create Customer'),
               'headerIcon' => 'ace-icon fa fa-user',
               'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-              'content' => $this->renderPartial('_form', array('model'=>$model, 'contact' => $contact, 'has_error' => $has_error), true),
+              'content' => $this->renderPartial('_form', array('model'=>$model, 'contact' => $contact, 'has_error' => $has_error,'client_image'=>@$client_image), true),
  )); ?>  
 
 <?php $this->endWidget(); ?>

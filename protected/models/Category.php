@@ -33,7 +33,7 @@ class Category extends CActiveRecord
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('name', 'unique'),
+            //array('name', 'unique'),
             array('name', 'length', 'max' => 50),
             array('created_date, modified_date', 'safe'),
             array('created_date', 'default', 'value' => date('Y-m-d'), 'setOnEmpty' => true, 'on' => 'insert'),
@@ -179,13 +179,13 @@ class Category extends CActiveRecord
     public function saveCategory($category_name)
     {
         $category_id = null;
-        $exists = Category::model()->exists('CONVERT(id,CHAR(3))=:category_id', array(':category_id' => $category_name));
-        if (!$exists) {
-            $category = new Category;
-            $category->name = $category_name;
-            $category->save();
-            $category_id = $category->id;
-        }
+        //$exists = Category::model()->exists('CONVERT(id,CHAR(3))=:category_id', array(':category_id' => $category_name));
+        //if (!$exists) {
+        $category = new Category;
+        $category->name = $category_name;
+        $category->save();
+        $category_id = $category->id;
+        //}
 
         return $category_id;
     }

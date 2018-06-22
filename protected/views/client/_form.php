@@ -2,11 +2,10 @@
 	'id'=>'client-form',
 	'enableAjaxValidation'=>false,
         'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
-        'htmlOptions'=>array('data-validate'=>'parsley'),
+        'htmlOptions'=>array('data-validate'=>'parsley','enctype' => 'multipart/form-data'),
 )); ?>
 
 <div id="client_info">
-
     <div class="col-sm-5">
         <h4 class="header blue"><i class="ace-icon fa fa-info-circle blue"></i><?php echo Yii::t('app',
                 'Customer Basic Information') ?></h4>
@@ -18,9 +17,9 @@
 
         <?= $form->textFieldControlGroup($model, 'first_name', array('class' => 'span3', 'maxlength' => 60)); ?>
 
-        <?= $form->textFieldControlGroup($model, 'last_name', array('class' => 'span3', 'maxlength' => 60)); ?>
+        <!-- <?= $form->textFieldControlGroup($model, 'last_name', array('class' => 'span3', 'maxlength' => 60)); ?> -->
 
-        <div class="form-group">
+        <!-- <div class="form-group">
 
             <label class="col-sm-3 control-label" for="Client_dob"><?= Yii::t('app','Date of Birth') ?></label>
 
@@ -35,7 +34,7 @@
                 <span class="help-block"> <?= $form->error($model,'dob'); ?> </span>
             </div>
 
-        </div>
+        </div> -->
 
         <?= $form->textFieldControlGroup($model,'fax',array('class'=>'span3','maxlength'=>30)); ?>
 
@@ -60,7 +59,9 @@
     </div>
 
     <div class="col-sm-7">
-
+        <h4 class="header blue"><i class="ace-icon fa fa-file-image-o blue"></i><?php echo Yii::t('app',
+                'Customer Image') ?></h4>
+        <?php $this->renderPartial('_image',array('client_image'=>@$client_image,'model'=>$model))?>
         <h4 class="header blue"><i class="ace-icon fa fa-info-circle blue"></i><?php echo Yii::t('app',
                 'Customer Settings') ?></h4>
 
