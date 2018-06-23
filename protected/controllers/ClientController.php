@@ -119,6 +119,7 @@ class ClientController extends Controller
                         $client_id = $model->id;
                         $client_fname = $model->first_name . ' ' . $model->last_name;
                         $price_tier_id = $model->price_tier_id;
+
                         $this->multipleImageUpload($model->id,$model,'image');
                         Account::model()->saveAccount($client_id, $client_fname);
 

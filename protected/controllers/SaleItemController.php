@@ -601,7 +601,7 @@ class SaleItemController extends Controller
         // Getting Customer Account Info
         $account = Account::model()->getAccountInfo($customer_id);
 
-        Sale::model()-> updateSaleStatus($sale_id,$tran_type);
+        Sale::model()->updateSaleStatus($sale_id,$tran_type);
 
         // Add hot bill before proceed payment
         Account::model()->depositAccountBal($account,$total);
@@ -877,7 +877,6 @@ class SaleItemController extends Controller
         Yii::app()->shoppingCart->clearAll();  
         
     }
-
 
     protected function renderRecipe($data)
     {

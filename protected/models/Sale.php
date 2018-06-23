@@ -380,6 +380,7 @@ class Sale extends CActiveRecord
             $this->updateStockExpire($item['item_id'], $item['quantity'], $sale_id);
         }
     }
+
     public function getPreviouseSaleItem($sale_id,$item_id,$previous_qty){
         $sql="select sale_id,:previous_qty-quantity quantity,item_id
         from sale_item
@@ -389,11 +390,12 @@ class Sale extends CActiveRecord
             array(':sale_id' => $sale_id, ':item_id' => $item_id,':previous_qty'=>$previous_qty));
             return $result;
     }
+
     public function updateItemQuantity($item_id,$tran_quantity){
-        $cur_item_info=Item::model()->findByPk($item_id);
-        $qty_in_stock=$cur_item_info->quantity;
-        $qty_afer_transaction=$cur_item_info->quantity-$tran_quantity;
-        $cur_item_info->quantity=$qty_afer_transaction;
+        $cur_item_info = Item::model()->findByPk($item_id);
+        $qty_in_stock = $cur_item_info->quantity;
+        $qty_afer_transaction = $cur_item_info->quantity-$tran_quantity;
+        $cur_item_info->quantity = $qty_afer_transaction;
         $cur_item_info->save();
     }
     
