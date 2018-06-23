@@ -31,7 +31,15 @@ class InventoryController extends Controller
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','admin','delete'),
+				'actions'=>array('create','update','admin','delete',
+					'StockTransfer',
+					'AddItemBarcode',
+                    'DeleteItemBarcode',
+                    'EditItemBarcode',
+                    'PreviewItemBarcode',
+                    'resetItemBarcode', 
+                    'Pdf'
+				),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -186,6 +194,13 @@ class InventoryController extends Controller
                 }
 	}
 
+	public function actionStockTransfer()
+	{
+
+        $this->reload();
+
+	}
+
 	/**
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
@@ -211,4 +226,17 @@ class InventoryController extends Controller
 			Yii::app()->end();
 		}
 	}
+
+	private function reload($data=array())
+    {
+        $this->layout = '//layouts/column_sale';
+        $model = new Item;
+        $items = Yii::app()->shoppingCart->getItemBarcode();
+
+        $data['model'] = $model;
+        $data['items'] = $items;
+
+        loadview('//inventory/stockTransfer/index','//inventory/stockTransfer/index',$data);
+
+    }
 }

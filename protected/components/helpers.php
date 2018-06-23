@@ -237,6 +237,11 @@ function sysMenuInventoryCount()
     return ucwords(t(param('menu_inventory_count'), 'app'));
 }
 
+function sysMenuStockTransfter()
+{
+    return ucwords(t(param('menu_stock_transfer'), 'app'));
+}
+
 function sysMenuInventoryCount2()
 {
     return ucwords(t(param('menu_inventory_count2'), 'app'));
@@ -463,6 +468,11 @@ function sysMenuInventoryMinusIcon()
 function sysMenuInventoryCountIcon()
 {
     return 'fa fa-list-ol purple';
+}
+
+function sysMenuStockTransferIcon()
+{
+    return 'fa fa-exchange purple';
 }
 
 function sysMenuInventoryTransferIcon()

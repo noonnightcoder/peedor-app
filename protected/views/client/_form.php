@@ -61,7 +61,7 @@
     <div class="col-sm-7">
         <h4 class="header blue"><i class="ace-icon fa fa-file-image-o blue"></i><?php echo Yii::t('app',
                 'Customer Image') ?></h4>
-        <?php $this->renderPartial('_image',array('client_image'=>@$client_image,'model'=>$model))?>
+        <?php $this->renderPartial('_image',array('client_image'=>$client_image,'model'=>$model))?>
         <h4 class="header blue"><i class="ace-icon fa fa-info-circle blue"></i><?php echo Yii::t('app',
                 'Customer Settings') ?></h4>
 

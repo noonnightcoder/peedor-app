@@ -64,6 +64,21 @@ class ShoppingCart extends CApplicationComponent
         $this->session['item_barcode'] = $item_barcode_data;
     }
 
+    public function getItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session['item_to_transfer'])) {
+            $this->setItemToTransfer(array());
+        }
+        return $this->session['item_to_transfer'];
+    }
+
+    public function setItemToTransfer($items)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session['item_to_transfer'] = $items;
+    }
+
     /*
      * To get payment session
      * $return $session['payment']
@@ -357,6 +372,7 @@ class ShoppingCart extends CApplicationComponent
         return true;
     }
 
+    /*============Start Item barcode function==========*/
     public function addItemBarcode($item_id,$number_of_barcode=1)
     {
         $this->setSession(Yii::app()->session);
@@ -426,6 +442,80 @@ class ShoppingCart extends CApplicationComponent
         $this->setSession(Yii::app()->session);
         unset($this->session['item_barcode']);
     }
+    /*===========End Item barcode function=============*/
+
+    /*===========Start Item transfer function==========*/
+    public function addItemToTransfer($item_id,$quantity=1)
+    {
+        $this->setSession(Yii::app()->session);
+        //Get all items in the cart so far...
+        $items = $this->getItemToTransfer();
+        $models=Item::model()->findAll(array('condition'=>'`id`=:item_id','params'=>array(':item_id'=>$item_id)));
+
+        if (!$models) {
+            return false;
+        }
+
+        foreach ($models as $model) {
+            if($model['quantity']>0){
+                $item_data = array((int)$item_id =>
+                    array(
+                        'item_id' => $model["id"],
+                        'name' => $model["name"],
+                        'item_number' => $model["item_number"],
+                        'quantity' => $quantity,
+                        'price' => round($model["unit_price"], Common::getDecimalPlace()),
+                    )
+                );    
+            }else{
+                Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have quantity to transfer!!!');
+                $item_data=array();
+            }
+            
+        }
+
+       if (isset($items[$item_id])) {
+            $items[$item_id]['quantity']+=$quantity;
+        } else {
+            $items += $item_data;
+        }
+        $this->setItemToTransfer($items); 
+
+        return true;
+    }
+
+    public function editItemToTransfer($item_id, $quantity)
+    {
+        $items = $this->getItemToTransfer();
+        if (isset($items[$item_id])) {
+
+            $items[$item_id]['quantity'] = $quantity !=null ? $quantity : $items[$item_id]['quantity'];    
+
+        }else{
+            if($item_id=='all' && $quantity>0){
+                foreach ($items as $key => $value) {
+                    $items[$value['item_id']]['quantity']=$quantity;
+                }
+            }
+        }
+        $this->setItemToTransfer($items);
+        return false;
+    }
+    
+    public function deleteItemToTransfer($item_id)
+    {
+        $items = $this->getItemToTransfer();
+        unset($items[$item_id]);
+        $this->setItemToTransfer($items);
+    }
+
+    public function emptyItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['item_to_transfer']);
+    }
+
+    /*===========End item transfer function===============*/
 
     public function f5ItemPriceTier()
     {
