@@ -445,7 +445,7 @@ class ShoppingCart extends CApplicationComponent
     /*===========End Item barcode function=============*/
 
     /*===========Start Item transfer function==========*/
-    public function addItemToTransfer($item_id,$quantity=1)
+    public function addItemToTransfer($item_id,$header,$quantity=1)
     {
         $this->setSession(Yii::app()->session);
         //Get all items in the cart so far...
@@ -466,7 +466,13 @@ class ShoppingCart extends CApplicationComponent
                         'quantity' => $quantity,
                         'price' => round($model["unit_price"], Common::getDecimalPlace()),
                     )
-                );    
+                );  
+                if(!empty($header)){
+                    $item_data[$item_id]['header']['tran_name'] = $header['name'];
+                    $item_data[$item_id]['header']['delivery_due_date'] = $header['delivery_due_date'];
+                    $item_data[$item_id]['header']['from_outlet'] = $header['from_outlet'];
+                    $item_data[$item_id]['header']['to_outlet'] = $header['to_outlet'];
+                }  
             }else{
                 Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have quantity to transfer!!!');
                 $item_data=array();

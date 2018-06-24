@@ -326,18 +326,20 @@ class SaleItemController extends Controller
                 $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
                 $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
                 $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term']);
-
-                if($data['tran_type']==param('sale_complete_status')){
-                    $this->actionSaleUpdateStatus($data['sale_id'],$data['tran_type'],false);
-                }
                 
             if (substr($data['sale_id'], 0, 2) == '-1') {
                 Yii::app()->user->setFlash('warning', $data['sale_id']);
                 $this->redirect(Yii::app()->user->returnUrl);
                 $this->reload($data);
             } else {
-                $this->renderRecipe($data);
-                Yii::app()->shoppingCart->clearAll();
+                if(getTransType()==2){
+                    Yii::app()->shoppingCart->clearAll();
+                    $this->redirect(array('saleItem/create','tran_type'=>2));
+
+                }else{
+                    $this->renderRecipe($data);
+                    Yii::app()->shoppingCart->clearAll();    
+                }
             }
         }
     }
@@ -563,13 +565,27 @@ class SaleItemController extends Controller
         $this->reload();
     }
 
-    public function actionSaleUpdateStatus($sale_id,$tran_type) {
+    public function actionSaleUpdateStatus($sale_id,$tran_type,$ajax=true) {
+        if($ajax){
+            ajaxRequest();    
+        }
         
-        ajaxRequest();
         
         if($tran_type==param('sale_complete_status')){
 
-            $sale_item=SaleItem::model()->findAll(array(
+            Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+            $data=$this->sessionInfo();
+            $total = $data['total'];
+            $trans_status = $total > 0 ? 'N' : 'R';
+            $customer_id = $data['customer_id'];
+            $employee_id = $data['employee_id'];
+            $payment_received = $data['payment_received'];
+            $date_paid = date('Y-m-d H:i:s', strtotime($data['transaction_date'].' '.$data['transaction_time']));
+            $comment = $data['comment'];
+            $trans_date = $date_paid;
+            $trans_code = 'CHSALE';
+            $sale_item = SaleItem::model()->findAll(array(
                                 'condition'=>'`sale_id`=:sale_id',
                                 'params'=>array(
                                     ':sale_id'=>$sale_id
@@ -577,10 +593,29 @@ class SaleItemController extends Controller
                             ));
 
             foreach($sale_item as $sale){
-                Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);    
+
+                Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);   
+
             }
+            
+            Sale::model()->updateAccountBalance(
+                $sale_id,
+                $customer_id,
+                $employee_id,
+                $payment_received,
+                $date_paid,
+                $comment,
+                $trans_date,
+                $trans_code,
+                $trans_status,
+                $total
+            );
+            
+            Yii::app()->shoppingCart->clearAll();  
         }
         Sale::model()->updateSaleStatus($sale_id,$tran_type);
+
+
     }
 
     // To be delete change to saleUpdate status function

@@ -55,7 +55,8 @@ if (isset($error_message))
             'sale_id'=>$sale_id,
             'customer_id'=>$customer_id,
             'paid_amount'=>isset($paid_amount) ? $paid_amount : 0,
-            'status'=>isset($status) ? $status : Yii::app()->session['tran_type']
+            'status'=>isset($status) ? $status : Yii::app()->session['tran_type'],
+            'total' => $total
         ))?>
     <?php endif;?>
     <?php $this->renderPartial('//layouts/alert/_flash'); ?>

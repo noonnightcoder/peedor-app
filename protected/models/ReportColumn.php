@@ -1091,18 +1091,17 @@ class ReportColumn extends CModel
                         'visible' => '$data["status"] == param("sale_validate_status") && ckacc("sale.approve")',
                     ),
                     'complete' => array(
-                        'label' => 'cancel',
+                        'label' => 'Complete',
                         'icon' => sysMenuSaleOrderInvoiceIcon(),
-                        'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array(
+                        // 'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array(
+                        //             "sale_id"=>$data["sale_id"], 
+                        //             "tran_type" => param("sale_complete_status",
+                        //             "customer_id" => $data["client_id"])))',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
                                     "sale_id"=>$data["sale_id"], 
-                                    "tran_type" => param("sale_complete_status")))',
-                        /*'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
-                                    "sale_id"=>$data["sale_id"], 
-                                    "status" => param("sale_complete_status"),
-                                    "customer_id" => $data["client_id"],
-                                    "total" => number_format($data["total"],Common::getDecimalPlace()),
+                                    "tran_type" => param("sale_complete_status"),
                                     ))',
-                        */
+                        
                         'options' => array(
                             'title' => Yii::t('app', 'Complete'),
                             'class' => 'btn-order btn-order-complete btn btn-xs btn-success',

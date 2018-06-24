@@ -149,8 +149,7 @@ class Sale extends CActiveRecord
             // Transaction Date for Inventory, Payment and sale trans date
             $trans_date = date('Y-m-d H:i:s');
 
-            // Getting Customer Account Info
-            $account = Account::model()->getAccountInfo($customer_id);
+           
 
             $old_total = $this->getOldSaleTotal($in_sale_id);
 
@@ -198,17 +197,8 @@ class Sale extends CActiveRecord
                 if ( $status == self::sale_complete_status ) {
 
                     //$account = Account::model()->getAccountInfo($customer_id);
-
-                    if ($account) {
-                        // Add hot bill before proceed payment
-                        Account::model()->depositAccountBal($account,$total);
-                        SalePayment::model()->payment(null,$customer_id,$employee_id,$account,$payment_received,$date_paid,$comment);
-                        //Saving Account Receivable for Sale transaction code = 'CHSALE'
-                        AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $sale_id, $total,$trans_date,$comment, $trans_code, $trans_status);
-                    } else {
-                        // If no customer selected only Sale Payment History
-                        PaymentHistory::model()->savePaymentHistory($customer_id,$payment_received, $date_paid, $employee_id, $comment);
-                    }
+                    $this->updateAccountBalance($sale_id,$customer_id,$employee_id,$payment_received,$date_paid,$comment,$trans_date,$trans_code,$trans_status,$total);
+                    
                 }
                 
                 $message = $sale_id;
@@ -220,6 +210,24 @@ class Sale extends CActiveRecord
         }
         
         return $message;
+    }
+
+    public function updateAccountBalance($sale_id,$customer_id,$employee_id,$payment_received,$date_paid,$comment,$trans_date,$trans_code,$trans_status,$total)
+    {
+
+        // Getting Customer Account Info
+        $account = Account::model()->getAccountInfo($customer_id);
+
+        if ($account) {
+            // Add hot bill before proceed payment
+            Account::model()->depositAccountBal($account,$total);
+            SalePayment::model()->payment(null,$customer_id,$employee_id,$account,$payment_received,$date_paid,$comment);
+            //Saving Account Receivable for Sale transaction code = 'CHSALE'
+            AccountReceivable::model()->saveAccountRecv($account->id, $employee_id, $sale_id, $total,$trans_date,$comment, $trans_code, $trans_status);
+        } else {
+            // If no customer selected only Sale Payment History
+            PaymentHistory::model()->savePaymentHistory($customer_id,$payment_received, $date_paid, $employee_id, $comment);
+        }
     }
     
     protected function findSale($in_sale_id) 
