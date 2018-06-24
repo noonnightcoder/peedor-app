@@ -47,6 +47,7 @@ class RbacUser extends CActiveRecord
     public $employees;
     public $role_name;
     public $shipmentorders;
+    public $customergroups;
 
    //protected $auth_items;
 

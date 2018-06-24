@@ -407,7 +407,7 @@ class EmployeeController extends Controller
     protected function authItemPermission()
     {
         return array('items','pricebooks','categories' ,'saleorders', 'customerpayments', 'customers', 'employees', 'suppliers',
-            'stockcounts', 'stocktransfers', 'purchaseorders', 'purchasereceives', 'purchasereturns','reports','settings','shipmentorders','invoices');
+            'stockcounts', 'stocktransfers', 'purchaseorders', 'purchasereceives', 'purchasereturns','reports','settings','shipmentorders','invoices','customergroups');
     }
 
 
