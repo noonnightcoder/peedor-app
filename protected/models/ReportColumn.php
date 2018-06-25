@@ -1294,9 +1294,9 @@ class ReportColumn extends CModel
     public static function getTransferedItemColumns()
     {
         return array(
-            array('name' => 'transfer_id',
+            array('name' => 'receive_id',
                 'header' => Yii::t('app', 'Transfer ID'),
-                'value' => '$data["transfer_id"]',
+                'value' => '$data["receive_id"]',
                 'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
                 'url' => Yii::app()->createUrl('report/transferDetail'),
             ),
@@ -1311,9 +1311,9 @@ class ReportColumn extends CModel
                 'value' => '$data["transfered_by"]',
             ),
             array(
-                'name' => 'status',
+                'name' => 'trans_type',
                 'header' => Yii::t('app', 'Status'),
-                'value' => '$data["status"]',
+                'value' => '$data["trans_type"]',
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => 'Action',
@@ -1323,8 +1323,8 @@ class ReportColumn extends CModel
                         'label' => 'View',
                         'icon' => 'fa fa-eye',
                         'url' => 'Yii::app()->createUrl("receivingItem/ViewTransactionDetail",array(
-                                   "transfer_id" => $data["transfer_id"],
-                                   "employee_id" => $data["transfered_by"],
+                                   "receive_id" => $data["receive_id"],
+                                   "employee_id" => $data["employee_id"],
                                    "print"=>"false",
                                    "tran_type"=>$data["status"]
                                     )
@@ -1339,8 +1339,8 @@ class ReportColumn extends CModel
                         'label' => 'Edit',
                         'icon' => 'fa fa-edit',
                         'url' => 'Yii::app()->createUrl("receivingItem/EditTransaction",array(
-                                   "transfer_id" => $data["transfer_id"],
-                                   "employee_id" => $data["transfered_by"],
+                                   "receive_id" => $data["receive_id"],
+                                   "employee_id" => $data["employee_id"],
                                    "tran_type"=>$data["status"]
                                     )
                         )',
@@ -1354,8 +1354,8 @@ class ReportColumn extends CModel
                         'label' => 'print',
                         'icon' => 'fa fa-print',
                         'url' => 'Yii::app()->createUrl("receivingItem/printing", array(
-                                    "transfer_id" => $data["transfer_id"],
-                                   "employee_id" => $data["transfered_by"],
+                                    "receive_id" => $data["receive_id"],
+                                   "employee_id" => $data["employee_id"],
                                     "tran_type" => $data["status"],
                                     "format" => "format_hf",
                                     "print"=>"true",
@@ -1371,8 +1371,8 @@ class ReportColumn extends CModel
                     'accept' => array(
                         'label' => 'Accept',
                         'icon' => sysMenuSaleOrderToValidateIcon(),
-                        'url' => 'Yii::app()->createUrl("stockTransfer/transferUpdateStatus", array(
-                                    "transfer_id"=>$data["transfer_id"], 
+                        'url' => 'Yii::app()->createUrl("receiving/transferUpdateStatus", array(
+                                    "receive_id"=>$data["receive_id"], 
                                     "tran_type" => param("sale_complete_status")))',
                         'options' => array(
                             'title' => Yii::t('app', 'Accept'),
@@ -1383,8 +1383,8 @@ class ReportColumn extends CModel
                     'reject' => array(
                         'label' => 'reject',
                         'icon' => 'fa fa-ban',
-                        'url' => 'Yii::app()->createUrl("stockTransfer/transferUpdateStatus", array(
-                            "transfer_id"=>$data["transfer_id"], 
+                        'url' => 'Yii::app()->createUrl("receiving/transferUpdateStatus", array(
+                            "receive_id"=>$data["receive_id"], 
                             "tran_type" => param("sale_reject_status")))',
                         'options' => array(
                             'target' => '_blank',
@@ -1401,9 +1401,9 @@ class ReportColumn extends CModel
     public static function getTransferedDetailColumns()
     {
         return array(
-            array('name' => 'trans_date',
+            array('name' => 'receive_time',
                 'header' => Yii::t('app', 'Trans Time'),
-                'value' => '$data["trans_date"]',
+                'value' => '$data["receive_time"]',
             ),
             array('name' => 'item_name',
                 'header' => Yii::t('app', 'Item Name'),

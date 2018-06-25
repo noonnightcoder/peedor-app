@@ -55,6 +55,12 @@ class UserIdentity extends CUserIdentity
             Yii::app()->session['employeeid'] = $employeeId;
             Yii::app()->session['userid'] = $user->id;
 
+            $outlet = EmployeeOutlet::model()->findByAttributes(array(
+                'employee_id'=>$employeeId
+            ));
+
+            Yii::app()->session['employee_outlet'] = $outlet->outlet_id;
+
             $employee = Employee::model()->findByPk($employeeId);
             Yii::app()->session['emp_fullname'] = $employee->first_name . ' ' . $employee->last_name;
             

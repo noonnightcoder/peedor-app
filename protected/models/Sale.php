@@ -160,7 +160,10 @@ class Sale extends CActiveRecord
             // }
             if($status==param('sale_complete_status')){
 
-                $this->rolebackItemQuantity($in_sale_id);
+                // $this->rolebackItemQuantity($in_sale_id);
+
+                $this->rolebackItemOutletQuantity($in_sale_id);
+                
                 //Saving existing Sale Item to Inventory table and removing it out
                 $this->updateSale($in_sale_id, $employee_id,$trans_date);   
             }
@@ -315,6 +318,17 @@ class Sale extends CActiveRecord
             
     }
 
+    protected function rolebackItemOutletQuantity($in_sale_id){
+        $sql1 = "UPDATE item_outlet t1 
+                    INNER JOIN sale_item t2 
+                         ON t1.item_id = t2.item_id
+                SET t1.quantity = t1.quantity+t2.quantity
+                WHERE t2.sale_id=:sale_id";
+
+        $command1 = Yii::app()->db->createCommand($sql1);
+        $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
+        $command1->execute();
+    }
 
     protected function rolebackItemQuantity($in_sale_id){
         $sql1 = "UPDATE item t1 

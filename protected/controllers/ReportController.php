@@ -786,14 +786,14 @@ class ReportController extends Controller
         $report = new Report;
 
         $data['report'] = $report;
-        $data['transfer_id'] = $id;
+        $data['receive_id'] = $id;
 
         $data['grid_id'] = 'rpt-receiving-item-grid';
         $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
 
         $data['grid_columns'] = ReportColumn::getTransferedDetailColumns();
 
-        $report->transfer_id = $id;
+        $report->receive_id = $id;
         $data['data_provider'] = $report->tranferedDetail();
 
         $this->renderView($data);

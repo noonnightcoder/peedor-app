@@ -68,8 +68,8 @@ class RequestController extends Controller
             ),
             'suggestItem' => array(
                 'class' => 'ext.actions.XSuggestAction',
-                'modelName' => 'Item',
-                'methodName' => 'suggest',
+                'modelName' => 'ItemOutlet',
+                'methodName' => 'suggestByOutletUser',
             ),
             'suggestItemRecv' => array(
                 'class' => 'ext.actions.XSuggestAction',

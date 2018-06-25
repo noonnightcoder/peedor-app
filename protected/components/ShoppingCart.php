@@ -473,8 +473,9 @@ class ShoppingCart extends CApplicationComponent
     {
         $this->setSession(Yii::app()->session);
         //Get all items in the cart so far...
+        $outlet_id = Yii::app()->shoppingCart->getTransferHeader('from_outlet');
         $items = $this->getItemToTransfer();
-        $models=ItemOutlet::model()->findAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$item_id)));
+        $models=ItemOutlet::model()->findAll(array('condition'=>'`item_id`=:item_id and (`outlet_id`=:outlet_id)','params'=>array(':item_id'=>$item_id,':outlet_id'=>$outlet_id)));
         $item_model = Item::model()->findbyPk($item_id);
 
         if (!$models) {
@@ -491,15 +492,21 @@ class ShoppingCart extends CApplicationComponent
                         'current_quantity' => $model['quantity'],
                         'quantity_after_trans' => ($model['quantity'] - $quantity),
                         'quantity' => $quantity,
+                        'cost_price' => round($item_model->cost_price, Common::getDecimalPlace()),
+                        'unit_price' => round($item_model->unit_price, Common::getDecimalPlace()),
                         'price' => round($item_model->unit_price, Common::getDecimalPlace()),
                         'employee_id' => Yii::app()->session['employeeid']
                     )
                 );  
                 if(!empty($header)){
-                    $item_data[$item_id]['header']['tran_name'] = $header['name'];
+                    $item_data[$item_id]['header']['reference_name'] = $header['reference_name'];
                     $item_data[$item_id]['header']['delivery_due_date'] = $header['delivery_due_date'];
                     $item_data[$item_id]['header']['from_outlet'] = $header['from_outlet'];
                     $item_data[$item_id]['header']['to_outlet'] = $header['to_outlet'];
+                    $item_data[$item_id]['header']['trans_type'] = $header['trans_type'];
+                    $item_data[$item_id]['header']['employee_id'] = $header['employee_id'];
+                    $item_data[$item_id]['header']['receive_time'] = $header['receive_time'];
+                    $item_data[$item_id]['header']['status'] = $header['status'];
                 }  
             }else{
                 Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have quantity to transfer!!!');

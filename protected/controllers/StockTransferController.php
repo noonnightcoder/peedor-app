@@ -454,7 +454,7 @@ class StockTransferController extends Controller
         $data['from_outlet'] = isset($from_outlet) ? $from_outlet : '' ;
     	$data['to_outlet'] = isset($to_outlet) ? $to_outlet : '';
 
-        loadview('index','index',$data);
+        loadview('index_transfer','index_transfer',$data);
 
     }
 

@@ -128,15 +128,15 @@ class StockTransfer extends CActiveRecord
 	{
 		
 		$id = null;
-		$exists = StockTransfer::model()->exists('name=:name', array(':name' => $data['name']));
+		$exists = Receiving::model()->exists('reference_name=:name', array(':name' => $data['name']));
 		if(!$exists){
+			
 			foreach($data as $key=>$value){
 
 				$model->$key = $value;
 
 			}
-			$model->status = param('sale_submit_status');
-			$model->transfered_by = Yii::app()->session['employeeid'];
+
 			$model->save();	
 			$id = $model->id;
 

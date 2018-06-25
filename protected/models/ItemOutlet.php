@@ -82,6 +82,8 @@ class ItemOutlet extends CActiveRecord
     public function suggest($keyword, $limit = 20)
     {
 
+    	$outlet_id = Yii::app()->session['from_outlet'];
+
         $sql="
             select *
             from v_item_outlet
@@ -89,7 +91,38 @@ class ItemOutlet extends CActiveRecord
             and outlet_id=:outlet_id
         ";
         $models = Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':keyword' => "%$keyword%", ':item_number' => $keyword,':outlet_id'=>Yii::app()->shoppingCart->getTransferHeader('from_outlet')));
+            array(':keyword' => "%$keyword%", ':item_number' => $keyword,':outlet_id'=>$outlet_id));
+
+        $suggest = array();
+        foreach ($models as $model) {
+            $suggest[] = array(
+                'label' => $model['name'] . ' : ' . Yii::app()->settings->get('site', 'currencySymbol') . $model['unit_price'], //. ' - ' . $model->quantity,
+                // label for dropdown list
+                'value' => $model['name'],
+                // value for input field
+                'id' => $model['id'],
+                // return values from autocomplete
+                'unit_price' => $model['unit_price'],
+                'quantity' => $model['quantity'],
+            );
+        }
+
+        return $suggest;
+    }
+
+    public function suggestByOutletUser($keyword, $limit = 20)
+    {
+
+    	$outlet_id = Yii::app()->session['employee_outlet'];
+
+        $sql="
+            select *
+            from v_item_outlet
+            where (name like :keyword or item_number=:item_number)
+            and outlet_id=:outlet_id
+        ";
+        $models = Yii::app()->db->createCommand($sql)->queryAll(true,
+            array(':keyword' => "%$keyword%", ':item_number' => $keyword,':outlet_id'=>$outlet_id));
 
         $suggest = array();
         foreach ($models as $model) {

@@ -634,17 +634,11 @@ function sysNotificationType()
 function getEmployeeOutlet()
 {
 
-    $employee_id = Yii::app()->session['employeeid'];
+    $outlet_id = Yii::app()->session['employee_outlet'];
 
-    $sql="SELECT outlet_name
-        FROM employee e JOIN employee_outlet eo 
-        ON e.id=eo.employee_id JOIN outlet o
-        ON eo.outlet_id=o.id
-        WHERE employee_id=:employee_id";
+    $outlet_model=Outlet::model()->findbyPk($outlet_id);
 
-    $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':employee_id' => $employee_id));
-
-    return $result[0]['outlet_name'];
+    return $outlet_model->outlet_name;
 
 }
 
