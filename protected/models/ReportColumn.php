@@ -1290,4 +1290,149 @@ class ReportColumn extends CModel
             )
         );
     }
+
+    public static function getTransferedItemColumns()
+    {
+        return array(
+            array('name' => 'transfer_id',
+                'header' => Yii::t('app', 'Transfer ID'),
+                'value' => '$data["transfer_id"]',
+                'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
+                'url' => Yii::app()->createUrl('report/transferDetail'),
+            ),
+            array(
+                'name' => 'created_date',
+                'header' => Yii::t('app', 'Created Date'),
+                'value' => '$data["created_date"]',
+            ),
+            array(
+                'name' => 'transfered_by',
+                'header' => Yii::t('app', 'Transfered By'),
+                'value' => '$data["transfered_by"]',
+            ),
+            array(
+                'name' => 'status',
+                'header' => Yii::t('app', 'Status'),
+                'value' => '$data["status"]',
+            ),
+            array('class' => 'bootstrap.widgets.TbButtonColumn',
+                'header' => 'Action',
+                'template' => '<div class="btn-group">{accept}{reject}</div>',
+                'buttons' => array(
+                    'view' => array(
+                        'label' => 'View',
+                        'icon' => 'fa fa-eye',
+                        'url' => 'Yii::app()->createUrl("receivingItem/ViewTransactionDetail",array(
+                                   "transfer_id" => $data["transfer_id"],
+                                   "employee_id" => $data["transfered_by"],
+                                   "print"=>"false",
+                                   "tran_type"=>$data["status"]
+                                    )
+                        )',
+                        'options' => array(
+                            'title' => Yii::t('app', 'View Detail'),
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                        'visible' => 'true',
+                    ),
+                    'edit' => array(
+                        'label' => 'Edit',
+                        'icon' => 'fa fa-edit',
+                        'url' => 'Yii::app()->createUrl("receivingItem/EditTransaction",array(
+                                   "transfer_id" => $data["transfer_id"],
+                                   "employee_id" => $data["transfered_by"],
+                                   "tran_type"=>$data["status"]
+                                    )
+                        )',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Update Invoice'),
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                        'visible' => 'ckacc("sale.update")',
+                    ),
+                    'print' => array(
+                        'label' => 'print',
+                        'icon' => 'fa fa-print',
+                        'url' => 'Yii::app()->createUrl("receivingItem/printing", array(
+                                    "transfer_id" => $data["transfer_id"],
+                                   "employee_id" => $data["transfered_by"],
+                                    "tran_type" => $data["status"],
+                                    "format" => "format_hf",
+                                    "print"=>"true",
+                                )
+                         )',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-info',
+                        ),
+                        'visible' => 'true',
+                    ),
+                    'accept' => array(
+                        'label' => 'Accept',
+                        'icon' => sysMenuSaleOrderToValidateIcon(),
+                        'url' => 'Yii::app()->createUrl("stockTransfer/transferUpdateStatus", array(
+                                    "transfer_id"=>$data["transfer_id"], 
+                                    "tran_type" => param("sale_complete_status")))',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Accept'),
+                            'class' => 'btn-order btn-order-approve btn btn-xs btn-success',
+                        ),
+                        'visible' => 'true',
+                    ),
+                    'reject' => array(
+                        'label' => 'reject',
+                        'icon' => 'fa fa-ban',
+                        'url' => 'Yii::app()->createUrl("stockTransfer/transferUpdateStatus", array(
+                            "transfer_id"=>$data["transfer_id"], 
+                            "tran_type" => param("sale_reject_status")))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Reject'),
+                            'class' => 'btn-order btn-order-reject btn btn-xs btn-danger',
+                        ),
+                        'visible' => 'true',
+                    ),
+                ),
+            ),
+        );
+    }
+
+    public static function getTransferedDetailColumns()
+    {
+        return array(
+            array('name' => 'trans_date',
+                'header' => Yii::t('app', 'Trans Time'),
+                'value' => '$data["trans_date"]',
+            ),
+            array('name' => 'item_name',
+                'header' => Yii::t('app', 'Item Name'),
+                'value' => '$data["item_name"]',
+            ),
+            array('name' => 'quantity',
+                'header' => Yii::t('app', 'QTY'),
+                'value' => 'number_format($data["quantity"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
+            array('name' => 'remaining_qty',
+                'header' => Yii::t('app', 'Remaining Quantity'),
+                'value' => 'number_format($data["remaining_qty"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
+            array('name' => 'cost_price',
+                'header' => Yii::t('app', 'Cost'),
+                'value' => 'number_format($data["cost_price"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
+            array('name' => 'unit_price',
+                'header' => Yii::t('app', 'Price'),
+                'value' => 'number_format($data["unit_price"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            )
+        );
+    }
 }

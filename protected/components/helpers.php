@@ -242,6 +242,16 @@ function sysMenuStockTransfter()
     return ucwords(t(param('menu_stock_transfer'), 'app'));
 }
 
+function sysMenuStockTransfterOut()
+{
+    return ucwords(t(param('menu_stock_transfer_out'), 'app'));
+}
+
+function sysMenuStockTransfterReceive()
+{
+    return ucwords(t(param('menu_stock_transfer_receive'), 'app'));
+}
+
 function sysMenuInventoryCount2()
 {
     return ucwords(t(param('menu_inventory_count2'), 'app'));
@@ -475,6 +485,11 @@ function sysMenuStockTransferIcon()
     return 'fa fa-exchange purple';
 }
 
+function sysMenuStockTransferInOutIcon()
+{
+    return 'fa fa-motorcycle purple';
+}
+
 function sysMenuInventoryTransferIcon()
 {
     return 'fa fa-exchange';
@@ -616,4 +631,20 @@ function sysNotificationType()
     return Yii::app()->settings->get('system', 'notificationType')!==null ? Yii::app()->settings->get('system', 'notificationType') : '_flash';
 }
 
+function getEmployeeOutlet()
+{
+
+    $employee_id = Yii::app()->session['employeeid'];
+
+    $sql="SELECT outlet_name
+        FROM employee e JOIN employee_outlet eo 
+        ON e.id=eo.employee_id JOIN outlet o
+        ON eo.outlet_id=o.id
+        WHERE employee_id=:employee_id";
+
+    $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':employee_id' => $employee_id));
+
+    return $result[0]['outlet_name'];
+
+}
 

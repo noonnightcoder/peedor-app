@@ -42,6 +42,16 @@
         </div>
 
         <div class="col-sm-7">
+            <h4 class="header blue">
+                <i class="ace-icon fa fa-home blue"></i><?= Yii::t('app', 'Employee Outlet') ?>
+            </h4>
+
+            <?php $this->renderPartial('_outlet', array(
+                    'model' => $model,
+                    'form' => $form,
+                )
+            )
+            ?>
 
             <h4 class="header blue">
                 <i class="ace-icon fa fa-location-arrow blue"></i><?= Yii::t('app', 'Employee Address Information') ?>

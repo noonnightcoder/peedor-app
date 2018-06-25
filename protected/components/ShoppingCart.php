@@ -79,6 +79,30 @@ class ShoppingCart extends CApplicationComponent
         $this->session['item_to_transfer'] = $items;
     }
 
+    public function getTransferHeader($session)
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session[$session])) {
+            $this->setTransferHeader(null,null);
+        }
+        return $this->session[$session];
+    }
+
+    public function setTransferHeader($header_data,$session)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session[$session] = $header_data;
+    }
+
+    public function clearItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['from_outlet']);
+        unset($this->session['to_outlet']);
+        unset($this->session['reference_name']);
+        unset($this->session['item_to_transfer']);
+    }
+
     /*
      * To get payment session
      * $return $session['payment']
@@ -450,7 +474,8 @@ class ShoppingCart extends CApplicationComponent
         $this->setSession(Yii::app()->session);
         //Get all items in the cart so far...
         $items = $this->getItemToTransfer();
-        $models=Item::model()->findAll(array('condition'=>'`id`=:item_id','params'=>array(':item_id'=>$item_id)));
+        $models=ItemOutlet::model()->findAll(array('condition'=>'`item_id`=:item_id','params'=>array(':item_id'=>$item_id)));
+        $item_model = Item::model()->findbyPk($item_id);
 
         if (!$models) {
             return false;
@@ -460,11 +485,14 @@ class ShoppingCart extends CApplicationComponent
             if($model['quantity']>0){
                 $item_data = array((int)$item_id =>
                     array(
-                        'item_id' => $model["id"],
-                        'name' => $model["name"],
-                        'item_number' => $model["item_number"],
+                        'item_id' => $model["item_id"],
+                        'name' => $item_model->name,
+                        'item_number' => $item_model->item_number,
+                        'current_quantity' => $model['quantity'],
+                        'quantity_after_trans' => ($model['quantity'] - $quantity),
                         'quantity' => $quantity,
-                        'price' => round($model["unit_price"], Common::getDecimalPlace()),
+                        'price' => round($item_model->unit_price, Common::getDecimalPlace()),
+                        'employee_id' => Yii::app()->session['employeeid']
                     )
                 );  
                 if(!empty($header)){
@@ -493,19 +521,22 @@ class ShoppingCart extends CApplicationComponent
     public function editItemToTransfer($item_id, $quantity)
     {
         $items = $this->getItemToTransfer();
+
         if (isset($items[$item_id])) {
 
-            $items[$item_id]['quantity'] = $quantity !=null ? $quantity : $items[$item_id]['quantity'];    
+            $items[$item_id]['quantity'] = $quantity !=null ? $quantity : $items[$item_id]['quantity'];  
+            $items[$item_id]['quantity_after_trans'] = $items[$item_id]['current_quantity'] - $quantity;
 
         }else{
             if($item_id=='all' && $quantity>0){
                 foreach ($items as $key => $value) {
+                    $items[$value['item_id']]['quantity_after_trans'] = $items[$value['item_id']]['current_quantity'] - $quantity;
                     $items[$value['item_id']]['quantity']=$quantity;
                 }
             }
         }
         $this->setItemToTransfer($items);
-        return false;
+        // return false;
     }
     
     public function deleteItemToTransfer($item_id)

@@ -128,6 +128,12 @@ class EmployeeController extends Controller
                             exit;
                         }
 
+                        //set employee outlet
+                        $employee_outle_model = new EmployeeOutlet;
+                        $employee_outle_model->employee_id = $model->id;
+                        $employee_outle_model->outlet_id = $_POST['Employee']['outlet'];
+                        $employee_outle_model->save();
+
                         $assign_items = $this->authItemPermission();
                         foreach ($assign_items as $assign_item) {
                             if (!empty($_POST['RbacUser'][$assign_item])) {

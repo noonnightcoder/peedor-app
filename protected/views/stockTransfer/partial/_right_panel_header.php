@@ -10,7 +10,10 @@
                 'headerIcon' => 'ace-icon fa fa-info-circle ',
                 'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
                 'content' => $this->renderPartial('partial/_form', array(
-                    'paper_type' => array('0'=>'Basic Paper'),'model' => $model,'items'=>$items
+                    'model' => $model,
+                    'items'=>$items,
+                    'from_outlet' => $from_outlet,
+                    'to_outlet' => $to_outlet
                 ), true),
             ));
         ?>

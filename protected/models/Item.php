@@ -18,6 +18,8 @@ class Item extends CActiveRecord
     public $tags;
     public $sku;
     public $number_of_barcode;
+    public $type_id;
+    public $model_id;
 
     /**
      * Returns the static model of the specified AR class.
@@ -52,7 +54,7 @@ class Item extends CActiveRecord
                 'message' => '{attribute} {value} already exists ' .
                     '<a class="btn btn-xs btn-info" href="UpdateImage/id/{value}/item_number_flag/1"><span class="glyphicon ace-icon fa fa-edit"></span></a>'
             ),
-            array('name', 'unique'),
+            // array('name', 'unique'),
             array(
                 'category_id, supplier_id,brand_id,type_id,model_id, unit_id, unit_measurable_id, allow_alt_description, is_serialized, is_expire, count_interval',
                 'numerical',

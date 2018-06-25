@@ -27,6 +27,7 @@ class Report extends CFormModel
     public $sale_id;
     public $receive_id;
     public $employee_id;
+    public $transfer_id;
     public $search_id;
 
     public $name;
@@ -1413,6 +1414,111 @@ class Report extends CFormModel
             'sort' => array(
                 'attributes' => array(
                     'receive_id', 'receive_time',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public function tranferedListByStatusUser($user_id,$tran_type) {
+
+        if ($this->search_id !== '') {
+            $sql= "WITH transfered_item
+                  AS
+                  (
+                    SELECT st.name,st.status,DATE(st.created_date) created_date,
+                    SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
+                    from_outlet,to_outlet,st.transfered_by,transfer_id
+                    FROM stock_transfer st JOIN transfer_item t
+                    ON st.id=t.transfer_id JOIN item i
+                    ON t.item_id=i.id
+                    GROUP BY st.name,st.status,DATE(st.created_date),from_outlet,to_outlet,transfer_id
+                  )
+                  SELECT NAME,created_date,trans_qty,qty_af_trans,
+                  (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
+                  (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
+                  (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.transfered_by=e.id) transfered_by,
+                  CASE
+                    WHEN `status`=2 THEN 'Pending'
+                    WHEN `status`=1 THEN 'Accepted'
+                    WHEN `status`=-3 THEN 'Rejected'
+                  END `status`,transfer_id
+                  FROM transfered_item ti
+               WHERE created_date=:search_id
+               AND transfered_by=:user_id
+               AND status=:tran_type";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':search_id' => $this->search_id,
+                    ':tran_type' => $tran_type,
+                    ':user_id' => $user_id)
+            );
+
+        } else {
+            $sql= "WITH transfered_item
+                  AS
+                  (
+                    SELECT st.name,st.status,DATE(st.created_date) created_date,transfer_id,
+                    SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
+                    from_outlet,to_outlet,st.transfered_by
+                    FROM stock_transfer st JOIN transfer_item t
+                    ON st.id=t.transfer_id JOIN item i
+                    ON t.item_id=i.id
+                    GROUP BY st.name,st.status,DATE(st.created_date),from_outlet,to_outlet,transfer_id
+                  )
+                  SELECT NAME,created_date,trans_qty,qty_af_trans,
+                  (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
+                  (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
+                  (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.transfered_by=e.id) transfered_by,
+                  CASE
+                    WHEN `status`=2 THEN 'Pending'
+                    WHEN `status`=1 THEN 'Accepted'
+                    WHEN `status`=-3 THEN 'Rejected'
+                  END `status`,transfer_id
+                  FROM transfered_item ti
+               WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
+               AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+               AND transfered_by=:user_id
+               AND status=:tran_type";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                    ':tran_type' => $tran_type,
+                    ':user_id' => $user_id)
+            );
+        }
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'transfer_id',
+            'sort' => array(
+                'attributes' => array(
+                    'transfer_id', 'created_date',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public function tranferedDetail()
+    {
+        $sql= "SELECT t.transfer_id,it.name item_name,it.quantity remaining_qty,t.quantity,s.created_date trans_date,cost_price,unit_price
+              FROM transfer_item t JOIN item it
+              ON t.item_id=it.id JOIN stock_transfer s
+              ON t.transfer_id=s.id
+               WHERE transfer_id=:transfer_id";
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':transfer_id' => $this->transfer_id));
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'transfer_id',
+            'sort' => array(
+                'attributes' => array(
+                    'transfer_id', 'trans_date',
                 ),
             ),
             'pagination' => false,

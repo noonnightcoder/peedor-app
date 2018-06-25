@@ -43,7 +43,8 @@ class RequestController extends Controller
                     'listPersonsWithSameFirstname',
                     'addTabularInputs',
                     'addTabularInputsAsTable',
-                    'uploadFile'
+                    'uploadFile',
+                    'suggestItemByOutlet'
                 ),
                 'users' => array('*'),
             ),
@@ -60,6 +61,11 @@ class RequestController extends Controller
     public function actions()
     {
         return array(
+            'suggestItemByOutlet' => array(
+                'class' => 'ext.actions.XSuggestAction',
+                'modelName' => 'ItemOutlet',
+                'methodName' => 'suggest',
+            ),
             'suggestItem' => array(
                 'class' => 'ext.actions.XSuggestAction',
                 'modelName' => 'Item',

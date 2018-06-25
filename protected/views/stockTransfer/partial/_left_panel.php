@@ -5,7 +5,9 @@
         array(
             'model' => $model,
             'items_model' => $items_model,
-            'items' => $items
+            'items' => $items,
+            'from_outlet' => $from_outlet,
+            'to_outlet' => $to_outlet
         ));
     ?>
     <!-- /section:left.panel.header-->
@@ -15,7 +17,9 @@
         array(
             'model' => $model,
             'items_model' => $items_model,
-            'items' => $items
+            'items' => $items,
+            'from_outlet' => $from_outlet,
+            'to_outlet' => $to_outlet
         ));
     ?>
     <!-- /section:left.panel.grid.cart -->

@@ -38,7 +38,12 @@ class StockTransferController extends Controller
                     'EditItemToTransfer',
                     'PreviewItemToTransfer',
                     'resetItemToTransfer', 
-                    'processTransfer',
+                    'setReferenceName',
+                    'setOutlet',
+                    'saveItemToTransfer',
+                    'itemTransferSubmited',
+                    'TransferDetail',
+                    'TransferUpdateStatus',
                     'Pdf'
 				),
 				'users'=>array('@'),
@@ -198,34 +203,66 @@ class StockTransferController extends Controller
 	public function actionItemTransfer()
 	{
 
-		$model = new StockTransfer;
-		$items_model = new Item;
-    	$items=Yii::app()->shoppingCart->getItemToTransfer();
-
-    	$this->performAjaxValidation($model);
-
     	if (isset($_POST['StockTransfer'])) {
+
             $model->attributes = $_POST['StockTransfer'];
 
-            if($model->validate()){
+        	if ($model->save()) {
 
-            	if ($model->save()) {
-
-					if($model->id>0){//check if item id exist after saved to table
-						//echo '<script>alert("Saved")</script>';
-					}
-					Yii::app()->shoppingCart->emptyItemToTransfer();
-					//$this->redirect('stockTransfer/ItemTransfers');
-
+				if($model->id>0){//check if item id exist after saved to table
+					//echo '<script>alert("Saved")</script>';
 				}
+				Yii::app()->shoppingCart->emptyItemToTransfer();
+				//$this->redirect('stockTransfer/ItemTransfers');
+
+			}
+        }
+
+        $this->reload();
+
+	}
+
+	public function actionSetReferenceName()
+	{
+
+    	if (isset($_POST['StockTransfer']['name'])) {
+    		$referenceName = $_POST['StockTransfer']['name'];
+            Yii::app()->shoppingCart->setTransferHeader($referenceName,'reference_name');
+             $exists = stockTransfer::model()->exists('name=:name', array(':name' => $referenceName));
+
+            if($exists){
+
+            	Yii::app()->user->setFlash('warning', 'Reference Name has already been taken');	
             }
 
         }
-        $data['model'] = $model;
-        $data['items'] = $items;
-        $data['items_model'] = $items_model;
-        $this->render('index',$data);
 
+        $this->reload();
+
+	}
+
+	public function actionSetOutlet()
+	{
+
+    	if (isset($_POST['StockTransfer'])) {
+
+            $from_outlet = $_POST['StockTransfer']['from_outlet'];
+            Yii::app()->shoppingCart->setTransferHeader($from_outlet,'from_outlet');
+            
+        	$to_outlet = $_POST['StockTransfer']['to_outlet'];
+            Yii::app()->shoppingCart->setTransferHeader($to_outlet,'to_outlet');
+
+        }
+
+        $from_outlet = Yii::app()->shoppingCart->getTransferHeader('from_outlet');
+    	$to_outlet = Yii::app()->shoppingCart->getTransferHeader('to_outlet');
+
+    	if($from_outlet==$to_outlet){
+
+    		Yii::app()->user->setFlash('warning', 'From and To Outlet must difference!!!');
+    	}
+
+        $this->reload();
 	}
 
 	public function actionAddItemToTransfer()
@@ -233,50 +270,36 @@ class StockTransferController extends Controller
        
         $data=array();
         $header=array();
-        $model = new StockTransfer;
-		$items_model = new Item;
-        $item_id = $_POST['Item']['id'];
 
- 		$this->performAjaxValidation($model);
- 		
- 		if(isset($_POST['StockTransfer'])){
+        $item_id = $_POST['ItemOutlet']['id'];
+    	if(isset($_POST['StockTransfer'])){
  			$header['name'] = $_POST['StockTransfer']['name'];
 	        $header['delivery_due_date'] = $_POST['StockTransfer']['delivery_due_date'];
 	        $header['from_outlet'] = $_POST['StockTransfer']['from_outlet'];
 	        $header['to_outlet'] = $_POST['StockTransfer']['to_outlet'];	
  		}
-        
 
         if (!Yii::app()->shoppingCart->addItemToTransfer($item_id,$header)) {
+
             Yii::app()->user->setFlash('warning', 'Unable to add item to cart');
+
         }
 
         $items=Yii::app()->shoppingCart->getItemToTransfer();
 
-        $data['model'] = $model;
-        $data['items_model'] = $items_model;
-        $data['items'] = $items;
-
-        $this->reload($data);
+        $this->reload();
     }
 
     public function actionEditItemToTransfer($item_id){
 
         ajaxRequestPost();
+
         $data = array();
-        $model = new StockTransfer;
-		$items_model = new Item;
         $quantity = isset($_POST['StockTransfer']['quantity']) ? $_POST['StockTransfer']['quantity'] : null;
 
         Yii::app()->shoppingCart->editItemToTransfer($item_id, $quantity);
 
-        $items=Yii::app()->shoppingCart->getItemToTransfer();
-
-        $data['model'] = $model;
-        $data['items_model'] = $items_model;
-        $data['items'] = $items;
-
-        $this->reload($data);
+        $this->reload();
 
     }
 
@@ -293,26 +316,100 @@ class StockTransferController extends Controller
 
         ajaxRequestPost();
 
-        Yii::app()->shoppingCart->emptyItemToTransfer();
+        Yii::app()->shoppingCart->clearItemToTransfer();
+
         $this->reload();
     }
 
-    public function actionProcessTransfer()
+    public function actionSaveItemToTransfer()
     {
-    	
-    	$model = new StockTransfer;
-    	$items=Yii::app()->shoppingCart->getItemToTransfer();
 
-    	$this->performAjaxValidation($model);
-    	
-    	var_dump($items);
+    	$header_data['name'] = Yii::app()->shoppingCart->getTransferHeader('reference_name');
+    	$header_data['from_outlet'] = Yii::app()->shoppingCart->getTransferHeader('from_outlet');
+    	$header_data['to_outlet'] = Yii::app()->shoppingCart->getTransferHeader('to_outlet');
+    	$header_data['created_date'] = date('Y-m-d H:i:s');
+    	$header_data['modified_date'] = date('Y-m-d H:i:s');
+
+		if(($header_data['from_outlet']=='' || $header_data['from_outlet'] == null) || ($header_data['to_outlet']=='' || $header_data['to_outlet'] == null)){
+
+			Yii::app()->user->setFlash('warning', 'Outlet must be specific to make item transfer');
+
+		}else if($header_data['from_outlet'] == $header_data['to_outlet']){
+
+    		Yii::app()->user->setFlash('warning', 'From and To Outlet must difference!!!');
+
+    	}else{
+
+    		$items = $items=Yii::app()->shoppingCart->getItemToTransfer();
+    		$model = StockTransfer::model()->saveItemToTransfer(new StockTransfer,$header_data,$items);
+
+    		if($model==null){
+
+    			Yii::app()->user->setFlash('warning', 'Reference Name has already been taken');
+
+    		}else{
+
+    			Yii::app()->shoppingCart->clearItemToTransfer();
+    			$this->redirect(array('stockTransfer/itemTransfer'));
+    		}
+    	}
+
+        $this->reload();
 
     }
 
-    public function actionPdf(){
-        $file=$this->renderPartial('_to_delete/_test_pdf', array('name'), true);
-        $c=Yii::app()->pdfGenerator->PdfCreate($file);        
-        // Yii::app()->pdfGenerator->PdfToEmail('test','sovotanakpath579@gmail.com','sovotanakpath579@gmail.com',$file,'Hello','A4');
+    public function actionItemTransferSubmited($tran_type)
+    {
+
+    	$grid_id = 'receiving-item-grid';
+        $title = 'Stock Transfer List';
+
+        $data = $this->commonData($grid_id,$title,'show','show');
+
+        $data['grid_columns'] = ReportColumn::getTransferedItemColumns();
+        $data['user_id'] = Yii::app()->session['employeeid'];
+        $data['title'] = $title;
+
+
+        $data['data_provider'] = $data['report']->tranferedListByStatusUser($data['user_id'],$tran_type);
+       
+        $data['grid_id'] = $grid_id;
+        // var_dump($data['data_provider']);
+        loadview('review','//layouts/report/_grid',$data);
+
+    }
+
+    public function actionTransferLetter($transfer_id, $transfered_by='',$tran_type,$pdf=0,$email=0)
+    {
+            authorized('sale.read') || authorized('sale.create') ;
+
+            $data = $this->receiptData($sale_id,$customer_id,$tran_type);
+
+            if (count($data['items']) == 0) {
+                $data['error_message'] = 'Sale Transaction Failed';
+            }
+
+            $this->renderRecipe($data);
+            
+            Yii::app()->shoppingCart->clearAll();
+
+    }
+
+    public function actionTransferUpdateStatus($transfer_id,$tran_type,$ajax=true) {
+
+        if($ajax){
+            ajaxRequest();    
+        }
+
+        if($tran_type==param('sale_complete_status')){
+
+        	StockTransfer::model()->updateItemToDestinationOutlet($transfer_id);
+
+        }elseif($tran_type==param('sale_reject_status')){
+
+        	StockTransfer::model()->rolebackSourceOutletQuantity($transfer_id);
+
+        }
 
     }
 
@@ -345,8 +442,76 @@ class StockTransferController extends Controller
 	private function reload($data=array())
     {
         $this->layout = '//layouts/column_sale';
+        $model = new StockTransfer;
+		$items_model = new ItemOutlet;
+    	$items=Yii::app()->shoppingCart->getItemToTransfer();
+    	$from_outlet = Yii::app()->shoppingCart->getTransferHeader('from_outlet');
+    	$to_outlet = Yii::app()->shoppingCart->getTransferHeader('to_outlet');
+
+        $data['model'] = $model;
+        $data['items_model'] = $items_model;
+        $data['items'] = $items;
+        $data['from_outlet'] = isset($from_outlet) ? $from_outlet : '' ;
+    	$data['to_outlet'] = isset($to_outlet) ? $to_outlet : '';
 
         loadview('index','index',$data);
 
     }
+
+    protected function commonData($grid_id,$title,$title_icon,$advance_search=null,$header_view='_header',$grid_view='_grid')
+    {
+        $report = new Report;
+
+        $data['report'] = $report;
+        $data['from_date'] = isset($_GET['Report']['from_date']) ? $_GET['Report']['from_date'] : date('d-m-Y');
+        $data['to_date'] = isset($_GET['Report']['to_date']) ? $_GET['Report']['to_date'] : date('d-m-Y');
+        $data['search_id'] = isset($_GET['Report']['search_id']) ? $_GET['Report']['search_id'] : '';
+        $data['advance_search'] = $advance_search;
+        $data['header_tab'] = '';
+
+        $data['grid_id'] = $grid_id;
+        $data['title'] = Yii::t('app', $title) . ' ' . Yii::t('app',
+                'From') . ' ' . $data['from_date'] . '  ' . Yii::t('app', 'To') . ' ' . $data['to_date'];
+        $data['header_view'] = $header_view;
+        $data['grid_view'] = $grid_view;
+
+        $data['report']->from_date = $data['from_date'];
+        $data['report']->to_date = $data['to_date'];
+        $data['report']->search_id = $data['search_id'];
+
+        return $data;
+    }
+
+    protected function receiptData($sale_id,$customer_id,$tran_type,$paid_amount=0)
+    {
+        $this->layout = '//layouts/column_receipt';
+
+        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
+        Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+        $data = $this->sessionInfo();
+
+        $data['sale_id'] = $sale_id;
+        $data['customer_id'] = $customer_id;
+        $data['paid_amount'] = $paid_amount;
+        $data['status'] = $tran_type;
+        $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'kh');
+        $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'en');
+        $data['invoice_format'] = Yii::app()->shoppingCart->getInvoiceFormat();
+        $data['invoice_prefix'] = $tran_type == param('sale_complete_status') ? 'INV' : 'SO';
+        $data['filename'] = $data['invoice_prefix']. '_' . $sale_id . '_' . str_replace('/', '_', $data['transaction_date']);
+
+        if (count($data['items']) == 0) {
+            $data['error_message'] = 'Sale Transaction Failed';
+        }
+
+        return $data;
+
+    }
+
+    protected function renderRecipe($data)
+    {
+        $this->render('//receipt/'. 'index', $data); 
+    }
+
 }

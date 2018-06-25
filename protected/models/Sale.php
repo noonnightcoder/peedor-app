@@ -399,12 +399,22 @@ class Sale extends CActiveRecord
             return $result;
     }
 
-    public function updateItemQuantity($item_id,$tran_quantity){
-        $cur_item_info = Item::model()->findByPk($item_id);
-        $qty_in_stock = $cur_item_info->quantity;
-        $qty_afer_transaction = $cur_item_info->quantity-$tran_quantity;
-        $cur_item_info->quantity = $qty_afer_transaction;
-        $cur_item_info->save();
+    public function updateItemQuantity($item_id,$outlet_id,$tran_quantity){
+        $cur_item_info = ItemOutlet::model()->findAllByAttributes(array('item_id'=>$item_id));
+        $qty_in_stock = $cur_item_info[0]['quantity'];
+        $qty_afer_transaction = $qty_in_stock-$tran_quantity;
+        // $cur_item_info->quantity = $qty_afer_transaction;
+        // $cur_item_info->save();
+        $sql="update item_outlet
+        set quantity=:qty_after_tran
+        where item_id=:item_id
+        and outlet_id=:outlet_id";
+
+        $command = Yii::app()->db->createCommand($sql);
+        $command->bindParam(":item_id", $item_id, PDO::PARAM_INT);
+        $command->bindParam(":outlet_id", $outlet_id, PDO::PARAM_INT);
+        $command->bindParam(":qty_after_tran", $qty_afer_transaction, PDO::PARAM_INT);
+        $command->execute();
     }
     
     public function saveSaleTransaction($model,$data){

@@ -48,7 +48,7 @@
                         <li class="green">
                             <a href="#"><?php echo Yii::app()->settings->get('site', 'companyName'); ?>
                                 <i class="ace-icon fa fa-bell icon-animated-bell"></i>
-                                <span class="label label-xlg label-important"><?php echo "Main Outlet"; //Yii::app()->getsetSession->getLocationName(); ?></span>
+                                <span class="label label-xlg label-important"><?php echo getEmployeeOutlet(); //Yii::app()->getsetSession->getLocationName(); ?></span>
                             </a>
                         </li>
                         <li class="light-blue">

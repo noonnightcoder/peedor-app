@@ -61,7 +61,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . strtoupper(sysMenuInventory()) . '</span>',
             'icon' => 'menu-icon '  . sysMenuInventoryIcon(),
             //'url' => url('receivingItem/index'),
-            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' || $this->id . '/' . $this->action->id == 'receivingItem/inventoryCountCreate' || $this->id . '/' . $this->action->id == 'stockTransfer/itemTransfer',
+            'active' => $this->id . '/' . $this->action->id == 'receivingItem/index' || $this->id . '/' . $this->action->id == 'receivingItem/inventoryCountCreate' || $this->id  == 'stockTransfer',
             'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete'),
             'items' => array(
                 array('label' => sysMenuInventoryCount(),
@@ -74,6 +74,18 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' => 'menu-icon '  . sysMenuStockTransferIcon(),
                     'url' => url('stockTransfer/itemTransfer'),
                     'active' => $this->id . '/' . $this->action->id == 'stockTransfer/itemTransfer',
+                    'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
+                ),
+                array('label' => sysMenuStockTransfterOut(),
+                    'icon' => 'menu-icon '  . sysMenuStockTransferInOutIcon(),
+                    'url' => url('stockTransfer/itemTransferSubmited',array('tran_type'=>param('sale_submit_status'))),
+                    'active' => $this->id . '/' . $this->action->id .'/'.Yii::app()->request->getQuery('tran_type') == 'stockTransfer/itemTransferSubmited/'.param('sale_submit_status'),
+                    'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
+                ),
+                array('label' => sysMenuStockTransfterReceive(),
+                    'icon' => 'menu-icon '  . sysMenuStockTransferInOutIcon(),
+                    'url' => url('stockTransfer/itemTransferSubmited',array('tran_type'=>param('sale_complete_status'))),
+                    'active' => $this->id . '/' . $this->action->id .'/'.Yii::app()->request->getQuery('tran_type')  == 'stockTransfer/itemTransferSubmited/'.param('sale_complete_status'),
                     'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
                 ),
             )),

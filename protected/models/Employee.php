@@ -30,6 +30,7 @@ class Employee extends CActiveRecord
     public $month; // Month : MM
     public $year; // Year - YYYY
     public $employee_archived;
+    public $outlet;
 
 	public function tableName()
 	{
@@ -92,6 +93,7 @@ class Employee extends CActiveRecord
             'notes' => Yii::t('app', 'Notes'), //'Notes',
             'search' => Yii::t('app', 'Search') . Yii::t('app', 'Employee'),
             'dob' => Yii::t('app','Date of Birth'),
+            'outlet' => Yii::t('app', 'Outlet'),
         );
     }
 

@@ -33,7 +33,7 @@ class ProductModel extends CActiveRecord
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('name', 'unique'),
+            // array('name', 'unique'),
             array('name', 'length', 'max' => 50),
             array('created_date, modified_date', 'safe'),
             array('created_date', 'default', 'value' => date('Y-m-d'), 'setOnEmpty' => true, 'on' => 'insert'),
@@ -117,13 +117,13 @@ class ProductModel extends CActiveRecord
     public function saveProductModel($product_model)
     {
         $model_id = null;
-        $exists = ProductModel::model()->exists('name=:name', array(':name' => $product_model));
-        if (!$exists) {
+        // $exists = ProductModel::model()->exists('name=:name', array(':name' => $product_model));
+        // if (!$exists) {
             $model = new ProductModel;
             $model->name = $product_model;
             $model->save();
             $model_id = $model->id;
-        }
+        // }
 
         return $model_id;
     }

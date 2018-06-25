@@ -7,13 +7,16 @@
         <thead>
         <tr>
             <th><?php echo Yii::t('app', 'Item Name'); ?></th>
-            <th><?php echo Yii::t('app', 'Quantity'); ?></th>
+            <th><?php echo Yii::t('app', 'QTY In Stock'); ?></th>
+            <th><?php echo Yii::t('app', 'Trans QTY'); ?></th>
+            <th><?php echo Yii::t('app', 'QTY After Trans'); ?></th>
             <th><?php echo Yii::t('app', 'Action'); ?></th>
         </tr>
         </thead>
         <tbody id="cart_contents">
             <?php if(!empty($items)):?>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td>
                             
@@ -28,11 +31,15 @@
 
                         </td>
                         <td></td>
+                        <td></td>
                     </tr>
                 <?php foreach (array_reverse($items, true) as $id => $item): ?>
                     <tr>
                         <td>
                             <?php echo $item['name']; ?><br/>
+                        </td>
+                        <td>
+                            <?php echo $item['current_quantity']; ?><br/>
                         </td>
                         <td>
                              <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
@@ -43,6 +50,9 @@
                             ?>
                                 <?php echo $form->textField($model, "quantity", array('value' => $item['quantity'], 'class' => 'input-small input-grid', 'id' => "quantity_".$item['item_id'], 'placeholder' => 'Quantity','maxlength' => 10)); ?>
                             <?php $this->endWidget(); ?>
+                        </td>
+                        <td>
+                            <?php echo $item['quantity_after_trans']; ?><br/>
                         </td>
                         <td><?php
                             echo TbHtml::linkButton('', array(

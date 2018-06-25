@@ -36,7 +36,15 @@ Yii::app()->clientScript->registerScript( 'deleteItem', "
                 $('#suspend_sale_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
             }
         });
+
+        $('#StockTransfer_name').blur(function(){
+            $('#reference_name_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+        })
         
+        $('#from_outlet, #to_outlet').change(function(){
+           // alert('hello')
+            $('#set-outlet-form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+        })
 
     });
 
@@ -62,4 +70,5 @@ Yii::app()->clientScript->registerScript( 'deleteItem', "
             setTimeout(function(){$('#quantity_' + itemId).select();}, 10);
         }
     }
+
 </script>

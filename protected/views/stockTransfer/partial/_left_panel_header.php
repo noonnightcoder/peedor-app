@@ -14,11 +14,12 @@
             )); ?>
            
             <div class="row">
+           
                 <?php
                 $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                     'model'=>$items_model,
                     'attribute'=>'id',
-                    'source'=>$this->createUrl('request/suggestItem'),
+                    'source'=>$this->createUrl('request/suggestItemByOutlet'),
                     //'scriptFile'=>'',
                     //'scriptUrl'=> Yii::app()->theme->baseUrl.'/js/',
                     'htmlOptions'=>array(
@@ -31,15 +32,18 @@
                         'autoFocus'=> false,
                         'select'=>'js:function(event, ui) {
                                 event.preventDefault();
-                                $("#Item_id").val(ui.item.id);
+                                $("#ItemOutlet_id").val(ui.item.id);
+                                console.log(ui);
                                 $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit, });                        }',
                         //'search' => 'js:function(){ $(".waiting").show(); }',
                         //'open' => 'js:function(){ $(".waiting").hide(); }',
                     ),
                 ));
                 ?>
-            </div>
+            
             <?php $this->endWidget(); ?>
+                
+            </div>
         </div>
         <div class="col-xs-12 col-sm-2" id="cancel_cart">
         <?php if(!empty($items)):?>

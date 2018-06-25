@@ -44,7 +44,7 @@ class Brand extends CActiveRecord
         // will receive user inputs.
         return array(
             array('name', 'required'),
-            array('name', 'unique'),
+            // array('name', 'unique'),
             array('name', 'length', 'max' => 50),
             array('created_date, modified_date', 'safe'),
             array('created_date', 'default', 'value' => date('Y-m-d'), 'setOnEmpty' => true, 'on' => 'insert'),
@@ -138,13 +138,13 @@ class Brand extends CActiveRecord
     public function saveBrand($brand_name)
     {
         $brand_id = null;
-        $exists = Brand::model()->exists('name=:name', array(':name' => $brand_name));
-        if (!$exists) {
+        // $exists = Brand::model()->exists('name=:name', array(':name' => $brand_name));
+        // if (!$exists) {
             $brand = new Brand;
             $brand->name = $brand_name;
             $brand->save();
             $brand_id = $brand->id;
-        }
+        // }
 
         return $brand_id;
     }
