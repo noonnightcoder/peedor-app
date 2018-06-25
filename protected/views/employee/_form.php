@@ -113,6 +113,7 @@
                 array('header_title' => 'Contacts', 'header_icon' => sysMenuUserIcon(),
                     'grid_items' => array (
                         array('grid_title' => 'Customer',  'permission' => 'customer.', 'control_name' => 'customers'),
+                        array('grid_title' => 'Customer Group',  'permission' => 'customergroup.', 'control_name' => 'customergroups'),
                         array('grid_title' => 'Employee',  'permission' => 'employee.', 'control_name' => 'employees'),
                         array('grid_title' => 'Supplier', 'permission' => 'supplier.', 'control_name' => 'suppliers'),
                     )
