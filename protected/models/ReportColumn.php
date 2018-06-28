@@ -1295,10 +1295,15 @@ class ReportColumn extends CModel
     {
         return array(
             array('name' => 'receive_id',
-                'header' => Yii::t('app', 'Transfer ID'),
+                'header' => Yii::t('app', 'Transaction ID'),
                 'value' => '$data["receive_id"]',
                 'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
                 'url' => Yii::app()->createUrl('report/transferDetail'),
+            ),
+            array(
+                'name' => 'reference_name',
+                'header' => Yii::t('app', 'Reference Name'),
+                'value' => '$data["reference_name"]',
             ),
             array(
                 'name' => 'created_date',
@@ -1315,14 +1320,24 @@ class ReportColumn extends CModel
                 'header' => Yii::t('app', 'Status'),
                 'value' => '$data["trans_type"]',
             ),
+            array(
+                'name' => 'status',
+                'header' => Yii::t('app', 'Status'),
+                'value' => '$data["status"]',
+            ),
+            array(
+                'name' => 'description',
+                'header' => Yii::t('app', 'Description'),
+                'value' => '$data["from_outlet_id"] == Yii::app()->session["employee_outlet"] ? "Outgoing Transfer" : "Incoming Transfer"',
+            ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 'header' => 'Action',
-                'template' => '<div class="btn-group">{accept}{reject}</div>',
+                'template' => '<div class="btn-group">{review}{accept}{edit}{cancel}{reject}</div>',
                 'buttons' => array(
                     'view' => array(
                         'label' => 'View',
                         'icon' => 'fa fa-eye',
-                        'url' => 'Yii::app()->createUrl("receivingItem/ViewTransactionDetail",array(
+                        'url' => 'Yii::app()->createUrl("receiving/ViewTransactionDetail",array(
                                    "receive_id" => $data["receive_id"],
                                    "employee_id" => $data["employee_id"],
                                    "print"=>"false",
@@ -1335,63 +1350,75 @@ class ReportColumn extends CModel
                         ),
                         'visible' => 'true',
                     ),
-                    'edit' => array(
-                        'label' => 'Edit',
-                        'icon' => 'fa fa-edit',
-                        'url' => 'Yii::app()->createUrl("receivingItem/EditTransaction",array(
+                    'review' => array(
+                        'label' => 'Review',
+                        // 'icon' => 'fa fa-edit',
+                        'url' => 'Yii::app()->createUrl("receiving/reviewTransferItem",array(
                                    "receive_id" => $data["receive_id"],
-                                   "employee_id" => $data["employee_id"],
-                                   "tran_type"=>$data["status"]
+                                   "tran_type"=>param("sale_complete_status")
                                     )
                         )',
                         'options' => array(
-                            'title' => Yii::t('app', 'Update Invoice'),
+                            'title' => Yii::t('app', 'Review Item'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => 'ckacc("sale.update")',
+                        'visible' => '$data["trans_type_id"] == param("sale_submit_status") && $data["to_outlet_id"]==Yii::app()->session["employee_outlet"]',
                     ),
-                    'print' => array(
-                        'label' => 'print',
-                        'icon' => 'fa fa-print',
-                        'url' => 'Yii::app()->createUrl("receivingItem/printing", array(
-                                    "receive_id" => $data["receive_id"],
-                                   "employee_id" => $data["employee_id"],
-                                    "tran_type" => $data["status"],
-                                    "format" => "format_hf",
-                                    "print"=>"true",
-                                )
-                         )',
+                    'edit' => array(
+                        'label' => 'Edit',
+                        // 'icon' => 'fa fa-edit',
+                        'url' => 'Yii::app()->createUrl("receiving/reviewTransferItem",array(
+                                   "receive_id" => $data["receive_id"],
+                                   "tran_type"=>param("sale_submit_status")
+                                    )
+                        )',
                         'options' => array(
-                            'target' => '_blank',
-                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'title' => Yii::t('app', 'Review Item'),
                             'class' => 'btn btn-xs btn-info',
                         ),
-                        'visible' => 'true',
+                        'visible' => '$data["trans_type_id"] == param("sale_submit_status") && $data["from_outlet_id"]==Yii::app()->session["employee_outlet"]',
+                    ),
+                    'cancel' => array(
+                        'label' => 'Cancel',
+                        // 'icon' => 'fa fa-edit',
+                        'url' => 'Yii::app()->createUrl("receiving/transferUpdateStatus",array(
+                                   "receive_id" => $data["receive_id"],
+                                   "outlet_id" => $data["from_outlet_id"],
+                                   "tran_type"=>param("sale_cancel_status")
+                                    )
+                        )',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Review Item'),
+                            'class' => 'btn-order btn-order-cancel btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["trans_type_id"] == param("sale_submit_status") && $data["from_outlet_id"]==Yii::app()->session["employee_outlet"]',
                     ),
                     'accept' => array(
                         'label' => 'Accept',
-                        'icon' => sysMenuSaleOrderToValidateIcon(),
+                        // 'icon' => sysMenuSaleOrderToValidateIcon(),
                         'url' => 'Yii::app()->createUrl("receiving/transferUpdateStatus", array(
                                     "receive_id"=>$data["receive_id"], 
+                                    "outlet_id" => $data["to_outlet_id"], 
                                     "tran_type" => param("sale_complete_status")))',
                         'options' => array(
                             'title' => Yii::t('app', 'Accept'),
                             'class' => 'btn-order btn-order-approve btn btn-xs btn-success',
                         ),
-                        'visible' => 'true',
+                        'visible' => '$data["trans_type_id"] == param("sale_submit_status") && $data["to_outlet_id"]==Yii::app()->session["employee_outlet"]',
                     ),
                     'reject' => array(
-                        'label' => 'reject',
-                        'icon' => 'fa fa-ban',
+                        'label' => 'Rejects',
+                        // 'icon' => 'fa fa-ban',
                         'url' => 'Yii::app()->createUrl("receiving/transferUpdateStatus", array(
-                            "receive_id"=>$data["receive_id"], 
+                            "receive_id"=>$data["receive_id"],
+                            "outlet_id" => $data["from_outlet_id"], 
                             "tran_type" => param("sale_reject_status")))',
                         'options' => array(
                             'target' => '_blank',
                             'title' => Yii::t('app', 'Reject'),
                             'class' => 'btn-order btn-order-reject btn btn-xs btn-danger',
                         ),
-                        'visible' => 'true',
+                        'visible' => '$data["trans_type_id"] == param("sale_submit_status") && $data["to_outlet_id"]==Yii::app()->session["employee_outlet"]',
                     ),
                 ),
             ),

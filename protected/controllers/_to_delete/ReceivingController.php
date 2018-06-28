@@ -46,7 +46,6 @@ class ReceivingController extends Controller
                     'itemTransferSubmited',
                     'TransferDetail',
                     'TransferUpdateStatus',
-                    'UpdateItemToTransfer',
                     'reviewTransferItem'
 				),
 				'users'=>array('@'),
@@ -141,8 +140,6 @@ class ReceivingController extends Controller
 	{
 
 		unset(Yii::app()->session['trans_type']);
-
-        $model = new Receiving;
 
     	if (isset($_POST['Receiving'])) {
 
@@ -269,12 +266,8 @@ class ReceivingController extends Controller
     {
 
     	$header_data = $this->getTransferHeader();
-
-        if($header_data['reference_name']=='' || $header_data['reference_name'] == null){
-
-            Yii::app()->user->setFlash('warning', 'Reference Name cannot be blank!!!');
-
-        }else if(($header_data['from_outlet']=='' || $header_data['from_outlet'] == null) || ($header_data['to_outlet']=='' || $header_data['to_outlet'] == null)){
+    
+		if(($header_data['from_outlet']=='' || $header_data['from_outlet'] == null) || ($header_data['to_outlet']=='' || $header_data['to_outlet'] == null)){
 
 			Yii::app()->user->setFlash('warning', 'Outlet must be specific to make item transfer');
 
@@ -302,56 +295,6 @@ class ReceivingController extends Controller
 
     }
 
-    public function actionUpdateItemToTransfer($receive_id,$outlet_id,$trans_type)
-    {
-
-        $roldeback_data = Receiving::model()->rolebackSourceOutletQuantity($receive_id,$outlet_id); // role back item quantity
-
-        $items  = Yii::app()->receivingCart->getItemToTransfer();
-
-        if($roldeback_data){//if item quantity roleback success
-
-            $receiving_item = ReceivingItem::model()->findByAttributes(array('receive_id'=>$receive_id));
-            $receiving_item->delete(); //role back receiving item
-
-            $trans_comment = 'Transfer Edit Item';
-
-            foreach($roldeback_data as $data){
-
-                $receiving_item_data['receive_id'] = $receive_id;
-                $receiving_item_data['item_id'] = $data['item_id'];
-                $receiving_item_data['quantity'] = $items[$data['item_id']]['quantity'];
-                $receiving_item_data['unit_price'] = $data['unit_price'];
-                $receiving_item_data['cost_price'] = $data['cost_price'];
-                $receiving_item_data['price'] = $data['price'];
-
-                Sale::model()->saveSaleTransaction(new ReceivingItem,$receiving_item_data);
-                $trans_quantity = $items[$data['item_id']]['quantity']-$data['trans_qty'];
-                $inventory_data = array(
-                    'trans_items' => $data['item_id'],
-                    'trans_user' => Yii::app()->session['employeeid'],
-                    'trans_comment' => $trans_comment,
-                    'trans_inventory' => -$trans_quantity,
-                    'trans_qty' => $trans_quantity,
-                    'qty_b4_trans' => $data['qty_b4_trans'] , // for tracking purpose recording the qty before operation effected
-                    'qty_af_trans' => $data['qty_b4_trans']-$trans_quantity,
-                    'trans_date' => date('Y-m-d H:i:s'),
-                    'outlet_id' => $data['outlet_id'],
-                );
-
-                Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);//save to inventory
-                //re-update item quantity
-
-                Sale::model()->updateItemQuantity($data['item_id'],$outlet_id,$items[$data['item_id']]['quantity']);
-
-            }
-
-            Yii::app()->receivingCart->clearItemToTransfer();
-            $this->redirect(array('receiving/itemTransferSubmited','tran_type'=>param('sale_submit_status')));
-
-        }
-    }
-
     public function actionItemTransferSubmited()
     {
 
@@ -375,7 +318,7 @@ class ReceivingController extends Controller
 
     public function actionTransferLetter($transfer_id, $transfered_by='',$tran_type,$pdf=0,$email=0)
     {
-            authorized('sale.read') || authorized('sale.create');
+            authorized('sale.read') || authorized('sale.create') ;
 
             $data = $this->receiptData($sale_id,$customer_id,$tran_type);
 
@@ -399,85 +342,46 @@ class ReceivingController extends Controller
              
         }
 
-        if($tran_type==param('sale_complete_status')){
+        $header_data = $this->getTransferHeader();
 
-            $header_data = $this->getTransferHeader($tran_type);
+        $items = $items=Yii::app()->receivingCart->getItemToTransfer();
 
-            $items=Yii::app()->receivingCart->getItemToTransfer();
+    	$model = Receiving::model()->saveItemToTransfer(new Receiving,$header_data,$items);
 
-            // $model = Receiving::model()->saveItemToTransfer(new Receiving,$header_data,$items,$receive_id,$tran_type);
-
-            $stock_model = Receiving::model()->findByPk($receive_id);
-            $stock_model->trans_type=param('sale_complete_status');
-            $stock_model->save();
-
-            
-
-
-            foreach($items as $item){
-
-                $item_outlet_model = ItemOutlet::model()->findByAttributes(array('item_id'=>$item['item_id'],'outlet_id'=>$outlet_id));
-
-                $inventory_data = array(
-                    'trans_items' => $item_outlet_model->item_id,
-                    'trans_user' => Yii::app()->session['employeeid'],
-                    'trans_comment' => 'Transfer Received',
-                    'trans_inventory' => $item['quantity'],
-                    'trans_qty' => $item['quantity'],
-                    'qty_b4_trans' => $item_outlet_model->quantity , // for tracking purpose recording the qty before operation effected
-                    'qty_af_trans' => $item['quantity']+$item_outlet_model->quantity,
-                    'trans_date' => date('Y-m-d H:i:s'),
-                    'outlet_id' => $outlet_id,
-                );
-                Receiving::model()->updateItemToDestinationOutlet($receive_id,$items);
-                Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);//save to inventory
-
-            }
-            
-        }else if($tran_type==param('sale_reject_status') || $tran_type==param('sale_cancel_status')){
-
-            $roldeback_data = Receiving::model()->rolebackSourceOutletQuantity($receive_id,$outlet_id,$tran_type);
-
-            if($roldeback_data){
-
-                //update status to reject status in stock transfer table
-                $stock_model = Receiving::model()->findByPk($receive_id);
-                $stock_model->trans_type=$tran_type;
-                $stock_model->save();
-
-                $trans_comment = $tran_type == param('sale_reject_status') ? 'Transfer Reject' : 'Transfer Cancel';
-
-                foreach($roldeback_data as $data){
-
-                    $inventory_data = array(
-                        'trans_items' => $data['item_id'],
-                        'trans_user' => Yii::app()->session['employeeid'],
-                        'trans_comment' => $trans_comment,
-                        'trans_inventory' => $data['trans_qty'],
-                        'trans_qty' => $data['trans_qty'],
-                        'qty_b4_trans' => $data['qty_b4_trans'] , // for tracking purpose recording the qty before operation effected
-                        'qty_af_trans' => $data['trans_qty']+$data['qty_b4_trans'],
-                        'trans_date' => date('Y-m-d H:i:s'),
-                        'outlet_id' => $data['outlet_id'],
-                    );
-
-                    Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);//save to inventory
-
-                }
-
-            }
-
+        foreach($items as $item){
+        	print_r($item);
         }
 
-        Yii::app()->receivingCart->clearItemToTransfer();
+    	Yii::app()->receivingCart->setTransferHeader($tran_type,'trans_type');
 
-        $this->redirect(array('receiving/itemTransferSubmited','tran_type'=>param('sale_submit_status')));
+        if($tran_type==param('sale_complete_status')){
+
+        	Receiving::model()->updateItemToDestinationOutlet($receive_id);
+
+        	//send email notification
+        	// $from = 'test@peedor.com';
+        	// $to = 'test@peedor.com';
+        	// $subject = 'Rceive Item Transfer';
+        	// $body = Yii::app()->receivingCart->getTransferHeader('reference_name');
+        	// $cc = 'sovotanakpath579@gmail.com';
+        	// $is_sent=Yii::app()->sendEmail->sendTextEmail($from,$to,$subject,$body,$cc); 
+
+        	Yii::app()->receivingCart->clearItemToTransfer();
+
+        	$this->redirect(array('receiving/itemTransferSubmited','tran_type'=>param('sale_submit_status')));
+
+
+
+        }elseif($tran_type==param('sale_reject_status') || $tran_type==param('sale_cancel_status')){
+
+        	Receiving::model()->rolebackSourceOutletQuantity($receive_id,$outlet_id,$tran_type);
+
+        }
 
     }
 
     public function actionReviewTransferItem($receive_id,$tran_type)
     {
-
     	Yii::app()->receivingCart->copyEntireTransferItem($receive_id,$tran_type);
 
     	Yii::app()->receivingCart->setTransferHeader($tran_type,'trans_type');
@@ -486,22 +390,15 @@ class ReceivingController extends Controller
 
     }
 
-    public function actionEditTransferItem($receive_id,$trans_type)
-    {
-
-
-
-    }
-
-    private function getTransferHeader($tran_type=2)
+    private function getTransferHeader()
     {
 
     	$header_data['reference_name'] = Yii::app()->receivingCart->getTransferHeader('reference_name');
     	$header_data['from_outlet'] = Yii::app()->receivingCart->getTransferHeader('from_outlet');
     	$header_data['to_outlet'] = Yii::app()->receivingCart->getTransferHeader('to_outlet');
     	$header_data['employee_id'] = Yii::app()->session['employeeid'];
-    	$header_data['trans_type'] = $tran_type;
-    	$header_data['status'] = $tran_type == param('sale_submit_status') ? 'Stock Transfer' : 'Stock Receive';
+    	$header_data['trans_type'] = param('sale_submit_status');
+    	$header_data['status'] = 'Stock Transfer';
     	$header_data['created_date'] = date('Y-m-d H:i:s');
     	$header_data['modified_date'] = date('Y-m-d H:i:s');
 

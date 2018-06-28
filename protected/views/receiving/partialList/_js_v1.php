@@ -12,7 +12,7 @@
                 beforeSend: function () { $('.waiting').show(); },
                 complete: function () { $('.waiting').hide(); },
                 success: function () {
-                    //$("#report_grid").html(data);
+                    // $("#report_grid").html(data);
                     $.fn.yiiGridView.update('receiving-item-grid');
                     return false;
                 }

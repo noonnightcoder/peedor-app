@@ -233,6 +233,13 @@ class EmployeeController extends Controller
                     if ($model->save()) {
 
                         if ($user->save()) {
+
+                            //set employee outlet
+                            $employee_outle_model = EmployeeOutlet::model()->findBy;
+                            $employee_outle_model->employee_id = $model->id;
+                            $employee_outle_model->outlet_id = $_POST['Employee']['outlet'];
+                            $employee_outle_model->save();
+
                             // Delete all existing granted module
                             Authassignment::model()->deleteAuthassignment($user->id);
 

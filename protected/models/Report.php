@@ -26,6 +26,7 @@ class Report extends CFormModel
     public $to_date;
     public $sale_id;
     public $receive_id;
+    public $outlet_id;
     public $employee_id;
     public $search_id;
 
@@ -1421,13 +1422,13 @@ class Report extends CFormModel
         return $dataProvider; // Return as array object
     }
 
-    public function tranferedListByStatusUser($user_id,$tran_type) {
-
+    public function tranferedListByStatusUser($user_id) {
+        $outlet_id = Yii::app()->session['employee_outlet'];
         if ($this->search_id !== '') {
             $sql= "WITH transfered_item
                   AS
                   (
-                    SELECT st.reference_name,st.trans_type,DATE(st.created_date) created_date,
+                    SELECT st.reference_name,status,st.trans_type,DATE(st.created_date) created_date,
                     SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
                     from_outlet,to_outlet,st.employee_id,receive_id
                     FROM receiving st JOIN receiving_item t
@@ -1435,7 +1436,7 @@ class Report extends CFormModel
                     ON t.item_id=i.id
                     GROUP BY st.reference_name,st.trans_type,DATE(st.created_date),from_outlet,to_outlet,receive_id,st.employee_id
                   )
-                  SELECT NAME,created_date,trans_qty,qty_af_trans,
+                  SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
                   (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
                   (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
                   (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.employee_id=e.id) transfered_by,
@@ -1443,23 +1444,23 @@ class Report extends CFormModel
                     WHEN `trans_type`=2 THEN 'Pending'
                     WHEN `trans_type`=1 THEN 'Accepted'
                     WHEN `trans_type`=-3 THEN 'Rejected'
-                  END `trans_type`,receive_id
+                    WHEN `trans_type`=0 THEN 'Cancelled'
+                  END `trans_type`,trans_type trans_type_id,receive_id
                   FROM transfered_item ti
                WHERE created_date=:search_id
-               AND employee_id=:user_id
-               AND trans_type=:tran_type";
+               AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
+               ORDER BY receive_id desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                     ':search_id' => $this->search_id,
-                    ':tran_type' => $tran_type,
-                    ':user_id' => $user_id)
+                    ':outlet_id' => $outlet_id)
             );
 
         } else {
             $sql= "WITH transfered_item
                   AS
                   (
-                    SELECT st.reference_name,st.trans_type,DATE(st.created_date) created_date,
+                    SELECT st.reference_name,st.status,st.trans_type,DATE(st.created_date) created_date,
                     SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
                     from_outlet,to_outlet,st.employee_id,receive_id
                     FROM receiving st JOIN receiving_item t
@@ -1467,7 +1468,7 @@ class Report extends CFormModel
                     ON t.item_id=i.id
                     GROUP BY st.reference_name,st.trans_type,DATE(st.created_date),from_outlet,to_outlet,receive_id,st.employee_id
                   )
-                  SELECT reference_name,created_date,trans_qty,qty_af_trans,
+                  SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
                   (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
                   (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
                   (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.employee_id=e.id) transfered_by,
@@ -1475,18 +1476,18 @@ class Report extends CFormModel
                     WHEN `trans_type`=2 THEN 'Pending'
                     WHEN `trans_type`=1 THEN 'Accepted'
                     WHEN `trans_type`=-3 THEN 'Rejected'
-                  END `trans_type`,receive_id
+                    WHEN `trans_type`=0 THEN 'Cancelled'
+                  END `trans_type`,trans_type trans_type_id,receive_id
                   FROM transfered_item ti
                WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
                AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
-               AND employee_id=:user_id
-               AND trans_type=:tran_type";
+               AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
+               ORDER BY receive_id desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                     ':from_date' => $this->from_date,
                     ':to_date' => $this->to_date,
-                    ':tran_type' => $tran_type,
-                    ':user_id' => $user_id)
+                    ':outlet_id' => $outlet_id)
             );
         }
 
@@ -1506,12 +1507,13 @@ class Report extends CFormModel
     public function tranferedDetail()
     {
         $sql= "SELECT t.receive_id,it.name item_name,it.quantity remaining_qty,t.quantity,s.created_date receive_time,t.cost_price,t.unit_price
-              FROM receiving_item t JOIN item it
-              ON t.item_id=it.id JOIN receiving s
+              FROM receiving_item t JOIN v_item_outlet it
+              ON t.item_id=it.item_id JOIN receiving s
               ON t.receive_id=s.id
-               WHERE receive_id=:receive_id";
+               WHERE receive_id=:receive_id
+               and it.outlet_id=:outlet_id";
 
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':receive_id' => $this->receive_id));
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':receive_id' => $this->receive_id,':outlet_id'=>Yii::app()->session['employee_outlet']));
 
         $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField' => 'receive_id',

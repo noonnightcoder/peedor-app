@@ -407,64 +407,62 @@ class Receiving extends CActiveRecord
         return array($quantity, $inv_quantity);
     }
 
-    public function saveItemToTransfer($model,$data,$items,$transfer_id='',$trans_type=2)
+    public function saveItemToTransfer($model,$data,$items)
     {
         
         $id = null;
-        $exists = Receiving::model()->exists('reference_name=:reference_name and(trans_type=:trans_type)', array(':reference_name' => $data['reference_name'],':trans_type'=>$trans_type));
+        $exists = Receiving::model()->exists('reference_name=:reference_name', array(':reference_name' => $data['reference_name']));
         if(!$exists){
- 
+            
             foreach($data as $key=>$value){
+
                 $model->$key = $value;
+
             }
+
             $model->save(); 
             $id = $model->id;
 
             if($id>0){
 
-                $this->saveToInventory($items,$data['from_outlet'],$id,$transfer_id,$trans_type);
+                $this->saveToInventory($items,$data['from_outlet'],$id);
 
             }
-
         }
         
         return $id;
-
     }
 
-    protected function saveToInventory($items,$outlet_id,$receive_id,$transfer_id='',$trans_type=2)
+    protected function saveToInventory($items,$outlet_id,$transfer_id,$trans_type=2)
     {
 
-        $trans_comment = $trans_type==param('sale_submit_status') ? 'Stock Transfer' : ($trans_type==param('sale_complete_status') ? 'Stock Receive' : 'N/A');
+        $trans_comment = Yii::app()->receivingCart->getTransferHeader('trans_type')!==null ? Yii::app()->receivingCart->getTransferHeader('trans_type') : 'Stock Transfer';
 
         foreach($items as $item){
 
-            $inventory_data['trans_items'] = $item['item_id'];
-            $inventory_data['trans_user'] = $item['employee_id'];
-            $inventory_data['trans_comment'] = $trans_comment;
-            $inventory_data['trans_inventory'] = (-$item['quantity']);
-            $inventory_data['trans_qty'] = $item['quantity'];
-            $inventory_data['qty_b4_trans'] = $item['current_quantity'] ; // for tracking purpose recording the qty before operation effected
-            $inventory_data['qty_af_trans'] = ($item['current_quantity']-$item['quantity']);
-            $inventory_data['trans_date'] = date('Y-m-d H:i:s');
-            $inventory_data['outlet_id'] = $outlet_id;
+            $inventory_data = array(
+                'trans_items' => $item['item_id'],
+                'trans_user' => $item['employee_id'],
+                'trans_comment' => $trans_comment,
+                'trans_inventory' => (-$item['quantity']),
+                'trans_qty' => $item['quantity'],
+                'qty_b4_trans' => $item['current_quantity'] , // for tracking purpose recording the qty before operation effected
+                'qty_af_trans' => ($item['current_quantity']-$item['quantity']),
+                'trans_date' => date('Y-m-d H:i:s'),
+                'outlet_id' => $outlet_id,
+            );
+            
+            Sale::model()->updateItemQuantity($item['item_id'],$outlet_id,$item['quantity']);
 
-            Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);   
+            Sale::model()->saveSaleTransaction(new Inventory,$inventory_data,$outlet_id);   
 
-            $data['receive_id'] = $receive_id;
+            $data['receive_id'] = $transfer_id;
             $data['item_id'] = $item['item_id'];
             $data['quantity'] = $item['quantity'];
             $data['unit_price'] = $item['unit_price'];
             $data['cost_price'] = $item['cost_price'];
             $data['price'] = $item['price'];
-
             Sale::model()->saveSaleTransaction(new ReceivingItem,$data);
-            
-            if($trans_type==param('sale_submit_status')){
-
-                Sale::model()->updateItemQuantity($item['item_id'],$outlet_id,$item['quantity']);
-
-            }
 
         }
 
@@ -472,6 +470,14 @@ class Receiving extends CActiveRecord
 
     protected function insertTransferItem($transfer_id,$items)
     {
+        // $sql = "insert into transfer_item(transfer_id,item_id,quantity)
+        // values(:transfer_id,:item_id,:quantity)";
+
+        // $command = Yii::app()->db->createCommand($sql);
+        // $command->bindParam(":transfer_id", $transfer_id, PDO::PARAM_INT);
+        // $command->bindParam(":item_id", $items['item_id'], PDO::PARAM_INT);
+        // $command->bindParam(":quantity", $items['quantity'], PDO::PARAM_INT);
+        // $command->execute();
 
         $items['receive_id'] = $transfer_id;
 
@@ -479,26 +485,49 @@ class Receiving extends CActiveRecord
 
     }
 
-    public function updateItemToDestinationOutlet($transfer_id,$items)
+    public function updateItemToDestinationOutlet($transfer_id)
     {
+        $sql="SELECT t.receive_id,item_id,from_outlet,to_outlet,quantity
+                FROM receiving_item t JOIN receiving s
+                ON t.receive_id=s.id 
+                where t.receive_id=:transfer_id";
 
-        $outlet_id = Yii::app()->receivingCart->getTransferHeader('to_outlet');
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':transfer_id' => $transfer_id));
 
-        if($items){
+        if($result){
 
-            foreach($items as $value){
+            foreach($result as $value){
 
-                $item_outlet_model = ItemOutlet::model()->findAll('`item_id`=:item_id and (`outlet_id`=:outlet_id)',array(':item_id'=>$value['item_id'],':outlet_id'=>$outlet_id)
+                $item_outlet_model = ItemOutlet::model()->findAll('`item_id`=:item_id and (`outlet_id`=:outlet_id)',array(':item_id'=>$value['item_id'],':outlet_id'=>$value['to_outlet'])
                 );
+
                 
                 if(!empty($item_outlet_model)){
+
+                    foreach($item_outlet_model as $item){
+
+                        $inventory_data = array(
+                            'trans_items' => $value['item_id'],
+                            'trans_user' => Yii::app()->session['employeeid'],
+                            'trans_comment' => 'Receive Transfer',
+                            'trans_inventory' => $value['quantity'],
+                            'trans_qty' => $value['quantity'],
+                            'qty_b4_trans' => $item['quantity'] , // for tracking purpose recording the qty before operation effected
+                            'qty_af_trans' => $item['quantity']+$value['quantity'],
+                            'trans_date' => date('Y-m-d H:i:s'),
+                            'outlet_id' => $value['to_outlet'],
+                        );
+
+                        Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);
+
+                    }
 
                     $update_sql="
                         UPDATE item_outlet io JOIN receiving_item ti
                         ON io.item_id=ti.item_id JOIN receiving st
                         ON ti.receive_id=st.id
                         AND io.outlet_id=st.to_outlet
-                        SET io.quantity = io.quantity+:receive_quantity
+                        SET io.quantity = io.quantity+ti.quantity
                         where ti.receive_id=:transfer_id
                         and io.item_id=:item_id
                     ";
@@ -506,16 +535,29 @@ class Receiving extends CActiveRecord
                     $command = Yii::app()->db->createCommand($update_sql);
                     $command->bindParam(":transfer_id", $transfer_id, PDO::PARAM_INT);
                     $command->bindParam(":item_id", $value['item_id'], PDO::PARAM_INT);
-                    $command->bindParam(":receive_quantity", $value['quantity'], PDO::PARAM_INT);
                     $command->execute();
 
                 }else{
 
                     $model = new ItemOutlet;
                     $model->item_id = $value['item_id'];
-                    $model->outlet_id = $outlet_id;
+                    $model->outlet_id = $value['to_outlet'];
                     $model->quantity = $value['quantity'];
                     $model->save();
+
+                    $inventory_data = array(
+                        'trans_items' => $value['item_id'],
+                        'trans_user' => Yii::app()->session['employeeid'],
+                        'trans_comment' => 'Receive Transfer',
+                        'trans_inventory' => $value['quantity'],
+                        'trans_qty' => $value['quantity'],
+                        'qty_b4_trans' => 0 , // for tracking purpose recording the qty before operation effected
+                        'qty_af_trans' => $value['quantity'],
+                        'trans_date' => date('Y-m-d H:i:s'),
+                        'outlet_id' => $value['to_outlet'],
+                    );
+
+                    Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);
 
                 }
 
@@ -526,13 +568,12 @@ class Receiving extends CActiveRecord
             $stock_model->save();
 
         }
-
     }
 
-    public function rolebackSourceOutletQuantity($transfer_id,$outlet_id)
+    public function rolebackSourceOutletQuantity($transfer_id,$outlet_id,$trans_type)
     {
 
-        $sql="SELECT io.outlet_id,io.item_id,io.quantity qty_b4_trans,ti.quantity trans_qty,ti.cost_price,ti.unit_price,ti.price
+        $sql="SELECT io.outlet_id,io.item_id,io.quantity qty_b4_trans,ti.quantity trans_qty
             FROM item_outlet io JOIN receiving_item ti
             ON io.item_id = ti.item_id
             where ti.receive_id=:transfer_id
@@ -545,8 +586,22 @@ class Receiving extends CActiveRecord
         ));
 
         if($result){
-            
+            $trans_comment = $trans_type == param('sale_reject_status') ? 'Reject Transfer' : 'Cancel Transfer';
             foreach($result as $value){
+
+                $inventory_data = array(
+                    'trans_items' => $value['item_id'],
+                    'trans_user' => Yii::app()->session['employeeid'],
+                    'trans_comment' => $trans_comment,
+                    'trans_inventory' => $value['trans_qty'],
+                    'trans_qty' => $value['trans_qty'],
+                    'qty_b4_trans' => $value['qty_b4_trans'] , // for tracking purpose recording the qty before operation effected
+                    'qty_af_trans' => $value['trans_qty']+$value['qty_b4_trans'],
+                    'trans_date' => date('Y-m-d H:i:s'),
+                    'outlet_id' => $value['outlet_id'],
+                );
+
+                Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);//save to inventory
 
                 //role back quantity to source outlet
                 $roleback_sql="UPDATE item_outlet io JOIN receiving_item ti
@@ -554,20 +609,29 @@ class Receiving extends CActiveRecord
                     SET io.quantity = io.quantity+ti.quantity
                     WHERE ti.receive_id=:transfer_id
                     AND io.item_id=:item_id
-                    AND io.outlet_id=:outlet_id
-                ";
+                    AND io.outlet_id=:outlet_id";
 
-                $command = Yii::app()->db->createCommand($roleback_sql);
-                $command->bindParam(":transfer_id", $transfer_id, PDO::PARAM_INT);
-                $command->bindParam(":item_id", $value['item_id'], PDO::PARAM_INT);
-                $command->bindParam(":outlet_id", $value['outlet_id'], PDO::PARAM_INT);
-                $command->execute();
+                    $command = Yii::app()->db->createCommand($roleback_sql);
+                    $command->bindParam(":transfer_id", $transfer_id, PDO::PARAM_INT);
+                    $command->bindParam(":item_id", $value['item_id'], PDO::PARAM_INT);
+                    $command->bindParam(":outlet_id", $value['outlet_id'], PDO::PARAM_INT);
+                    $command->execute();
+
+                //update status to reject status in stock transfer table
+                $stock_model = Receiving::model()->findByPk($transfer_id);
+                $stock_model->trans_type=$trans_type;
+                $stock_model->save();
+
+                /*$delete_sql="DELETE FROM transfer_item
+                where transfer_id=:transfer_id";
+
+                $command1 = Yii::app()->db->createCommand($delete_sql);
+                $command1->bindParam(":transfer_id", $transfer_id, PDO::PARAM_INT);
+                $command1->execute();*/
 
             }
 
         }
-
-        return $result;
 
     }
 

@@ -82,10 +82,10 @@ class ItemOutlet extends CActiveRecord
     public function suggest($keyword, $limit = 20)
     {
 
-    	$outlet_id = Yii::app()->session['from_outlet'];
+    	$outlet_id = Yii::app()->session['from_outlet'] !==null ? Yii::app()->session['from_outlet'] : Yii::app()->session["employee_outlet"];
 
         $sql="
-            select *
+            select item_id,outlet_id,`name`,item_number,cost_price,unit_price,quantity
             from v_item_outlet
             where (name like :keyword or item_number=:item_number)
             and outlet_id=:outlet_id
@@ -100,7 +100,7 @@ class ItemOutlet extends CActiveRecord
                 // label for dropdown list
                 'value' => $model['name'],
                 // value for input field
-                'id' => $model['id'],
+                'id' => $model['item_id'],
                 // return values from autocomplete
                 'unit_price' => $model['unit_price'],
                 'quantity' => $model['quantity'],
@@ -116,7 +116,7 @@ class ItemOutlet extends CActiveRecord
     	$outlet_id = Yii::app()->session['employee_outlet'];
 
         $sql="
-            select *
+            select id,outlet_id,`name`,item_number,cost_price,unit_price,quantity
             from v_item_outlet
             where (name like :keyword or item_number=:item_number)
             and outlet_id=:outlet_id

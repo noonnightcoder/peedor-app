@@ -436,6 +436,158 @@ class ReceivingCart extends CApplicationComponent
         $this->clearTotalDiscount();
     }
 
+
+    /*===========Start Item transfer function==========*/
+
+    public function getItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session['item_to_transfer'])) {
+            $this->setItemToTransfer(array());
+        }
+        return $this->session['item_to_transfer'];
+    }
+
+    public function setItemToTransfer($items)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session['item_to_transfer'] = $items;
+    }
+
+    public function getTransferHeader($session)
+    {
+        $this->setSession(Yii::app()->session);
+        if (!isset($this->session[$session])) {
+            $this->setTransferHeader(null,null);
+        }
+        return $this->session[$session];
+    }
+
+    public function setTransferHeader($header_data,$session)
+    {
+        $this->setSession(Yii::app()->session);
+        $this->session[$session] = $header_data;
+    }
+
+    public function clearItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['from_outlet']);
+        unset($this->session['to_outlet']);
+        unset($this->session['reference_name']);
+        unset($this->session['item_to_transfer']);
+        
+    }
+    
+    public function addItemToTransfer($item_id,$header,$quantity=1)
+    {
+        $this->setSession(Yii::app()->session);
+        //Get all items in the cart so far...
+        $outlet_id = Yii::app()->receivingCart->getTransferHeader('from_outlet') > 0 ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session['employee_outlet'];
+        $items = $this->getItemToTransfer();
+
+        $models=ItemOutlet::model()->findAll(array('condition'=>'`item_id`=:item_id and (`outlet_id`=:outlet_id)','params'=>array(':item_id'=>$item_id,':outlet_id'=>$outlet_id)));
+        $item_model = Item::model()->findbyPk($item_id);
+
+        if (!$models) {
+            return false;
+        }
+
+        foreach ($models as $model) {
+            if($model['quantity']>0){
+                $item_data = array((int)$item_id =>
+                    array(
+                        'item_id' => $model["item_id"],
+                        'name' => $item_model->name,
+                        'item_number' => $item_model->item_number,
+                        'current_quantity' => $model['quantity'],
+                        'quantity' => $quantity,
+                        'cost_price' => round($item_model->cost_price, Common::getDecimalPlace()),
+                        'unit_price' => round($item_model->unit_price, Common::getDecimalPlace()),
+                        'price' => round($item_model->unit_price, Common::getDecimalPlace()),
+                        'employee_id' => Yii::app()->session['employeeid']
+                    )
+                );  
+                 
+            }else{
+                Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have quantity to transfer!!!');
+                $item_data=array();
+            }
+            
+        }
+
+       if (isset($items[$item_id])) {
+            $items[$item_id]['quantity']+=$quantity;
+        } else {
+            $items += $item_data;
+        }
+        $this->setItemToTransfer($items); 
+
+        return true;
+    }
+
+    public function editItemToTransfer($item_id, $quantity)
+    {
+        $items = $this->getItemToTransfer();
+
+        if (isset($items[$item_id])) {
+
+            $items[$item_id]['quantity'] = $quantity !=null ? $quantity : $items[$item_id]['quantity'];  
+
+        }else{
+            if($item_id=='all' && $quantity>0){
+                foreach ($items as $key => $value) {
+
+                    $items[$value['item_id']]['quantity']=$quantity;
+
+                }
+            }
+        }
+        $this->setItemToTransfer($items);
+        // return false;
+    }
+    
+    public function deleteItemToTransfer($item_id)
+    {
+        $items = $this->getItemToTransfer();
+        unset($items[$item_id]);
+        $this->setItemToTransfer($items);
+    }
+
+    public function emptyItemToTransfer()
+    {
+        $this->setSession(Yii::app()->session);
+        unset($this->session['item_to_transfer']);
+    }
+
+    public function copyEntireTransferItem($receive_id,$tran_type)
+    {
+        $this->clearItemToTransfer();
+
+        $transfer_item = ReceivingItem::model()->getTransferItem($receive_id);
+
+        foreach ($transfer_item as $row) {
+
+            $header['reference_name'] = $row['reference_name'];
+            $header['delivery_due_date'] = $row['delivery_due_date'];
+            $header['from_outlet'] = $row['from_outlet'];
+            $header['to_outlet'] = $row['to_outlet'];
+            $header['trans_type'] = $tran_type;
+            $header['receive_id'] = $receive_id;
+
+            foreach($header as $key=>$value){
+
+                $this->setTransferHeader($value,$key);  
+
+            }
+            
+            $this->addItemToTransfer($row['item_id'],$header,$row['quantity']);
+
+        }
+
+    }
+
+    /*===========End item transfer function===============*/
 }
 
 ?>

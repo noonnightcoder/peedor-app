@@ -72,20 +72,8 @@ $this->widget('bootstrap.widgets.TbNav', array(
                 ),
                 array('label' => sysMenuStockTransfter(),
                     'icon' => 'menu-icon '  . sysMenuStockTransferIcon(),
-                    'url' => url('receiving/itemTransfer'),
-                    'active' => $this->id . '/' . $this->action->id == 'receiving/itemTransfer',
-                    'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
-                ),
-                array('label' => sysMenuStockTransfterOut(),
-                    'icon' => 'menu-icon '  . sysMenuStockTransferInOutIcon(),
-                    'url' => url('receiving/itemTransferSubmited',array('tran_type'=>param('sale_submit_status'))),
-                    'active' => $this->id . '/' . $this->action->id .'/'.Yii::app()->request->getQuery('tran_type') == 'receiving/itemTransferSubmited/'.param('sale_submit_status'),
-                    'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
-                ),
-                array('label' => sysMenuStockTransfterReceive(),
-                    'icon' => 'menu-icon '  . sysMenuStockTransferInOutIcon(),
-                    'url' => url('receiving/itemTransferSubmited',array('tran_type'=>param('sale_complete_status'))),
-                    'active' => $this->id . '/' . $this->action->id .'/'.Yii::app()->request->getQuery('tran_type')  == 'receiving/itemTransferSubmited/'.param('sale_complete_status'),
+                    'url' => url('receiving/itemTransferSubmited'),
+                    'active' => $this->id . '/' . $this->action->id == 'receiving/itemTransferSubmited',
                     'visible' => ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update') || ckacc('stockcount.delete')
                 ),
             )),

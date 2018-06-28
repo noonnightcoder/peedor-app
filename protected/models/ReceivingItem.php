@@ -153,6 +153,24 @@ class ReceivingItem extends CActiveRecord
         return $model;
     }
 
+    public function getTransferItem($receive_id)
+    {
+
+        $sql = "
+            SELECT receive_id,item_id,employee_id,`status`,reference_name,delivery_due_date,quantity,cost_price,unit_price,price,
+                from_outlet,to_outlet,trans_type
+            FROM receiving r JOIN receiving_item ri
+            ON r.id=ri.receive_id
+            WHERE receive_id=:receive_id";
+
+         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':receive_id' => $receive_id
+            ));
+
+        return $result;
+
+    }
+
     public function getItemTransactionColumn()
     {
     	return array(

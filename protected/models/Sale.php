@@ -414,7 +414,7 @@ class Sale extends CActiveRecord
     }
 
     public function updateItemQuantity($item_id,$outlet_id,$tran_quantity){
-        $cur_item_info = ItemOutlet::model()->findAllByAttributes(array('item_id'=>$item_id));
+        $cur_item_info = ItemOutlet::model()->findAllByAttributes(array('item_id'=>$item_id,'outlet_id'=>$outlet_id));
         $qty_in_stock = $cur_item_info[0]['quantity'];
         $qty_afer_transaction = $qty_in_stock-$tran_quantity;
         // $cur_item_info->quantity = $qty_afer_transaction;

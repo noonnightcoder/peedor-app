@@ -150,7 +150,7 @@ class SalePaymentController extends Controller
 
     public function actionSavePayment()
     {
-        if (!Yii::app()->user->checkAccess('payment.index')) {
+        if (!Yii::app()->user->checkAccess('customerpayment.index')) {
             throw new CHttpException(403, 'You are not authorized to perform this action');
             exit;
         }

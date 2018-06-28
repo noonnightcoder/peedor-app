@@ -1,5 +1,5 @@
 <!------ To do next to pass permission from variable same as Admin page template ---->
-<?php if (ckacc('saleorder.create')) { ?>
+<?php if (ckacc('sale.create')) { ?>
 
     <?php echo TbHtml::linkButton(Yii::t('app', 'New'), array(
         'color' => TbHtml::BUTTON_COLOR_PRIMARY,
