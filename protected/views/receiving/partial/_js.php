@@ -40,6 +40,10 @@ Yii::app()->clientScript->registerScript( 'deleteItem', "
         $('#Receiving_reference_name').blur(function(){
             $('#reference_name_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
         })
+
+        $('.input-grid').change(function(){
+            $('.line_item_form').ajaxSubmit({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+        })
         
         $('#from_outlet, #to_outlet').change(function(){
            // alert('hello')

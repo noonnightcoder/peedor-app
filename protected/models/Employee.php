@@ -54,7 +54,7 @@ class Employee extends CActiveRecord
 			array('notes, dob, day, month, year', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('first_name, last_name, dob, mobile_no, adddress1, address2, city_id, country_code, email, notes, search', 'safe', 'on'=>'search'),
+			array('first_name, last_name, dob, mobile_no, adddress1, address2, city_id, country_code, email, notes, search,outlet', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -68,6 +68,7 @@ class Employee extends CActiveRecord
 		return array(
 			'rbacUsers' => array(self::HAS_MANY, 'RbacUser', 'employee_id'),
 			'transactions' => array(self::HAS_MANY, 'Transactions', 'employee_id'),
+            'employee_outlet' => array(self::HAS_MANY, 'Employee_Outlet', 'id'),
 		);
 	}
 

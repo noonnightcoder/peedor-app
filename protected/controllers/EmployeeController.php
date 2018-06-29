@@ -219,6 +219,8 @@ class EmployeeController extends Controller
             $model->attributes = $_POST['Employee'];
             $user->attributes = $_POST['RbacUser'];
 
+            $outlet_id = $_POST['Employee']['outlet'];
+
             if ($_POST['Employee']['year'] !== "" || $_POST['Employee']['month'] !== "" || $_POST['Employee']['day'] !== "") {
                 $dob = $_POST['Employee']['year'] . '-' . $_POST['Employee']['month'] . '-' . $_POST['Employee']['day'];
                 $model->dob = $dob;
@@ -235,10 +237,7 @@ class EmployeeController extends Controller
                         if ($user->save()) {
 
                             //set employee outlet
-                            $employee_outle_model = EmployeeOutlet::model()->findBy;
-                            $employee_outle_model->employee_id = $model->id;
-                            $employee_outle_model->outlet_id = $_POST['Employee']['outlet'];
-                            $employee_outle_model->save();
+                            $employee_outle_model = EmployeeOutlet::model()->updateEmployeeOutlet($id,$outlet_id);
 
                             // Delete all existing granted module
                             Authassignment::model()->deleteAuthassignment($user->id);
@@ -256,6 +255,7 @@ class EmployeeController extends Controller
                             }
 
                             $transaction->commit();
+                            Yii::app()->session['employee_outlet']=$outlet_id;//update outlet name for nav menue
                             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS, 'Employee : <strong>' . ucwords($model->last_name . ' ' . $model->first_name) . '</strong> have been saved successfully!');
                             $this->redirect(array('admin'));
                         } else {
@@ -277,6 +277,7 @@ class EmployeeController extends Controller
         $data['user'] = $user;
         $data['disabled'] = $disabled;
         $data['auth_items'] = $auth_items;
+        $data['employee_outlet'] = EmployeeOutlet::model()->getEmployeeOutlet($id);
 
         $this->render('update', $data);
     }

@@ -18,7 +18,10 @@
             <?php
             $total_item = Common::calTotalAfterDiscount($item['discount'],$item['price'],$item['quantity']);
             $item_id = $item['item_id'];
-            $cur_item_info = Item::model()->findbyPk($item_id);
+            $cur_item_info = ItemOutlet::model()->findByAttributes(array(
+                'item_id' => $item_id,
+                'outlet_id' => Yii::app()->session['employee_outlet']
+            ));
             $qty_in_stock = $cur_item_info->quantity;
             ?>
             <tr>

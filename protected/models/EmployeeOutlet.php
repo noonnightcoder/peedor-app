@@ -29,8 +29,26 @@ class EmployeeOutlet extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-            
+            'employee' => array(self::BELONGS_TO, 'Employee', 'id'),
 		);
+	}
+
+	public function updateEmployeeOutlet($employee_id,$outlet_id)
+	{
+		$sql="update employee_outlet set outlet_id=:outlet_id
+		where employee_id=:employee_id";
+
+		$command = Yii::app()->db->createCommand($sql);
+        $command->bindParam(":employee_id", $employee_id, PDO::PARAM_INT);
+        $command->bindParam(":outlet_id", $outlet_id, PDO::PARAM_INT);
+        $command->execute();
+	}
+
+	public function getEmployeeOutlet($employee_id)
+	{
+		$model = EmployeeOutlet::model()->findByAttributes(array('employee_id'=>$employee_id));
+
+		return $model->outlet_id;
 	}
 
 	public function attributeLabels()

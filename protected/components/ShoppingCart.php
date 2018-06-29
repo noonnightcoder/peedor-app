@@ -322,7 +322,7 @@ class ShoppingCart extends CApplicationComponent
         if (empty($models)) {
             $models = Item::model()->getItemPriceTierItemNum($item_id, $this->getPriceTier(),$quantity);
             foreach ($models as $model) {
-                $item_id=$model["id"];
+                $item_id=$model["item_id"];
             }
         }
         
@@ -334,7 +334,7 @@ class ShoppingCart extends CApplicationComponent
         
             $item_data = array((int)$item_id =>
                 array(
-                    'item_id' => $model["id"],
+                    'item_id' => $model["item_id"],
                     'name' => $model["name"],
                     'item_number' => $model["item_number"],
                     'quantity' => $quantity,
@@ -436,12 +436,19 @@ class ShoppingCart extends CApplicationComponent
         $items = $this->getCart();
         
         foreach ($items as $item) {
+
             $models = Item::model()->getItemPriceTier($item['item_id'], $this->getPriceTier(),$item['quantity']);
+
             foreach ($models as $model) {
+
                if (isset($items[$item['item_id']])) {
+
                     $items[$item['item_id']]['price'] = round($model['unit_price'], Common::getDecimalPlace());
+
                }
+
             }
+
         }    
         
         $this->setCart($items);
@@ -459,7 +466,6 @@ class ShoppingCart extends CApplicationComponent
             $items[$item_id]['description'] = $description;
             $this->setCart($items);
         }
-
         return false;
     }
 

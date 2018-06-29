@@ -131,7 +131,11 @@ class ReportColumn extends CModel
                     'edit' => array(
                         'label' => 'edit',
                         'icon' => 'glyphicon-edit',
-                        'url' => 'Yii::app()->createUrl("SaleItem/EditSale", array("sale_id"=>$data["sale_id"],"customer_id" => $data["client_name"],"paid_amount"=>$data["paid"]))',
+                        'url' => 'Yii::app()->createUrl("SaleItem/EditSale", array(
+                            "sale_id"=>$data["sale_id"],
+                            "customer_id" => $data["client_name"],
+                            "paid_amount"=>$data["paid"]
+                        ))',
                         'options' => array(
                             'title' => Yii::t('app', 'Edit Invoice'),
                             'class' => 'btn btn-xs btn-warning',
@@ -1043,7 +1047,7 @@ class ReportColumn extends CModel
                                    "sale_id" => $data["sale_id"],
                                    "customer_id" => $data["client_id"],
                                    "paid_amount" => 0,
-                                   "tran_type"=>$data["status"]
+                                   "tran_type"=>$data["status"] == param("sale_validate_status") ? param("sale_complete_status") : $data["status"]
                                     )
                         )',
                         'options' => array(

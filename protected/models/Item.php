@@ -380,7 +380,9 @@ class Item extends CActiveRecord
 
     public function getItemPriceTier($item_id,$client_id,$quantity)
     {
-        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,cg.group_name,
+
+        $outlet_id = Yii::app()->session['employee_outlet'];
+        $sql = "SELECT i.`item_id`,i.`name`,i.`item_number`,cg.group_name,
                     MIN(CASE 
                         WHEN 
                             pr.`retail_price` IS NOT NULL
@@ -393,13 +395,14 @@ class Item extends CActiveRecord
                   AND cl.id=:client_id JOIN price_book pb 
                   ON cg.id=pb.group_id JOIN pricings pr
                   ON pb.id=pr.price_book_id
-                  AND pb.status=:status RIGHT JOIN item i
-                ON pr.item_id=i.id
+                  AND pb.status=:status RIGHT JOIN v_item_outlet i
+                ON pr.item_id=i.item_id
                   AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 
                   ON um.id = i.unit_measurable_id
-                WHERE i.id=:item_id
-                AND i.status=:status
-                GROUP BY i.`id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
+                WHERE i.item_id = :item_id
+                AND i.status = :status
+                and i.outlet_id = :outlet_id
+                GROUP BY i.`item_id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
 
         if (!is_numeric($item_id)) {
             $item_id = 'NULL';
@@ -410,6 +413,7 @@ class Item extends CActiveRecord
                 ':client_id' => $client_id,
                 ':status' => param('active_status'),
                 ':quantity' => $quantity,
+                ':outlet_id' => $outlet_id,
             )
         );
 
@@ -442,7 +446,9 @@ class Item extends CActiveRecord
 
     public function getItemPriceTierItemNum($item_id, $price_book_id, $quantity)
     {
-        $sql = "SELECT i.`id`,i.`name`,i.`item_number`,cg.group_name,
+
+        $outlet_id = Yii::app()->session['employee_outlet'];
+        $sql = "SELECT i.`item_id`,i.`name`,i.`item_number`,cg.group_name,
                     MIN(CASE 
                         WHEN 
                             pr.`retail_price` IS NOT NULL
@@ -454,19 +460,21 @@ class Item extends CActiveRecord
                     ON cl.price_tier_id=cg.id JOIN price_book pb 
                     ON cg.id=pb.group_id JOIN pricings pr
                     ON pb.id=pr.price_book_id
-                    AND pb.status=:status RIGHT JOIN item i
-                    ON pr.item_id=i.id
+                    AND pb.status=:status RIGHT JOIN v_item_outlet i
+                    ON pr.item_id=i.item_id
                     AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 
                     ON um.id = i.unit_measurable_id
-                  WHERE i.item_number=:item_id
-                  AND i.status=:status
-                  GROUP BY i.`id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
+                  WHERE i.item_number = :item_id
+                  AND i.status = :status
+                  and i.outlet_id = :outlet_id
+                  GROUP BY i.`item_id`,i.`name`,i.`item_number`,cg.group_name,i.`description`,um.`name`";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                 ':item_id' => $item_id,
                 ':price_book_id' => $price_book_id,
                 ':status' => param('active_status'),
-                ':quantity' => $quantity
+                ':quantity' => $quantity,
+                ':outlet_id' => $outlet_id
             )
         );
 

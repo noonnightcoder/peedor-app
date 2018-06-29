@@ -138,7 +138,9 @@ class SaleItemController extends Controller
             // echo "<script>alert('$price_tier_id')</script>";
             // Yii::app()->shoppingCart->setPriceTier($price_tier_id);
             Yii::app()->shoppingCart->editItem($item_id, $quantity, $discount, $price, $description);
-            Yii::app()->shoppingCart->f5ItemPriceTier();
+            if(!isset($_POST['SaleItem']['price'])){
+                Yii::app()->shoppingCart->f5ItemPriceTier();
+            }
             
         } else {
             $error = CActiveForm::validate($model);
@@ -321,20 +323,20 @@ class SaleItemController extends Controller
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
-
-                $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
-                $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
-                $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
-                $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term']);
+                
+            $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
+            $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
+            $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
+            $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term'],$data['employee_outlet']);
                 
             if (substr($data['sale_id'], 0, 2) == '-1') {
                 Yii::app()->user->setFlash('warning', $data['sale_id']);
                 $this->redirect(Yii::app()->user->returnUrl);
                 $this->reload($data);
             } else {
-                if(getTransType()==2){
+                if(getTransType()==param('sale_submit_status')){
                     Yii::app()->shoppingCart->clearAll();
-                    $this->redirect(array('saleItem/create','tran_type'=>2));
+                    $this->redirect(array('saleItem/create','tran_type'=>param('sale_submit_status')));
 
                 }else{
                     $this->renderRecipe($data);
@@ -567,10 +569,10 @@ class SaleItemController extends Controller
 
     public function actionSaleUpdateStatus($sale_id,$tran_type,$ajax=true) {
         if($ajax){
-            ajaxRequest();    
+            ajaxRequest();  
+            Yii::app()->shoppingCart->copyEntireSale($sale_id);  
         }
-        
-        
+
         if($tran_type==param('sale_complete_status')){
 
             Yii::app()->shoppingCart->copyEntireSale($sale_id);
@@ -580,21 +582,18 @@ class SaleItemController extends Controller
             $trans_status = $total > 0 ? 'N' : 'R';
             $customer_id = $data['customer_id'];
             $employee_id = $data['employee_id'];
+            $outlet_id = $data['employee_outlet'];
             $payment_received = $data['payment_received'];
             $date_paid = date('Y-m-d H:i:s', strtotime($data['transaction_date'].' '.$data['transaction_time']));
             $comment = $data['comment'];
             $trans_date = $date_paid;
             $trans_code = 'CHSALE';
-            $sale_item = SaleItem::model()->findAll(array(
-                                'condition'=>'`sale_id`=:sale_id',
-                                'params'=>array(
-                                    ':sale_id'=>$sale_id
-                                )
-                            ));
 
-            foreach($sale_item as $sale){
+            $items = Yii::app()->shoppingCart->getCart();
 
-                Sale::model()->updateItemQuantity($sale->item_id,$sale->quantity);   
+            foreach($items as $item){
+
+               Sale::model()->updateItemQuantity($item['item_id'],$outlet_id,$item['quantity']);   
 
             }
             
@@ -735,6 +734,7 @@ class SaleItemController extends Controller
         $data['customer_id'] = Yii::app()->shoppingCart->getCustomer();
         $data['comment'] = Yii::app()->shoppingCart->getComment();
         $data['employee_id'] = Yii::app()->session['employeeid'];
+        $data['employee_outlet'] = Yii::app()->session['employee_outlet'];
         $data['salerep_id'] = Yii::app()->shoppingCart->getSaleRep();
         $data['transaction_date'] = date('d/m/Y',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('d/m/Y');
         $data['transaction_time'] = date('h:i:s',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('h:i:s');

@@ -49,6 +49,7 @@
             <?php $this->renderPartial('_outlet', array(
                     'model' => $model,
                     'form' => $form,
+                    'employee_outlet' => isset($employee_outlet) ? $employee_outlet : 1
                 )
             )
             ?>

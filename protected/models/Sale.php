@@ -127,7 +127,7 @@ class Sale extends CActiveRecord
     }
 
     public function saveSale($in_sale_id, $items, $payments, $payment_received, $customer_id, $employee_id, $sub_total, $total, $comment, $status = self::sale_complete_status,
-                             $discount_amount,$discount_symbol,$gst_amount,$sale_rep_id,$qtytotal,$cust_term)
+                             $discount_amount,$discount_symbol,$gst_amount,$sale_rep_id,$qtytotal,$cust_term,$outlet_id)
     {
         if (count($items) == 0) {
             return '-1';
@@ -149,8 +149,6 @@ class Sale extends CActiveRecord
             // Transaction Date for Inventory, Payment and sale trans date
             $trans_date = date('Y-m-d H:i:s');
 
-           
-
             $old_total = $this->getOldSaleTotal($in_sale_id);
 
             //Rolling back the Sale Total of old / previous Sale & Saving Change / Edit Sale into [account receivable] table
@@ -160,12 +158,17 @@ class Sale extends CActiveRecord
             // }
             if($status==param('sale_complete_status')){
 
-                // $this->rolebackItemQuantity($in_sale_id);
+                $this->rolebackItemOutletQuantity($in_sale_id,$outlet_id);
+                
+                foreach($items as $item){
 
-                $this->rolebackItemOutletQuantity($in_sale_id);
+                    $this->updateItemQuantity($item['item_id'],$outlet_id,$item['quantity']);    
+                    
+                }
                 
                 //Saving existing Sale Item to Inventory table and removing it out
-                $this->updateSale($in_sale_id, $employee_id,$trans_date);   
+                $this->updateSale($in_sale_id, $employee_id,$trans_date,$outlet_id);   
+
             }
             
             
@@ -194,7 +197,7 @@ class Sale extends CActiveRecord
                 $trans_status = $total > 0 ? 'N' : 'R'; // If Return Sale Transaction Type = 'CHSALE' same but Transaction Status = 'R' reverse
                 
                 // Saving Sale Item (Sale & Sale Item gotta save firstly even for Suspended Sale)
-                $this->saveSaleItem($items, $sale_id, $employee_id,$status);
+                $this->saveSaleItem($items, $sale_id, $employee_id,$outlet_id,$status);
                 
                 // We only save Sale Payment, Account Receivable transaction and update Account (outstanding balance) of completed sale transaction
                 if ( $status == self::sale_complete_status ) {
@@ -264,12 +267,12 @@ class Sale extends CActiveRecord
     }
 
     // If Sale ID already exist in DB, this is consider as a change sale transaction
-    protected function updateSale($in_sale_id,$employee_id,$trans_date)
+    protected function updateSale($in_sale_id,$employee_id,$trans_date,$outlet_id)
     {
         if ($in_sale_id) {
             
             $trans_comment='Change Sale';
-            $this->updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id);
+            $this->updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id,$outlet_id);
 
             $sql1="insert into sale_item_log
                    select * from sale_item
@@ -287,17 +290,17 @@ class Sale extends CActiveRecord
     }
 
     // In Sale Update Transaction
-    protected function updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id,$tran_type=2)
+    protected function updateItemInventory($in_sale_id,$trans_date,$trans_comment,$employee_id,$outlet_id,$tran_type=2)
     {
-            $sql = "INSERT INTO inventory(trans_items,trans_user,trans_date,trans_comment,trans_inventory,t)
-                    SELECT si.item_id,:employee_id trans_user,:trans_date trans_date,:trans_comment trans_comment,si.quantity
+            $sql = "INSERT INTO inventory(trans_items,trans_user,trans_date,trans_comment,trans_inventory,outlet_id,t)
+                    SELECT si.item_id,:employee_id trans_user,:trans_date trans_date,:trans_comment trans_comment,si.quantity,:outlet_id outlet_id
                     FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id and s.id=:sale_id
                     ";
             
             // Rolling back the previous sale QTY so QTY After Transaction = [Cur QTY in Stock] + [Previous Sale Qty]
-            $sql = "INSERT INTO inventory(trans_items,trans_user,trans_date,trans_comment,trans_inventory,qty_b4_trans,qty_af_trans)
+            $sql = "INSERT INTO inventory(trans_items,trans_user,trans_date,trans_comment,trans_inventory,qty_b4_trans,qty_af_trans,outlet_id)
                     SELECT si.item_id,:employee_id trans_user,:trans_date trans_date,:trans_comment trans_comment,si.quantity,i.quantity,
-                           (i.quantity+si.quantity) qty_af_transaction
+                           (i.quantity+si.quantity) qty_af_transaction,:outlet_id outlet_id
                     FROM sale_item si, sale s, item i
                     WHERE s.id=:sale_id 
                     and si.sale_id=s.id 
@@ -310,6 +313,7 @@ class Sale extends CActiveRecord
             $command->bindParam(":trans_comment", $trans_comment, PDO::PARAM_STR);
             $command->bindParam(":employee_id", $employee_id, PDO::PARAM_INT);
             $command->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
+            $command->bindParam(":outlet_id", $outlet_id, PDO::PARAM_INT);
 
             $command->execute();
 
@@ -318,37 +322,39 @@ class Sale extends CActiveRecord
             
     }
 
-    protected function rolebackItemOutletQuantity($in_sale_id){
+    protected function rolebackItemOutletQuantity($in_sale_id,$outlet_id){
         $sql1 = "UPDATE item_outlet t1 
                     INNER JOIN sale_item t2 
                          ON t1.item_id = t2.item_id
                 SET t1.quantity = t1.quantity+t2.quantity
-                WHERE t2.sale_id=:sale_id";
+                WHERE t2.sale_id=:sale_id
+                AND t1.outlet_id=:outlet_id";
 
         $command1 = Yii::app()->db->createCommand($sql1);
         $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
+        $command1->bindParam(":outlet_id", $outlet_id, PDO::PARAM_INT);
         $command1->execute();
     }
 
-    protected function rolebackItemQuantity($in_sale_id){
-        $sql1 = "UPDATE item t1 
-                    INNER JOIN sale_item t2 
-                         ON t1.id = t2.item_id
-                SET t1.quantity = t1.quantity+t2.quantity
-                WHERE t2.sale_id=:sale_id";
+    // protected function rolebackItemQuantity($in_sale_id){
+    //     $sql1 = "UPDATE item t1 
+    //                 INNER JOIN sale_item t2 
+    //                      ON t1.id = t2.item_id
+    //             SET t1.quantity = t1.quantity+t2.quantity
+    //             WHERE t2.sale_id=:sale_id";
 
-        $command1 = Yii::app()->db->createCommand($sql1);
-        $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
-        $command1->execute();
-    }
+    //     $command1 = Yii::app()->db->createCommand($sql1);
+    //     $command1->bindParam(":sale_id", $in_sale_id, PDO::PARAM_INT);
+    //     $command1->execute();
+    // }
 
     // Saving into Sale_Item table for each item purchased
-    protected function saveSaleItem($items, $sale_id, $employee_id,$status='')
+    protected function saveSaleItem($items, $sale_id, $employee_id,$outlet_id,$status='')
     {
         // Saving sale item to sale_item table
         foreach ($items as $line => $item) {
 
-            $cur_item_info = Item::model()->findbyPk($item['item_id']);
+            $cur_item_info = ItemOutlet::model()->findByAttributes(array('item_id'=>$item['item_id'],'outlet_id'=>$outlet_id));
             $qty_in_stock = $cur_item_info->quantity;
 
             // to remove
@@ -365,25 +371,41 @@ class Sale extends CActiveRecord
             $discount_data = Common::Discount($item['discount']);
             $discount_amount=$discount_data[0];
             $discount_type=$discount_data[1];
+            $sale_item_model = SaleItem::model()->findByAttributes(array('sale_id'=>$sale_id,'outlet_id'=>$outlet_id));
 
-            $sale_item_data = array(
-                'sale_id'=>$sale_id,
-                'item_id'=>$item['item_id'],
-                'line'=>$line,
-                'quantity'=>$item['quantity'],
-                'cost_price'=>$cur_item_info->cost_price,
-                'unit_price'=>$cur_item_info->unit_price,
-                'price'=>$item['price'],// The exact selling price
-                'discount_amount'=>$discount_amount == null ? 0 : $discount_amount,
-                'discount_type'=>$discount_type
-            );
+            $sale_remarks = 'POS ' . $sale_id;
 
-            $this->saveSaleTransaction(new SaleItem,$sale_item_data);
+            if($sale_item_model){
+
+                $sale_remarks = 'POS EDIT '.$sale_id;
+
+                $sale_item_model->quantity = $item['quantity'];
+                $sale_item_model->price = $item['price'];
+                $sale_item_model->discount_amount = $discount_amount == null ? 0 : $discount_amount;
+                $sale_item_model->discount_type = $discount_type;
+                $sale_item_model->save();
+
+            }else{
+
+                $sale_item_data['sale_id'] = $sale_id;
+                $sale_item_data['item_id'] = $item['item_id'];
+                $sale_item_data['line'] = $line;
+                $sale_item_data['quantity'] = $item['quantity'];
+                $sale_item_data['cost_price'] = $cur_item_info->cost_price;
+                $sale_item_data['unit_price'] = $cur_item_info->unit_price;
+                $sale_item_data['price'] = $item['price'];// The exact selling price
+                $sale_item_data['discount_amount'] = $discount_amount == null ? 0 : $discount_amount;
+                $sale_item_data['discount_type'] = $discount_type;
+                $sale_item_data['outlet_id'] = $outlet_id;
+
+                $this->saveSaleTransaction(new SaleItem,$sale_item_data);
+
+            }
+            
 
             $qty_afer_transaction = $qty_in_stock - $item['quantity'];
 
             $qty_buy = -$item['quantity'];
-            $sale_remarks = 'POS ' . $sale_id;
 
             $inventory_data = array(
                 'trans_items' => $item['item_id'],
@@ -393,7 +415,8 @@ class Sale extends CActiveRecord
                 'trans_qty' => $item['quantity'],
                 'qty_b4_trans' => $qty_in_stock , // for tracking purpose recording the qty before operation effected
                 'qty_af_trans' => $qty_afer_transaction,
-                'trans_date' => date('Y-m-d H:i:s')
+                'trans_date' => date('Y-m-d H:i:s'),
+                'outlet_id' => $outlet_id
             );
 
             $this->saveSaleTransaction(new Inventory,$inventory_data);
@@ -407,9 +430,15 @@ class Sale extends CActiveRecord
         $sql="select sale_id,:previous_qty-quantity quantity,item_id
         from sale_item
         where sale_id=:sale_id
-        and item_id=:item_id";
+        and item_id=:item_id
+        and outlet_id=:outlet_id";
         $result = Yii::app()->db->createCommand($sql)->queryAll(true,
-            array(':sale_id' => $sale_id, ':item_id' => $item_id,':previous_qty'=>$previous_qty));
+            array(
+                ':sale_id' => $sale_id, 
+                ':item_id' => $item_id,
+                ':outlet_id' => $outlet_id,
+                ':previous_qty'=>$previous_qty
+            ));
             return $result;
     }
 

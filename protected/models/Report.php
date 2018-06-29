@@ -1428,13 +1428,13 @@ class Report extends CFormModel
             $sql= "WITH transfered_item
                   AS
                   (
-                    SELECT st.reference_name,status,st.trans_type,DATE(st.created_date) created_date,
-                    SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
-                    from_outlet,to_outlet,st.employee_id,receive_id
-                    FROM receiving st JOIN receiving_item t
-                    ON st.id=t.receive_id JOIN item i
-                    ON t.item_id=i.id
-                    GROUP BY st.reference_name,st.trans_type,DATE(st.created_date),from_outlet,to_outlet,receive_id,st.employee_id
+                    SELECT r.reference_name,r.status,r.trans_type,DATE(r.created_date) created_date,
+                    SUM(ri.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
+                    r.from_outlet,r.to_outlet,r.employee_id,ri.receive_id
+                    FROM receiving r JOIN receiving_item ri
+                    ON r.id=ri.receive_id JOIN item i
+                    ON ri.item_id=i.id
+                    GROUP BY r.reference_name,r.trans_type,DATE(r.created_date),from_outlet,to_outlet,receive_id,r.employee_id
                   )
                   SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
                   (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
@@ -1460,13 +1460,13 @@ class Report extends CFormModel
             $sql= "WITH transfered_item
                   AS
                   (
-                    SELECT st.reference_name,st.status,st.trans_type,DATE(st.created_date) created_date,
-                    SUM(t.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
-                    from_outlet,to_outlet,st.employee_id,receive_id
-                    FROM receiving st JOIN receiving_item t
-                    ON st.id=t.receive_id JOIN item i
-                    ON t.item_id=i.id
-                    GROUP BY st.reference_name,st.trans_type,DATE(st.created_date),from_outlet,to_outlet,receive_id,st.employee_id
+                    SELECT r.reference_name,r.status,r.trans_type,DATE(r.created_date) created_date,
+                    SUM(ri.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
+                    r.from_outlet,r.to_outlet,r.employee_id,ri.receive_id
+                    FROM receiving r JOIN receiving_item ri
+                    ON r.id=ri.receive_id JOIN item i
+                    ON ri.item_id=i.id
+                    GROUP BY r.reference_name,r.trans_type,DATE(r.created_date),from_outlet,to_outlet,receive_id,r.employee_id
                   )
                   SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
                   (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,

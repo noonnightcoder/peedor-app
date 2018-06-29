@@ -32,7 +32,7 @@
             $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
                 'model'=>$model,
                 'attribute'=>'item_id',
-                'source'=>$this->createUrl('request/suggestItem'),
+                'source'=>$this->createUrl('request/suggestItemByOutlet'),
                 //'scriptFile'=>'',
                 //'scriptUrl'=> Yii::app()->theme->baseUrl.'/js/',
                 'htmlOptions'=>array(
