@@ -140,5 +140,28 @@ class ItemOutlet extends CActiveRecord
 
         return $suggest;
     }
+
+    public function saveItemOutlet($data)
+    {
+        $model = new ItemOutlet;
+        foreach($data as $key=>$value){
+            $model->$key = $value;
+        }
+        $model->save();
+    }
+
+    public function saveUpdateItemOutlet($outlet_id,$item_id,$data)
+    {
+
+        $model = ItemOutlet::model()->findByAttributes(array('outlet_id' => $outlet_id,'item_id' => $item_id)); 
+        foreach($data as $key => $value){
+            
+            $model->$key = $value;   
+
+        }
+        
+        $model->save();
+
+    }
     
 }

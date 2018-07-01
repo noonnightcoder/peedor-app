@@ -20,6 +20,7 @@ class Item extends CActiveRecord
     public $number_of_barcode;
     public $type_id;
     public $model_id;
+    public $outlet;
 
     /**
      * Returns the static model of the specified AR class.
@@ -98,6 +99,8 @@ class Item extends CActiveRecord
             'supplier' => array(self::BELONGS_TO, 'Supplier', 'supplier_id'),
             //'unit' => array(self::BELONGS_TO, 'ItemUnit', 'unit_id'),
             'sales' => array(self::MANY_MANY, 'Sale', 'sale_item(item_id, sale_id)'),
+            'item_outlet' => array(self::HAS_ONE,'ItemOutlet','item_id',
+                'condition' => 'outlet_id='.Yii::app()->session['employee_outlet'])
         );
     }
 
@@ -177,13 +180,14 @@ class Item extends CActiveRecord
         $criteria->compare('category_id',$this->category_id);
         $criteria->compare('quantity',$this->quantity);
         $criteria->compare('location',$this->location,true);
+        $criteria->with = array('item_outlet');
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
                 'pageSize' => Yii::app()->user->getState('item_page_size', Common::defaultPageSize()),
             ),
-            'sort' => array('defaultOrder' => 'name')
+            'sort' => array('defaultOrder' => 'name'),
         ));
     }
 
@@ -690,7 +694,7 @@ class Item extends CActiveRecord
             ),
             array(
                 'name' => 'quantity',
-                'value' => '$data->status=="1" ? $data->quantity : "<s class=\"red\">  $data->quantity <span>"',
+                'value' => '$data->status=="1" ? $data->item_outlet->quantity : "<s class=\"red\">  $data->item_outlet->quantity <span>"',
                 'type' => 'raw',
                 'filter' => '',
             ),
@@ -817,26 +821,34 @@ class Item extends CActiveRecord
 
     public function itemByCategory($category_id)
     {
-        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,
-        (SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
-        FROM `item` i JOIN `category` c
+        $sql = "SELECT i.item_id as id,i.name,i.description,i.cost_price,i.unit_price,
+        (SELECT filename image FROM item_image im WHERE im.item_id=i.item_id ORDER BY im.id ASC LIMIT 1) image
+        FROM `v_item_outlet` i JOIN `category` c
         ON (i.category_id=c.id) 
-        WHERE (c.id=:category_id  or c.parent_id=:category_id)";
+        WHERE (c.id=:category_id  or c.parent_id=:category_id)
+        and i.outlet_id=:outlet_id";
 
-        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':category_id' => (int)$category_id));
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':category_id' => (int)$category_id,
+            ':outlet_id' => Yii::app()->session['employee_outlet']
+        ));
 
         return $result;
     }
 
     public function itemDetail($id){
-        $sql = "SELECT i.id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.id ORDER BY im.id ASC LIMIT 1) image
-        FROM `item` i left join `brand` b
+        $sql = "SELECT i.item_id id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.item_id ORDER BY im.id ASC LIMIT 1) image
+        FROM `v_item_outlet` i left join `brand` b
         on i.brand_id=b.id left join `supplier` s
         on i.supplier_id=s.id left join `category` c
         on i.category_id=c.id
-        WHERE i.id=:id";
+        WHERE i.item_id=:id
+        and outlet_id=:outlet_id";
 
-        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(':id' => (int)$id));
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':id' => (int)$id,
+            ':outlet_id' => Yii::app()->session['employee_outlet']
+        ));
 
         return $result;
     }

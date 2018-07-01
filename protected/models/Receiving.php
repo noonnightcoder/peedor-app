@@ -136,7 +136,7 @@ class Receiving extends CActiveRecord
                 $this->saveAccountAR($employee_id, $receiving_id, $supplier_id, $total, $trans_date, $trans_mode);
 
                 // Saving receiving item to receiving_item table
-                $this->saveReceiveItem($items, $receiving_id, $employee_id, $trans_date);
+                $this->saveReceiveItem($items,$receiving_id, $employee_id, $trans_date);    
 
                 $message = $receiving_id;
                 $transaction->commit();
@@ -227,6 +227,9 @@ class Receiving extends CActiveRecord
             // Updating Price (Cost & Resell) to item table requested by owner
             $this->updateItem($cur_item_info, $cost_price, $unit_price, $stock_quantity[0]);
 
+            // Updateing Quantity to item outlet
+            $this->updateItemOutlet($item_id,$stock_quantity[0]);
+
             // Product Price (retail price) history
             $this->updateItemPrice($item_id, $cur_unit_price, $unit_price, $employee_id, $trans_date);
 
@@ -248,6 +251,35 @@ class Receiving extends CActiveRecord
         $cur_item_info->unit_price = $unit_price;
         $cur_item_info->quantity = $quantity;
         $cur_item_info->save();
+    }
+
+    protected function updateItemOutlet($item_id, $quantity)
+    {
+
+        $outlet_id = Yii::app()->session['outlet'];
+        if($outlet_id>0){
+            $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
+                'item_id' => $item_id,
+                'outlet_id' => $outlet_id
+            ));    
+
+            $cur_item_outlet_info->quantity = $quantity;
+            $cur_item_outlet_info->save();
+
+        }else{
+            $outlets = Outlet::model()->findAll();
+            foreach($outlets as $outlet){
+                 $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
+                    'item_id' => $item_id,
+                    'outlet_id' => $outlet->id
+                ));  
+
+                $cur_item_outlet_info->quantity = $quantity;
+                $cur_item_outlet_info->save();
+
+            }
+        }
+
     }
 
     protected function updateItemPrice($item_id, $cur_unit_price, $unit_price, $employee_id, $trans_date)

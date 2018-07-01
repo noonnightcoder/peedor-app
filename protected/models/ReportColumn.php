@@ -1207,61 +1207,61 @@ class ReportColumn extends CModel
                 'header' => Yii::t('app', 'Received By'),
                 'value' => '$data["created_by"]',
             ),
-            array('class' => 'bootstrap.widgets.TbButtonColumn',
-                'header' => 'Action',
-                'template' => '<div class="btn-group">{view}{edit}{print}</div>',
-                'buttons' => array(
-                    'view' => array(
-                        'label' => 'View',
-                        'icon' => 'fa fa-eye',
-                        'url' => 'Yii::app()->createUrl("receivingItem/ViewTransactionDetail",array(
-                                   "receive_id" => $data["receive_id"],
-                                   "employee_id" => $data["employee_id"],
-                                   "print"=>"false",
-                                   "tran_type"=>$data["status"]
-                                    )
-                        )',
-                        'options' => array(
-                            'title' => Yii::t('app', 'View Detail'),
-                            'class' => 'btn btn-xs btn-info',
-                        ),
-                        'visible' => 'true',
-                    ),
-                    'edit' => array(
-                        'label' => 'Edit',
-                        'icon' => 'fa fa-edit',
-                        'url' => 'Yii::app()->createUrl("receivingItem/EditTransaction",array(
-                                   "receive_id" => $data["receive_id"],
-                                   "employee_id" => $data["employee_id"],
-                                   "tran_type"=>$data["status"]
-                                    )
-                        )',
-                        'options' => array(
-                            'title' => Yii::t('app', 'Update Invoice'),
-                            'class' => 'btn btn-xs btn-info',
-                        ),
-                        'visible' => 'ckacc("sale.update")',
-                    ),
-                    'print' => array(
-                        'label' => 'print',
-                        'icon' => 'fa fa-print',
-                        'url' => 'Yii::app()->createUrl("receivingItem/printing", array(
-                                    "receive_id" => $data["receive_id"],
-                                   "employee_id" => $data["employee_id"],
-                                    "tran_type" => $data["status"],
-                                    "format" => "format_hf",
-                                    "print"=>"true",
-                                )
-                         )',
-                        'options' => array(
-                            'target' => '_blank',
-                            'title' => Yii::t('app', 'Invoice Printing'),
-                            'class' => 'btn btn-xs btn-info',
-                        ),
-                        'visible' => 'true',
-                    ),
-                ),
-            ),
+            // array('class' => 'bootstrap.widgets.TbButtonColumn',
+            //     'header' => 'Action',
+            //     'template' => '<div class="btn-group">{view}{edit}{print}</div>',
+            //     'buttons' => array(
+            //         'view' => array(
+            //             'label' => 'View',
+            //             'icon' => 'fa fa-eye',
+            //             'url' => 'Yii::app()->createUrl("receivingItem/ViewTransactionDetail",array(
+            //                        "receive_id" => $data["receive_id"],
+            //                        "employee_id" => $data["employee_id"],
+            //                        "print"=>"false",
+            //                        "tran_type"=>$data["status"]
+            //                         )
+            //             )',
+            //             'options' => array(
+            //                 'title' => Yii::t('app', 'View Detail'),
+            //                 'class' => 'btn btn-xs btn-info',
+            //             ),
+            //             'visible' => 'true',
+            //         ),
+            //         'edit' => array(
+            //             'label' => 'Edit',
+            //             'icon' => 'fa fa-edit',
+            //             'url' => 'Yii::app()->createUrl("receivingItem/EditTransaction",array(
+            //                        "receive_id" => $data["receive_id"],
+            //                        "employee_id" => $data["employee_id"],
+            //                        "tran_type"=>$data["status"]
+            //                         )
+            //             )',
+            //             'options' => array(
+            //                 'title' => Yii::t('app', 'Update Invoice'),
+            //                 'class' => 'btn btn-xs btn-info',
+            //             ),
+            //             'visible' => 'ckacc("sale.update")',
+            //         ),
+            //         'print' => array(
+            //             'label' => 'print',
+            //             'icon' => 'fa fa-print',
+            //             'url' => 'Yii::app()->createUrl("receivingItem/printing", array(
+            //                         "receive_id" => $data["receive_id"],
+            //                        "employee_id" => $data["employee_id"],
+            //                         "tran_type" => $data["status"],
+            //                         "format" => "format_hf",
+            //                         "print"=>"true",
+            //                     )
+            //              )',
+            //             'options' => array(
+            //                 'target' => '_blank',
+            //                 'title' => Yii::t('app', 'Invoice Printing'),
+            //                 'class' => 'btn btn-xs btn-info',
+            //             ),
+            //             'visible' => 'true',
+            //         ),
+            //     ),
+            // ),
         );
     }
 

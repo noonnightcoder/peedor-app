@@ -83,7 +83,21 @@
                 }
             }
             ?>
+            <?php
+                $this->widget('yiiwheels.widgets.box.WhBox', array(
+                    'title' => Yii::t('app', 'Select Outlet'),
+                    'headerIcon' => 'menu-icon fa fa-university',
+                    'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
+                    'content' => $this->renderPartial('partial/_outlet',
+                        array('model' => $model,
+                            'supplier' => $supplier,
+                            'count_item' => $count_item,
+                            'trans_mode' => $trans_mode
+                        ), true)
+                ));
+            ?>
         </div>
+        
     </div>
 
     <div class="row">

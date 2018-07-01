@@ -18,9 +18,10 @@ $this->breadcrumbs=array(
             'product_types'=>$product_types,
             'product_models'=>$product_models,
             'item_image'=>$item_image,
-            'image'=>$image
-            ),
-        true),
+            'image'=>$image,
+            'outlet_model' => $outlet_model,
+        ),
+    true),
     'headerButtons' => array(
         TbHtml::buttonGroup(
             array(

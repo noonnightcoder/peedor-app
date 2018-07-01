@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','setOutlet'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -714,6 +714,19 @@ class ReceivingItemController extends Controller
 
         $this->renderView($data);
 
+    }
+
+    public function actionSetOutlet()
+    {
+
+        if (isset($_POST['ReceivingItem'])) {
+            
+            $to_outlet = $_POST['ReceivingItem']['outlet'];
+            Yii::app()->receivingCart->setTransferHeader($to_outlet,'outlet');
+
+        }
+
+        $this->reload();
     }
 
     protected function renderView($data, $view_name='index')

@@ -23,7 +23,7 @@ $option=Category::model()->buildOptions($arr,null);
 <div class="col-sm-12">
     <div class="errorMessage" id="formResult"></div>
     <h4 class="header blue">
-        <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Basic Information') ?>
+        <i class="fa fa-info-circle blue"></i><?= Yii::t('app', ' Basic Information') ?>
     </h4>
 
     <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
@@ -73,7 +73,7 @@ $option=Category::model()->buildOptions($arr,null);
             </div>
         </div>
         <h4 class="header blue">
-            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Product Image') ?>
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', ' Product Image') ?>
         </h4>
         <div class="row">
             <div class="col-sm-12">
@@ -107,7 +107,7 @@ $option=Category::model()->buildOptions($arr,null);
             </div>
         </div>
         <h4 class="header blue">
-            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Inventory') ?>
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', ' Inventory') ?>
         </h4>
         <div class="row">
             <div class="col-sm-6">
@@ -151,15 +151,20 @@ $option=Category::model()->buildOptions($arr,null);
                     </div>
                 </div>
             </div>
+
             <div class="col-sm-6">
-                <?php echo $form->textFieldControlGroup($model, 'quantity', array(
-                        'class' => 'span3',
-                        'data-rel'=>'tooltip',
-                        'title'=>'Opening Quantity is refer to quantity of the item on hand before you start tracking inventory for the item in the Peedorify system'
-                    )
-                );
-                ?>
+                <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3 txt-reorder-level pull-right',)); ?>
             </div>
+            
+            <!-- <div class="col-sm-6"> -->
+                <?php //echo $form->textFieldControlGroup($model, 'quantity', array(
+                //         'class' => 'span3',
+                //         'data-rel'=>'tooltip',
+                //         'title'=>'Opening Quantity is refer to quantity of the item on hand before you start tracking inventory for the item in the Peedorify system'
+                //     )
+                // );
+                ?>
+            <!-- </div> -->
         </div>
         <div class="row">
             <div class="col-sm-6">
@@ -240,13 +245,15 @@ $option=Category::model()->buildOptions($arr,null);
             </div>
         </div>
         <div class="row">
-            <div class="col-sm-6">
+            <!-- <div class="col-sm-6">
                 <?= $form->textFieldControlGroup($model,'reorder_level',array('class'=>'span3 txt-reorder-level pull-right',)); ?>
             </div>
-            
+             -->
         </div>
+        <?php $this->renderPartial('partialList/_outlet',array(
+            'outlet_model' => $outlet_model, 'model' => $model,'form' => $form))?>
         <h4 class="header blue">
-            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', 'Pricing') ?>
+            <i class="fa fa-info-circle blue"></i><?= Yii::t('app', ' Pricing') ?>
         </h4>
         <div class="row">
             <div class="col-sm-4">

@@ -10,14 +10,15 @@ $this->breadcrumbs=array(
     'headerIcon' => sysMenuItemIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     'content' => $this->renderPartial('_form_basic2', array(
-            'model'=>$model,
+            'model' => $model,
             'brand' => $brand,
+            'image' => $image,
+            'outlet_model' => $outlet_model,
             'supplier' => $supplier,
-            'measurable'=>$measurable,
-            'categories'=>$categories,
-            'product_types'=>$product_types,
-            'product_models'=>$product_models,
-            'image'=>$image,
+            'measurable' => $measurable,
+            'categories' => $categories,
+            'product_types' => $product_types,
+            'product_models' => $product_models,
     ), true),
 )); ?>
 

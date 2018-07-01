@@ -223,10 +223,14 @@ class ItemController extends Controller
         $this->layout = '//layouts/columntree';
 
         $model = new Item;
-        $item_image = new ItemImage;
+        $item_image_model= new ItemImage;
+        $outlet_model = Outlet::model()->findAll();
+        $item_outlet_model =  new ItemOutlet;
+
         $this->performAjaxValidation($model);
 
         if (isset($_POST['Item'])) {
+            
             $model->attributes = $_POST['Item'];
             
             $this->setSession(Yii::app()->session);
@@ -243,6 +247,8 @@ class ItemController extends Controller
                             $this->multipleImageUpload($model->id,$model,'image');
 
                             $connection = Yii::app()->db;//initial connection to run raw sql 
+
+                            //insert product tag
                             if(isset($_POST['Item']['tags'])){
                                 $str = $_POST['Item']['tags'];
                                 $tagsArry=explode(",",$str);
@@ -257,6 +263,24 @@ class ItemController extends Controller
                                     
                                 }
                             }
+
+                            if(isset($_POST['Item']['Outlet'])){
+
+                                $outlet = $_POST['Item']['Outlet'];
+
+                                //inser item outlet
+                                foreach($outlet as $key=>$value){
+
+                                    $item_outlet['item_id'] = $model->id;
+                                    $item_outlet['outlet_id'] = $key;
+                                    $item_outlet['quantity'] = isset($value['quantity']) ? $value['quantity'] : 0;
+                                    $item_outlet['reorder_point'] = isset($value['reorder_point']) ? $value['reorder_point'] : 0;
+                                    $item_outlet['reorder_amount'] = isset($value['reorder_amount']) ? $value['reorder_amount'] : 0;
+                                    ItemOutlet::model()->saveItemOutlet($item_outlet);
+                                }
+
+                            }
+
                         }
                         unset($this->session['tags']);
                         $transaction->commit();
@@ -280,13 +304,16 @@ class ItemController extends Controller
         }
 
         $data['model'] = $model;
+        $data['image']=$item_image_model;
+        $data['outlet_model'] = $outlet_model;
+
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['categories']=Category::model()->findAll();
         $data['product_types']=ProductType::model()->findAll();
         $data['product_models']=ProductModel::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
-        $data['image']=$item_image;
+        
         $this->render('create2', $data);
 
     }
@@ -307,7 +334,9 @@ class ItemController extends Controller
 
         $this->layout = '//layouts/columntree';
 
-        $imageModel=new ItemImage;
+        $item_image_model=new ItemImage;
+        $outlet_model = Outlet::model()->findAll();
+        $item_outlet_model =  new ItemOutlet;
 
         if ($item_number_flag == '0') {
             $model = $this->loadModel($id);
@@ -389,6 +418,23 @@ class ItemController extends Controller
                                     
                                 }
                             }
+
+                            if(isset($_POST['Item']['Outlet'])){
+
+                                $outlet = $_POST['Item']['Outlet'];
+
+                                //inser item outlet
+                                foreach($outlet as $key=>$value){
+
+                                    $item_outlet['quantity'] = isset($value['quantity']) ? $value['quantity'] : 0;
+                                    $item_outlet['reorder_point'] = isset($value['reorder_point']) ? $value['reorder_point'] : 0;
+                                    $item_outlet['reorder_amount'] = isset($value['reorder_amount']) ? $value['reorder_amount'] : 0;
+                                    ItemOutlet::model()->saveUpdateItemOutlet($key,$model->id,$item_outlet);
+                                    
+                                }
+
+                            }
+
                         }
                         unset($this->session['tags']);
                         $this->addImages($model);
@@ -405,6 +451,9 @@ class ItemController extends Controller
         }
 
         $data['model'] = $model;
+        $data['image']=$item_image_model;
+        $data['outlet_model'] = $outlet_model;
+
         $data['next_disable'] = $next_disable;
         $data['previous_disable'] = $previous_disable;
         $data['item_image'] = ItemImage::model()->findAllByAttributes(array('item_id'=>$id));
@@ -414,7 +463,6 @@ class ItemController extends Controller
         $data['measurable'] = UnitMeasurable::model()->findAll();
         $data['supplier'] = Supplier::model()->findAll();
         $data['brand'] = Brand::model()->findAll();
-        $data['image']=$imageModel;
 
         $this->render('update2', $data);
     }

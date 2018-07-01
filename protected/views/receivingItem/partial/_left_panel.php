@@ -57,8 +57,8 @@
                 <tr>
                     <td>
                         <?php echo $item['name']; ?><br/>
-                            <span class="text-info"><?php echo $qty_in_stock . ' ' . Yii::t('app',
-                                        'in stock') ?> </span>
+                            <!-- <span class="text-info"><?php echo $qty_in_stock . ' ' . Yii::t('app',
+                                        'in stock') ?> </span> -->
                     </td>
 
                     <td>

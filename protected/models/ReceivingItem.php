@@ -27,6 +27,7 @@ class ReceivingItem extends CActiveRecord
     public $expire_date;
     public $search;
     public $total_discount;
+    public $outlet;
         
         /**
 	 * @return string the associated database table name
