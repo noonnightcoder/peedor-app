@@ -1,151 +1,59 @@
 <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
+<div class="col-xs-12 col-sm-9 widget-container-col">
 
-<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-    'id'=>'item-form',
-    'enableAjaxValidation'=>true,
-    //'action'=>$this->createUrl('Item/Create'),
-    'enableClientValidation'=>true,
-    'clientOptions' => array(
-        'validateOnSubmit'=>true,
-        'validateOnChange'=>true,
-        'validateOnType'=>true,
-        'beforeValidate'=>"js:beforeValidate()",
-    ),
-    'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
-    'htmlOptions'=>array('enctype' => 'multipart/form-data')
-)); ?>
+    <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
+        'title' => Yii::t('app','Item Count'),
+        'headerIcon' => sysMenuItemIcon(),
+        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
+        'headerButtons' => array(
+            // TbHtml::buttonGroup(
+            //     array(
+            //         array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/countReview'),'icon'=>'fa fa-check-square  white','id'=>'btn-review'),
+            //     ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+            // ),
+        ),
+        'content' => $this->renderPartial('partial/_count',array(
+            'model'=>$model,
+            'receiveItem'=>$receiveItem,
+            'data_provider'=>$data_provider,
+            'grid_id' => $grid_id,
+            'page_size' => $page_size,
+            'grid_columns' => $grid_columns,
+        ),true)
+    )); ?>
 
-<div>
-    <h4>General</h4>  
-    <hr> 
-    <div class="container">
-        <div class="row">
-            <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
-        <?= Yii::t('app', 'are required'); ?></p>
-            <div class="col-sm-11 col-md-3">
-                <div class="form-group">
-                    <?php echo CHtml::label('Start Date *', 1, array('class' => 'control-label')); ?>
-                    <?php $this->widget('yiiwheels.widgets.datepicker.WhDatePicker', array(
-                            'attribute' => 'created_date',
-                            'model' => $model,
-                            'pluginOptions' => array(
-                                'format' => 'yyyy-mm-dd',
-                            ),
-                            'htmlOptions'=>array('value'=>date('Y-m-d'))
-                        ));
-                    ?>
-                </div>
-            </div>
-            <div class="col-sm-11 col-md-3">
-                <div class="form-group">
-                    <?php echo CHtml::label('Time *', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('InventoryCount',date('H:i:s'),array('class'=>'form-control input-mask-date','id'=>'InventoryCount_count_time','value'=>date('H:i:s'))); ?>
-                </div>
-            </div>
-            <div class="col-sm-11 col-md-6 margin-3">
-                <div class="form-group">
-                    <?php echo CHtml::label('Count Name *', 1, array('class' => 'control-label')); ?>
-                    <?php echo CHtml::TextField('InventoryCount','InventoryCount'.date('Y-m-d'),array('class'=>'form-control','id'=>'InventoryCount_count_name')); ?>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php $this->endWidget(); ?>
+    <?php $this->renderPartial('partial/_count_grid')?>
 </div>
 
-<div>
-    <div class="row">
-        <div class="col-sm-12">
-            <h4>Item Count</h4>  
-            <hr> 
-                <div class="row">
-                    <div class="col-sm-4">
-                        <div class="col-sm-5 margin-3">
-                            <div class="form-group">
-                                <input type="hidden" class="txt-pro-id">
-                                <label>Search Product</label>
-                                <?php 
-                                    $this->widget('zii.widgets.jui.CJuiAutoComplete', array(
-                                            'model'=>$model,
-                                            'attribute'=>'item_id',
-                                            'source'=>$this->createUrl('request/suggestItemRecv'),
-                                            'htmlOptions'=>array(
-                                                'size'=>'10',
-                                                'class'=>'txt-pro-name form-control',
-                                                'onfocus'=>'this.select();'
-                                            ),
-                                            'options'=>array(
-                                                'showAnim'=>'fold',
-                                                'minLength'=>'1',
-                                                'delay' => 10,
-                                                'autoFocus'=> false,
-                                                'select'=>'js:function(event, ui) {
-                                                    event.preventDefault();
-                                                    $(".btn-count").prop("disabled",false);
-                                                    $(".txt-pro-name").val(ui.item.value);
-                                                    $(".txt-pro-id").val(ui.item.id);
-                                                    $(".txt-count").val(1);
-                                                    $(".txt-count").focus();
-                                                    // alert(ui.item.quantity)
-                                                }',
-                                            ),
-                                        ));
-                                    ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-2 margin-3">
-                            <div class="form-group">
-                                <label>Count</label>
-                                <?php echo CHtml::NumberField('InventoryCount','',array('class'=>'form-control txt-count','placeholder'=>'Count',)); ?>
-                            </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div class="form-group">
-                                <?php echo CHtml::Button('Count',array('class'=>'btn btn-primary btn-count','onClick'=>'inventoryCount(1,"")','style'=>'margin-top:20px;'))?>
-                            </div>
-                        </div>
-                    </div>
+<div class="col-xs-12 col-sm-3 widget-container-col">
 
-                    <div class="col-sm-12">
-                        <div class="col-sm-12" id="lasted-count">
-                            <?php if(isset($_SESSION['latestCount'])):?>
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Name</th>
-                                            <th>Counted</th>
-                                            <th style="text-align: right;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach($_SESSION['latestCount'] as $key=>$value):?>
-                                            <tr>
-                                                <td width="30"><?=$value['itemId']?></td>
-                                                <td><?=$value['name']?></td>
-                                                <td width="100">
-                                                    <div class="col-sm-12">
-                                                        <input type="number" onkeypress="updateCount(<?=$value['itemId']?>)" class="txt-counted<?=$value['itemId']?> form-control" value="<?=$value['countNum']?>">
-                                                    </div>
-                                                </td>
-                                                <td width="80" align="center">
-                                                    <a class="delete-item btn btn-danger btn-xs" onClick="inventoryCount(2,<?=$key?>)">
-                                                        <span class="glyphicon glyphicon glyphicon-trash "></span>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        <?php endforeach;?>
-                                    </tbody>
-                                </table>
-                            <?php endif;?>
-                        </div>
-                    </div>
+    <?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
+        'title' => Yii::t('app','General'),
+        'headerIcon' => sysMenuItemIcon(),
+        'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
+        'headerButtons' => array(
+            // TbHtml::buttonGroup(
+            //     array(
+            //         array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/countReview'),'icon'=>'fa fa-check-square  white','id'=>'btn-review'),
+            //     ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+            // ),
+        ),
+        'content' => $this->renderPartial('partial/_general',array(
+            'model'=>$model,
+            'receiveItem'=>$receiveItem,
+            'data_provider'=>$data_provider,
+            'grid_id' => $grid_id,
+            'page_size' => $page_size,
+            'grid_columns' => $grid_columns,
+        ),true)
+    )); ?>
 
-                </div>
-        </div>
-    </div>
+    <?php $this->endWidget(); ?>
 </div>
+<?php $this->renderPartial('partial/_footer',array('btn_text'=>'Rreview','url' => 'receivingItem/countReview'))?>
 
-<?php $this->endWidget(); ?>
+
 
 
 <style type="text/css">

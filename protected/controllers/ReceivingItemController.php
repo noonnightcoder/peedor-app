@@ -141,43 +141,62 @@ class ReceivingItemController extends Controller
     public function actionInventoryCountCreate()
     {
 
-        $this->layout = '//layouts/columntree';
+        if (isset($_POST['Receiving'])) {
 
-        //$invcount=new InventoryCount;
-        $model = new InventoryCount('search');
-        $item = new Item('search');
-        $receiveItem = new ReceivingItem;
+            $model->attributes = $_POST['Receiving'];
 
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['InventoryCount'])) {
-            $model->attributes = $_GET['InventoryCount'];
+            if ($model->save()) {
+
+                if($model->id>0){//check if item id exist after saved to table
+                    //echo '<script>alert("Saved")</script>';
+                }
+                Yii::app()->receivingCart->emptyItemToTransfer();
+                //$this->redirect('Receiving/ItemTransfers');
+
+            }
         }
 
-        if (isset($_GET['pageSize'])) {
-            Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
-            unset($_GET['pageSize']);
-        }
+        $this->reload();
 
-        $page_size = CHtml::dropDownList(
-            'pageSize',
-            Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
-            Common::arrayFactory('page_size'),
-            array('class' => 'change-pagesize')
-        );
+    //     $this->layout = '//layouts/column_sale';
+
+    //     //$invcount=new InventoryCount;
+    //     $model = new InventoryCount('search');
+    //     $item = new Item('search');
+    //     $receiveItem = new ReceivingItem;
+
+    //     $model->unsetAttributes();  // clear any default values
+    //     if (isset($_GET['InventoryCount'])) {
+    //         $model->attributes = $_GET['InventoryCount'];
+    //     }
+
+    //     if (isset($_GET['pageSize'])) {
+    //         Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
+    //         unset($_GET['pageSize']);
+    //     }
+
+    //     $page_size = CHtml::dropDownList(
+    //         'pageSize',
+    //         Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
+    //         Common::arrayFactory('page_size'),
+    //         array('class' => 'change-pagesize')
+    //     );
 
 
-        $data['model'] = $model;
-        $data['receiveItem'] = $receiveItem;
-        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
-        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-        $data['page_size'] = $page_size;
-        $data['create_url'] = 'inventoryCountCreate';
+    //     $data['model'] = $model;
+    //     $data['receiveItem'] = $receiveItem;
+    //     $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+    //     $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+    //     $data['page_size'] = $page_size;
+    //     $data['create_url'] = 'inventoryCountCreate';
 
-        $data['grid_columns'] = InventoryCount::getItemColumns();
+    //     $data['grid_columns'] = InventoryCount::getItemColumns();
 
-        $data['data_provider'] = $model->search();
-        $this->render('create',$data);
+    //     $data['data_provider'] = $model->search();
+    //     $this->render('create',$data);
     }
+
+
 
     public function actionGetItemInfo()
     {

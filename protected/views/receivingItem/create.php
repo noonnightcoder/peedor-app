@@ -4,27 +4,28 @@ $this->breadcrumbs=array(
     'Create',
 );
 ?>
-
-<?php $box = $this->beginWidget('yiiwheels.widgets.box.WhBox', array(
-    'title' => Yii::t('app','Count Inventory'),
-    'headerIcon' => sysMenuItemIcon(),
-    'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
-    'headerButtons' => array(
-        TbHtml::buttonGroup(
-            array(
-                array('label' => Yii::t('app','Review'),'url' => Yii::app()->createUrl('receivingItem/countReview'),'icon'=>'fa fa-check-square  white','id'=>'btn-review'),
-            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
-        ),
+<?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+    'id'=>'item-form',
+    'enableAjaxValidation'=>true,
+    //'action'=>$this->createUrl('Item/Create'),
+    'enableClientValidation'=>true,
+    'clientOptions' => array(
+        'validateOnSubmit'=>true,
+        'validateOnChange'=>true,
+        'validateOnType'=>true,
     ),
-    'content' => $this->renderPartial('_form', array(
+    'layout' => TbHtml::FORM_LAYOUT_HORIZONTAL,
+    'htmlOptions'=>array('enctype' => 'multipart/form-data')
+)); ?>
+    <?php $this->renderPartial('_form', array(
             'model'=>$model,
             'receiveItem'=>$receiveItem,
             'data_provider'=>$data_provider,
             'grid_id' => $grid_id,
             'page_size' => $page_size,
             'grid_columns' => $grid_columns,
-    ), true),
-)); ?>
+        ));
+    ?>
 
-<?php $this->endWidget(); ?>
+<?php $this->endWidget();?>
 

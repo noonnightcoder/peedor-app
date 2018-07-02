@@ -1425,31 +1425,13 @@ class Report extends CFormModel
     public function tranferedListByStatusUser($user_id) {
         $outlet_id = Yii::app()->session['employee_outlet'];
         if ($this->search_id !== '') {
-            $sql= "WITH transfered_item
-                  AS
-                  (
-                    SELECT r.reference_name,r.status,r.trans_type,DATE(r.created_date) created_date,
-                    SUM(ri.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
-                    r.from_outlet,r.to_outlet,r.employee_id,ri.receive_id
-                    FROM receiving r JOIN receiving_item ri
-                    ON r.id=ri.receive_id JOIN item i
-                    ON ri.item_id=i.id
-                    GROUP BY r.reference_name,r.trans_type,DATE(r.created_date),from_outlet,to_outlet,receive_id,r.employee_id
-                  )
-                  SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
-                  (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
-                  (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
-                  (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.employee_id=e.id) transfered_by,
-                  CASE
-                    WHEN `trans_type`=2 THEN 'Pending'
-                    WHEN `trans_type`=1 THEN 'Accepted'
-                    WHEN `trans_type`=-3 THEN 'Rejected'
-                    WHEN `trans_type`=0 THEN 'Cancelled'
-                  END `trans_type`,trans_type trans_type_id,receive_id
-                  FROM transfered_item ti
-               WHERE created_date=:search_id
-               AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
-               ORDER BY receive_id desc";
+            $sql= "SELECT reference_name,STATUS,created_date,trans_qty,qty_af_trans,
+                  from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
+                  trans_type,trans_type_id,receive_id
+                FROM v_transfered_items
+                  WHERE created_date=:search_id
+                  AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
+                  ORDER BY receive_id desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                     ':search_id' => $this->search_id,
@@ -1457,32 +1439,14 @@ class Report extends CFormModel
             );
 
         } else {
-            $sql= "WITH transfered_item
-                  AS
-                  (
-                    SELECT r.reference_name,r.status,r.trans_type,DATE(r.created_date) created_date,
-                    SUM(ri.quantity) trans_qty,SUM(i.quantity) qty_af_trans,
-                    r.from_outlet,r.to_outlet,r.employee_id,ri.receive_id
-                    FROM receiving r JOIN receiving_item ri
-                    ON r.id=ri.receive_id JOIN item i
-                    ON ri.item_id=i.id
-                    GROUP BY r.reference_name,r.trans_type,DATE(r.created_date),from_outlet,to_outlet,receive_id,r.employee_id
-                  )
-                  SELECT reference_name,status,created_date,trans_qty,qty_af_trans,from_outlet from_outlet_id,to_outlet to_outlet_id,
-                  (SELECT outlet_name FROM outlet o WHERE ti.from_outlet=o.id) from_outlet,
-                  (SELECT outlet_name FROM outlet o WHERE ti.to_outlet=o.id) to_outlet,
-                  (SELECT CONCAT(e.first_name,' ',e.last_name) FROM employee e WHERE ti.employee_id=e.id) transfered_by,
-                  CASE
-                    WHEN `trans_type`=2 THEN 'Pending'
-                    WHEN `trans_type`=1 THEN 'Accepted'
-                    WHEN `trans_type`=-3 THEN 'Rejected'
-                    WHEN `trans_type`=0 THEN 'Cancelled'
-                  END `trans_type`,trans_type trans_type_id,receive_id
-                  FROM transfered_item ti
-               WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
-               AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
-               AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
-               ORDER BY receive_id desc";
+            $sql= "SELECT reference_name,STATUS,created_date,trans_qty,qty_af_trans,
+                  from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
+                  trans_type,trans_type_id,receive_id
+                FROM v_transfered_items
+                  WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
+                  AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+                  AND (from_outlet_id=:outlet_id or to_outlet_id=:outlet_id)
+                  ORDER BY receive_id desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
                     ':from_date' => $this->from_date,

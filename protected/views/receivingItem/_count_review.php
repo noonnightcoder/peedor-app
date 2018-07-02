@@ -9,11 +9,11 @@
     'headerIcon' => sysMenuItemIcon(),
     'htmlHeaderOptions'=>array('class'=>'widget-header-flat widget-header-small'),
     'headerButtons' => array(
-        TbHtml::buttonGroup(
-            array(
-                array('label' => Yii::t('app','Save'),'url' => Yii::app()->createUrl('receivingItem/saveCount'),'icon'=>'fa fa-floppy-o white'),
-            ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
-        ),
+        // TbHtml::buttonGroup(
+        //     array(
+        //         array('label' => Yii::t('app','Save'),'url' => Yii::app()->createUrl('receivingItem/saveCount'),'icon'=>'fa fa-floppy-o white'),
+        //     ),array('color'=>TbHtml::BUTTON_COLOR_SUCCESS,'size'=>TbHtml::BUTTON_SIZE_SMALL)
+        // ),
     ),
 )); ?>
 	<h2>
@@ -87,3 +87,4 @@
 	</table>
 	
 <?php $this->endWidget(); ?>
+<?php $this->renderPartial('partial/_footer',array('btn_text'=>'Save','url' => 'receivingItem/saveCount'))?>

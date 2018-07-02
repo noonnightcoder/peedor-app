@@ -567,7 +567,7 @@ class Item extends CActiveRecord
         $suggest = array();
         foreach ($models as $model) {
             $suggest[] = array(
-                'label' => $model->name . ' - ' . $model->cost_price . ' - ' . $model->quantity,
+                'label' => $model->name . ' - $' . $model->cost_price,
                 // label for dropdown list
                 'value' => $model->name,
                 // value for input field

@@ -256,7 +256,7 @@ class Receiving extends CActiveRecord
     protected function updateItemOutlet($item_id, $quantity)
     {
 
-        $outlet_id = Yii::app()->session['outlet'];
+        $outlet_id = isset(Yii::app()->session['outlet']) ? Yii::app()->session['outlet'] : 1;
         if($outlet_id>0){
             $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
                 'item_id' => $item_id,

@@ -9,6 +9,7 @@ class InventoryCount extends CActiveRecord
     public $unit;
     public $cost;
     public $search;
+    public $outlet;
 
     /**
      * Returns the static model of the specified AR class.

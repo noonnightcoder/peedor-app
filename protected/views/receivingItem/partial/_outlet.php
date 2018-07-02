@@ -10,7 +10,7 @@
         <?php echo $form->dropDownList($model,'outlet', 
             CHtml::listData(Outlet::model()->findAll(), 'id', 'outlet_name'),
             array(
-                'empty'=>'All Outlet',
+                //'empty'=>'All Outlet',
                 'id'=>'outlet',
                 'options' => array($outlet=>array('selected'=>'selected'))
             )
