@@ -7,6 +7,11 @@
     )); ?>
 
         <?php $outlet = isset(Yii::app()->session['outlet']) ? Yii::app()->session['outlet'] : 1;?>
+        <?php 
+            if(isset($label) && $label==true){ 
+                echo CHtml::label('Select Outlet', 1, array('class' => 'control-label'));
+            } 
+        ?>
         <?php echo $form->dropDownList($model,'outlet', 
             CHtml::listData(Outlet::model()->findAll(), 'id', 'outlet_name'),
             array(

@@ -15,10 +15,7 @@
         'content' => $this->renderPartial('partial/_count',array(
             'model'=>$model,
             'receiveItem'=>$receiveItem,
-            'data_provider'=>$data_provider,
             'grid_id' => $grid_id,
-            'page_size' => $page_size,
-            'grid_columns' => $grid_columns,
         ),true)
     )); ?>
 
@@ -42,10 +39,7 @@
         'content' => $this->renderPartial('partial/_general',array(
             'model'=>$model,
             'receiveItem'=>$receiveItem,
-            'data_provider'=>$data_provider,
             'grid_id' => $grid_id,
-            'page_size' => $page_size,
-            'grid_columns' => $grid_columns,
         ),true)
     )); ?>
 
@@ -53,7 +47,7 @@
 </div>
 <?php $this->renderPartial('partial/_footer',array('btn_text'=>'Rreview','url' => 'receivingItem/countReview'))?>
 
-
+<?php $this->renderPartial('partial/_js'); ?>
 
 
 <style type="text/css">

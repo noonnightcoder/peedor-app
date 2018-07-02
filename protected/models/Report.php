@@ -1425,7 +1425,7 @@ class Report extends CFormModel
     public function tranferedListByStatusUser($user_id) {
         $outlet_id = Yii::app()->session['employee_outlet'];
         if ($this->search_id !== '') {
-            $sql= "SELECT reference_name,STATUS,created_date,trans_qty,qty_af_trans,
+            $sql= "SELECT reference_name,status,created_date,trans_qty,qty_af_trans,
                   from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
                   trans_type,trans_type_id,receive_id
                 FROM v_transfered_items
@@ -1439,7 +1439,7 @@ class Report extends CFormModel
             );
 
         } else {
-            $sql= "SELECT reference_name,STATUS,created_date,trans_qty,qty_af_trans,
+            $sql= "SELECT reference_name,status,created_date,trans_qty,qty_af_trans,
                   from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
                   trans_type,trans_type_id,receive_id
                 FROM v_transfered_items

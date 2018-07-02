@@ -169,7 +169,7 @@ class PriceBookController extends Controller
 
                         if($val=='markup' || $val=='discount'){
                             
-                            $data[$k]['markup']=$_POST['markup'];
+                            $data[$k]['markup']=$_POST['markup'] > 0 ? $_POST['markup'] : 0;
                             $retailAfMarkup=round(($cost+($cost*($_POST['markup']/100))),4);
                             $discount=round(($retailAfMarkup*($_POST['discount']/100)),2);
                             $data[$k]['retail_price']=$retailAfMarkup-$discount;

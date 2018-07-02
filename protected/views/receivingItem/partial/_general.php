@@ -2,11 +2,11 @@
     <div class="row">
         <!-- <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
     <?= Yii::t('app', 'are required'); ?></p> -->
-        <div class="col-sm-12 col-md-12">
-            <div class="col-sm-12 form-group">
-                <?php echo CHtml::label('Select Outlet', 1, array('class' => 'control-label')); ?>
+        <div class="col-sm-11 col-md-11">
+            <div class="form-group">
+                
                 <?php $this->renderPartial('partial/_outlet',
-                    array('model' => $model,
+                    array('model' => $model,'label'=>true
                     ))?>
             </div>
         </div>

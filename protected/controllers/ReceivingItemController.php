@@ -141,6 +141,11 @@ class ReceivingItemController extends Controller
     public function actionInventoryCountCreate()
     {
 
+        //$invcount=new InventoryCount;
+        $model = new InventoryCount('search');
+        $item = new Item('search');
+        $receiveItem = new ReceivingItem;
+
         if (isset($_POST['Receiving'])) {
 
             $model->attributes = $_POST['Receiving'];
@@ -156,14 +161,17 @@ class ReceivingItemController extends Controller
             }
         }
 
-        $this->reload();
+        $data['model'] = $model;
+        $data['receiveItem'] = $receiveItem;
+        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+        $data['create_url'] = 'inventoryCountCreate';
+
+        $this->reload1($data);
 
     //     $this->layout = '//layouts/column_sale';
 
-    //     //$invcount=new InventoryCount;
-    //     $model = new InventoryCount('search');
-    //     $item = new Item('search');
-    //     $receiveItem = new ReceivingItem;
+        
 
     //     $model->unsetAttributes();  // clear any default values
     //     if (isset($_GET['InventoryCount'])) {
@@ -183,16 +191,7 @@ class ReceivingItemController extends Controller
     //     );
 
 
-    //     $data['model'] = $model;
-    //     $data['receiveItem'] = $receiveItem;
-    //     $data['grid_id'] = strtolower(get_class($model)) . '-grid';
-    //     $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-    //     $data['page_size'] = $page_size;
-    //     $data['create_url'] = 'inventoryCountCreate';
-
-    //     $data['grid_columns'] = InventoryCount::getItemColumns();
-
-    //     $data['data_provider'] = $model->search();
+    
     //     $this->render('create',$data);
     }
 
@@ -555,6 +554,13 @@ class ReceivingItemController extends Controller
         }
 
         loadview('index','index',$data);
+    }
+
+    private function reload1($data=array())
+    {
+        $this->layout = '//layouts/column_sale';
+
+        loadview('_form','_form',$data);
     }
 
     public function actionCancelRecv()

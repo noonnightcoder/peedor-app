@@ -24,7 +24,7 @@
                         'maxlength'=>500,
                         'class'=>'span10',
                         'value'=>$referenceName,
-                        'disabled'=>$from_outlet!==$employee_outlet ? 'disabled' : ''
+                        'disabled'=>isset($_GET['receive_id']) && $from_outlet!==$employee_outlet ? 'disabled' : ''
                         )); ?>
                     <?php echo $form->error($model,'name'); ?>
                 </div>
@@ -56,7 +56,7 @@
                         array(
                             'empty'=>'Select Destination',
                             'id'=>'to_outlet',
-                            'disabled'=>$from_outlet!==$employee_outlet ? 'disabled' : '',
+                            'disabled'=>isset($_GET['receive_id']) &&  $from_outlet!==$employee_outlet ? 'disabled' : '',
                             'options' => array($to_outlet=>array('selected'=>'selected'))
                         )
                     ); ?>
