@@ -261,24 +261,28 @@ class Receiving extends CActiveRecord
             $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
                 'item_id' => $item_id,
                 'outlet_id' => $outlet_id
-            ));    
+            ));
 
-            $cur_item_outlet_info->quantity = $cur_item_outlet_info->quantity+$quantity;
+            $quantity = Yii::app()->receivingCart->getMode() === 'return' ? -$quantity : $quantity;
+            $quantity_af_trans = $cur_item_outlet_info->quantity+$quantity;
+
+            $cur_item_outlet_info->quantity = $quantity_af_trans;
             $cur_item_outlet_info->save();
 
-        }else{
-            $outlets = Outlet::model()->findAll();
-            foreach($outlets as $outlet){
-                 $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
-                    'item_id' => $item_id,
-                    'outlet_id' => $outlet->id
-                ));  
-
-                $cur_item_outlet_info->quantity = $quantity;
-                $cur_item_outlet_info->save();
-
-            }
         }
+//        else{
+//            $outlets = Outlet::model()->findAll();
+//            foreach($outlets as $outlet){
+//                 $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
+//                    'item_id' => $item_id,
+//                    'outlet_id' => $outlet->id
+//                ));
+//
+//                $cur_item_outlet_info->quantity = $quantity;
+//                $cur_item_outlet_info->save();
+//
+//            }
+//        }
 
     }
 
