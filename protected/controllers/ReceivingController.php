@@ -477,6 +477,7 @@ class ReceivingController extends Controller
 
     public function actionReviewTransferItem($receive_id,$tran_type)
     {
+        Yii::app()->receivingCart->setTransferHeader(Yii::app()->session['employee_outlet'],'from_outlet');
 
     	Yii::app()->receivingCart->copyEntireTransferItem($receive_id,$tran_type);
 

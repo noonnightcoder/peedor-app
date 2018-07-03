@@ -36,7 +36,7 @@
             $(this.form).ajaxSubmit({target: "#register_container", beforeSubmit: receivingsBeforeSubmit });
         });
 
-        $('#outlet').change(function(){
+        $('#outlet,#InventoryCount_created_date,#InventoryCount_count_time,#InventoryCount_count_name').change(function(){
            // alert('hello')
             $('#set-outlet-form').ajaxSubmit({target: "#register_container", beforeSubmit: receivingsBeforeSubmit});
         })

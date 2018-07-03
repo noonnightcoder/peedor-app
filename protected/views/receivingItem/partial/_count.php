@@ -1,6 +1,6 @@
 <div id="itemlookup" class="col-xs-12 col-sm-10">
         <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-                'action'=>Yii::app()->createUrl('receivingItem/add'),
+                'action'=>Yii::app()->createUrl('receivingItem/addItemCount'),
                 'method'=>'post',
                 'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
                 'id'=>'add_item_form',
@@ -21,7 +21,7 @@
                         'autoFocus'=> false,
                         'select'=>'js:function(event, ui) {
                             event.preventDefault();
-                            $("#ReceivingItem_item_id").val(ui.item.id);
+                            $("#InventoryCount_item_id").val(ui.item.id);
                             $("#add_item_form").ajaxSubmit({target: "#register_container", beforeSubmit: receivingsBeforeSubmit, success: itemScannedSuccess(ui.item.id)});
                         }',
                     ),

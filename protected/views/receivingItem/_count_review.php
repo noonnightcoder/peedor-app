@@ -17,7 +17,7 @@
     ),
 )); ?>
 	<h2>
-		<?=$header['name']?>
+		<?=$header['count_name']?>
 	</h2>
 	<hr>
 	<table class="table">
@@ -37,40 +37,40 @@
 				$totalUnit=0;
 				$totalCost=0;
 			?>
-			<?php if($items):?>
+			<?php if(!empty($items)):?>
 				<?php foreach($items as $key=>$value):?>
 					<tr>
 						<td>
 							<?=$value['name']?>
 						</td>
 						<td>
-							<?=$value['expected']?>
+							<?=$value['current_quantity']?>
 						</td>
 						<td>
-							<?=$value['countNum']?>
+							<?=$value['quantity']?>
 						</td>
 						<td>
 							<?php
 								$unit=0;
-								if($value['expected']<0){
-									$unit=-1*($value['countNum'])-$value['expected'];
+								if($value['current_quantity']<0){
+									$unit=-1*($value['quantity'])-$value['current_quantity'];
 									$unit=-1*$unit;
 								}else{
-									$unit=$value['countNum']-$value['expected'];
+									$unit=$value['quantity']-$value['current_quantity'];
 								}
 								echo $unit;
 							?>
 						</td>
 						<td>
-							<?php $cost=$unit*$value['cost']?>
+							<?php $cost=$unit*$value['cost_price']?>
 							<?=$cost?>
 						</td>
 					</tr>
 					<?php
-						$totalExpected+=$value['expected'];
-						$totalCounted+=$value['countNum'];
+						$totalExpected+=$value['current_quantity'];
+						$totalCounted+=$value['quantity'];
 						$totalUnit+=$unit;
-						$totalCost+=($unit*$value['cost']);
+						$totalCost+=($unit*$value['cost_price']);
 					?>
 				<?php endforeach;?>
 			<?php endif;?>

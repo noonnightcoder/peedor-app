@@ -1,3 +1,4 @@
+<div id="register_container">
 <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 <div class="col-xs-12 col-sm-9 widget-container-col">
 
@@ -16,11 +17,12 @@
             'model'=>$model,
             'receiveItem'=>$receiveItem,
             'grid_id' => $grid_id,
+            'items' => $items,
         ),true)
     )); ?>
 
     <?php $this->endWidget(); ?>
-    <?php $this->renderPartial('partial/_count_grid')?>
+    <?php $this->renderPartial('partial/_count_grid',array('items' => $items))?>
 </div>
 
 <div class="col-xs-12 col-sm-3 widget-container-col">
@@ -40,13 +42,14 @@
             'model'=>$model,
             'receiveItem'=>$receiveItem,
             'grid_id' => $grid_id,
+            'items' => $items,
         ),true)
     )); ?>
 
     <?php $this->endWidget(); ?>
 </div>
 <?php $this->renderPartial('partial/_footer',array('btn_text'=>'Rreview','url' => 'receivingItem/countReview'))?>
-
+</div>
 <?php $this->renderPartial('partial/_js'); ?>
 
 

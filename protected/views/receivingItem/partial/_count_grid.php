@@ -2,7 +2,7 @@
 
     <div class="col-sm-12">
         <div class="col-sm-12" id="lasted-count">
-            <?php if(isset($_SESSION['latestCount'])):?>
+            <?php if(!empty($items)):?>
                 <table class="table">
                     <thead>
                         <tr>
@@ -13,19 +13,33 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($_SESSION['latestCount'] as $key=>$value):?>
+                        <?php foreach($items as $key=>$item):?>
                             <tr>
-                                <td width="30"><?=$value['itemId']?></td>
-                                <td><?=$value['name']?></td>
+                                <td width="30"><?=$item['item_id']?></td>
+                                <td><?=$item['name']?></td>
                                 <td width="100">
+                                     <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+                                            'method'=>'post',
+                                            'action' => Yii::app()->createUrl('receivingItem/EditItemCount/',array('item_id'=>$item['item_id'])),
+                                            'htmlOptions'=>array('class'=>'line_item_form'),
+                                        ));
+                                    ?>
                                     <div class="col-sm-12">
-                                        <input type="number" onkeypress="updateCount(<?=$value['itemId']?>)" class="txt-counted<?=$value['itemId']?> form-control" value="<?=$value['countNum']?>">
+                                        <input type="number" name="InventoryCount[quantity]" id="quantity_<?=$item['item_id']?>" class="form-control" value="<?=$item['quantity']?>">
                                     </div>
+                                    <?php $this->endWidget()?>
                                 </td>
                                 <td width="80" align="center">
-                                    <a class="delete-item btn btn-danger btn-xs" onClick="inventoryCount(2,<?=$key?>)">
-                                        <span class="glyphicon glyphicon glyphicon-trash "></span>
-                                    </a>
+                                    <?php
+                                        echo TbHtml::linkButton('', array(
+                                            'color'=>TbHtml::BUTTON_COLOR_DANGER,
+                                            'size' => TbHtml::BUTTON_SIZE_MINI,
+                                            'icon' => 'glyphicon glyphicon-trash ',
+                                            'url' => array('DeleteItemCount', 'item_id' => $item['item_id'],'quantity'=>$item['quantity']),
+                                            'class' => 'delete-item',
+                                            'title' => Yii::t('app', 'Remove'),
+                                        ));
+                                    ?>
                                 </td>
                             </tr>
                         <?php endforeach;?>

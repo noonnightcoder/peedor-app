@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','setOutlet'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddItemCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','SetHeader','EditItemCount'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -141,58 +141,8 @@ class ReceivingItemController extends Controller
     public function actionInventoryCountCreate()
     {
 
-        //$invcount=new InventoryCount;
-        $model = new InventoryCount('search');
-        $item = new Item('search');
-        $receiveItem = new ReceivingItem;
+        $this->reload1();
 
-        if (isset($_POST['Receiving'])) {
-
-            $model->attributes = $_POST['Receiving'];
-
-            if ($model->save()) {
-
-                if($model->id>0){//check if item id exist after saved to table
-                    //echo '<script>alert("Saved")</script>';
-                }
-                Yii::app()->receivingCart->emptyItemToTransfer();
-                //$this->redirect('Receiving/ItemTransfers');
-
-            }
-        }
-
-        $data['model'] = $model;
-        $data['receiveItem'] = $receiveItem;
-        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
-        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-        $data['create_url'] = 'inventoryCountCreate';
-
-        $this->reload1($data);
-
-    //     $this->layout = '//layouts/column_sale';
-
-        
-
-    //     $model->unsetAttributes();  // clear any default values
-    //     if (isset($_GET['InventoryCount'])) {
-    //         $model->attributes = $_GET['InventoryCount'];
-    //     }
-
-    //     if (isset($_GET['pageSize'])) {
-    //         Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
-    //         unset($_GET['pageSize']);
-    //     }
-
-    //     $page_size = CHtml::dropDownList(
-    //         'pageSize',
-    //         Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
-    //         Common::arrayFactory('page_size'),
-    //         array('class' => 'change-pagesize')
-    //     );
-
-
-    
-    //     $this->render('create',$data);
     }
 
 
@@ -205,146 +155,109 @@ class ReceivingItemController extends Controller
 
     }
 
-    public function actionAddCount()
+    public function actionAddItemCount()
     {
-        $info=Item::model()->findbyPk($_POST['itemId']);
-        // var_dump($info['quantity']);
-        $this->setSession(Yii::app()->session);
-        
-        $data=$this->session['latestCount'];
-        $exist="";
 
-        if($_POST['opt']==1){
-            $itemId = $_POST['itemId'];
-            $itemName = $_POST['name'];
-            $countNum = $_POST['countNum'];
-            $countDate = $_POST['countDate'];
-            $countTime = $_POST['countTime'] ? $_POST['countTime'] : date('H:i:s');
-            $countName = $_POST['countName'];
-            $this->session['countheader']=array('name'=>$countName.' '.$countTime,'created_date'=>$countDate.' '.$countTime);
-            if(!empty($data)){//check if data is not empty
+        $data=array();
+        $header=array();
 
-                foreach($data as $k=>$v){
-                    $exist=array_search($itemName,$data[$k]);//search array by proName
-                    if($v['name']==$itemName){//update number of quantity count when item already counted
-                        $data[$k]['countNum']+=$countNum;//update array data
-                    }
-                }
+        $item_id = $_POST['InventoryCount']['item_id'];
 
-            }
-            if($exist==""){
-                $data[]=array('itemId'=>$itemId,'name'=>$itemName,'expected'=>$info['quantity'],'cost'=>$info['cost_price'],'countNum'=>$countNum);
-            }
-            $this->session['latestCount']=$data;//after update or add item to data then update the session
+        if(isset($_POST['InventoryCount']['outlet'])){
             
-        }elseif($_POST['opt']==2){//remove counted item
-            unset($_SESSION['latestCount'][$_POST['idx']]); 
-        }elseif($_POST['opt']==3){
-
-            if(!empty($data)){//check if data is not empty
-
-                foreach($data as $k=>$v){
-                    if($v['itemId']==$_POST['itemId']){//update number of quantity count when item already counted
-                        $data[$k]['countNum']=$_POST['newCount'];//update array data
-                    }
-                }
-
-            }
-            $this->session['latestCount']=$data;//after update or add item to data then update the session
+            $header['outlet_id'] = $_POST['InventoryCount']['outlet_id'];
 
         }
-        $latest=$this->session['latestCount'];
-        //refresh list 
-            echo '
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Counted</th>
-                        <th style="text-align: right;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>';
-            foreach($latest as $key=>$value){
-                
-                echo'
-                <tr>
-                    <td width="30">'.$value['itemId'].'</td>
-                    <td>'.$value['name'].'</td>
-                    <td width="100">
-                        <div class="col-sm-12">
-                            <input type="number" onkeypress="updateCount('.$value['itemId'].')" class="txt-counted'.$value['itemId'].' form-control" value="'.$value['countNum'].'"></td>
-                        </div>
-                    <td width="80" align="center">
-                        <a class="delete-item btn btn-danger btn-xs" onClick="inventoryCount(2,'.$key.')">
-                            <span class="glyphicon glyphicon glyphicon-trash "></span>
-                        </a>
-                    </td>
-                </tr>
-                ';
-                            
-            }
-        echo '
-            </tbody>
-        </table>
-        ';
+
+        if (!Yii::app()->receivingCart->addItemToTransfer($item_id,$header,1,false)) {
+
+            Yii::app()->user->setFlash('warning', 'Unable to add item to cart');
+
+        }
+
+        $this->reload1();
         
+    }
+
+    public function actionEditItemCount($item_id){
+
+        ajaxRequestPost();
+
+        $data = array();
+        $quantity = isset($_POST['InventoryCount']['quantity']) ? $_POST['InventoryCount']['quantity'] : null;
+
+        Yii::app()->receivingCart->editItemToTransfer($item_id, $quantity);
+
+        $this->reload1();
+
     }
     
     public function actionCountReview(){
-        $this->setSession(Yii::app()->session);
-        $data['items']=$this->session['latestCount'];//initail data from session
-        $data['header']=$this->session['countheader'];
+        $data['items']=Yii::app()->receivingCart->getItemToTransfer();//initail data from session
+        $data['header'] = $this->getCountHeader();
         $this->render('_count_review',$data);
     }
 
     public function actionSaveCount(){
-        $this->setSession(Yii::app()->session);
-        $data=$this->session['latestCount'];
-        $header=$this->session['countheader'];
+
+        $items=Yii::app()->receivingCart->getItemToTransfer();//initail data from session
+        $header = $this->getCountHeader();
         $employeeid=Yii::app()->session['employeeid'];
 
         //save inventory count
         $inventoryCount=new InventoryCount;
-        $inventoryCount->name=$header['name'];
+        $inventoryCount->name=$header['count_name'];
         $inventoryCount->created_date=$header['created_date'];
         $inventoryCount->save();
 
-        //save detail and history
-        $connection = Yii::app()->db;
-        foreach($data as $key=>$value){
+        foreach($items as $key=>$item){
 
-            if($value['expected']<0){
-                $qty_b4_trans=(-1)*($value['countNum'])-$value['expected'];
+            if($item['current_quantity']<0){
+                $qty_b4_trans=(-1)*($item['quantity'])-$item['current_quantity'];
                 $qty_b4_trans=(-1)*$qty_b4_trans;
             }else{
-                $qty_b4_trans=$value['countNum']-$value['expected'];
+                $qty_b4_trans=$item['quantity']-$item['current_quantity'];
             }
 
-            $qty_af_trans=$qty_b4_trans+$value['expected'];
-            $cost=$qty_b4_trans*$value['cost'];
-            $invSql="insert into inventory_count_detail
-            (item_id,count_id,expected,counted,unit,cost)
-            values(".$value['itemId'].",".$inventoryCount->id.",".$value['expected'].",".$value['countNum'].",".$qty_b4_trans.",".$cost.")";
-            $command = $connection->createCommand($invSql);
-            $insert = $command->execute(); // execute the non-query SQL
+            $qty_af_trans=$qty_b4_trans+$item['current_quantity'];
+            $cost=$qty_b4_trans*$item['cost_price'];
 
+            $inventory_count_data['item_id'] = $item['item_id'];
+            $inventory_count_data['count_id'] = $inventoryCount->id;
+            $inventory_count_data['expected'] = $item['current_quantity'];
+            $inventory_count_data['counted'] = $item['quantity'];
+            $inventory_count_data['unit'] = $qty_b4_trans ; 
+            $inventory_count_data['cost'] = $cost;
 
+            Sale::model()->saveSaleTransaction(new InventoryCountDetail,$inventory_count_data);              
             //save to inventory
-            $sql = "insert into inventory
-            (trans_items,trans_user,trans_date,trans_comment,trans_inventory,trans_qty,qty_b4_trans,qty_af_trans) 
-            values(" .$value['itemId']. ",'".$employeeid."','" .$header['created_date']. "','" .'IPC'. "','".$value['expected']."','".$value['countNum']."','" .$qty_b4_trans. "','".$qty_af_trans."')";
-            $command1 = $connection->createCommand($sql);
-            $insert1 = $command1->execute(); // execute the non-query SQL
-            //IPC stand for Iventory Physical Count
+
+            $inventory_data['trans_items'] = $item['item_id'];
+            $inventory_data['trans_user'] = $employeeid;
+            $inventory_data['trans_comment'] = 'IPC';
+            $inventory_data['trans_inventory'] = (-$item['quantity']);
+            $inventory_data['trans_qty'] = $item['quantity'];
+            $inventory_data['qty_b4_trans'] = $qty_b4_trans ; 
+            $inventory_data['qty_af_trans'] = $qty_af_trans;
+            $inventory_data['trans_date'] = date('Y-m-d H:i:s');
+            $inventory_data['outlet_id'] = $header['outlet'];
+
+            Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);  
+
             //update item quantity
-            $updateSql="update item set quantity=".$value['countNum']." where id=".$value['itemId'];
-            $command2 = $connection->createCommand($updateSql);
-            $insert2 = $command2->execute(); // execute the non-query SQL
+            $updateSql="
+            update item_outlet set quantity=:quantity 
+            where id=:item_id and outlet_id:=outlet";
+
+            $item_outlet_model = ItemOutlet::model()->findByAttributes(array(
+                'outlet_id' => $header['outlet'],
+                'item_id' => $item['item_id'],
+            ));
+
+            $item_outlet_model->quantity=$item['quantity'];
+
         }
-        unset(Yii::app()->session['latestCount']);
-        unset(Yii::app()->session['countheader']);
+        Yii::app()->receivingCart->clearItemToTransfer();
         $this->redirect(array('receivingItem/index?trans_mode=physical_count'));
     }
 
@@ -352,21 +265,46 @@ class ReceivingItemController extends Controller
     {   
         //$data=array();
         $item_id = $_POST['ReceivingItem']['item_id'];
+
         if ((ckacc('purchasereceive.read') || ckacc('purchasereceive.create') || ckacc('purchasereceive.update')) && Yii::app()->receivingCart->getMode()=='receive') {
+
             $data['warning']=$this->addItemtoCart($item_id);
+
         } else if ((ckacc('purchasereturn.read') || ckacc('purchasereturn.create') || ckacc('purchasereturn.update'))&& Yii::app()->receivingCart->getMode()=='return') {
+
            $data['warning']=$this->addItemtoCart($item_id);
+
         } else if (Yii::app()->user->checkAccess('stock.in') && Yii::app()->receivingCart->getMode()=='adjustment_in') {
+
            $data['warning']=$this->addItemtoCart($item_id);  
+
         } else if (Yii::app()->user->checkAccess('stock.out') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
+
            $data['warning']=$this->addItemtoCart($item_id);   
+
         } else if ((ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update')) && Yii::app()->receivingCart->getMode()=='physical_count') {
-            $data['warning']=$this->addItemtoCart($item_id);     
+
+            $data['warning']=$this->addItemtoCart($item_id);    
+
         } else {
+
             throw new CHttpException(403, 'You are not authorized to perform this action');
+
         }
          
         $this->reload($data);
+    }
+
+    private function getCountHeader()
+    {
+
+        $header_data['outlet'] = Yii::app()->receivingCart->getTransferHeader('outlet') ? Yii::app()->receivingCart->getTransferHeader('outlet') : Yii::app()->session['employee_outlet'];
+        $header_data['created_date'] = Yii::app()->receivingCart->getTransferHeader('created_date') ? Yii::app()->receivingCart->getTransferHeader('created_date') : date('Y-m-d');
+        $header_data['count_time'] = Yii::app()->receivingCart->getTransferHeader('count_time') ? Yii::app()->receivingCart->getTransferHeader('count_time') : date('H:i:s');
+        $header_data['count_name'] = Yii::app()->receivingCart->getTransferHeader('count_name') ? Yii::app()->receivingCart->getTransferHeader('count_name') : 'InventoryCount'.date('Y-m-d');
+        $header_data['employee_id'] = Yii::app()->session['employeeid'];
+
+        return $header_data;
     }
     
     protected function addItemtoCart($item_id)
@@ -560,6 +498,19 @@ class ReceivingItemController extends Controller
     {
         $this->layout = '//layouts/column_sale';
 
+        $model = new InventoryCount('search');
+        $item = new Item('search');
+        $receiveItem = new ReceivingItem;
+
+        $items=Yii::app()->receivingCart->getItemToTransfer();
+        $data['items'] = $items;
+
+        $data['model'] = $model;
+        $data['receiveItem'] = $receiveItem;
+        $data['grid_id'] = strtolower(get_class($model)) . '-grid';
+        $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
+        $data['create_url'] = 'inventoryCountCreate';
+
         loadview('_form','_form',$data);
     }
 
@@ -741,17 +692,35 @@ class ReceivingItemController extends Controller
 
     }
 
-    public function actionSetOutlet()
+    public function actionSetHeader()
     {
 
-        if (isset($_POST['ReceivingItem'])) {
+        if (isset($_POST['InventoryCount']['outlet'])) {
             
-            $to_outlet = $_POST['ReceivingItem']['outlet'];
+            $to_outlet = $_POST['InventoryCount']['outlet'];
             Yii::app()->receivingCart->setTransferHeader($to_outlet,'outlet');
 
         }
+        if (isset($_POST['InventoryCount']['created_date'])) {
+            
+            $created_date = $_POST['InventoryCount']['created_date'];
+            Yii::app()->receivingCart->setTransferHeader($created_date,'created_date');
 
-        $this->reload();
+        }
+        if (isset($_POST['InventoryCount']['count_time'])) {
+            
+            $count_time = $_POST['InventoryCount']['count_time'];
+            Yii::app()->receivingCart->setTransferHeader($count_time,'count_time');
+
+        }
+        if (isset($_POST['InventoryCount']['count_name'])) {
+            
+            $count_name = $_POST['InventoryCount']['count_name'];
+            Yii::app()->receivingCart->setTransferHeader($count_name,'count_name');
+
+        }
+
+        $this->reload1();
     }
 
     protected function renderView($data, $view_name='index')

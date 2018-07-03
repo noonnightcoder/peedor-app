@@ -1470,7 +1470,7 @@ class Report extends CFormModel
 
     public function tranferedDetail()
     {
-        $sql= "SELECT t.receive_id,it.name item_name,it.quantity remaining_qty,t.quantity,s.created_date receive_time,t.cost_price,t.unit_price
+        $sql= "SELECT t.receive_id,it.name item_name,t.quantity,s.created_date receive_time,t.cost_price,t.unit_price
               FROM receiving_item t JOIN v_item_outlet it
               ON t.item_id=it.item_id JOIN receiving s
               ON t.receive_id=s.id
