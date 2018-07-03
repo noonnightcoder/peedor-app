@@ -35,7 +35,7 @@
         <?php
         $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
             'id' => 'cancel_recv_form',
-            'action' => Yii::app()->createUrl('receivingItem/cancelRecv/'),
+            'action' => Yii::app()->createUrl('receivingItem/CancelCount/'),
             'layout' => TbHtml::FORM_LAYOUT_INLINE,
         ));
         ?>
@@ -45,7 +45,7 @@
                 'color' => TbHtml::BUTTON_COLOR_DANGER,
                 'size' => TbHtml::BUTTON_SIZE_SMALL,
                 'icon' => 'bigger-140 fa fa-trash',
-                'url' => Yii::app()->createUrl('receivingItem/cancelRecv/'),
+                'url' => Yii::app()->createUrl('receivingItem/CancelCount/'),
                 'class' => 'cancel-receiving',
                 'id' => 'cancel_receiving_button',
                 'title' => Yii::t('app', 'Empty Cart'),

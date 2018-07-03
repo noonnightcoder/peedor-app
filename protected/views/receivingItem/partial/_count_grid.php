@@ -13,6 +13,7 @@
                         </tr>
                     </thead>
                     <?php if(!empty($items)):?>
+
                     <tbody id="cart_contents">
                         <?php foreach($items as $key=>$item):?>
                             <tr>

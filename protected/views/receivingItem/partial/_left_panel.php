@@ -34,7 +34,7 @@
             </thead>
             <tbody id="cart_contents">
             <?php foreach (array_reverse($items, true) as $id => $item): ?>
-            <?php echo $item['quantity']?>
+
                 <?php
                 $total_item = Common::calTotalAfterDiscount($item['discount'], $item['cost_price'],
                     $item['quantity']);

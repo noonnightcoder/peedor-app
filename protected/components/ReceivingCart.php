@@ -475,6 +475,7 @@ class ReceivingCart extends CApplicationComponent
     {
         $this->setSession(Yii::app()->session);
         unset($this->session['from_outlet']);
+        unset($this->session['outlet']);
         unset($this->session['to_outlet']);
         unset($this->session['reference_name']);
         unset($this->session['item_to_transfer']);

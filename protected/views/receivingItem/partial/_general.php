@@ -7,7 +7,7 @@
 <div>
 
     <?php
-        $outlet = Yii::app()->receivingCart->getTransferHeader('outlet') ? Yii::app()->receivingCart->getTransferHeader('outlet') : Yii::app()->session['employee_outlet'];
+        $outlet = Yii::app()->receivingCart->getTransferHeader('from_outlet') ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session['employee_outlet'];
         $created_date = Yii::app()->receivingCart->getTransferHeader('created_date') ? Yii::app()->receivingCart->getTransferHeader('created_date') : date('Y-m-d');
         $count_time = Yii::app()->receivingCart->getTransferHeader('count_time') ? Yii::app()->receivingCart->getTransferHeader('count_time') : date('H:i:s');
         $count_name = Yii::app()->receivingCart->getTransferHeader('count_name') ? Yii::app()->receivingCart->getTransferHeader('count_name') : 'InventoryCount_'.date('Y-m-d');
@@ -19,7 +19,7 @@
             <div class="form-group">
                 
                 <?php $this->renderPartial('partial/_outlet',
-                    array('model' => $model,'form'=>$form,'label'=>true
+                    array('model' => $model,'form'=>$form,'outlet'=>$outlet,'label'=>true
                     ))?>
             </div>
         </div>
