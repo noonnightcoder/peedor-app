@@ -22,7 +22,7 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddItemCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','SetHeader','EditItemCount'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddItemCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','SetHeader','SetOutlet','EditItemCount','DeleteItemCount'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -190,6 +190,15 @@ class ReceivingItemController extends Controller
 
         $this->reload1();
 
+    }
+
+    public function actionDeleteItemCount($item_id)
+    {
+        ajaxRequestPost();
+
+        Yii::app()->receivingCart->deleteItemToTransfer($item_id);
+
+        $this->reload();
     }
     
     public function actionCountReview(){
@@ -721,6 +730,17 @@ class ReceivingItemController extends Controller
         }
 
         $this->reload1();
+    }
+
+    public function actionSetOutlet()
+    {
+        if (isset($_POST['ReceivingItem']['outlet'])) {
+
+            $to_outlet = $_POST['ReceivingItem']['outlet'];
+            Yii::app()->receivingCart->setTransferHeader($to_outlet,'outlet');
+
+        }
+        $this->reload();
     }
 
     protected function renderView($data, $view_name='index')

@@ -435,6 +435,7 @@ class ReceivingCart extends CApplicationComponent
         $this->clearMode();
         $this->clearTotalDiscount();
         unset(Yii::app()->session['outlet']);
+        unset(Yii::app()->session['item_to_transfer']);
     }
 
 

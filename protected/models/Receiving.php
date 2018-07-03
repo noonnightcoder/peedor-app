@@ -228,7 +228,7 @@ class Receiving extends CActiveRecord
             $this->updateItem($cur_item_info, $cost_price, $unit_price, $stock_quantity[0]);
 
             // Updateing Quantity to item outlet
-            $this->updateItemOutlet($item_id,$stock_quantity[0]);
+            $this->updateItemOutlet($item_id,$item['quantity']);
 
             // Product Price (retail price) history
             $this->updateItemPrice($item_id, $cur_unit_price, $unit_price, $employee_id, $trans_date);
@@ -263,7 +263,7 @@ class Receiving extends CActiveRecord
                 'outlet_id' => $outlet_id
             ));    
 
-            $cur_item_outlet_info->quantity = $quantity;
+            $cur_item_outlet_info->quantity = $cur_item_outlet_info->quantity+$quantity;
             $cur_item_outlet_info->save();
 
         }else{

@@ -83,19 +83,28 @@
                 }
             }
             ?>
-            <?php
-                $this->widget('yiiwheels.widgets.box.WhBox', array(
-                    'title' => Yii::t('app', 'Select Outlet'),
-                    'headerIcon' => 'menu-icon fa fa-university',
-                    'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
-                    'content' => $this->renderPartial('partial/_outlet',
-                        array('model' => $model,
-                            'supplier' => $supplier,
-                            'count_item' => $count_item,
-                            'trans_mode' => $trans_mode
-                        ), true)
-                ));
-            ?>
+            <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
+                'action'=>Yii::app()->createUrl('receivingItem/SetOutlet'),
+                'id' => 'set-outlet-form',
+                'method'=>'post',
+                'layout'=>TbHtml::FORM_LAYOUT_HORIZONTAL,
+            )); ?>
+            <div>
+                <?php
+                    $this->widget('yiiwheels.widgets.box.WhBox', array(
+                        'title' => Yii::t('app', 'Select Outlet'),
+                        'headerIcon' => 'menu-icon fa fa-university',
+                        'htmlHeaderOptions' => array('class' => 'widget-header-flat widget-header-small'),
+                        'content' => $this->renderPartial('partial/_outlet',
+                            array('model' => $model,
+                                'supplier' => $supplier,
+                                'count_item' => $count_item,
+                                'trans_mode' => $trans_mode,
+                                'form' => $form
+                            ), true)
+                    ));
+                ?>
+            <?php $this->endWidget()?>
         </div>
         
     </div>

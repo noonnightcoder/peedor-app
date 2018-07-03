@@ -1,9 +1,9 @@
-<div class="row">
+<div class="grid-view" id="grid-cart">
 
     <div class="col-sm-12">
         <div class="col-sm-12" id="lasted-count">
-            <?php if(!empty($items)):?>
-                <table class="table">
+
+                <table class="table table-hover table-condensed">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -12,7 +12,8 @@
                             <th style="text-align: right;">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <?php if(!empty($items)):?>
+                    <tbody id="cart_contents">
                         <?php foreach($items as $key=>$item):?>
                             <tr>
                                 <td width="30"><?=$item['item_id']?></td>
@@ -35,7 +36,7 @@
                                             'color'=>TbHtml::BUTTON_COLOR_DANGER,
                                             'size' => TbHtml::BUTTON_SIZE_MINI,
                                             'icon' => 'glyphicon glyphicon-trash ',
-                                            'url' => array('DeleteItemCount', 'item_id' => $item['item_id'],'quantity'=>$item['quantity']),
+                                            'url' => array('DeleteItemCount', 'item_id' => $item['item_id']),
                                             'class' => 'delete-item',
                                             'title' => Yii::t('app', 'Remove'),
                                         ));
@@ -44,8 +45,9 @@
                             </tr>
                         <?php endforeach;?>
                     </tbody>
+                    <?php endif;?>
                 </table>
-            <?php endif;?>
+
         </div>
     </div>
 </div>

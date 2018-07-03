@@ -1,5 +1,5 @@
 <div class="col-sm-12 form-group">
-    
+
 
         <?php $outlet = isset(Yii::app()->session['outlet']) ? Yii::app()->session['outlet'] : Yii::app()->session['employee_outlet'];?>
         <?php 
@@ -16,5 +16,5 @@
             )
         ); ?>
         <?php echo $form->error($model,'to_outlet'); ?>
-    
+
 </div>

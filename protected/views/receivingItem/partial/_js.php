@@ -1,3 +1,22 @@
+<?php
+Yii::app()->clientScript->registerScript( 'deleteItem', "
+        jQuery( function($){
+            $('div#grid-cart').on('click','a.delete-item',function(e) {
+                e.preventDefault();
+                var url=$(this).attr('href');
+                $.ajax({url:url,
+                        type : 'post',
+                        beforeSend: function() { $('.waiting').slideDown(); },
+                        complete: function() { $('.waiting').slideUp(); },
+                        success : function(data) {
+                            $('#register_container').html(data);
+                          }
+                    });
+                });
+        });
+      ");
+?>
+
 <script>
 
     var submitting = false;
@@ -71,24 +90,7 @@
 
 <?php Yii::app()->clientScript->registerScript('setFocus', '$("#ReceivingItem_item_id").focus();'); ?>
 
-<?php
-Yii::app()->clientScript->registerScript( 'deleteItem', "
-        jQuery( function($){
-            $('div#grid_cart').on('click','a.delete-item',function(e) {
-                e.preventDefault();
-                var url=$(this).attr('href');
-                $.ajax({url:url,
-                        type : 'post',
-                        beforeSend: function() { $('.waiting').slideDown(); },
-                        complete: function() { $('.waiting').slideUp(); },
-                        success : function(data) {
-                            $('#register_container').html(data);
-                          }
-                    });
-                });
-        });
-      ");
-?>
+
 
 <?php
 Yii::app()->clientScript->registerScript( 'setComment', "

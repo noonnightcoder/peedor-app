@@ -30,3 +30,28 @@
 
         <?php $this->endWidget(); ?>
     </div>
+<div id="cancel_cart" class="col-xs-12 col-sm-2">
+    <?php if (!empty($items)) { ?>
+        <?php
+        $form = $this->beginWidget('bootstrap.widgets.TbActiveForm', array(
+            'id' => 'cancel_recv_form',
+            'action' => Yii::app()->createUrl('receivingItem/cancelRecv/'),
+            'layout' => TbHtml::FORM_LAYOUT_INLINE,
+        ));
+        ?>
+        <div>
+            <?php
+            echo TbHtml::linkButton(Yii::t('app', ''), array(
+                'color' => TbHtml::BUTTON_COLOR_DANGER,
+                'size' => TbHtml::BUTTON_SIZE_SMALL,
+                'icon' => 'bigger-140 fa fa-trash',
+                'url' => Yii::app()->createUrl('receivingItem/cancelRecv/'),
+                'class' => 'cancel-receiving',
+                'id' => 'cancel_receiving_button',
+                'title' => Yii::t('app', 'Empty Cart'),
+            ));
+            ?>
+        </div>
+        <?php $this->endWidget(); ?>
+    <?php } ?>
+</div>
