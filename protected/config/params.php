@@ -19,17 +19,17 @@ return array(
     'biz_name' => 'peedor',
     'biz_title' => 'smart inventory system',
     // this is displayed in the header section
-	'title' => 'Simply The Best',
-	// number of posts displayed per page
-	'postsPerPage'=>10,
-	// maximum number of comments that can be displayed in recent comments portlet
-	'recentCommentCount'=>10,
-	// maximum number of tags that can be displayed in tag cloud portlet
-	'tagCloudCount'=>20,
-	// whether post comments need to be approved before published
-	'commentNeedApproval'=>true,
-	// the copyright information displayed in the footer section
-	'copyrightInfo'=>'Copyright &copy; 2009 by My Company.',
+    'title' => 'Simply The Best',
+    // number of posts displayed per page
+    'postsPerPage'=>10,
+    // maximum number of comments that can be displayed in recent comments portlet
+    'recentCommentCount'=>10,
+    // maximum number of tags that can be displayed in tag cloud portlet
+    'tagCloudCount'=>20,
+    // whether post comments need to be approved before published
+    'commentNeedApproval'=>true,
+    // the copyright information displayed in the footer section
+    'copyrightInfo'=>'Copyright &copy; 2009 by My Company.',
     // Company Name
     'company_name' => 'Try Me',
     'company_slogan' => 'simply the best',
@@ -42,11 +42,15 @@ return array(
     'menu_pricebook_view'=>'Price Book',
     'menu_item_view' => 'view item',
     'menu_item_finder' => 'Item finder',
+    'menu_barcode' => 'Print Barcode Label',
     'menu_item_imp_exp' => 'Import/Export',
     'menu_item_markup_price' => 'Markup Price Update',
     'menu_inventory' => 'inventory',
     'menu_inventory_count' => 'physical count',
     'menu_inventory_count2' => 'physical count2',
+    'menu_stock_transfer' => 'stock transfer',
+    'menu_stock_transfer_out' => 'Transfer Out',
+    'menu_stock_transfer_receive' => 'Transfer Receive',
     'menu_inventory_add' => 'in stock',
     'menu_inventory_minus' => 'out stock',
     'menu_inventory_transfer' => 'transfer stock',
@@ -60,18 +64,21 @@ return array(
     'menu_sale_approve' => 'approve sale order',
     'menu_sale_payment' => 'payment',
     'menu_sale_order' => 'order', // sale order shot cut to order we continuous main menu Sale
-    'menu_sale_order_add' => 'order add', // sale order add => order ad
+    'menu_sale_order_add' => 'order create', // sale order add => order ad
+    'menu_sale_create_invoice'=>'invoice create',
     'menu_sale_order_view' =>  'order view', // sale order view => order view
-    'menu_invoicing' => 'invoicing',
     'menu_sale_order_to_validate' => 'order to validate',
     'menu_sale_order_to_invoice' => 'order to invoice',
     'menu_sale_order_to_deliver' => 'order to deliver',
+    'menu_invoice' => 'invoice',
+    'menu_invoice_add' => 'invoice create',
     'menu_report' => 'report',
     'menu_report_sale_invoice' => 'sale invoice',
     'menu_report_sale_daily' => 'sale daily',
     'menu_report_sale_hourly' => 'sale hourly',
     'menu_report_sale_summary' => 'sale summary',
     'menu_customer' => 'customer',
+    'menu_customer_group' => 'customer group',
     'menu_employee' => 'employee',
     'menu_supplier' => 'supplier',
     'menu_setting' => 'setting',
@@ -79,4 +86,5 @@ return array(
     'menu_price_tier' => 'price tier',
     'menu_authorization' => 'authorization',
     'menu_about_us' => 'about us',
+    'menu_outlet' => 'Outlet',
 );
