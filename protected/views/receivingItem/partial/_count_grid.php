@@ -27,7 +27,7 @@
                                         ));
                                     ?>
                                     <div class="col-sm-12">
-                                        <input type="number" name="InventoryCount[quantity]" id="quantity_<?=$item['item_id']?>" class="form-control" value="<?=$item['quantity']?>">
+                                        <input type="text" name="InventoryCount[quantity]" id="quantity_<?=$item['item_id']?>" class="form-control" value="<?=$item['quantity']?>">
                                     </div>
                                     <?php $this->endWidget()?>
                                 </td>

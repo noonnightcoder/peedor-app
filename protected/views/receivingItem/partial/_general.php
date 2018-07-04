@@ -16,7 +16,7 @@
         <!-- <p class="help-block"><?php echo Yii::t('app', 'Fields with'); ?> <span class="required">*</span>
     <?= Yii::t('app', 'are required'); ?></p> -->
         <div class="col-sm-11 col-md-11">
-            <div class="form-group">
+            <div class="col-sm-12 form-group">
                 
                 <?php $this->renderPartial('partial/_outlet',
                     array('model' => $model,'form'=>$form,'outlet'=>$outlet,'label'=>true

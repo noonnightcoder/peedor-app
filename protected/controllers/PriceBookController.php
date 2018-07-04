@@ -170,8 +170,8 @@ class PriceBookController extends Controller
                         if($val=='markup' || $val=='discount'){
                             
                             $data[$k]['markup']=$_POST['markup'] > 0 ? $_POST['markup'] : 0;
-                            $retailAfMarkup=round(($cost+($cost*($_POST['markup']/100))),4);
-                            $discount=round(($retailAfMarkup*($_POST['discount']/100)),2);
+                            $retailAfMarkup=round(($cost+($cost*($_POST['markup']/100))),Common::getDecimalPlace());
+                            $discount=round(($retailAfMarkup*($_POST['discount']/100)),Common::getDecimalPlace());
                             $data[$k]['retail_price']=$retailAfMarkup-$discount;
                             $data[$k]['discount']=$_POST['discount'];
 
@@ -182,7 +182,7 @@ class PriceBookController extends Controller
 
                             $data[$k]['retail_price']=$_POST['retail_price'];
 
-                            $data[$k]['markup']=round(((($_POST['retail_price']*100)/$cost)-100),2);//update array data
+                            $data[$k]['markup']=round(((($_POST['retail_price']*100)/$cost)-100),Common::getDecimalPlace());//update array data
                         }
                         if($val=='min_qty'){
 
