@@ -1,6 +1,6 @@
 <div class="col-sm-12 form-group">
 
-
+        <?php $outlet = Yii::app()->receivingCart->getTransferHeader('outlet') ? Yii::app()->receivingCart->getTransferHeader('outlet') : Yii::app()->session['employee_outlet'];?>
         <?php 
             if(isset($label) && $label==true){ 
                 echo CHtml::label('Select Outlet', 1, array('class' => 'control-label'));

@@ -734,7 +734,7 @@ class SaleItemController extends Controller
         $data['amount_change'] = Yii::app()->shoppingCart->getTotalDue(); // Outstanding + Current Invoice / Hot Bill - Total Payment
         $data['customer_id'] = Yii::app()->shoppingCart->getCustomer();
         $data['comment'] = Yii::app()->shoppingCart->getComment();
-        $data['employee_id'] = Yii::app()->session['employeeid'];
+        $data['employee_id'] = Yii::app()->shoppingCart->getEmployee() ? Yii::app()->shoppingCart->getEmployee() : Yii::app()->session['employeeid'];
         $data['employee_outlet'] = Yii::app()->session['employee_outlet'];
         $data['salerep_id'] = Yii::app()->shoppingCart->getSaleRep();
         $data['transaction_date'] = date('d/m/Y',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('d/m/Y');

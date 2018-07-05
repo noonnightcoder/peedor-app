@@ -748,8 +748,8 @@ class ReceivingItemController extends Controller
     {
         if (isset($_POST['ReceivingItem']['outlet'])) {
 
-            $to_outlet = $_POST['ReceivingItem']['outlet'];
-            Yii::app()->receivingCart->setTransferHeader($to_outlet,'outlet');
+            $outlet = $_POST['ReceivingItem']['outlet'];
+            Yii::app()->receivingCart->setTransferHeader($outlet,'outlet');
 
         }
         $this->reload();
