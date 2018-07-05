@@ -93,7 +93,7 @@ class ReportColumn extends CModel
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 //'header'=>'Invoice Detail',
-                'template' => '<div class="btn-group">{view}{print}{cancel}{edit}</div>',
+                'template' => '<div class="btn-group">{view}{print}{cancel}{edit}{printdo}</div>',
                 'buttons' => array(
                     'view' => array(
                         'click' => 'updateDialogOpen',
@@ -141,6 +141,23 @@ class ReportColumn extends CModel
                             'class' => 'btn btn-xs btn-warning',
                         ),
                         'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.update")',
+                    ),
+                    'printdo' => array(
+                        'label' => 'print',
+                        'icon' => 'fa fa-book',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "tran_type" => param("sale_do_status"),
+                                    "format"=>"format_do",
+                                    "print"=>"true",
+                                )
+                         )',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'DO Printing'),
+                            'class' => 'btn btn-xs btn-primary',
+                        ),
+                        'visible' => '$data["status"] == "1"',
                     ),
                 ),
             ),
