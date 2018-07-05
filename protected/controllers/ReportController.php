@@ -241,7 +241,7 @@ class ReportController extends Controller
 
     public function actionSaleInvoiceItem($sale_id, $employee_id)
     {
-        if (Yii::app()->user->checkAccess('report.index')) {
+        if (Yii::app()->user->checkAccess('report.sale')) {
         
             $model = new SaleItem('search');
             $model->unsetAttributes();  // clear any default values

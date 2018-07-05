@@ -439,6 +439,7 @@ class SaleItemController extends Controller
         $this->layout = '//layouts/column_receipt';
 
         Yii::app()->shoppingCart->clearAll();
+        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
         Yii::app()->shoppingCart->copyEntireSale($sale_id);
 
         $data=$this->sessionInfo();

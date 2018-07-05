@@ -134,7 +134,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'icon' => 'menu-icon '  . sysMenuSaleOrderToDeliverIcon(),
                     'url' => url('saleItem/list',array(
                         'tran_type' => param('sale_complete_status'),
-                        'user_id' => getEmployeeId(),
+                        // 'user_id' => getEmployeeId(),
                         'title' => sysMenuSaleOrderToDeliver(),
                     )),
                     'active' => $this->id . '/' . $this->action->id . '/' . Yii::app()->request->getQuery('tran_type') == 'saleItem/list/' .  param('sale_complete_status'),
