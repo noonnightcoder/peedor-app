@@ -1,7 +1,7 @@
 <?php
 Yii::app()->clientScript->registerScript( 'deleteItem', "
         jQuery( function($){
-            $('div#grid-cart').on('click','a.delete-item',function(e) {
+            $('div#grid-cart,div#grid_cart').on('click','a.delete-item',function(e) {
                 e.preventDefault();
                 var url=$(this).attr('href');
                 $.ajax({url:url,
