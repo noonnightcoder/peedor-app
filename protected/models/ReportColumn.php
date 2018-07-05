@@ -1326,12 +1326,12 @@ class ReportColumn extends CModel
             ),
             array(
                 'name' => 'status',
-                'header' => Yii::t('app', 'Status'),
+                'header' => Yii::t('app', 'Transaction Name'),
                 'value' => '$data["status"]',
             ),
             array(
                 'name' => 'description',
-                'header' => Yii::t('app', 'Description'),
+                'header' => Yii::t('app', 'Transaction Type'),
                 'value' => '$data["from_outlet_id"] == Yii::app()->session["employee_outlet"] ? "Outgoing Transfer" : "Incoming Transfer"',
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',

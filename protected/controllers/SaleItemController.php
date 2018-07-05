@@ -439,7 +439,7 @@ class SaleItemController extends Controller
         $this->layout = '//layouts/column_receipt';
 
         Yii::app()->shoppingCart->clearAll();
-        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
+        // Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
         Yii::app()->shoppingCart->copyEntireSale($sale_id);
 
         $data=$this->sessionInfo();
@@ -501,10 +501,10 @@ class SaleItemController extends Controller
     public function actionList()
     {
         $grid_id = 'sale-order-grid';
-       //$title = 'Order To Invoice';
+        //$title = 'Order To Invoice';
         $title = isset($_GET['title']) ? $_GET['title'] : '';
         $tran_type = isset($_GET['tran_type']) ? $_GET['tran_type'] : '';
-        $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : '';
+        $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
 
         $data = $this->commonData($grid_id,$title,'show','show');
 
