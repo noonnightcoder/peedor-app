@@ -499,29 +499,20 @@ class ReceivingCart extends CApplicationComponent
         foreach ($models as $model) {
 
             if($check_quantity){
-                
-                if($model['quantity']>0){
 
-                    $item_data = array((int)$item_id =>
-                        array(
-                            'item_id' => $model["item_id"],
-                            'name' => $item_model->name,
-                            'item_number' => $item_model->item_number,
-                            'current_quantity' => $model['quantity'],
-                            'quantity' => $quantity,
-                            'cost_price' => round($item_model->cost_price, Common::getDecimalPlace()),
-                            'unit_price' => round($item_model->unit_price, Common::getDecimalPlace()),
-                            'price' => round($item_model->unit_price, Common::getDecimalPlace()),
-                            'employee_id' => Yii::app()->session['employeeid']
-                        )
-                    );  
-                     
-                }else{
-
-                    Yii::app()->user->setFlash('warning', 'Unable to add item because this item does\'t have quantity to transfer!!!');
-                    $item_data=array();
-
-                }
+                $item_data = array((int)$item_id =>
+                    array(
+                        'item_id' => $model["item_id"],
+                        'name' => $item_model->name,
+                        'item_number' => $item_model->item_number,
+                        'current_quantity' => $model['quantity'],
+                        'quantity' => $quantity,
+                        'cost_price' => round($item_model->cost_price, Common::getDecimalPlace()),
+                        'unit_price' => round($item_model->unit_price, Common::getDecimalPlace()),
+                        'price' => round($item_model->unit_price, Common::getDecimalPlace()),
+                        'employee_id' => Yii::app()->session['employeeid']
+                    )
+                ); 
 
             }else{
 
@@ -596,7 +587,7 @@ class ReceivingCart extends CApplicationComponent
 
             $header['reference_name'] = $row['reference_name'];
             $header['delivery_due_date'] = $row['delivery_due_date'];
-            // $header['from_outlet'] = $row['from_outlet'];
+            $header['from_outlet'] = $row['from_outlet'];
             $header['to_outlet'] = $row['to_outlet'];
             $header['trans_type'] = $tran_type;
             $header['receive_id'] = $receive_id;

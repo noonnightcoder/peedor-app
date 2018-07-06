@@ -23,7 +23,7 @@
                             <?php $form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
                                 'method'=>'post',
                                 'action' => Yii::app()->createUrl('receiving/editItemToTransfer/',array('item_id'=>'all')),
-                                'htmlOptions'=>array('class'=>'line_item_form'),
+                                'htmlOptions'=>array('class'=>'line_item_form_all'),
                             ));
                             ?>
                                 <?php echo $form->textField($model, "quantity", array( 'class' => 'input-small input-grid', 'id' => "quantity_all_item", 'maxlength' => 10)); ?>

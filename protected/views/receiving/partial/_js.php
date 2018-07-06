@@ -27,7 +27,7 @@ Yii::app()->clientScript->registerScript( 'deleteItem', "
 
         // ajaxForm to ensure is submitting as Ajax even user press enter key
         $('#add_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit, success: itemScannedSuccess});
-        $('.line_item_form').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
+        $('.line_item_form,.line_item_form_all').ajaxForm({target: "#register_container", beforeSubmit: salesBeforeSubmit});
 
         $('#cancel_cart').on('click','a.reset-item-to-transfer',function(e) {
             e.preventDefault();

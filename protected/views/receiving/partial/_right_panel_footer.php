@@ -6,8 +6,6 @@
         if(!empty($items)){
 
             $trans_type = Yii::app()->receivingCart->getTransferHeader('trans_type');
-            $to_outlet = Yii::app()->receivingCart->getTransferHeader('to_outlet');
-            $from_outlet = Yii::app()->receivingCart->getTransferHeader('from_outlet');
             $receive_id = isset($_GET['receive_id']) ? $_GET['receive_id'] : Yii::app()->receivingCart->getTransferHeader('receive_id');
             $url = $trans_type == param('sale_complete_status') ? Yii::app()->createUrl('receiving/transferUpdateStatus',array(
                 'receive_id' => $receive_id, 

@@ -307,6 +307,8 @@ class ReceivingController extends Controller
 
         $roldeback_data = Receiving::model()->rolebackSourceOutletQuantity($receive_id,$outlet_id); // role back item quantity
 
+        var_dump($roldeback_data);
+
         $items  = Yii::app()->receivingCart->getItemToTransfer();
 
         if($roldeback_data){//if item quantity roleback success
@@ -477,7 +479,7 @@ class ReceivingController extends Controller
 
     public function actionReviewTransferItem($receive_id,$tran_type)
     {
-        Yii::app()->receivingCart->setTransferHeader(Yii::app()->session['employee_outlet'],'from_outlet');
+        // Yii::app()->receivingCart->setTransferHeader(Yii::app()->session['employee_outlet'],'from_outlet');
 
     	Yii::app()->receivingCart->copyEntireTransferItem($receive_id,$tran_type);
 
@@ -567,13 +569,13 @@ class ReceivingController extends Controller
         $model = new Receiving;
 		$items_model = new ItemOutlet;
     	$items=Yii::app()->receivingCart->getItemToTransfer();
-    	$from_outlet = Yii::app()->receivingCart->getTransferHeader('from_outlet') !==null ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session["employee_outlet"];
+    	$from_outlet = Yii::app()->receivingCart->getTransferHeader('from_outlet') !=NULL || Yii::app()->receivingCart->getTransferHeader('from_outlet') !=null || Yii::app()->receivingCart->getTransferHeader('from_outlet') !='' ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session["employee_outlet"];
     	$to_outlet = Yii::app()->receivingCart->getTransferHeader('to_outlet');
 
         $data['model'] = $model;
         $data['items_model'] = $items_model;
         $data['items'] = $items;
-        $data['from_outlet'] = isset($from_outlet) ? $from_outlet : '' ;
+        $data['from_outlet'] = $from_outlet;
     	$data['to_outlet'] = isset($to_outlet) ? $to_outlet : '';
 
         loadview('index_transfer','index_transfer',$data);
