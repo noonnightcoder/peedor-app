@@ -307,8 +307,6 @@ class ReceivingController extends Controller
 
         $roldeback_data = Receiving::model()->rolebackSourceOutletQuantity($receive_id,$outlet_id); // role back item quantity
 
-        var_dump($roldeback_data);
-
         $items  = Yii::app()->receivingCart->getItemToTransfer();
 
         if($roldeback_data){//if item quantity roleback success
