@@ -836,21 +836,88 @@ class Item extends CActiveRecord
         return $result;
     }
 
-    public function itemDetail($id){
-        $sql = "SELECT i.item_id id,i.name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.item_id ORDER BY im.id ASC LIMIT 1) image
+    public function itemDetail($id)
+    {
+        $sql = "SELECT i.item_id id,i.name,o.outlet_name,i.description,i.cost_price,i.unit_price,i.quantity,b.name brand,s.company_name,c.name category,(SELECT filename image FROM item_image im WHERE im.item_id=i.item_id ORDER BY im.id ASC LIMIT 1) image
         FROM `v_item_outlet` i left join `brand` b
         on i.brand_id=b.id left join `supplier` s
         on i.supplier_id=s.id left join `category` c
-        on i.category_id=c.id
-        WHERE i.item_id=:id
-        and outlet_id=:outlet_id";
+        on i.category_id=c.id join outlet o
+        on i.outlet_id = o.id
+        WHERE i.item_id=:id";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-            ':id' => (int)$id,
-            ':outlet_id' => Yii::app()->session['employee_outlet']
+            ':id' => (int)$id
         ));
 
         return $result;
+    }
+
+    public function itemInventoryHistory($id)
+    {
+        $sql = "SELECT ri.receive_id,receive_time `date`,r.reference_name,r.status transaction_name,
+        (SELECT outlet_name FROM outlet o WHERE r.from_outlet = o.id) from_outlet,
+        (SELECT outlet_name FROM outlet o WHERE r.to_outlet = o.id) to_outlet, ri.quantity
+        FROM receiving r JOIN receiving_item ri
+        ON r.id = ri.receive_id
+        WHERE ri.item_id = :id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':id' => (int)$id
+        ));
+
+        $dataProvider = new CArrayDataProvider($result, array(
+            'keyField' => 'receive_id',
+            'sort' => array(
+                'attributes' => array(
+                    'date', 'date',
+                ),
+            ),
+            // 'pagination' => Yii::app()->user->getState('item_page_size', Common::defaultPageSize()),
+        ));
+
+        return $dataProvider; // Return as array object
+    }
+
+    public static function getItemInventoryHistoryColumns() {
+        return array(
+            array(
+                'name' => 'Date',
+                'value' => '$data["date"]',
+                //'filter' => CHtml::listData(Category::model()->findAll(array('order' => 'name')), 'id', 'name'),
+                'filter' => '',
+            ),
+            array(
+                'name' => 'Reference Name',
+                'value' => '$data["reference_name"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'Transactiion Name',
+                'value' => '$data["transaction_name"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'From Outlet',
+                'value' => '$data["from_outlet"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'To Outlet',
+                'value' => '$data["to_outlet"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'Quantity',
+                'value' => '$data["quantity"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+        );
     }
 
     public static function getItemBarcode($valueArray) {

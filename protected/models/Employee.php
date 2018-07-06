@@ -79,8 +79,8 @@ class Employee extends CActiveRecord
     {
         return array(
             'id' => 'ID',
-            'first_name' => Yii::t('app', 'First Name'), //'First Name',
-            'last_name' => Yii::t('app', 'Last Name'), //'Last Name',
+            'first_name' => Yii::t('app', 'Given Name'), //'First Name',
+            'last_name' => Yii::t('app', 'Family Name'), //'Last Name',
             'mobile_no' => Yii::t('app', 'Mobile No'), //'Mobile No',
             'address1' => Yii::t('app', 'Address1'), //'Adddress1',
             'address2' => Yii::t('app', 'Address2'), //Address2',
@@ -280,8 +280,8 @@ class Employee extends CActiveRecord
                 'header' => 'Login ID',
                 'value' => array($this, "gridLoginIDColumn"),
             ),
-            'first_name',
             'last_name',
+            'first_name',
             array(
                 'name' => 'mobile_no',
             ),

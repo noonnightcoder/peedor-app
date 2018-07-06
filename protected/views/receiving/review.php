@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    'Stock Transfer' ,
+    'Stock Transfer'  => Yii::app()->createUrl('receiving/itemTransferSubmited',array('tran_type'=>param('sale_submit_status'))),
     'List',
 );
 ?>

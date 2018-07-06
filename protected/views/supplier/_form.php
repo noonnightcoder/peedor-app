@@ -11,9 +11,9 @@
 
 	<?php echo $form->textFieldControlGroup($model,'company_name',array('class'=>'span3','maxlength'=>60)); ?>
 
-	<?php echo $form->textFieldControlGroup($model,'first_name',array('class'=>'span3','maxlength'=>30)); ?>
-
 	<?php echo $form->textFieldControlGroup($model,'last_name',array('class'=>'span3','maxlength'=>30)); ?>
+
+	<?php echo $form->textFieldControlGroup($model,'first_name',array('class'=>'span3','maxlength'=>30)); ?>
 
 	<?php echo $form->textFieldControlGroup($model,'mobile_no',array('class'=>'span3','maxlength'=>20)); ?>
 

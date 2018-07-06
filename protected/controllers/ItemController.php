@@ -1025,12 +1025,19 @@ class ItemController extends Controller
 
         $model=Item::model()->itemDetail($result);
         $item=new Item;
+        $item_inventory_history = Item::model()->itemInventoryHistory($result);
         $item_image = ItemImage::model()->findAllByAttributes(array('item_id'=>$result));
-        $this->render('_result_detail',array(
-            'model'=>$model,
-            'item'=>$item,
-            'item_image'=>$item_image
-        ));
+
+       
+
+        $data['model'] = $model;
+        $data['item'] = $item;
+        $data['data_provider'] = $item_inventory_history;
+        $data['item_image'] = $item_image;
+        $data['grid_columns'] = Item::getItemInventoryHistoryColumns();
+
+        $this->render('_result_detail',$data);
+
     }
 
     public function multipleImageUpload($item_id,$model,$attr_name){

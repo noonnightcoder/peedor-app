@@ -6,20 +6,21 @@
 		<strong><?=$model[0]['category'] ? $model[0]['category'] : 'N/A'?></strong>
 		<hr>
 	</div>
-	<div class="col-sm-12">
-		<h4>
-			<a href="<?= Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?> ">
-				<?=$model[0]['name']?>
-			</a>
-		</h4>
+</div>
+<div class="row">
+	<div class="col-sm-12 col-sm-12">
+		<strong>Item Description</strong>
+		<?=$model[0]['description']?>
+		<hr/>
 	</div>
+</div>
+<div class="row">
 	<div class="col-sm-4">
 		
 		<div class="thumbnail search-thumbnail" id="big-image">
-
-
-				<img class="media-object" src="<?=$model[0]['image'] ? Yii::app()->baseUrl .'/ximages/'.strtolower(get_class($item)).'/'.$model[0]['id'].'/'.$model[0]['image'] : Yii::app()->baseUrl.'/images/noimage.gif'?>" />
+			<img class="media-object" src="<?=$model[0]['image'] ? Yii::app()->baseUrl .'/ximages/'.strtolower(get_class($item)).'/'.$model[0]['id'].'/'.$model[0]['image'] : Yii::app()->baseUrl.'/images/noimage.gif'?>" />
 		</div>
+
 		<div class="row">
 			<?php if(!empty($item_image)):?>
 				<?php foreach($item_image as $image):?>
@@ -32,25 +33,52 @@
 			<?php endif;?>
 		</div>
 	</div>
-	<div class="col-sm-6">
-		<?=$model[0]['description']?>
+	<div class="col-sm-8">
+		<h4>
+			<strong class="text-primary">
+				<a href="<?= Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?> ">
+					<?=ucfirst($model[0]['name'])?>
+				</a>
+			</strong>
+		</h4>
+		<h3 style="color:red">
+			$ <?=round($model[0]['unit_price'],2)?>
+		</h3>
+		<hr>
+		<?php foreach($model as $item):?>
+			<div class="col-sm-3">
+				<div class="panel <?=$item['quantity'] < 0 ? 'panel-danger' : ($item['quantity'] < 20 ? 'panel-warning' : 'panel-info')?>">
+					<div class="panel-heading">
+						<b><?=ucfirst($item['outlet_name'])?></b>
+					</div>
+					<div class="panel-body">
+						<span>
+							<b class="text-primary"><?=round($item['quantity'])?></b> <?php echo $item['quantity'] < 0 ? '<span style="color:red; text-decoration: blink;">Minus Quantity</span>' : ($item['quantity'] > 1 ? 'Items Available' : 'Item Available');?> 
+						</span>
+					</div>
+				</div>
+			</div>
+		<?php endforeach;?>
 	</div>
-	<div class="col-sm-2">
-		
-		<div class="thumbnail search-thumbnail" style="height: 190px;">
-			<span class="search-promotion label label-success arrowed-in arrowed-in-right"><?='$'.$model[0]['unit_price']?></span>
-			<hr>
-			<strong class="blue">- Qantity In Stock: <?=$model[0]['quantity']?></strong>
-			<p></p>
-			<strong class="blue">- Supplier: <?=$model[0]['company_name'] ? $model[0]['company_name'] : 'N/A'?></strong>
-			<hr>
+</div>
 
-            <?php if (ckacc('item.update')) { ?>
-                <a href="<?=Yii::app()->createUrl('item/updateImage')?>/<?=$model[0]['id']?>" class="search-btn-action btn btn-sm btn-block btn-info">
-                    Edit
-                </a>
-            <?php } ?>
-			
+<div class="row">
+	<div class="col-sm-12">
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<b>Inventory History</b>
+			</div>
+			<div class="panel-body">
+				<?php $this->widget('yiiwheels.widgets.grid.WhGridView', array(
+				    'id' => 'inventory_history',
+				    'fixedHeader' => true,
+				    'type' => TbHtml::GRID_TYPE_BORDERED,
+				    'dataProvider' => $data_provider,
+				    'columns' => $grid_columns,
+				    'enablePagination' => true
+				));?>
+			</div>
 		</div>
 	</div>
 </div>

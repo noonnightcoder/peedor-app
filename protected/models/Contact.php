@@ -71,8 +71,8 @@ class Contact extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-            'first_name' => Yii::t('app', 'First Name'),
-            'last_name' => Yii::t('app', 'Last Name'),
+            'first_name' => Yii::t('app', 'Given Name'),
+            'last_name' => Yii::t('app', 'Family Name'),
             'mobile_no' => Yii::t('app', 'Mobile No'),
             'address1' => Yii::t('app', 'Address1'),
             'address2' => Yii::t('app', 'Address2'),

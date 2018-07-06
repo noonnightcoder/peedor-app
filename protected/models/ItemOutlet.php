@@ -163,5 +163,20 @@ class ItemOutlet extends CActiveRecord
         $model->save();
 
     }
+
+    public function getItemInfoAllOutlet($id)
+    {
+        $sql = "SELECT o.outlet_name, io.quantity
+                FROM outlet o JOIN item_outlet io
+                ON o.id = io.outlet_id
+                WHERE io.item_id = 130
+                WHERE i.item_id=:id";
+
+        $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+            ':id' => (int)$id,
+        ));
+
+        return $result;
+    }
     
 }

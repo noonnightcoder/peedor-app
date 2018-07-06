@@ -95,7 +95,7 @@ class Client extends CActiveRecord
         return array(
             'id' => 'ID',
             'first_name' => Yii::t('app', 'Business Name'),
-            'last_name' => Yii::t('app', 'Last Name'),
+            'last_name' => Yii::t('app', 'Family Name'),
             'mobile_no' => Yii::t('app', 'Mobile No'),
             'address1' => Yii::t('app', 'Address1'),
             'address2' => Yii::t('app', 'Address2'),

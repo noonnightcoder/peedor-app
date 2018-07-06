@@ -1,3 +1,9 @@
+<?php
+$this->breadcrumbs=array(
+    'Physical Count'  => Yii::app()->createUrl('/receivingItem/index',array('trans_mode'=>'physical_count')),
+    'Count',
+);
+?>
 <div id="register_container">
 <?php $this->renderPartial('//layouts/partial/_flash_message'); ?>
 <div class="col-xs-12 col-sm-9 widget-container-col">

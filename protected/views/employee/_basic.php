@@ -1,6 +1,6 @@
-<?= $form->textFieldControlGroup($model, 'first_name', array('class' => 'span10', 'maxlength' => 50, 'data-required' => 'true')); ?>
-
 <?= $form->textFieldControlGroup($model, 'last_name', array('class' => 'span10', 'maxlength' => 50, 'data-required' => 'true')); ?>
+
+<?= $form->textFieldControlGroup($model, 'first_name', array('class' => 'span10', 'maxlength' => 50, 'data-required' => 'true')); ?>
 
 <?= $form->textFieldControlGroup($model, 'mobile_no', array('class' => 'span10', 'maxlength' => 15)); ?>
 

@@ -375,19 +375,20 @@ class ClientController extends Controller
         $data['create_permission'] = 'customer.create';
 
         $data['grid_columns'] = array(
-            array(
-                'name' => 'first_name',
-                'value' => '$data->status=="1" ? CHtml::link($data->first_name, Yii::app()->createUrl("client/update",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->first_name <span>" ',
-                'type' => 'raw',
-            ),
-            array(
-                'name' => 'last_name',
-                'value' => '$data->status=="1" ? CHtml::link($data->last_name, Yii::app()->createUrl("client/update",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->last_name <span>" ',
-                'type' => 'raw',
-            ),
+            
             array(
                 'name' => 'last_name',
                 'value' => '$data->status=="1" ? $data->mobile_no : "<span class=\"text-muted\">  $data->mobile_no <span>"',
+                'type' => 'raw',
+            ),
+            // array(
+            //     'name' => 'last_name',
+            //     'value' => '$data->status=="1" ? CHtml::link($data->last_name, Yii::app()->createUrl("client/update",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->last_name <span>" ',
+            //     'type' => 'raw',
+            // ),
+            array(
+                'name' => 'first_name',
+                'value' => '$data->status=="1" ? CHtml::link($data->first_name, Yii::app()->createUrl("client/update",array("id"=>$data->primaryKey))) : "<span class=\"text-muted\">  $data->first_name <span>" ',
                 'type' => 'raw',
             ),
             array(

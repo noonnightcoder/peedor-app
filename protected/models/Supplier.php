@@ -90,8 +90,8 @@ class Supplier extends CActiveRecord
 		return array(
 			'id' => 'ID',
 			'company_name' => Yii::t('app', 'Company Name'),
-			'first_name' => Yii::t('app', 'First Name'), //'First Name',
-			'last_name' => Yii::t('app', 'Last Name'), //'Last Name',
+			'first_name' => Yii::t('app', 'Given Name'), //'First Name',
+			'last_name' => Yii::t('app', 'Family Name'), //'Last Name',
 			'mobile_no' => Yii::t('app', 'Mobile No'), //'Mobile No',
 			'address1' => Yii::t('app', 'Address1'), //'Address1',
 			'address2' => Yii::t('app', 'Address2'), //'Address2',
@@ -211,8 +211,8 @@ class Supplier extends CActiveRecord
                 'value' => 'CHtml::link($data->company_name, Yii::app()->createUrl("supplier/update",array("id"=>$data->primaryKey)))',
                 'type' => 'raw',
             ),
-            'first_name',
             'last_name',
+            'first_name',
             array(
                 'name' => 'mobile_no',
             ),

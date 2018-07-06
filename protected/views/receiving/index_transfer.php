@@ -1,6 +1,6 @@
 <?php
 	$this->breadcrumbs=array(
-	    'Stock' => Yii::app()->createUrl('receiving/itemTransferSubmited',array('tran_type'=>param('sale_submit_status'))),
+	    'Stock Transfter' => Yii::app()->createUrl('receiving/itemTransferSubmited',array('tran_type'=>param('sale_submit_status'))),
 	    'Transfter',
 	);
 ?>
