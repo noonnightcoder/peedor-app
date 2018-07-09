@@ -458,7 +458,7 @@ class Receiving extends CActiveRecord
 
             if($id>0){
 
-                $this->saveToInventory($items,$data['from_outlet'],$id,$transfer_id,$trans_type);
+                $this->saveToInventory($items,$data['from_outlet'],$data['to_outlet'],$id,$transfer_id,$trans_type);
 
             }
 
@@ -468,7 +468,7 @@ class Receiving extends CActiveRecord
 
     }
 
-    protected function saveToInventory($items,$outlet_id,$receive_id,$transfer_id='',$trans_type=2)
+    protected function saveToInventory($items,$from_outlet,$to_outlet,$receive_id,$transfer_id='',$trans_type=2)
     {
 
         $trans_comment = $trans_type==param('sale_submit_status') ? 'Stock Transfer' : ($trans_type==param('sale_complete_status') ? 'Stock Receive' : 'N/A');
@@ -483,7 +483,9 @@ class Receiving extends CActiveRecord
             $inventory_data['qty_b4_trans'] = $item['current_quantity'] ; // for tracking purpose recording the qty before operation effected
             $inventory_data['qty_af_trans'] = ($item['current_quantity']-$item['quantity']);
             $inventory_data['trans_date'] = date('Y-m-d H:i:s');
-            $inventory_data['outlet_id'] = $outlet_id;
+            $inventory_data['outlet_id'] = $from_outlet;
+            $inventory_data['from_outlet'] = $from_outlet;
+            $inventory_data['to_outlet'] = $to_outlet;
 
             Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);   
 
@@ -498,7 +500,7 @@ class Receiving extends CActiveRecord
             
             if($trans_type==param('sale_submit_status')){
 
-                Sale::model()->updateItemQuantity($item['item_id'],$outlet_id,$item['quantity']);
+                Sale::model()->updateItemQuantity($item['item_id'],$from_outlet,$item['quantity']);
 
             }
 

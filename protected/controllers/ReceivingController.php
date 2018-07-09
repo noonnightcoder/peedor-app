@@ -428,6 +428,8 @@ class ReceivingController extends Controller
                     'qty_af_trans' => $item['quantity']+$item_outlet_model->quantity,
                     'trans_date' => date('Y-m-d H:i:s'),
                     'outlet_id' => $outlet_id,
+                    'from_outlet' => Yii::app()->receivingCart->getTransferHeader('from_outlet'),
+                    'to_outlet' => Yii::app()->receivingCart->getTransferHeader('to_outlet')
                 );
                 Receiving::model()->updateItemToDestinationOutlet($receive_id,$items);
                 Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);//save to inventory
