@@ -99,7 +99,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . strtoupper(sysMenuSale()) . '</span>',
             'icon' => 'menu-icon '  . 'menu-icon ' . sysMenuSaleOrderIcon(),
             'url' => url('saleItem/list', array('status' => param('sale_submit_status'), 'user_id' => getEmployeeId())),
-            'active' => $this->id == 'saleItem',
+            'active' => $this->id == 'saleItem' || $this->id . '/' . $this->action->id == 'report/saleOrderHistory',
             'visible' => ckacc('sale.create') || ckacc('sale.read') || ckacc('sale.read.all') || ckacc('sale.update') || ckacc('sale.delete'),
                 //ckacc('sale.edit') || ckacc('sale.discount') || ckacc('sale.editprice'),
             'items' => array(
@@ -147,6 +147,12 @@ $this->widget('bootstrap.widgets.TbNav', array(
                     'active' => $this->id . '/' . $this->action->id.'/'.Yii::app()->request->getQuery('tran_type') == 'saleItem/create/'.param('sale_complete_status'),
                     'visible' => ckacc('invoice.create')
                 ),
+                array('label' => sysMenuSaleOrderHistory(),
+                    'icon' => 'menu-icon '  . sysMenuOrderHistoryIcon(),
+                    'url' => url('report/saleOrderHistory'),
+                    'active' => $this->id . '/' . $this->action->id == 'report/saleOrderHistory',
+                    'visible' => ckacc('report.sale')
+                ),
             ),
         ),
         // array('label' => '<span class="menu-text">' . strtoupper(sysMenuInvoice()) . '</span>',
@@ -187,7 +193,7 @@ $this->widget('bootstrap.widgets.TbNav', array(
         array('label' => '<span class="menu-text">' . sysMenuReport() . '</span>',
             'icon' => 'menu-icon '  . sysMenuReportIcon(),
             //'url' => url('report/reporttab'),
-            'active' => $this->id == 'report',
+            'active' => $this->id == 'report' && $this->id . '/' . $this->action->id !== 'report/saleOrderHistory',
             'visible' => ckacc('report.sale') || ckacc('report.sale.analytic') || ckacc('report.stock') || ckacc('report.customer') || ckacc('report.marketing') || ckacc('report.accounting'),
             'items' => array(
                 array('label' => Yii::t('app', 'Sale Invoice'),

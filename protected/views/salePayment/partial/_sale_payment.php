@@ -8,6 +8,10 @@
         'summaryText' =>'<p class="text-info"> Payment History </p>', 
         'htmlOptions'=>array('class'=>'table-responsive panel'),
         'columns'=>array(
+                array('name'=>'id',
+                      'header'=>Yii::t('app','Receipt Number'), 
+                      'value'=>'$data["id"]',
+                ),
                 array('name'=>'client_name',
                       'header'=>Yii::t('app','Customer Name'), 
                       'value'=>'$data["client_name"]',
@@ -25,6 +29,10 @@
                 array('name'=>'employee_id',
                       'header'=>Yii::t('app','Employee'),
                       'value'=>'$data["employee_name"]',
+                ),
+                array('name'=>'note',
+                      'header'=>Yii::t('app','Payment Note'),
+                      'value'=>'$data["note"]',
                 ),
         ),
 )); ?>   

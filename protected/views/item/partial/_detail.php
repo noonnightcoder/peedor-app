@@ -53,7 +53,7 @@
 					</div>
 					<div class="panel-body">
 						<span>
-							<b class="text-primary"><?=round($item['quantity'])?></b> <?php echo $item['quantity'] < 0 ? '<span style="color:red; text-decoration: blink;">Minus Quantity</span>' : ($item['quantity'] > 1 ? 'Items Available' : 'Item Available');?> 
+							<b class="text-primary"><?=round($item['quantity'])?></b> <?php echo $item['quantity'] < 0 ? '<span style="color:red;">Minus Quantity</span>' : ($item['quantity'] > 1 ? 'Items Available' : 'Item Available');?> 
 						</span>
 					</div>
 				</div>

@@ -53,7 +53,8 @@ class ReportController extends Controller
                     'SaleInvoiceDetail',
                     'SaleWeeklyByCustomer',
                     'BalanceByCustomerId',
-                    'transferDetail'
+                    'transferDetail',
+                    'saleOrderHistory'
                 ),
                 'users' => array('@'),
             ),
@@ -129,6 +130,22 @@ class ReportController extends Controller
         $data = $this->commonData($grid_id,$title,'show');
 
         $data['grid_columns'] = ReportColumn::getSaleInvoiceColumns();
+        $data['data_provider'] = $data['report']->saleInvoice();
+
+        $this->renderView($data);
+
+    }
+
+    public function actionSaleOrderHistory()
+    {
+        authorized('report.sale');
+
+        $grid_id = 'rpt-sale-invoice-grid';
+        $title = 'Sale Order History';
+
+        $data = $this->commonData($grid_id,$title,'show');
+
+        $data['grid_columns'] = ReportColumn::getSaleOrderHistoryColumns();
         $data['data_provider'] = $data['report']->saleInvoice();
 
         $this->renderView($data);

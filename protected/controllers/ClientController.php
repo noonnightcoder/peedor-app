@@ -95,7 +95,8 @@ class ClientController extends Controller
         if (isset($_POST['Client'])) {
             $model->attributes = $_POST['Client'];
             $contact->attributes = $_POST['Contact'];
-
+            $model->image = CUploadedFile::getInstance($model,'image');
+            // var_dump($_FILES['Client[image]']);
             // if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
             //     $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
             //     $model->dob = $dob;
@@ -120,7 +121,9 @@ class ClientController extends Controller
                         $client_fname = $model->first_name . ' ' . $model->last_name;
                         $price_tier_id = $model->price_tier_id;
 
-                        $this->multipleImageUpload($model->id,$model,'image');
+                        $this->addImages($model);
+                        // $this->addImages($model);
+
                         Account::model()->saveAccount($client_id, $client_fname);
 
                         $transaction->commit();
@@ -221,18 +224,18 @@ class ClientController extends Controller
         if (isset($_POST['Client'])) {
             $model->attributes = $_POST['Client'];
             $contact->attributes = $_POST['Contact'];
-
+            $model->image = CUploadedFile::getInstance($model,'image');
             // if ($_POST['Client']['year'] !== "" || $_POST['Client']['month'] !== "" || $_POST['Client']['day'] !== "") {
             //     $dob = $_POST['Client']['year'] . '-' . $_POST['Client']['month'] . '-' . $_POST['Client']['day'];
             //     $model->dob = $dob;
             // }
 
             // validate BOTH $a and $b
-            $valid = $model->validate();
-            $valid = $contact->validate() && $valid;
+            // $valid = $model->validate();
+            // $valid = $contact->validate() && $valid;
 
             //if ($model->validate())
-            if ($valid) {
+            // if ($valid) {
                 $transaction = $model->dbConnection->beginTransaction();
                 try {
 
@@ -241,40 +244,28 @@ class ClientController extends Controller
                         $model->contact_id = $contact->id;
                     }
 
-                    if ($model->save()) {
+                    if ($model->save(false)) {
                         $client_fname = $model->first_name . ' ' . $model->last_name;
                         Account::model()->saveAccount($model->id, $client_fname);
                         $price_tier_id = $model->price_tier_id;
 
-                        if(isset($_FILES['image'])){
-;
-                            foreach($_FILES['image']['name'] as $img){
+                        $cur_image=ClientImage::model()->findAllByAttributes(array('client_id'=>$id));
 
-                                if($img!=''){
+                        foreach($cur_image as $img){
 
-                                    $cur_image=ClientImage::model()->findAllByAttributes(array('client_id'=>$id));
+                            $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
+                            
+                            if(file_exists($img_file)){
 
-                                    foreach($cur_image as $img){
-
-                                        $img_file=Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $id.'/'.$img['filename'];
-                                        
-                                        if(file_exists($img_file)){
-
-                                            unlink($img_file);
-
-                                        }
-
-                                    }
-
-                                    ClientImage::model()->deleteAll(array('condition'=>'`client_id`=:client_id','params'=>array(':client_id'=>$id)));
-                                    $this->multipleImageUpload($id,$model,'image');
-                                    break;
-                                }
+                                unlink($img_file);
 
                             }
 
                         }
 
+                        ClientImage::model()->deleteAll(array('condition'=>'`client_id`=:client_id','params'=>array(':client_id'=>$id)));
+                        $this->addImages($model);
+                                   
                         $transaction->commit();
 
                         // if ($sale_mode == 'Y') {
@@ -291,9 +282,9 @@ class ClientController extends Controller
                     $transaction->rollback();
                     print_r($e);
                 }
-            } else {
-                $has_error = "has-error";
-            }
+            // } else {
+            //     $has_error = "has-error";
+            // }
         }
 
         $data['model'] = $model;
@@ -540,6 +531,44 @@ class ClientController extends Controller
             }    
         }
         //echo $msg;
+    }
+
+    protected function addImages($model)
+    {
+        $client_image = ClientImage::model()->find('client_id=:clientId', array(':clientId' => $model->id));
+
+        if (!$client_image) {
+            $client_image = new ClientImage;
+        }
+
+        if ($file = CUploadedFile::getInstance($model, 'image')) {
+            $rnd = rand(0, 9999);  // generate random number between 0-9999
+
+            $client_image->filetype = $file->type;
+            $client_image->size = $file->size;
+            //$client_image->photo = file_get_contents($file->tempName);
+
+            $fileName = "{$rnd}_{$file}";  // random number + file name
+            $model->image = $fileName;
+            $path = Yii::app()->basePath . '/../ximages/' . strtolower(get_class($model)) . '/' . $model->id;
+            $name = $path . '/' . $fileName;
+
+            if (!is_dir($path)) {
+                mkdir($path, 0777, true);
+            }
+
+            $file->saveAs($name);  // image will uplode to rootDirectory/ximages/{ModelName}/{Model->id}
+
+            //$image = Yii::app()->image->load($name);
+            //$image->resize(160, 160);
+            //$image->save();
+
+            $client_image->client_id = $model->id;
+            $client_image->filename = $fileName;
+            $client_image->path = '/../ximages/' . strtolower(get_class($model)) . '/' . $model->id;
+            //$client_image->thumbnail = file_get_contents($name);
+            $client_image->save();
+        }
     }
 
 

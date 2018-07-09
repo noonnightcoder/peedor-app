@@ -181,6 +181,125 @@ class ReportColumn extends CModel
         );
     }
 
+    public static function getSaleOrderHistoryColumns()
+    {
+        return array(
+            array('name' => 'sale_time',
+                'header' => Yii::t('app', 'Sale Time'),
+                'value' => '$data["sale_time"]',
+            ),
+            array('name' => 'sale_id',
+                'header' => Yii::t('app', 'Sale ID'),
+                'value' => '$data["sale_id"]',
+                'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
+                'url' => Yii::app()->createUrl('Report/saleInvoiceDetail'),
+            ),
+            array('name' => 'client_name',
+                'header' => Yii::t('app', 'Customer Name'),
+                'value' => '$data["client_name"]',
+            ),
+            array('name' => 'quantity',
+                'header' => Yii::t('app', 'QTY'),
+                'value' => 'number_format($data["quantity"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
+            array('name' => 'total',
+                'header' => Yii::t('app', 'Total'),
+                'value' => 'number_format($data["total"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
+            array('name' => 'status',
+                'header' => Yii::t('app', 'Status'),
+                'value' => '$data["status_f"]',
+            ),
+            array('class' => 'bootstrap.widgets.TbButtonColumn',
+                //'header'=>'Invoice Detail',
+                'template' => '<div class="btn-group">{view}{print}{cancel}{edit}{printdo}</div>',
+                'buttons' => array(
+                    'view' => array(
+                        'click' => 'updateDialogOpen',
+                        'label' => 'Detail',
+                        'url' => 'Yii::app()->createUrl("report/SaleInvoiceItem", array("sale_id"=>$data["sale_id"],"employee_id"=>$data["employee_name"]))',
+                        'options' => array(
+                            'data-update-dialog-title' => Yii::t('app', 'Invoice Detail'),
+                            'title' => Yii::t('app', 'Invoice Detail'),
+                            'class' => 'btn btn-xs btn-info',
+                            'id' => uniqid(),
+                            'on' => false,
+                        ),
+                    ),
+                    'print' => array(
+                        'label' => 'print',
+                        'icon' => 'glyphicon-print',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"],"print"=>"true"))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                        'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                    ),
+                    'cancel' => array(
+                        'label' => 'cancel',
+                        'icon' => 'glyphicon-trash',
+                        'url' => 'Yii::app()->createUrl("sale/delete", array("sale_id"=>$data["sale_id"], "customer_id"=>$data["client_id"]))',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Cancel Invoice'),
+                            'class' => 'btnCancelInvoice btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.delete")',
+                    ),
+                    'edit' => array(
+                        'label' => 'edit',
+                        'icon' => 'glyphicon-edit',
+                        'url' => 'Yii::app()->createUrl("SaleItem/EditSale", array("sale_id"=>$data["sale_id"],"customer_id" => $data["client_name"],"paid_amount"=>$data["paid"]))',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Edit Invoice'),
+                            'class' => 'btn btn-xs btn-warning',
+                        ),
+                        'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.update")',
+                    ),
+                    'printdo' => array(
+                        'label' => 'print',
+                        'icon' => 'fa fa-book',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id"=>$data["sale_id"],
+                                    "tran_type" => param("sale_do_status"),
+                                    "format"=>"format_do",
+                                    "print"=>"true",
+                                )
+                         )',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'DO Printing'),
+                            'class' => 'btn btn-xs btn-primary',
+                        ),
+                        'visible' => '$data["status"] == "1"',
+                    ),
+                    'printinvoice' => array(
+                        'label' => 'print invoice',
+                        'icon' => 'fa fa-print',
+                        'url' => 'Yii::app()->createUrl("saleItem/printing", array(
+                                    "sale_id" => $data["sale_id"],
+                                    "tran_type" => param("sale_print_status"),
+                                    "format" => "format_hf",
+                                    "print"=>"true",
+                                )
+                         )',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                        'visible' => 'true',
+                    ),
+                ),
+            ),
+        );
+    }
+
     public static function getSaleInvoiceDetailColumns()
     {
         return array(
@@ -1472,7 +1591,7 @@ class ReportColumn extends CModel
             ),
             array('name' => 'item_name',
                 'header' => Yii::t('app', 'Item Name'),
-                'value' => '$data["item_name"]',
+                'value' => '"<a href=\'<?=Yii::app()->createUrl("item/itemSearch?result=".$data["item_id"])?>\'>".$data["item_name"]."</a>"',
             ),
             array('name' => 'quantity',
                 'header' => Yii::t('app', 'QTY'),

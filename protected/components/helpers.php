@@ -302,6 +302,11 @@ function sysMenuSaleCreateInvoice()
     return ucwords(t(param('menu_sale_create_invoice'), 'app'));
 }
 
+function sysMenuSaleOrderHistory()
+{
+    return ucwords(t(param('menu_sale_order_history'), 'app'));
+}
+
 function sysMenuSaleOrderView()
 {
     return ucwords(t(param('menu_sale_order_view'), 'app'));
@@ -440,6 +445,11 @@ function sysMenuSalePaymentIcon()
 function sysMenuInvoiceIcon()
 {
     return 'fa fa-file-text-o';
+}
+
+function sysMenuOrderHistoryIcon()
+{
+    return 'fa fa-history  pink';
 }
 
 function sysMenuItemIcon()

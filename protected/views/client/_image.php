@@ -2,7 +2,7 @@
     <div class="col-xs-12">
         <?php if(isset($client_image) && !empty($client_image)):?>
             <label for="id-input-file-3" class="ace-file-input ace-file-multiple">
-                <input style="display: none;" multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+               <?=$form->fileField($model,'image',array('id'=>'id-input-file-3','style' => 'display:none;') )?>
                 <div  id="item-image">
                 <span class="ace-file-container">
                      
@@ -19,7 +19,8 @@
             </div>
             </label>
         <?php else:?>
-            <input multiple="multiple" name="image[]" type="file" id="id-input-file-3" />
+            <?=$form->fileField($model,'image',array('id'=>'id-input-file-3') )?>
+            <?php echo $form->error($model, 'image',array('style'=>'color:#D16E6C;')); ?>
         <?php endif;?>
     </div>
 </div>

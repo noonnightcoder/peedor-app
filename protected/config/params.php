@@ -71,6 +71,7 @@ return array(
     'menu_sale_order_to_invoice' => 'order to invoice',
     'menu_sale_order_to_deliver' => 'order to deliver',
     'menu_invoice' => 'invoice',
+    'menu_sale_order_history' => 'Order History',
     'menu_invoice_add' => 'invoice create',
     'menu_report' => 'report',
     'menu_report_sale_invoice' => 'sale invoice',

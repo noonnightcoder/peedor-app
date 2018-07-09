@@ -180,7 +180,7 @@ class SalePayment extends CActiveRecord
     {
         $sql = "SELECT p.id,p.`date_paid`,
                     CONCAT(c.first_name,' ',c.last_name) client_name,
-                    p.payment_amount,
+                    p.payment_amount,p.note,
                     CONCAT(e.first_name,' ',e.last_name) employee_name    
                   FROM payment_history p, `client` c , employee e
                   WHERE p.`client_id` = c.id 

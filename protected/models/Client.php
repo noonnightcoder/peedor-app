@@ -54,7 +54,7 @@ class Client extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('first_name, mobile_no', 'required'),
+			array('first_name, mobile_no, image', 'required'),
 			array('city_id, price_tier_id, employee_id, contact_id, district_id,commune_id, village_id', 'numerical', 'integerOnly'=>true),
 			array('first_name, last_name, main_biz, size_biz', 'length', 'max'=>100),
             array('gps_e, gps_n', 'length', 'max'=>25),
@@ -64,13 +64,13 @@ class Client extends CActiveRecord
 			array('country_code', 'length', 'max'=>2),
 			array('email, fax', 'length', 'max'=>30),
 			array('status', 'length', 'max'=>1),
-			array('notes, day, month, year', 'safe'),
+			array('notes, day, month, year,image', 'safe'),
             array('dob ', 'date', 'format'=>array('yyyy-MM-dd'), 'allowEmpty'=>true),
             array('created_at,updated_at', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => true, 'on' => 'insert'),
             array('updated_at', 'default', 'value' => date('Y-m-d H:i:s'), 'setOnEmpty' => false, 'on' => 'update'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, contact_id, price_tier_id, first_name, last_name, mobile_no, address1, address2, city_id, country_code, email, fax, notes, status, search, employee_id', 'safe', 'on'=>'search'),
+			array('id, contact_id, price_tier_id, first_name, last_name, mobile_no, address1, address2, city_id, country_code, email,image, fax, notes, status, search, employee_id', 'safe', 'on'=>'search'),
 		);
 	}
 
