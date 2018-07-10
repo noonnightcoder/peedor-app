@@ -255,10 +255,6 @@ class ReceivingItemController extends Controller
             Sale::model()->saveSaleTransaction(new Inventory,$inventory_data);  
 
             //update item quantity
-            $updateSql="
-            update item_outlet set quantity=:quantity 
-            where id=:item_id and outlet_id:=outlet";
-
             $item_outlet_model = ItemOutlet::model()->findByAttributes(array(
                 'outlet_id' => $outlet_id,
                 'item_id' => $item['item_id'],
