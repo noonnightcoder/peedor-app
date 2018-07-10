@@ -10,7 +10,7 @@
             echo TbHtml::linkButton(Yii::t('app', $btn_text), array(
                 'color' => $color_style,
                 'icon' => 'glyphicon glyphicon-off white',
-                //'url' => Yii::app()->createUrl('SaleItem/CompleteSale/'),
+                'url' => Yii::app()->createUrl('SaleItem/CompleteSale/'),
                 'class' => 'complete-sale',
                 'id' => 'finish_sale_button',
                 //'title' => Yii::t('app', 'Complete Sale'),

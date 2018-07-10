@@ -351,10 +351,12 @@ class Sale extends CActiveRecord
     // Saving into Sale_Item table for each item purchased
     protected function saveSaleItem($items, $sale_id, $employee_id,$outlet_id,$status='')
     {
+        //roleback old sale
+        SaleItem::model()->deleteAll('sale_id=:sale_id',array(':sale_id'=>$sale_id));
         // Saving sale item to sale_item table
         foreach ($items as $line => $item) {
 
-            $cur_item_info = ItemOutlet::model()->findByAttributes(array('item_id'=>$item['item_id'],'outlet_id'=>$outlet_id));
+            $cur_item_info = Item::model()->findbyPk($item['item_id']);
             $qty_in_stock = $cur_item_info->quantity;
 
             // to remove
@@ -371,41 +373,25 @@ class Sale extends CActiveRecord
             $discount_data = Common::Discount($item['discount']);
             $discount_amount=$discount_data[0];
             $discount_type=$discount_data[1];
-            $sale_item_model = SaleItem::model()->findByAttributes(array('sale_id'=>$sale_id,'outlet_id'=>$outlet_id));
 
-            $sale_remarks = 'POS ' . $sale_id;
+            $sale_item_data = array(
+                'sale_id'=>$sale_id,
+                'item_id'=>$item['item_id'],
+                'line'=>$line,
+                'quantity'=>$item['quantity'],
+                'cost_price'=>$cur_item_info->cost_price,
+                'unit_price'=>$cur_item_info->unit_price,
+                'price'=>$item['price'],// The exact selling price
+                'discount_amount'=>$discount_amount == null ? 0 : $discount_amount,
+                'discount_type'=>$discount_type
+            );
 
-            if($sale_item_model){
-
-                $sale_remarks = 'POS EDIT '.$sale_id;
-
-                $sale_item_model->quantity = $item['quantity'];
-                $sale_item_model->price = $item['price'];
-                $sale_item_model->discount_amount = $discount_amount == null ? 0 : $discount_amount;
-                $sale_item_model->discount_type = $discount_type;
-                $sale_item_model->save();
-
-            }else{
-
-                $sale_item_data['sale_id'] = $sale_id;
-                $sale_item_data['item_id'] = $item['item_id'];
-                $sale_item_data['line'] = $line;
-                $sale_item_data['quantity'] = $item['quantity'];
-                $sale_item_data['cost_price'] = $cur_item_info->cost_price;
-                $sale_item_data['unit_price'] = $cur_item_info->unit_price;
-                $sale_item_data['price'] = $item['price'];// The exact selling price
-                $sale_item_data['discount_amount'] = $discount_amount == null ? 0 : $discount_amount;
-                $sale_item_data['discount_type'] = $discount_type;
-                $sale_item_data['outlet_id'] = $outlet_id;
-
-                $this->saveSaleTransaction(new SaleItem,$sale_item_data);
-
-            }
-            
+            $this->saveSaleTransaction(new SaleItem,$sale_item_data);
 
             $qty_afer_transaction = $qty_in_stock - $item['quantity'];
 
             $qty_buy = -$item['quantity'];
+            $sale_remarks = 'POS ' . $sale_id;
 
             $inventory_data = array(
                 'trans_items' => $item['item_id'],
@@ -415,8 +401,7 @@ class Sale extends CActiveRecord
                 'trans_qty' => $item['quantity'],
                 'qty_b4_trans' => $qty_in_stock , // for tracking purpose recording the qty before operation effected
                 'qty_af_trans' => $qty_afer_transaction,
-                'trans_date' => date('Y-m-d H:i:s'),
-                'outlet_id' => $outlet_id
+                'trans_date' => date('Y-m-d H:i:s')
             );
 
             $this->saveSaleTransaction(new Inventory,$inventory_data);
