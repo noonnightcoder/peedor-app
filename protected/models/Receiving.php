@@ -194,6 +194,9 @@ class Receiving extends CActiveRecord
 
     protected function saveReceiveItem($items, $receiving_id, $employee_id, $trans_date)
     {
+
+        $outlet_id = isset(Yii::app()->session['outlet']) ? Yii::app()->session['outlet'] : Yii::app()->session['employee_outlet'];
+
         foreach ($items as $line => $item) {
             $item_id = $item['item_id'];
             $cost_price = $item['cost_price'];
@@ -201,8 +204,9 @@ class Receiving extends CActiveRecord
             $quantity = $item['quantity'];
             $remarks = $this->transactionHeader() . ' ' . $receiving_id;
 
+            $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array('item_id' => $item_id, 'outlet_id' => $outlet_id));
             $cur_item_info = Item::model()->findbyPk($item_id);
-            $qty_in_stock = $cur_item_info->quantity;
+            $qty_in_stock = $cur_item_outlet_info->quantity;
             $cur_unit_price = $cur_item_info->unit_price;
 
             $stock_quantity = $this->stockQuantiy($qty_in_stock, $quantity);
@@ -228,14 +232,14 @@ class Receiving extends CActiveRecord
             $this->updateItem($cur_item_info, $cost_price, $unit_price, $stock_quantity[0]);
 
             // Updateing Quantity to item outlet
-            $this->updateItemOutlet($item_id,$item['quantity']);
+            $this->updateItemOutlet($outlet_id, $item_id,$quantity);
 
             // Product Price (retail price) history
             $this->updateItemPrice($item_id, $cur_unit_price, $unit_price, $employee_id, $trans_date);
 
             //Ramel Inventory Tracking
             $this->saveInventory($item_id, $employee_id, $stock_quantity[1], $trans_date, $remarks, $quantity,
-                $qty_in_stock, $stock_quantity[0]);
+                $qty_in_stock, $stock_quantity[0], $receiving_item->receive_id);
 
             // Save Item Expire for tracking
             if (!empty($item['expire_date'])) {
@@ -253,10 +257,9 @@ class Receiving extends CActiveRecord
         $cur_item_info->save();
     }
 
-    protected function updateItemOutlet($item_id, $quantity)
+    protected function updateItemOutlet($outlet_id, $item_id, $quantity)
     {
 
-        $outlet_id = isset(Yii::app()->session['outlet']) ? Yii::app()->session['outlet'] : Yii::app()->session['employee_outlet'];
         if($outlet_id>0){
             $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array(
                 'item_id' => $item_id,
@@ -307,7 +310,8 @@ class Receiving extends CActiveRecord
         $remarks,
         $trans_qty,
         $qty_b4_trans,
-        $qty_af_trans
+        $qty_af_trans,
+        $transaction_id
     )
     {
         $inventory = new Inventory;
@@ -319,6 +323,8 @@ class Receiving extends CActiveRecord
         $inventory->trans_qty = $trans_qty;
         $inventory->qty_b4_trans = $qty_b4_trans;
         $inventory->qty_af_trans = $qty_af_trans;
+        $inventory->outlet_id = Yii::app()->receivingCart->getTransferHeader('outlet') ? Yii::app()->receivingCart->getTransferHeader('outlet') : Yii::app()->session['employee_outlet'];
+        $inventory->transaction_id = $transaction_id;
         $inventory->save();
     }
 

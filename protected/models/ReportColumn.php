@@ -1659,7 +1659,8 @@ class ReportColumn extends CModel
             ),
             array('name' => 'item_name',
                 'header' => Yii::t('app', 'Item Name'),
-                'value' => '"<a href=\'<?=Yii::app()->createUrl("item/itemSearch?result=".$data["item_id"])?>\'>".$data["item_name"]."</a>"',
+                'value' => 'CHtml::link($data["item_name"],Yii::app()->createUrl("/item/itemSearch",array("result"=>$data["item_id"])))',
+                'type' => 'raw'
             ),
             array('name' => 'quantity',
                 'header' => Yii::t('app', 'QTY'),

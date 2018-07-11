@@ -855,22 +855,19 @@ class Item extends CActiveRecord
 
     public function itemInventoryHistory($id)
     {
-        $sql = "SELECT ri.receive_id,receive_time `date`,r.reference_name,r.status transaction_name,
-        (SELECT outlet_name FROM outlet o WHERE r.from_outlet = o.id) from_outlet,
-        (SELECT outlet_name FROM outlet o WHERE r.to_outlet = o.id) to_outlet, ri.quantity
-        FROM receiving r JOIN receiving_item ri
-        ON r.id = ri.receive_id
-        WHERE ri.item_id = :id";
+        $sql = "select trans_items, trans_user, trans_date, trans_comment, trans_inventory, trans_qty, qty_b4_trans, qty_af_trans, supplier, from_outlet, to_outlet, outlet
+        from v_inventory_history
+        WHERE trans_items = :id";
 
         $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
             ':id' => (int)$id
         ));
 
         $dataProvider = new CArrayDataProvider($result, array(
-            'keyField' => 'receive_id',
+            'keyField' => 'trans_items',
             'sort' => array(
                 'attributes' => array(
-                    'date', 'date',
+                    'trans_date', 'date',
                 ),
             ),
             // 'pagination' => Yii::app()->user->getState('item_page_size', Common::defaultPageSize()),
@@ -882,20 +879,26 @@ class Item extends CActiveRecord
     public static function getItemInventoryHistoryColumns() {
         return array(
             array(
-                'name' => 'Date',
-                'value' => '$data["date"]',
+                'name' => 'Outlet',
+                'value' => '$data["outlet"]',
                 //'filter' => CHtml::listData(Category::model()->findAll(array('order' => 'name')), 'id', 'name'),
                 'filter' => '',
             ),
             array(
-                'name' => 'Reference Name',
-                'value' => '$data["reference_name"]',
-                'type' => 'raw',
+                'name' => 'Date',
+                'value' => '$data["trans_date"]',
+                //'filter' => CHtml::listData(Category::model()->findAll(array('order' => 'name')), 'id', 'name'),
                 'filter' => '',
             ),
             array(
                 'name' => 'Transactiion Name',
-                'value' => '$data["transaction_name"]',
+                'value' => '$data["trans_comment"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'Supplier',
+                'value' => '$data["supplier"]',
                 'type' => 'raw',
                 'filter' => '',
             ),
@@ -912,8 +915,20 @@ class Item extends CActiveRecord
                 'filter' => '',
             ),
             array(
+                'name' => 'Tansaction Quantity',
+                'value' => '$data["trans_qty"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
                 'name' => 'Quantity',
-                'value' => '$data["quantity"]',
+                'value' => '$data["qty_b4_trans"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
+                'name' => 'Final Quantity',
+                'value' => '$data["qty_af_trans"]',
                 'type' => 'raw',
                 'filter' => '',
             ),

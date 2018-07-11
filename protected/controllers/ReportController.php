@@ -54,7 +54,9 @@ class ReportController extends Controller
                     'SaleWeeklyByCustomer',
                     'BalanceByCustomerId',
                     'saleOrderHistory',
-                    'viewOrderHistoryDetail'
+                    'viewOrderHistoryDetail',
+                    'transferDetail',
+                    'saleOrderHistory'
                 ),
                 'users' => array('@'),
             ),
@@ -127,7 +129,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-invoice-grid';
         $title = 'Sale Invoice';
 
-        $data = $this->commonData($grid_id,$title,'show');
+        $data = $this->commonData($grid_id, $title, 'show');
 
         $data['grid_columns'] = ReportColumn::getSaleInvoiceColumns();
         $data['data_provider'] = $data['report']->saleInvoice();
@@ -143,7 +145,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-invoice-grid';
         $title = 'Sale Order History';
 
-        $data = $this->commonData($grid_id,$title,'show');
+        $data = $this->commonData($grid_id, $title, 'show');
 
         $data['grid_columns'] = ReportColumn::getSaleOrderHistoryColumns();
         $data['data_provider'] = $data['report']->saleInvoice();
@@ -152,23 +154,23 @@ class ReportController extends Controller
 
     }
 
-    public function actionViewOrderHistoryDetail($sale_id, $customer_id,$employee_id='',$tran_type,$pdf=false,$email=false)
+    public function actionViewOrderHistoryDetail($sale_id, $customer_id, $employee_id = '', $tran_type, $pdf = false, $email = false)
     {
-            authorized('sale.read') || authorized('sale.create') ;
+        authorized('sale.read') || authorized('sale.create');
 
-            $data = $this->receiptData($sale_id,$customer_id,$tran_type);
+        $data = $this->receiptData($sale_id, $customer_id, $tran_type);
 
-            if (count($data['items']) == 0) {
-                $data['error_message'] = 'Sale Transaction Failed';
-            }
+        if (count($data['items']) == 0) {
+            $data['error_message'] = 'Sale Transaction Failed';
+        }
 
-            $this->renderRecipe($data);
-            
-            Yii::app()->shoppingCart->clearAll();
+        $this->renderRecipe($data);
+
+        Yii::app()->shoppingCart->clearAll();
 
     }
 
-    protected function receiptData($sale_id,$customer_id,$tran_type,$paid_amount=0)
+    protected function receiptData($sale_id, $customer_id, $tran_type, $paid_amount = 0)
     {
         $this->layout = '//layouts/column_receipt';
 
@@ -185,7 +187,7 @@ class ReportController extends Controller
         $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'en');
         $data['invoice_format'] = Yii::app()->shoppingCart->getInvoiceFormat();
         $data['invoice_prefix'] = $tran_type == param('sale_complete_status') ? 'INV' : 'SO';
-        $data['filename'] = $data['invoice_prefix']. '_' . $sale_id . '_' . str_replace('/', '_', $data['transaction_date']);
+        $data['filename'] = $data['invoice_prefix'] . '_' . $sale_id . '_' . str_replace('/', '_', $data['transaction_date']);
 
         if (count($data['items']) == 0) {
             $data['error_message'] = 'Sale Transaction Failed';
@@ -197,7 +199,7 @@ class ReportController extends Controller
 
     public function actionSaleInvoiceDetail($id)
     {
-       authorized('report.sale');
+        authorized('report.sale');
 
         $report = new Report;
 
@@ -205,7 +207,7 @@ class ReportController extends Controller
         $data['sale_id'] = $id;
 
         $data['grid_id'] = 'rpt-sale-invoice-grid';
-        $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
+        $data['title'] = Yii::t('app', 'Detail #') . ' ' . $id;
 
         $data['grid_columns'] = ReportColumn::getSaleInvoiceDetailColumns();
 
@@ -225,7 +227,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-daily-grid';
         $title = 'Sale Daily';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleDailyColumns();
         $data['data_provider'] = $data['report']->saleDaily();
@@ -241,7 +243,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-hourly-grid';
         $title = 'Sale Hourly';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleHourlyColumns();
         $data['data_provider'] = $data['report']->saleHourly();
@@ -257,7 +259,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-summary-grid';
         $title = 'Sale Summary';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleSummaryColumns();
         $data['data_provider'] = $data['report']->saleSummary();
@@ -273,7 +275,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-by-sale-rep-grid';
         $title = 'Sale Summary By Sale Rep';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleSumBySaleRepColumns();
 
@@ -291,7 +293,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-weekly-by-customer-grid';
         $title = 'Sale Weekly By Customer';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleWeeklyByCusotmer();
         $data['data_provider'] = $data['report']->saleWeeklyByCustomer();
@@ -302,7 +304,7 @@ class ReportController extends Controller
     public function actionSaleInvoiceItem($sale_id, $employee_id)
     {
         if (Yii::app()->user->checkAccess('report.sale')) {
-        
+
             $model = new SaleItem('search');
             $model->unsetAttributes();  // clear any default values
 
@@ -367,7 +369,7 @@ class ReportController extends Controller
         $data['from_date'] = $from_date;
         $data['to_date'] = $to_date;
         $data['grid_id'] = 'sale-summary-grid';
-        $data['title'] = 'Sale Summary' .' ' .  Yii::t('app','From') . ' ' . $from_date . '  ' . Yii::t('app','To') . ' ' . $to_date;
+        $data['title'] = 'Sale Summary' . ' ' . Yii::t('app', 'From') . ' ' . $from_date . '  ' . Yii::t('app', 'To') . ' ' . $to_date;
 
         $data['grid_columns'] = ReportColumn::getTransactionColumns();
 
@@ -375,7 +377,7 @@ class ReportController extends Controller
         $report->to_date = $to_date;
         $data['data_provider'] = $report->saleSummary();
 
-        $this->renderView($data,'index_2');
+        $this->renderView($data, 'index_2');
 
 
     }
@@ -455,7 +457,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-payment-by-employee-grid';
         $title = 'Payment Receive By Employee';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getPaymentReceiveByEmployeeColumns();
         $data['data_provider'] = $data['report']->paymentReceiveByEmployee();
@@ -471,7 +473,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-profit-daily-sum-grid';
         $title = 'Profit Daily Sum';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getProfitDailyColumns();
         $data['data_provider'] = $data['report']->profitDailySum();
@@ -492,7 +494,7 @@ class ReportController extends Controller
         $data['from_date'] = $from_date;
         //$data['to_date'] = $to_date;
         $data['grid_id'] = 'rpt-profit-by-invoice-grid';
-        $data['title'] = 'Profit By Invoice' .' ' .  Yii::t('app','@') . ' ' . $from_date;
+        $data['title'] = 'Profit By Invoice' . ' ' . Yii::t('app', '@') . ' ' . $from_date;
 
         $data['grid_columns'] = ReportColumn::getProfitByInvoiceColumns();
 
@@ -510,7 +512,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-top-item-grid';
         $title = 'Top Item';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getTopItemColumns();
         $data['data_provider'] = $data['report']->topItem();
@@ -526,7 +528,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-item-expiry-grid';
         $title = 'Item Expiry';
 
-        $data = $this->commonData($grid_id,$title,null,'_header_3');
+        $data = $this->commonData($grid_id, $title, null, '_header_3');
         $data['filter'] = $filter;
 
         $data['header_tab'] = ReportColumn::getItemExpiryHeaderTab($filter);
@@ -545,7 +547,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-inventory-grid';
         $title = 'Inventory';
 
-        $data = $this->commonData($grid_id,$title,'show','_header_3');
+        $data = $this->commonData($grid_id, $title, 'show', '_header_3');
         $data['filter'] = $filter;
 
         $data['header_tab'] = ReportColumn::getInventoryHeaderTab($filter);
@@ -556,7 +558,7 @@ class ReportController extends Controller
         $this->renderView($data);
 
     }
-    
+
     public function actionStockCount($filter = 1)
     {
         //$this->canViewReport();
@@ -586,28 +588,28 @@ class ReportController extends Controller
             $this->render('stock_count', array('report' => $report, 'filter' => $filter));
         }
     }
-    
+
     public function actionStockCountPrint()
     {
         //$this->canViewReport();
         authorized('report.stock');
-       
+
         $report = new Report;
         $data['report'] = $report;
         $data['filter'] = Yii::app()->shoppingCart->getDayinterval();
         $data['employee'] = ucwords(Yii::app()->session['emp_fullname']);
-        $data['trans_date'] = Date('d-m-Y'); 
+        $data['trans_date'] = Date('d-m-Y');
         $data['save_id'] = Item::model()->saveStockCount(Yii::app()->shoppingCart->getDayinterval());
         $data['items'] = Item::model()->stockItem(Yii::app()->shoppingCart->getDayinterval());
-         
+
         if (count($data['items']) == 0) {
-            $data['warning'] = Yii::t('app','There is no item to print...');
+            $data['warning'] = Yii::t('app', 'There is no item to print...');
             $this->render('stock_count', $data);
         } else {
             $this->layout = '//layouts/column_receipt';
             $this->render('_stock_count_print', $data);
         }
-         
+
     }
 
     public function actionItemInactive($mfilter = '1')
@@ -652,20 +654,20 @@ class ReportController extends Controller
         $grid_id = 'rpt-sale-item-summary-grid';
         $title = 'Sale Item Summary';
 
-        $data = $this->commonData($grid_id,$title);
+        $data = $this->commonData($grid_id, $title);
 
         $data['grid_columns'] = ReportColumn::getSaleItemSummaryColumns();
         $data['data_provider'] = $data['report']->saleItemSummary();
 
         $this->renderView($data);
     }
-    
+
     public function actionUserLogSummary($period = 'today')
     {
         $this->canViewReport();
 
         $report = new Report;
-  
+
         if (isset($_GET['Report'])) {
             $report->attributes = $_GET['Report'];
             $from_date = $_GET['Report']['from_date'];
@@ -689,8 +691,8 @@ class ReportController extends Controller
             $this->render('user_log_sum', array('report' => $report, 'from_date' => $from_date, 'to_date' => $to_date));
         }
     }
-    
-    public function actionUserLogDt($employee_id,$full_name)
+
+    public function actionUserLogDt($employee_id, $full_name)
     {
         $this->canViewReport();
 
@@ -703,7 +705,7 @@ class ReportController extends Controller
         if (Yii::app()->request->isAjaxRequest) {
 
             Yii::app()->clientScript->scriptMap['*.js'] = false;
-     
+
             if (isset($_GET['ajax']) && $_GET['ajax'] == 'user-log-dt-grid') {
                 $this->render('user_log_dt', array(
                     'model' => $model,
@@ -713,13 +715,13 @@ class ReportController extends Controller
             } else {
                 echo CJSON::encode(array(
                     'status' => 'render',
-                    'div' => $this->renderPartial('user_log_dt', array('model' => $model,'employee_id' => $employee_id,'full_name' => $full_name,), true, true),
+                    'div' => $this->renderPartial('user_log_dt', array('model' => $model, 'employee_id' => $employee_id, 'full_name' => $full_name,), true, true),
                 ));
 
                 Yii::app()->end();
             }
         } else {
-            $this->render('user_log_dt', array('model' => $model,'employee_id' => $employee_id,'full_name' => $full_name,));
+            $this->render('user_log_dt', array('model' => $model, 'employee_id' => $employee_id, 'full_name' => $full_name,));
         }
     }
 
@@ -731,7 +733,7 @@ class ReportController extends Controller
         $grid_id = 'rpt-outstanding-inv-grid';
         $title = 'Outstanding Balance';
 
-        $data = $this->commonData($grid_id,$title,'show');
+        $data = $this->commonData($grid_id, $title, 'show');
 
 
         $data['grid_columns'] = ReportColumn::getOutStandingInvoiceColumns();
@@ -740,7 +742,7 @@ class ReportController extends Controller
         $this->renderView($data);
     }
 
-	public function actionSaleItemSumbyCust($period = 'today')
+    public function actionSaleItemSumbyCust($period = 'today')
     {
         //$this->canViewReport();
         authorized('report.sale');
@@ -763,7 +765,7 @@ class ReportController extends Controller
         $this->renderView($data);
     }
 
-    public function actionBalanceByCustomerId($client_id,$balance)
+    public function actionBalanceByCustomerId($client_id, $balance)
     {
 
         $model = new SalePayment;
@@ -786,9 +788,9 @@ class ReportController extends Controller
         ));
     }
 
-    protected function renderView($data, $view_name='index')
+    protected function renderView($data, $view_name = 'index')
     {
-        if (Yii::app()->request->isAjaxRequest && !isset($_GET['ajax']) ) {
+        if (Yii::app()->request->isAjaxRequest && !isset($_GET['ajax'])) {
             Yii::app()->clientScript->scriptMap['*.css'] = false;
             Yii::app()->clientScript->scriptMap['*.js'] = false;
 
@@ -810,7 +812,7 @@ class ReportController extends Controller
         }
     }
 
-    protected function commonData($grid_id,$title,$advance_search=null,$header_view='_header',$grid_view='_grid')
+    protected function commonData($grid_id, $title, $advance_search = null, $header_view = '_header', $grid_view = '_grid')
     {
         $report = new Report;
 
@@ -1013,6 +1015,25 @@ class ReportController extends Controller
                 echo $status_f;
         }
 
+    }
+
+    public function actionTransferDetail($id)
+    {
+
+        $report = new Report;
+
+        $data['report'] = $report;
+        $data['receive_id'] = $id;
+
+        $data['grid_id'] = 'rpt-receiving-item-grid';
+        $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
+
+        $data['grid_columns'] = ReportColumn::getTransferedDetailColumns();
+
+        $report->receive_id = $id;
+        $data['data_provider'] = $report->tranferedDetail();
+
+        $this->renderView($data);
     }
 
     public function renderStatus()

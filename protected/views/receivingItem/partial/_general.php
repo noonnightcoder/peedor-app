@@ -19,7 +19,7 @@
             <div class="col-sm-12 form-group">
                 
                 <?php $this->renderPartial('partial/_outlet',
-                    array('model' => $model,'form'=>$form,'outlet'=>$outlet,'label'=>true
+                    array('model'  =>  $model, 'form' => $form, 'outlet' => $outlet,' label' => true,'items' => $items
                     ))?>
             </div>
         </div>

@@ -100,7 +100,8 @@
                                 'supplier' => $supplier,
                                 'count_item' => $count_item,
                                 'trans_mode' => $trans_mode,
-                                'form' => $form
+                                'form' => $form,
+                                'items' => $items
                             ), true)
                     ));
                 ?>

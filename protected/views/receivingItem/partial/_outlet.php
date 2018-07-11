@@ -11,7 +11,8 @@
             array(
                 //'empty'=>'All Outlet',
                 'id'=>'outlet',
-                'options' => array($outlet=>array('selected'=>'selected'))
+                'options' => array($outlet=>array('selected'=>'selected')),
+                'disabled' => isset($items) && !empty($items) ? true : false
             )
         ); ?>
         <?php echo $form->error($model,'to_outlet'); ?>
