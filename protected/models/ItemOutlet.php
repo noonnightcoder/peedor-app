@@ -116,7 +116,7 @@ class ItemOutlet extends CActiveRecord
     	$outlet_id = Yii::app()->session['employee_outlet'];
 
         $sql="
-            select id,outlet_id,`name`,item_number,cost_price,unit_price,quantity
+            select item_id,outlet_id,`name`,item_number,cost_price,unit_price,quantity
             from v_item_outlet
             where (name like :keyword or item_number=:item_number)
             and outlet_id=:outlet_id
@@ -131,7 +131,7 @@ class ItemOutlet extends CActiveRecord
                 // label for dropdown list
                 'value' => $model['name'],
                 // value for input field
-                'id' => $model['id'],
+                'id' => $model['item_id'],
                 // return values from autocomplete
                 'unit_price' => $model['unit_price'],
                 'quantity' => $model['quantity'],

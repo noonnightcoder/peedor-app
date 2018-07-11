@@ -198,7 +198,7 @@ class ReceivingItemController extends Controller
 
         Yii::app()->receivingCart->deleteItemToTransfer($item_id);
 
-        $this->reload();
+        $this->reload1();
     }
     
     public function actionCountReview(){
