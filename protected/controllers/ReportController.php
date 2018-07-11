@@ -883,7 +883,6 @@ class ReportController extends Controller
         $data['customer_id'] = Yii::app()->shoppingCart->getCustomer();
         $data['comment'] = Yii::app()->shoppingCart->getComment();
         $data['employee_id'] = Yii::app()->shoppingCart->getEmployee() ? Yii::app()->shoppingCart->getEmployee() : Yii::app()->session['employeeid'];
-        $data['employee_outlet'] = Yii::app()->session['employee_outlet'];
         $data['salerep_id'] = Yii::app()->shoppingCart->getSaleRep();
         $data['transaction_date'] = date('d/m/Y',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('d/m/Y');
         $data['transaction_time'] = date('h:i:s',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('h:i:s');

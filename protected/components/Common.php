@@ -136,7 +136,6 @@ Class Common
                 'format3' => 'Logo & VAT',
             ), //https://goo.gl/tkYZR1
             'payment_term' => array(
-<<<<<<< HEAD
                 'COD' => 'ឱ្យលុយភ្លាម',
                 'NET3' => 'ជំពាក់ 3ថ្ងៃ',
                 'NET5' => 'ជំពាក់ 5ថ្ងៃ',
@@ -162,13 +161,12 @@ Class Common
             //     //'CONTRA' => t('Payment from the customer offset against the value of supplies purchased from the customer','app'),
             //     'STAGE' => t('Payment of agreed amounts at stage','app'),
             // ), //Y-m-d H:i:s
-=======
-                'COD' => 'ឱ្យលុយភ្លាម',//t('Cash on delivery','app'),
+                //'COD' => 'ឱ្យលុយភ្លាម',//t('Cash on delivery','app'),
                 //'CONSIGN' => t('Consignment','app'),
-                'NET3' => 'ជំពាក់ 3ថ្ងៃ',//t('Payment 3 days after invoice date','app'),
-                'NET5' => 'ជំពាក់ 5ថ្ងៃ',//t('Payment 5 days after invoice date','app'),
-                'NE7' => 'ជំពាក់ 7ថ្ងៃ',//t('Payment 7 days after invoice date','app'),
-                'NE14' => 'ជំពាក់ 14ថ្ងៃ',//t('Payment 14 days after invoice date','app'),
+                //'NET3' => 'ជំពាក់ 3ថ្ងៃ',//t('Payment 3 days after invoice date','app'),
+                //'NET5' => 'ជំពាក់ 5ថ្ងៃ',//t('Payment 5 days after invoice date','app'),
+                //'NE7' => 'ជំពាក់ 7ថ្ងៃ',//t('Payment 7 days after invoice date','app'),
+                //'NE14' => 'ជំពាក់ 14ថ្ងៃ',//t('Payment 14 days after invoice date','app'),
                 //'NET30' => //t('Payment 30 days after invoice date','app'),
                 //'NET60' => t('Payment 60 days after invoice date','app'),
                 //'PID' => t('Payment in advance','app'),
@@ -178,8 +176,7 @@ Class Common
                 //'CIA' => t('Cash in advance','app'),
                 //'CONTRA' => t('Payment from the customer offset against the value of supplies purchased from the customer','app'),
                 //'STAGE' => t('Payment of agreed amounts at stage','app'),
-            ), //Y-m-d H:i:s
->>>>>>> 138693c60e4da4897abeb98a99f8a0966530dce0
+            //), //Y-m-d H:i:s
             'inv_number_interval' => array(
                 'i' => 'Every Minute',
                 'H' => 'Every Hour',
