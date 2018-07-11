@@ -10,7 +10,7 @@
     <div class="col-xs-6 col-xs-offset-1 text-right kh-font box-right">
             <?= TbHtml::encode(Yii::t('app','DATE') . " : ". $transaction_date); ?> <br>
             <?= TbHtml::encode(Yii::t('app','Payment Day') . " : " . $transaction_date  ); ?> <br>
-            <?= TbHtml::encode('រយៈពេលជំពាក់' . " : " . 'លុយភ្លាម'  ); ?> <br>
+            <?= TbHtml::encode('រយៈពេលជំពាក់' . " : " . $payment_term  ); ?> <br>
     </div>
 
 </div>

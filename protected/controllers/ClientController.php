@@ -94,6 +94,7 @@ class ClientController extends Controller
 
         if (isset($_POST['Client'])) {
             $model->attributes = $_POST['Client'];
+            $model->mobile_no = str_replace(' ', '', $_POST['Client']['mobile_no']);
             $contact->attributes = $_POST['Contact'];
             $model->image = CUploadedFile::getInstance($model,'image');
             // var_dump($_FILES['Client[image]']);

@@ -26,7 +26,6 @@ class Report extends CFormModel
     public $to_date;
     public $sale_id;
     public $receive_id;
-    public $outlet_id;
     public $employee_id;
     public $search_id;
 
@@ -87,7 +86,7 @@ class Report extends CFormModel
                WHERE sale_id=:search_id
                AND status=:status
                AND created_by=:user_id
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                UNION ALL
                SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
@@ -96,7 +95,7 @@ class Report extends CFormModel
                WHERE sale_id=:search_id
                AND status=:status
                AND created_by in (select id from employee where report_to=:user_id)
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                ORDER By sale_time desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
@@ -114,7 +113,7 @@ class Report extends CFormModel
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
                AND status=:status
                AND created_by=:user_id
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                UNION ALL
                SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
@@ -124,7 +123,7 @@ class Report extends CFormModel
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
                AND status=:status
                AND created_by in (select id from employee where report_to=:user_id)
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                ORDER By sale_time desc";
 
 
@@ -160,7 +159,7 @@ class Report extends CFormModel
                WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
                AND status=:status
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                ORDER By sale_time desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
@@ -176,7 +175,7 @@ class Report extends CFormModel
                WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
                AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
                AND status=:status
-               AND printeddo_by is null
+               AND (printeddo_by is NULL or printeddo_by is null)
                ORDER By sale_time desc";
 
             $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
@@ -261,7 +260,8 @@ class Report extends CFormModel
 
             $sql = "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                         employee_name,employee_id,client_id,quantity,sub_total,
-                        discount_amount,vat_amount,total,paid,balance,status,status_f
+                        discount_amount,vat_amount,total,paid,balance,status,status_f,
+                        payment_term,validate_by,approve_by
                     FROM v_sale_invoice_2
                     WHERE sale_id=:search_id OR (c_first_name like :first_name OR c_last_name like :last_name OR client_name like :full_name )
                     ORDER By sale_time desc";
@@ -277,7 +277,8 @@ class Report extends CFormModel
 
             $sql= "SELECT sale_id,new_id new_sale_id,sale_time,client_name,0 current_balance,
                       employee_name,employee_id,client_id,quantity,sub_total,
-                      discount_amount,vat_amount,total,paid,balance,status,status_f
+                      discount_amount,vat_amount,total,paid,balance,status,status_f,
+                      payment_term,validate_by,approve_by
                    FROM v_sale_invoice_2
                    WHERE sale_time>=str_to_date(:from_date,'%d-%m-%Y')
                    AND sale_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
@@ -1351,145 +1352,13 @@ class Report extends CFormModel
         $data['report']->search_id = $data['search_id'];
 
         return $data;
+
     }
 
-    public function receivingListByStatusUser($tran_type='2',$user_id) {
-
-
-        if ($this->search_id !== '') {
-            $sql= "SELECT receive_id,DATE(receive_time) receive_time,status,created_by,employee_id
-               FROM v_receiving_item
-               WHERE receive_time=:search_id
-               AND status=:tran_type
-               AND employee_id=:user_id
-               group by receive_id,DATE(receive_time),status,created_by,employee_id";
-
-            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                    ':search_id' => $this->search_id,
-                    ':tran_type' => $tran_type,
-                    ':user_id' => $user_id)
-            );
-
-        } else {
-            $sql= "SELECT receive_id,DATE(receive_time) receive_time,status,status_desc,created_by,employee_id
-               FROM v_receiving_item
-               WHERE receive_time>=str_to_date(:from_date,'%d-%m-%Y')
-               AND receive_time<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
-               AND status=:tran_type
-               AND employee_id=:user_id
-               group by receive_id,DATE(receive_time),status,created_by,employee_id";
-
-            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                    ':from_date' => $this->from_date,
-                    ':to_date' => $this->to_date,
-                    ':tran_type' => $tran_type,
-                    ':user_id' => $user_id)
-            );
-        }
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'receive_id',
-            'sort' => array(
-                'attributes' => array(
-                    'receive_id', 'receive_time',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
-    }
-
-    public function receivingItemDetail()
+    public function renderStatus()
     {
-        $sql= "SELECT receive_id,item_name,quantity ,cost,price,supplier,
-                    receive_time,`status`,status_desc,created_by,employee_id
-               FROM v_receiving_item
-               WHERE receive_id=:receive_id";
-
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':receive_id' => $this->receive_id));
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'receive_id',
-            'sort' => array(
-                'attributes' => array(
-                    'receive_id', 'receive_time',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
+        return "test";
     }
 
-    public function tranferedListByStatusUser($user_id) {
-        $outlet_id = Yii::app()->session['employee_outlet'];
-        if ($this->search_id !== '') {
-            $sql= "SELECT reference_name,status,created_date,trans_qty,qty_af_trans,
-                  from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
-                  trans_type,trans_type_id,receive_id
-                FROM v_transfered_items
-                  WHERE created_date=:search_id
-                  AND (from_outlet=:outlet_id or to_outlet=:outlet_id)
-                  ORDER BY receive_id desc";
-
-            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                    ':search_id' => $this->search_id,
-                    ':outlet_id' => $outlet_id)
-            );
-
-        } else {
-            $sql= "SELECT reference_name,status,created_date,trans_qty,qty_af_trans,
-                  from_outlet_id,to_outlet_id,from_outlet,to_outlet,transfered_by,
-                  trans_type,trans_type_id,receive_id
-                FROM v_transfered_items
-                  WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
-                  AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
-                  AND (from_outlet_id=:outlet_id or to_outlet_id=:outlet_id)
-                  ORDER BY receive_id desc";
-
-            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                    ':from_date' => $this->from_date,
-                    ':to_date' => $this->to_date,
-                    ':outlet_id' => $outlet_id)
-            );
-        }
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'receive_id',
-            'sort' => array(
-                'attributes' => array(
-                    'receive_id', 'created_date',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
-    }
-
-    public function tranferedDetail()
-    {
-        $sql= "SELECT t.receive_id,it.name item_name,t.quantity,s.created_date receive_time,t.cost_price,t.unit_price
-              FROM receiving_item t JOIN v_item_outlet it
-              ON t.item_id=it.item_id JOIN receiving s
-              ON t.receive_id=s.id
-               WHERE receive_id=:receive_id
-               and it.outlet_id=:outlet_id";
-
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':receive_id' => $this->receive_id,':outlet_id'=>Yii::app()->session['employee_outlet']));
-
-        $dataProvider = new CArrayDataProvider($rawData, array(
-            'keyField' => 'receive_id',
-            'sort' => array(
-                'attributes' => array(
-                    'receive_id', 'receive_time',
-                ),
-            ),
-            'pagination' => false,
-        ));
-
-        return $dataProvider; // Return as array object
-    }
 
 }

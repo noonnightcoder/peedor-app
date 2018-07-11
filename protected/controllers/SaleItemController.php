@@ -704,6 +704,9 @@ class SaleItemController extends Controller
         $data['invoice_body_footer_view'] = '_body_footer';
         $data['invoice_footer_view'] = '_footer';
         $data['invoice_no_prefix'] = Common::getInvoicePrefix();
+
+        $sale_id = isset($_GET['sale_id']) ? $_GET['sale_id'] : null;
+
         //$data['invoice_folder'] = invFolderPath();
         $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'kh');
         $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'en');
@@ -783,14 +786,15 @@ class SaleItemController extends Controller
         $employee = Employee::model()->employeeByID($data['employee_id']);
         $sale_rep = Employee::model()->employeeByID($data['salerep_id']);
         $group_name = Client::model()->groupByID($data['customer_id']);
+        $sale_payment_term = Sale::model()->findByPk($sale_id);
         $data['account'] = $account;
         $data['customer'] = $customer;
         $data['employee'] = $employee;
 
         $data['acc_balance'] = $account !== null ? $account->current_balance : '';
-        $data['cust_fullname'] = $customer !== null ? $customer->first_name . ' ' . $customer->last_name : 'General';
+        $data['cust_fullname'] = $customer !== null ? $customer->last_name . ' ' . $customer->first_name : 'General';
         $data['group_name'] = $group_name !== null ? $group_name : 'General';
-        $data['salerep_fullname'] = $sale_rep !== null ? $sale_rep->first_name . ' ' . $sale_rep->last_name : $employee->first_name . ' '  . $employee->last_name;
+        $data['salerep_fullname'] = $sale_rep !== null ? $sale_rep->last_name . ' ' . $sale_rep->first_name : $employee->last_name . ' '  . $employee->first_name;
         $data['salerep_tel'] = $sale_rep !== null ? $sale_rep->mobile_no : '';
         $data['cust_address1'] = $customer !== null ? $customer->address1 : '';
         $data['cust_address2'] = $customer !== null ? $customer->address2 : '';
@@ -801,9 +805,19 @@ class SaleItemController extends Controller
 
         if ($customer !== null) {
 
-            $data['cust_contact_fullname'] = $customer->contact !== null ? $customer->contact->first_name . ' ' . $customer->contact->last_name : '';
+            $data['cust_contact_fullname'] = $customer->contact !== null ? $customer->contact->last_name . ' ' . $customer->contact->first_name : '';
             $data['cust_term'] = $data['cust_term'] == null ? $customer->payment_term : $data['cust_term'];
+            $payment_term = common::arrayFactory('payment_term');//
             //s$data['total_due'] = 0 ;
+            $data['payment_term'] = '';
+            if($sale_payment_term){
+                foreach($payment_term as $key=>$value){
+                    if($key==$sale_payment_term->payment_term){
+                        $data['payment_term'] = $value;
+                    }
+                }    
+            }
+
         }
 
         return $data;

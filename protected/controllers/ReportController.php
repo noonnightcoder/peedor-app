@@ -53,8 +53,8 @@ class ReportController extends Controller
                     'SaleInvoiceDetail',
                     'SaleWeeklyByCustomer',
                     'BalanceByCustomerId',
-                    'transferDetail',
-                    'saleOrderHistory'
+                    'saleOrderHistory',
+                    'viewOrderHistoryDetail'
                 ),
                 'users' => array('@'),
             ),
@@ -149,6 +149,49 @@ class ReportController extends Controller
         $data['data_provider'] = $data['report']->saleInvoice();
 
         $this->renderView($data);
+
+    }
+
+    public function actionViewOrderHistoryDetail($sale_id, $customer_id,$employee_id='',$tran_type,$pdf=false,$email=false)
+    {
+            authorized('sale.read') || authorized('sale.create') ;
+
+            $data = $this->receiptData($sale_id,$customer_id,$tran_type);
+
+            if (count($data['items']) == 0) {
+                $data['error_message'] = 'Sale Transaction Failed';
+            }
+
+            $this->renderRecipe($data);
+            
+            Yii::app()->shoppingCart->clearAll();
+
+    }
+
+    protected function receiptData($sale_id,$customer_id,$tran_type,$paid_amount=0)
+    {
+        $this->layout = '//layouts/column_receipt';
+
+        Yii::app()->shoppingCart->setInvoiceFormat('format_hf');
+        Yii::app()->shoppingCart->copyEntireSale($sale_id);
+
+        $data = $this->sessionInfo();
+
+        $data['sale_id'] = $sale_id;
+        $data['customer_id'] = $customer_id;
+        $data['paid_amount'] = $paid_amount;
+        $data['status'] = $tran_type;
+        $data['receipt_header_title_kh'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'kh');
+        $data['receipt_header_title_en'] = $this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : $tran_type, 'en');
+        $data['invoice_format'] = Yii::app()->shoppingCart->getInvoiceFormat();
+        $data['invoice_prefix'] = $tran_type == param('sale_complete_status') ? 'INV' : 'SO';
+        $data['filename'] = $data['invoice_prefix']. '_' . $sale_id . '_' . str_replace('/', '_', $data['transaction_date']);
+
+        if (count($data['items']) == 0) {
+            $data['error_message'] = 'Sale Transaction Failed';
+        }
+
+        return $data;
 
     }
 
@@ -749,12 +792,6 @@ class ReportController extends Controller
             Yii::app()->clientScript->scriptMap['*.css'] = false;
             Yii::app()->clientScript->scriptMap['*.js'] = false;
 
-            /*
-            echo CJSON::encode(array(
-                'status' => 'success',
-                'div' => $this->renderPartial('partial/_grid', $data, true, false),
-            ));
-            */
             $this->renderPartial('partial/_grid', $data);
         } else {
             $this->render($view_name, $data);
@@ -797,23 +834,192 @@ class ReportController extends Controller
         return $data;
     }
 
-    public function actionTransferDetail($id)
+    protected function sessionInfo($data=array()) 
     {
+        //$data = $this->invoiceData();
 
-        $report = new Report;
+        //$data=array();
+        //$data['receipt_biz_name'] = Yii::app()->params['biz_name'] !='' ? Yii::app()->params['biz_name'] . '/' : '';
 
-        $data['report'] = $report;
-        $data['receive_id'] = $id;
+        //$data['receipt_folder'] = Yii::app()->params['biz_name'] !='' ? Yii::app()->params['biz_name'] . '/' : '';
+        $data['title']= getTransType() ==param('sale_submit_status') ? 'Order To Validate' : (getTransType()==param('sale_validate_status') ? 'Order To Invoice' : (getTransType()==param('sale_complete_status') ? 'Order To Deliver' : 'Sale Order'));
+        $data['invoice_header_view'] = '_header';
+        $data['invoice_header_body_view'] = '_header_body';
+        $data['invoice_body_view'] = '_body';
+        $data['invoice_body_footer_view'] = '_body_footer';
+        $data['invoice_footer_view'] = '_footer';
+        $data['invoice_no_prefix'] = Common::getInvoicePrefix();
 
-        $data['grid_id'] = 'rpt-receiving-item-grid';
-        $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
+        $sale_id = isset($_GET['sale_id']) ? $_GET['sale_id'] : null;
 
-        $data['grid_columns'] = ReportColumn::getTransferedDetailColumns();
+        //$data['invoice_folder'] = invFolderPath();
+        $data['receipt_header_title_kh']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'kh');
+        $data['receipt_header_title_en']=$this->getInvoiceTitle(isset($_GET['tran_type']) ? $_GET['tran_type'] : getTransType(),'en');
+        /*$data['receipt_header_view'] =  '_header';
+        $data['receipt_body_view'] =  '_body';
+        $data['receipt_footer_view'] = null;*/
 
-        $report->receive_id = $id;
-        $data['data_provider'] = $report->tranferedDetail();
+        $data['tran_type'] = getTransType();
+        $tran_type=isset($_GET['tran_type']) ? $_GET['tran_type'] : $data['tran_type'];
+        $data['url_back']='saleItem/list?tran_type='.$tran_type.'&user_id='.getEmployeeId().'&title='.$data['title'];
+        $data['sale_header'] = isset($_GET['sale_id']) ? ($data['tran_type']==param('sale_complete_status') ? 'Edit Invoice':'Edit Sale Order') : ($data['tran_type']==param('sale_complete_status') ? 'Create Invoice':'Create Sale Order');
+        $data['sale_header_icon'] = $data['tran_type']==param('sale_complete_status')? sysMenuInvoiceIcon():sysMenuSaleIcon();
+        $data['sale_save_url'] = $data['tran_type']==param('sale_complete_status') ? 'saleItem/CompleteSale':'saleItem/CompleteSale';
+        $data['sale_redirect_url'] = $data['tran_type']==param('sale_complete_status')? 'saleItem/SaleInvoice':'saleItem/SaleOrder';
+        $data['color_style'] = $data['tran_type']==param('sale_complete_status')? TbHtml::BUTTON_COLOR_SUCCESS:TbHtml::BUTTON_COLOR_PRIMARY;
 
-        $this->renderView($data);
+        $data['items'] = Yii::app()->shoppingCart->getCart();
+        $data['count_item'] = Yii::app()->shoppingCart->getQuantityTotal();
+        $data['payments'] = Yii::app()->shoppingCart->getPayments();
+        $data['count_payment'] = count(Yii::app()->shoppingCart->getPayments());
+        $data['payment_received'] = Yii::app()->shoppingCart->getPaymentsTotal();
+        $data['sub_total'] = Yii::app()->shoppingCart->getSubTotal();
+        $data['total_b4vat'] = Yii::app()->shoppingCart->getTotalB4Vat();
+        $data['total'] = Yii::app()->shoppingCart->getTotal();
+        $data['total_due'] = Yii::app()->shoppingCart->getTotalDue();
+        $data['qtytotal'] = Yii::app()->shoppingCart->getQuantityTotal();
+        //$data['amount_change'] = Yii::app()->shoppingCart->getAmountDue(); // This is only work for current invoice
+        $data['amount_change'] = Yii::app()->shoppingCart->getTotalDue(); // Outstanding + Current Invoice / Hot Bill - Total Payment
+        $data['customer_id'] = Yii::app()->shoppingCart->getCustomer();
+        $data['comment'] = Yii::app()->shoppingCart->getComment();
+        $data['employee_id'] = Yii::app()->shoppingCart->getEmployee() ? Yii::app()->shoppingCart->getEmployee() : Yii::app()->session['employeeid'];
+        $data['employee_outlet'] = Yii::app()->session['employee_outlet'];
+        $data['salerep_id'] = Yii::app()->shoppingCart->getSaleRep();
+        $data['transaction_date'] = date('d/m/Y',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('d/m/Y');
+        $data['transaction_time'] = date('h:i:s',strtotime(Yii::app()->shoppingCart->getSaleTime())); //date('h:i:s');
+        $data['session_sale_id'] = Yii::app()->shoppingCart->getSaleId();
+        //$data['employee'] = ucwords(Yii::app()->session['emp_fullname']);
+        $data['total_discount'] = Yii::app()->shoppingCart->getTotalDiscount();
+        $data['total_gst'] = Yii::app()->shoppingCart->getTotalGST();
+        $data['sale_mode'] = Yii::app()->shoppingCart->getSaleMode();
+        $data['cust_term'] = Yii::app()->shoppingCart->getPaymentTerm();
+
+        $data['disable_editprice'] = Yii::app()->user->checkAccess('sale.editprice') ? false : true;
+        $data['disable_discount'] = Yii::app()->user->checkAccess('sale.discount') ? false : true;
+        $data['colspan'] = Yii::app()->settings->get('sale','discount')=='hidden' ? '2' : '3';
+
+        $data['discount_amount'] = Common::calDiscountAmount($data['total_discount'],$data['sub_total']);
+        $data['gst_amount'] = $data['total_b4vat'] * $data['total_gst']/100;
+
+        $discount_arr=Common::Discount($data['total_discount']);
+        $data['discount_amt']=$discount_arr[0];
+        $data['discount_symbol']=$discount_arr[1];
+
+        /** Rounding a number to a nearest 10 or 100 (Floor : round down, Ceil : round up , Round : standard round 
+         *  Ref: http://stackoverflow.com/questions/1619265/how-to-round-up-a-number-to-nearest-10
+         *    ** http://stackoverflow.com/questions/6619377/how-to-get-whole-and-decimal-part-of-a-number
+         *  Method : using Round method here 
+        */
+        $data['usd_2_khr'] = Yii::app()->settings->get('exchange_rate', 'USD2KHR');
+        $data['total_khr'] = $data['total'] * $data['usd_2_khr']; 
+        $data['amount_change_khr'] = $data['amount_change'] * $data['usd_2_khr']; //Stupid PHP passing calculation 0.9-1 * 4000 = -3999.1 ,  (0.9-1) * 4000 = 400 correct
+        
+        /*
+         * Total is to round up [Ceil] - Company In
+         * Amount_Change suppose to round done [Floor] but usually this value is minus so using [Ceil] instead
+        */
+        $data['total_khr_round'] = ceil($data['total_khr']/100)*100;
+
+        $data['amount_change_khr_round'] = ceil($data['amount_change_khr']/100-0.1)*100; // Got no idea why PHP ceil(-0.1/100)*100 = 399
+
+        $data['amount_change_whole'] = ceil($data['amount_change']);  // floor(1.25)=1
+        $data['amount_change_fraction_khr'] = ceil( (( $data['amount_change'] -  $data['amount_change_whole'] ) * $data['usd_2_khr'])/100 - 0.1 ) * 100; //Added 0.1 to solve ceil (-0.1/100)*100=399
+               
+        /*** Customer Account Info ***/
+        $account = $this->custAccountInfo($data['customer_id']);
+        $customer = Client::model()->clientByID($data['customer_id']);
+        $employee = Employee::model()->employeeByID($data['employee_id']);
+        $sale_rep = Employee::model()->employeeByID($data['salerep_id']);
+        $group_name = Client::model()->groupByID($data['customer_id']);
+        $sale_payment_term = Sale::model()->findByPk($sale_id);
+        $data['account'] = $account;
+        $data['customer'] = $customer;
+        $data['employee'] = $employee;
+
+        $data['acc_balance'] = $account !== null ? $account->current_balance : '';
+        $data['cust_fullname'] = $customer !== null ? $customer->last_name . ' ' . $customer->first_name : 'General';
+        $data['group_name'] = $group_name !== null ? $group_name : 'General';
+        $data['salerep_fullname'] = $sale_rep !== null ? $sale_rep->last_name . ' ' . $sale_rep->first_name : $employee->last_name . ' '  . $employee->first_name;
+        $data['salerep_tel'] = $sale_rep !== null ? $sale_rep->mobile_no : '';
+        $data['cust_address1'] = $customer !== null ? $customer->address1 : '';
+        $data['cust_address2'] = $customer !== null ? $customer->address2 : '';
+        $data['cust_mobile_no'] = $customer !== null ? $customer->mobile_no : '';
+        $data['cust_fax'] = $customer !== null ? $customer->fax : '';
+        $data['cust_notes'] = $customer !== null ? $customer->notes : '';
+        $data['cust_contact_fullname'] = '';
+
+        if ($customer !== null) {
+
+            $data['cust_contact_fullname'] = $customer->contact !== null ? $customer->contact->last_name . ' ' . $customer->contact->first_name : '';
+            $data['cust_term'] = $data['cust_term'] == null ? $customer->payment_term : $data['cust_term'];
+            $payment_term = Common::arrayFactory('payment_term');//
+            //s$data['total_due'] = 0 ;
+            $data['payment_term'] = '';
+            if($sale_payment_term){
+                foreach($payment_term as $key=>$value){
+                    if($key==$sale_payment_term->payment_term){
+                        $data['payment_term'] = $value;
+                    }
+                }    
+            }
+
+        }
+
+        return $data;
     }
+
+    private function getInvoiceTitle($status,$lang='en')
+    {
+        if($lang=='kh'){
+            return $status==param('sale_submit_status') || $status==param('sale_validate_status') ? 'ការបញ្ជាទិញ' : 'វិក័យប័ត្រ';    
+        }else{
+             return $status==param('sale_submit_status')  || $status==param('sale_validate_status') ? 'Sale Order' : 'Invoice';    
+        }
+    }
+
+    protected function custAccountInfo($customer_id)
+    {
+        $model=null;
+        if ($customer_id != null) {
+            $model = Account::model()->getAccountInfo($customer_id);
+        }
+        
+        return $model;
+    }
+
+    protected function renderRecipe($data)
+    {
+        $this->render('//receipt/'. 'index', $data); 
+    }
+
+    protected function renderViewRecipe($data)
+    {
+        $this->renderPartial('//receipt/'. 'index_view', $data);
+    }
+
+    public function colorStatusColumn($status,$status_f)
+    {
+        switch ($status) {
+            case '1':
+                echo "<span class='green'>" . $status_f . "</span>";
+                break;
+            case '2':
+                echo "<span class='green'>" . $status_f . "</span>";
+                break;
+            case '3':
+                echo "<span class='green'>" . $status_f . "</span>";
+                break;
+
+            default:
+                echo $status_f;
+        }
+
+    }
+
+    public function renderStatus()
+    {
+        return "test";
+    }
+
 
 }

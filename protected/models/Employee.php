@@ -140,15 +140,15 @@ class Employee extends CActiveRecord
             );
         }
 
-		return new CActiveDataProvider($this, array(
-			'criteria'=>$criteria,
-            'sort'=>array(
-                'defaultOrder'=>array('first_name'=> false),
-            ),
+		$sort = new CSort();
+        $sort->defaultOrder=array('last_name' => CSort::SORT_ASC);
+        return new CActiveDataProvider($this, array(
+            'criteria'=>$criteria,
+            'sort'=>$sort,
             'pagination' => array(
                 'pageSize' => Yii::app()->user->getState('employee_page_size', Common::defaultPageSize()),
             ),
-		));
+        ));
 	}
 
 	public static function model($className=__CLASS__)
@@ -180,7 +180,7 @@ class Employee extends CActiveRecord
 
     public function getEmployee()
     {
-        $model = Employee::model()->findAll();
+       $model = Employee::model()->findAll('status = :status',array(':status' => param('active_status')));
         $list  = CHtml::listData($model , 'id', 'EmployeeInfo');
         return $list;
     }
@@ -189,8 +189,8 @@ class Employee extends CActiveRecord
     {
         $model = Employee::model()->findAll(
             array('select' => '*',
-                'condition' => 'id not in ("1","2") and id<>:employee_id',
-                 'params'=>array(':employee_id' => $employee_id)
+                'condition' => 'id not in ("1","2") and id<>:employee_id and status=:status',
+                 'params'=>array(':employee_id' => $employee_id,':status' => param('active_status'))
                 ,
             ));
         $list  = CHtml::listData($model , 'id', 'EmployeeInfo');

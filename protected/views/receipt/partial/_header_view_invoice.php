@@ -11,8 +11,13 @@ $title=$status==param('sale_submit_status') ? 'Order To Validate' : ($status==pa
 	<a class="btn btn-primary" onclick="window.history.back()">
 		<i class="ace-icon fa fa-arrow-left bigger-120 white"></i>Back
 	</a>
+    <?php if(!isset($_GET['report'])):?>
     <a class="btn btn-primary" href="<?=Yii::app()->createUrl('saleItem/list',array('user_id'=>getEmployeeId(),'tran_type'=>$status,'title'=>$title))?>">
         <i class="ace-icon fa fa-list bigger-120 white"></i>View List
+    </a>
+    <?php endif?>
+    <a class="btn btn-primary" href="<?=Yii::app()->createUrl('saleItem/create',array('tran_type'=>$status == param('sale_validate_status') ? param('sale_complete_status') : param('sale_submit_status')))?>">
+        <i class="ace-icon fa fa-plus bigger-120 white"></i>Add New
     </a>
 	<a class="btn btn-primary pull-right" onclick="window.print()">
 		<i class="ace-icon fa fa-print bigger-120 white"></i>Print

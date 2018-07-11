@@ -89,7 +89,11 @@ class ReportColumn extends CModel
             ),
             array('name' => 'status',
                 'header' => Yii::t('app', 'Status'),
-                'value' => '$data["status_f"]',
+                //'value' => '$data["status"] == "1" ? "<span class=\"green\">" . $data["status_f"] . "</span>" : "<span class=\"orange\">" .  $data["status_f"].  "</span>"', //'$data["status_f"]',
+                'value' => function ($data)  {
+                    return self::renderStatus($data['status'],$data['status_f']);
+                },
+                'type' => 'raw',
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 //'header'=>'Invoice Detail',
@@ -195,61 +199,72 @@ class ReportColumn extends CModel
                 'url' => Yii::app()->createUrl('Report/saleInvoiceDetail'),
             ),
             array('name' => 'client_name',
+                'header' => Yii::t('app', 'Sold To'),
+                'value' => '$data["client_name"]',
+            ),
+            array('name' => 'employee_id',
+                'header' => Yii::t('app', 'Sold By'),
+                'value' => '$data["employee_name"]',
+            ),
+            array('name' => 'client_name',
                 'header' => Yii::t('app', 'Customer Name'),
                 'value' => '$data["client_name"]',
             ),
+            array('name' => 'payment_term',
+                'header' => Yii::t('app', 'Term'),
+                'value' => 'Common::arrayFactory("payment_term")[$data["payment_term"]]',
+            ),
+            /*
             array('name' => 'quantity',
                 'header' => Yii::t('app', 'QTY'),
                 'value' => 'number_format($data["quantity"],Common::getDecimalPlace(), ".", ",")',
                 'htmlOptions' => array('style' => 'text-align: right;'),
                 'headerHtmlOptions' => array('style' => 'text-align: right;'),
             ),
+            */
             array('name' => 'total',
                 'header' => Yii::t('app', 'Total'),
                 'value' => 'number_format($data["total"],Common::getDecimalPlace(), ".", ",")',
                 'htmlOptions' => array('style' => 'text-align: right;'),
                 'headerHtmlOptions' => array('style' => 'text-align: right;'),
             ),
+            array('name' => 'balance',
+                'header' => Yii::t('app', 'Balance'),
+                'value' => 'number_format($data["balance"],Common::getDecimalPlace(), ".", ",")',
+                'htmlOptions' => array('style' => 'text-align: right;'),
+                'headerHtmlOptions' => array('style' => 'text-align: right;'),
+            ),
             array('name' => 'status',
                 'header' => Yii::t('app', 'Status'),
-                'value' => '$data["status_f"]',
+                //'value' => '$data["status"] == "1" ? "<span class=\"green\">" . $data["status_f"] . "</span>" : "<span class=\"orange\">" .  $data["status_f"].  "</span>"', //'$data["status_f"]',
+                'value' => function ($data)  {
+                    return self::renderStatus($data['status'],$data['status_f']);
+                },
+                'type' => 'raw',
+            ),
+            array('name' => 'validate_by',
+                'header' => Yii::t('app', '1st Approver'),
+                'value' => '$data["validate_by"]',
+            ),
+            array('name' => 'approve_by',
+                'header' => Yii::t('app', '2nd Approver'),
+                'value' => '$data["approve_by"]',
             ),
             array('class' => 'bootstrap.widgets.TbButtonColumn',
                 //'header'=>'Invoice Detail',
-                'template' => '<div class="btn-group">{view}{print}{cancel}{edit}{printdo}</div>',
+                'template' => '<div class="btn-group">{view}{edit}{cancel}{printdo}{print}{reject}{complete}</div>',
                 'buttons' => array(
                     'view' => array(
-                        'click' => 'updateDialogOpen',
+                        // 'click' => 'updateDialogOpen',
                         'label' => 'Detail',
-                        'url' => 'Yii::app()->createUrl("report/SaleInvoiceItem", array("sale_id"=>$data["sale_id"],"employee_id"=>$data["employee_name"]))',
+                        'url' => 'Yii::app()->createUrl("report/viewOrderHistoryDetail", array("sale_id"=>$data["sale_id"],"customer_id"=>$data["client_id"],"employee_id"=>$data["employee_id"],"tran_type" => $data["status"],"report"=>"history"))',
                         'options' => array(
-                            'data-update-dialog-title' => Yii::t('app', 'Invoice Detail'),
+                            // 'data-update-dialog-title' => Yii::t('app', 'Invoice Detail'),
                             'title' => Yii::t('app', 'Invoice Detail'),
                             'class' => 'btn btn-xs btn-info',
                             'id' => uniqid(),
                             'on' => false,
                         ),
-                    ),
-                    'print' => array(
-                        'label' => 'print',
-                        'icon' => 'glyphicon-print',
-                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"],"print"=>"true"))',
-                        'options' => array(
-                            'target' => '_blank',
-                            'title' => Yii::t('app', 'Invoice Printing'),
-                            'class' => 'btn btn-xs btn-success',
-                        ),
-                        'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
-                    ),
-                    'cancel' => array(
-                        'label' => 'cancel',
-                        'icon' => 'glyphicon-trash',
-                        'url' => 'Yii::app()->createUrl("sale/delete", array("sale_id"=>$data["sale_id"], "customer_id"=>$data["client_id"]))',
-                        'options' => array(
-                            'title' => Yii::t('app', 'Cancel Invoice'),
-                            'class' => 'btnCancelInvoice btn btn-xs btn-danger',
-                        ),
-                        'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.delete")',
                     ),
                     'edit' => array(
                         'label' => 'edit',
@@ -260,6 +275,16 @@ class ReportColumn extends CModel
                             'class' => 'btn btn-xs btn-warning',
                         ),
                         'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.update")',
+                    ),
+                    'cancel' => array(
+                        'label' => 'cancel',
+                        'icon' => 'glyphicon-trash',
+                        'url' => 'Yii::app()->createUrl("sale/delete", array("sale_id"=>$data["sale_id"], "customer_id"=>$data["client_id"]))',
+                        'options' => array(
+                            'title' => Yii::t('app', 'Cancel Invoice'),
+                            'class' => 'btnCancelInvoice btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["status"]=="1" && Yii::app()->user->checkAccess("invoice.delete")',
                     ),
                     'printdo' => array(
                         'label' => 'print',
@@ -278,7 +303,20 @@ class ReportColumn extends CModel
                         ),
                         'visible' => '$data["status"] == "1"',
                     ),
-                    'printinvoice' => array(
+                    /*
+                    'print' => array(
+                        'label' => 'print',
+                        'icon' => 'glyphicon-print',
+                        'url' => 'Yii::app()->createUrl("saleItem/Receipt", array("sale_id"=>$data["sale_id"],"print"=>"true"))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Invoice Printing'),
+                            'class' => 'btn btn-xs btn-success',
+                        ),
+                        //'visible' => 'Yii::app()->user->checkAccess("invoice.print")',
+                    ),
+                    */
+                    'print' => array(
                         'label' => 'print invoice',
                         'icon' => 'fa fa-print',
                         'url' => 'Yii::app()->createUrl("saleItem/printing", array(
@@ -293,7 +331,37 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Invoice Printing'),
                             'class' => 'btn btn-xs btn-success',
                         ),
-                        'visible' => 'true',
+                    ),
+                    'reject' => array(
+                        'label' => 'reject',
+                        'icon' => 'fa fa-ban',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
+                            "sale_id"=>$data["sale_id"], 
+                            "tran_type" => param("sale_reject_status")))',
+                        'options' => array(
+                            'target' => '_blank',
+                            'title' => Yii::t('app', 'Reject'),
+                            'class' => 'btn-order btn-order-reject btn btn-xs btn-danger',
+                        ),
+                        'visible' => '$data["status"] == param("sale_validate_status") && ckacc("sale.approve")',
+                    ),
+                    'complete' => array(
+                        'label' => 'Complete',
+                        'icon' => sysMenuSaleOrderInvoiceIcon(),
+                        // 'url' => 'Yii::app()->createUrl("saleItem/SaleUpdateStatus", array(
+                        //             "sale_id"=>$data["sale_id"], 
+                        //             "tran_type" => param("sale_complete_status",
+                        //             "customer_id" => $data["client_id"])))',
+                        'url' => 'Yii::app()->createUrl("saleItem/saleUpdateStatus", array(
+                                    "sale_id"=>$data["sale_id"], 
+                                    "tran_type" => param("sale_complete_status"),
+                                    ))',
+                        
+                        'options' => array(
+                            'title' => Yii::t('app', 'Complete'),
+                            'class' => 'btn-order btn-order-complete btn btn-xs btn-success',
+                        ),
+                        'visible' => '$data["status"]==param("sale_validate_status") && ckacc("sale.approve")',
                     ),
                 ),
             ),
@@ -1263,7 +1331,7 @@ class ReportColumn extends CModel
                             'title' => Yii::t('app', 'Complete'),
                             'class' => 'btn-order btn-order-complete btn btn-xs btn-success',
                         ),
-                        'visible' => '$data["status"]=="3" && ckacc("sale.approve")',
+                        'visible' => '$data["status"]==param("sale_validate_status") && ckacc("sale.approve")',
                     ),
                     'print' => array(
                         'label' => 'print',
@@ -1618,5 +1686,23 @@ class ReportColumn extends CModel
                 'headerHtmlOptions' => array('style' => 'text-align: right;'),
             )
         );
+    }
+
+    public static function renderStatus($status,$status_f)
+    {
+        switch ($status) {
+            case '1':
+                return "<span class='green' title=\"PO had been approved to delivery\" data-rel=\"tooltip\">" . $status_f . "</span>";
+                break;
+            case '2':
+                return "<span class='pink' title=\"PO Pending at your supervisor\" data-rel=\"tooltip\">" . $status_f . "</span>";
+                break;
+            case '3':
+                return "<span class='text-warning orange' title=\"PO Pending for final approval\" data-rel=\"tooltip\">" . $status_f . "</span>";
+                break;
+
+            default:
+                return $status_f;
+        }
     }
 }

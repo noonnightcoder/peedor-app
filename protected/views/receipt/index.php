@@ -5,15 +5,17 @@
         text-align: center;
     }
 
+    /*Receipt styles start*/
     #receipt_wrapper {
-        font-family: 'Arial','khmer os';
+        font-family: Arial;
         width: 92% !important;
         font-size: 11px !important;
+        margin: 0 auto !important;
         padding: 0 !important;
     }
 
     #receipt_items td {
-        position: relative;
+        //position: relative;
         padding: 3px;
     }
 
@@ -24,7 +26,7 @@
 
         #footer {
             position: fixed;
-            bottom: 50px;
+            bottom: 0;
             width:100%;
         }
     }
@@ -36,7 +38,7 @@
         margin: 0 15px;
     }
 
-    .kh-font{
+    .receipt-title-kh-font{
         font-family: 'khmer os';
     }
 </style>
@@ -50,16 +52,15 @@ if (isset($error_message))
 ?>
 
 <div class="container" id="receipt_wrapper">
-    <?php if(((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])) && !isset($_GET['pdf']) && !isset($_GET['email'])):?>
+    <?php if((isset($_GET['print'])  && $_GET['print'] == 'false') || !isset($_GET['print'])):?>
         <?php $this->renderPartial('//receipt/partial/_header_view_invoice',array(
             'sale_id'=>$sale_id,
             'customer_id'=>$customer_id,
             'paid_amount'=>isset($paid_amount) ? $paid_amount : 0,
-            'status'=>isset($status) ? $status : Yii::app()->session['tran_type'],
-            'total' => $total
+            'status'=>isset($status) ? $status : Yii::app()->session['tran_type']
         ))?>
     <?php endif;?>
-    <?php $this->renderPartial('//layouts/alert/_flash'); ?>
+    
     <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_header_view,
         array(
             'sale_id' => $sale_id,
@@ -74,8 +75,9 @@ if (isset($error_message))
             'salerep_fullname' => $salerep_fullname,
             'salerep_tel' => $salerep_tel,
             'invoice_no_prefix' => $invoice_no_prefix,
-            'receipt_header_title_kh'=>$receipt_header_title_kh,
-            'receipt_header_title_en'=>$receipt_header_title_en
+            'receipt_header_title_kh' => $receipt_header_title_kh,
+            'receipt_header_title_en' => $receipt_header_title_en,
+            'payment_term' => $payment_term
         ));
     ?>
 
@@ -93,6 +95,7 @@ if (isset($error_message))
             'salerep_fullname' => $salerep_fullname,
             'salerep_tel' => $salerep_tel,
             'invoice_no_prefix' => $invoice_no_prefix,
+            'payment_term' => $payment_term
         ));
     ?>
 
@@ -119,23 +122,19 @@ if (isset($error_message))
         ));
     ?>
 
-    <?php if ($invoice_body_footer_view != null && !isset($_GET['pdf']) && !isset($_GET['email'])) { ?>
+    <?php if ($invoice_body_footer_view !== null) { ?>
 
-        <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_footer_view,
-            array(
-                'sub_total' => $sub_total,
-                'total' => $total,
-                'total_discount' => $total_discount,
-                'discount_amount' => $discount_amount,
-                'cust_fullname' => $cust_fullname,
-                'gst_amount' => $gst_amount,
-                //'colspan' => $colspan,
-            ));
-        ?>
+    <?php $this->renderPartial('//receipt/partial/' . invFolderPath() . '/' . $invoice_footer_view,
+        array(
+            'sub_total' => $sub_total,
+            'total' => $total,
+            'total_discount' => $total_discount,
+            'discount_amount' => $discount_amount,
+            'cust_fullname' => $cust_fullname,
+        ));
+    ?>
 
     <?php } ?>
     <?php if(isset($_GET['print']) && $_GET['print'] == 'true'):?>
         <?php $this->renderPartial('//receipt/partial/_js'); ?>
     <?php endif;?>
-
-</div>

@@ -118,22 +118,49 @@ Class Common
                 'format2' => 'Logo no VAT',
                 'format3' => 'Logo & VAT',
             ),
+            'size_biz' => array(
+                'big wholesale' => 'លក់ដុំធំ',
+                'medium wholesale' => 'លក់ដុំមធ្យម',
+                'medium retail' => 'លក់រាយមធ្យម',
+                'small retail' => 'លក់រាយតូច'
+            ),
+            'main_biz' => array(
+                'beverage no alcohol' => 'ភេសជ្ជៈអាកុល',
+                'beverage with alcohol' => 'ភេសជ្ជៈមិនមានអាកុល',
+                'grocery' => 'នំចំណី',
+                'cosmetic' => 'គ្រឿងសំអាង'
+            ),
+            'invoice_format' => array(
+                'format1' => 'No logo no VAT',
+                'format2' => 'Logo no VAT',
+                'format3' => 'Logo & VAT',
+            ), //https://goo.gl/tkYZR1
             'payment_term' => array(
-                'COD' => t('Cash on delivery','app'),
-                'CONSIGN' => t('Consignment','app'),
-                'NET3' => t('Payment 3 days after invoice date','app'),
-                'NET5' => t('Payment 5 days after invoice date','app'),
-                'NE7' => t('Payment 7 days after invoice date','app'),
-                'NET30' => t('Payment 30 days after invoice date','app'),
-                'NET60' => t('Payment 60 days after invoice date','app'),
-                'PID' => t('Payment in advance','app'),
-                'EOM' => t('End of month','app'),
-                'CND' => t('Cash next delivery','app'),
-                'CBS' => t('Cash before shipment','app'),
-                'CIA' => t('Cash in advance','app'),
-                //'CONTRA' => t('Payment from the customer offset against the value of supplies purchased from the customer','app'),
-                'STAGE' => t('Payment of agreed amounts at stage','app'),
-            ), //Y-m-d H:i:s
+                'COD' => 'ឱ្យលុយភ្លាម',
+                'NET3' => 'ជំពាក់ 3ថ្ងៃ',
+                'NET5' => 'ជំពាក់ 5ថ្ងៃ',
+                'NE7' => 'ជំពាក់ 7ថ្ងៃ',
+                'NE14' => 'ជំពាក់ 14ថ្ងៃ',
+                'NET30' => 'ជំពាក់ ៣០ថ្ងៃ',
+                'EOM' => 'បង់លុយចុងខែ',
+                'CONSIGN' => 'CONSIGN'
+            ),
+            // 'payment_term' => array(
+            //     'COD' => t('Cash on delivery','app'),
+            //     'CONSIGN' => t('Consignment','app'),
+            //     'NET3' => t('Payment 3 days after invoice date','app'),
+            //     'NET5' => t('Payment 5 days after invoice date','app'),
+            //     'NE7' => t('Payment 7 days after invoice date','app'),
+            //     'NET30' => t('Payment 30 days after invoice date','app'),
+            //     'NET60' => t('Payment 60 days after invoice date','app'),
+            //     'PID' => t('Payment in advance','app'),
+            //     'EOM' => t('End of month','app'),
+            //     'CND' => t('Cash next delivery','app'),
+            //     'CBS' => t('Cash before shipment','app'),
+            //     'CIA' => t('Cash in advance','app'),
+            //     //'CONTRA' => t('Payment from the customer offset against the value of supplies purchased from the customer','app'),
+            //     'STAGE' => t('Payment of agreed amounts at stage','app'),
+            // ), //Y-m-d H:i:s
             'inv_number_interval' => array(
                 'i' => 'Every Minute',
                 'H' => 'Every Hour',

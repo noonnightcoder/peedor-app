@@ -135,7 +135,7 @@ class Client extends CActiveRecord
             $criteria->params = array(
                 ':first_name' =>  '%'. $this->search .  '%',
                 ':last_name' => '%'. $this->search . '%',
-                ':mobile_no' => $this->search . '%',
+                ':mobile_no' => str_replace(' ', '', $this->search) . '%',
             );
         } else {
             $criteria->condition = 'status=:active_status AND (first_name like :first_name or last_name like :last_name or mobile_no like :mobile_no)';
@@ -143,7 +143,7 @@ class Client extends CActiveRecord
                 ':active_status' => Yii::app()->params['active_status'],
                 ':first_name' =>  '%'. $this->search .  '%',
                 ':last_name' => '%'. $this->search .  '%',
-                ':mobile_no' => $this->search . '%',
+                ':mobile_no' => str_replace(' ', '', $this->search) . '%',
             );
         }
 
