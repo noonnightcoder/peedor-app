@@ -22,7 +22,10 @@ class ReceivingItemController extends Controller
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara', 'AddPayment', 'CancelCount','CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier', 'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddItemCount','GetItemInfo','CountReview','SaveCount','List','receivingItemDetail','SetHeader','SetOutlet','EditItemCount','DeleteItemCount'),
+                'actions' => array('RemoveSupplier','SetComment', 'DeleteItem', 'Add', 'EditItem', 'EditItemPrice', 'Index', 'IndexPara',
+                    'AddPayment', 'CancelCount','CancelRecv', 'CompleteRecv', 'Complete', 'SuspendSale', 'DeletePayment', 'SelectSupplier',
+                    'AddSupplier', 'Receipt', 'SetRecvMode', 'EditReceiving','SetTotalDiscount','InventoryCountCreate','AddItemCount','GetItemInfo',
+                    'CountReview','SaveCount','List','receivingItemDetail','SetHeader','SetOutlet','EditItemCount','DeleteItemCount','ItemCountList','ItemCountDetail'),
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -48,71 +51,6 @@ class ReceivingItemController extends Controller
             $this->reload(); 
         } elseif (Yii::app()->user->checkAccess('stockcount.create') && Yii::app()->receivingCart->getMode()=='adjustment_out') {
             $this->reload();
-        } elseif ((ckacc('stockcount.read') || ckacc('stockcount.create') || ckacc('stockcount.update')) && Yii::app()->receivingCart->getMode()=='physical_count') {
-
-            $model = new InventoryCount('search');
-
-            $model->unsetAttributes();
-            if (isset($_GET['InventoryCount'])) {
-                $model->attributes = $_GET['InventoryCount'];
-            }
-
-            if (isset($_GET['pageSize'])) {
-                Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
-                unset($_GET['pageSize']);
-            }
-
-            $page_size = CHtml::dropDownList(
-                'pageSize',
-                Yii::app()->user->getState(strtolower(get_class($model)) . '_page_size', Common::defaultPageSize()),
-                Common::arrayFactory('page_size'),
-                array('class' => 'change-pagesize')
-            );
-
-            $data['model'] = $model;
-            $data['grid_id'] = strtolower(get_class($model)) . '-grid';
-            $data['main_div_id'] = strtolower(get_class($model)) . '_cart';
-            $data['page_size'] = $page_size;
-            $data['create_url'] = 'inventoryCountCreate';
-
-            $data['grid_columns'] = InventoryCount::getItemColumns();
-
-            $data['data_provider'] = $model->search();
-            $this->render('_list',$data);
-
-        } elseif (ckacc('stockcount.read') && Yii::app()->receivingCart->getMode()=='count_detail') {
-
-            $model = InventoryCountDetail::getInventoryCountDetail($_GET['id']);
-
-            //$model->unsetAttributes();  // clear any default values
-            if (isset($_GET['InventoryCountDetail'])) {
-                $model->attributes = $_GET['InventoryCountDetail'];
-            }
-
-            if (isset($_GET['pageSize'])) {
-                Yii::app()->user->setState(strtolower(get_class($model)) . '_page_size', (int)$_GET['pageSize']);
-                unset($_GET['pageSize']);
-            }
-
-            $page_size = CHtml::dropDownList(
-                'pageSize',
-                Yii::app()->user->getState(strtolower('InventoryCountDetail') . '_page_size', Common::defaultPageSize()),
-                Common::arrayFactory('page_size'),
-                array('class' => 'change-pagesize')
-            );
-
-            $data['model'] = $model;
-            $data['grid_id'] = strtolower('InventoryCountDetail') . '-grid';
-            $data['main_div_id'] = strtolower('InventoryCountDetail') . '_cart';
-            $data['page_size'] = $page_size;
-            $data['create_url'] = 'inventoryCountCreate';
-
-            $data['grid_columns'] = InventoryCountDetail::getItemColumns();
-
-            $data['data_provider'] = $model;
-            $data['count_title']=$_GET['name'];
-
-            $this->render('_detail',$data);
         }
 
     }
@@ -136,6 +74,51 @@ class ReceivingItemController extends Controller
         $data['grid_id'] = $grid_id;
         // var_dump($data['data_provider']);
         loadview('review','//layouts/report/_grid',$data);
+    }
+
+    public function actionItemCountList()
+    {
+        $grid_id = 'sale-order-grid';
+
+        $data = $this->commonData($grid_id,'Physical Count','show','show');
+
+        $data['grid_columns'] = ReportColumn::getItemCountColumns();
+
+        $data['title'] = 'Physical Count';
+
+        $data['data_provider'] = $data['report']->itemCountList();
+
+        $data['grid_id'] = 'sale-order-grid';
+
+        $data['tran_type'] = 'physical_count';
+        $data['tran_mode'] = 'physical_count';
+        $data['user_id'] = getEmployeeId();
+        $data['url'] = Yii::app()->createUrl('receivingItem/inventoryCountCreate');
+
+        loadview('review','//layouts/report/_grid',$data);
+    }
+
+    public function actionItemCountDetail($id)
+    {
+
+        authorized('stockcount.read');
+
+        $report = new Report;
+
+        $data['report'] = $report;
+        $data['receive_id'] = $id;
+
+        $data['grid_id'] = 'rpt-receiving-item-grid';
+        $data['title'] = Yii::t('app','Detail #') .' ' . $id  ;
+
+        $data['grid_columns'] = ReportColumn::getItemcountDetailColumns();
+
+        $report->receive_id = $id;
+        $data['data_provider'] = $report->getItemCountDetail($id);
+
+        $this->renderView($data);
+
+
     }
 
     public function actionInventoryCountCreate()
@@ -218,6 +201,7 @@ class ReceivingItemController extends Controller
         $inventoryCount=new InventoryCount;
         $inventoryCount->name=$header['count_name'];
         $inventoryCount->created_date=$header['created_date'];
+        $inventoryCount->outlet_id = $outlet_id;
         $inventoryCount->save();
 
         foreach($items as $key=>$item){
@@ -236,7 +220,7 @@ class ReceivingItemController extends Controller
             $inventory_count_data['count_id'] = $inventoryCount->id;
             $inventory_count_data['expected'] = $item['current_quantity'];
             $inventory_count_data['counted'] = $item['quantity'];
-            $inventory_count_data['unit'] = $qty_b4_trans ; 
+            $inventory_count_data['unit'] = $qty_b4_trans ;
             $inventory_count_data['cost'] = $cost;
 
             Sale::model()->saveSaleTransaction(new InventoryCountDetail,$inventory_count_data);              
@@ -245,10 +229,10 @@ class ReceivingItemController extends Controller
             $inventory_data['trans_items'] = $item['item_id'];
             $inventory_data['trans_user'] = $employeeid;
             $inventory_data['trans_comment'] = 'IPC';
-            $inventory_data['trans_inventory'] = (-$item['quantity']);
+            $inventory_data['trans_inventory'] = $item['quantity'];
             $inventory_data['trans_qty'] = $item['quantity'];
-            $inventory_data['qty_b4_trans'] = $qty_b4_trans ; 
-            $inventory_data['qty_af_trans'] = $qty_af_trans;
+            $inventory_data['qty_b4_trans'] = $item['current_quantity'] ;
+            $inventory_data['qty_af_trans'] = $item['quantity'];
             $inventory_data['trans_date'] = date('Y-m-d H:i:s');
             $inventory_data['outlet_id'] = $outlet_id;
 
@@ -265,7 +249,7 @@ class ReceivingItemController extends Controller
 
         }
         Yii::app()->receivingCart->clearItemToTransfer();
-        $this->redirect(array('receivingItem/index?trans_mode=physical_count'));
+        $this->redirect(array('receivingItem/itemCountList'));
     }
 
     public function actionAdd()
@@ -715,7 +699,7 @@ class ReceivingItemController extends Controller
         if (isset($_POST['InventoryCount']['outlet'])) {
             
             $to_outlet = $_POST['InventoryCount']['outlet'];
-            Yii::app()->receivingCart->setTransferHeader($to_outlet,'from_outlet');
+            Yii::app()->receivingCart->setTransferHeader($to_outlet,'outlet');
 
         }
         if (isset($_POST['InventoryCount']['created_date'])) {

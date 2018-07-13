@@ -373,7 +373,8 @@ class ReportColumn extends CModel
         return array(
             array('name' => 'name',
                 'header' => Yii::t('app', 'Item Name'),
-                'value' => '$data["name"]',
+                'value' => 'CHtml::link($data["name"],Yii::app()->createUrl("/item/itemSearch",array("result"=>$data["item_id"])))',
+                'type' => 'raw'
             ),
             array('name' => 'quantity',
                 'header' => Yii::t('app', 'QTY'),
@@ -1686,6 +1687,131 @@ class ReportColumn extends CModel
                 'htmlOptions' => array('style' => 'text-align: right;'),
                 'headerHtmlOptions' => array('style' => 'text-align: right;'),
             )
+        );
+    }
+
+    public static function getItemCountColumns()
+    {
+        return array(
+            array('name' => 'count_id',
+                'header' => Yii::t('app', 'Physical Count ID'),
+                'value' => '$data["count_id"]',
+                'class' => 'yiiwheels.widgets.grid.WhRelationalColumn',
+                'url' => Yii::app()->createUrl('receivingItem/itemCountDetail'),
+            ),
+            array(
+                'name' => 'name',
+                'header' => Yii::t('app', 'Name'),
+                'value' => '$data["name"]',
+            ),
+            array(
+                'name' => 'counted_at',
+                'header' => Yii::t('app', 'Counted At'),
+                'value' => '$data["counted_at"]',
+            ),
+            array(
+                'name' => 'outlet',
+                'header' => Yii::t('app', 'Outlet'),
+                'value' => '$data["outlet"]',
+            ),
+            array(
+                'name' => 'expected',
+                'header' => Yii::t('app', 'Expected Quantity'),
+                'value' => '$data["expected"]',
+            ),
+            array(
+                'name' => 'counted',
+                'header' => Yii::t('app', 'Counted Quantity'),
+                'value' => '$data["counted"]',
+            ),
+            array(
+                'name' => 'unit',
+                'header' => Yii::t('app', 'Calculated Quantity'),
+                'value' => '$data["unit"]',
+            ),
+            array(
+                'name' => 'counted',
+                'header' => Yii::t('app', 'Final Quantity'),
+                'value' => '$data["counted"]',
+            ),
+//            array(
+//                'name' => 'cost',
+//                'header' => Yii::t('app', 'Cost'),
+//                'value' => '$data["cost"]',
+//            ),
+//            array('class' => 'bootstrap.widgets.TbButtonColumn',
+//                'header' => 'Action',
+//                'template' => '<div class="btn-group">{review}</div>',
+//                'buttons' => array(
+//                    'review' => array(
+//                        'label' => 'Review',
+//                         'icon' => 'fa fa-eye',
+//                        'url' => 'Yii::app()->createUrl("receiving/reviewTransferItem",array(
+//                                   "count_id" => $data["count_id"
+//                                    )
+//                        )',
+//                        'options' => array(
+//                            'title' => Yii::t('app', 'Review Item'),
+//                            'class' => 'btn btn-xs btn-info',
+//                        ),
+//                    ),
+//                ),
+//            ),
+        );
+    }
+
+    public static function getItemcountDetailColumns()
+    {
+        return array(
+            array(
+                'name' => 'name',
+                'header' => Yii::t('app', 'Item Name'),
+                'value' => 'CHtml::link($data["name"],Yii::app()->createUrl("/item/itemSearch",array("result"=>$data["item_id"])))',
+                'type' => 'raw'
+            ),
+            array(
+                'name' => 'expected',
+                'header' => Yii::t('app', 'Expected Quantity'),
+                'value' => '$data["expected"]',
+            ),
+            array(
+                'name' => 'counted',
+                'header' => Yii::t('app', 'Counted Quantity'),
+                'value' => '$data["counted"]',
+            ),
+            array(
+                'name' => 'unit',
+                'header' => Yii::t('app', 'Calculated Quantity'),
+                'value' => '$data["unit"]',
+            ),
+            array(
+                'name' => 'counted',
+                'header' => Yii::t('app', 'Final Quantity'),
+                'value' => '$data["counted"]',
+            ),
+//            array(
+//                'name' => 'cost',
+//                'header' => Yii::t('app', 'Cost'),
+//                'value' => '$data["cost"]',
+//            ),
+//            array('class' => 'bootstrap.widgets.TbButtonColumn',
+//                'header' => 'Action',
+//                'template' => '<div class="btn-group">{review}</div>',
+//                'buttons' => array(
+//                    'review' => array(
+//                        'label' => 'Review',
+//                         'icon' => 'fa fa-eye',
+//                        'url' => 'Yii::app()->createUrl("receiving/reviewTransferItem",array(
+//                                   "count_id" => $data["count_id"
+//                                    )
+//                        )',
+//                        'options' => array(
+//                            'title' => Yii::t('app', 'Review Item'),
+//                            'class' => 'btn btn-xs btn-info',
+//                        ),
+//                    ),
+//                ),
+//            ),
         );
     }
 

@@ -357,7 +357,8 @@ class Sale extends CActiveRecord
         foreach ($items as $line => $item) {
 
             $cur_item_info = Item::model()->findbyPk($item['item_id']);
-            $qty_in_stock = $cur_item_info->quantity;
+            $cur_item_outlet_info = ItemOutlet::model()->findByAttributes(array('item_id' => $item['item_id'],'outlet_id' => $outlet_id));
+            $qty_in_stock = $cur_item_outlet_info->quantity;
 
             // to remove
             /*
@@ -401,7 +402,8 @@ class Sale extends CActiveRecord
                 'trans_qty' => $item['quantity'],
                 'qty_b4_trans' => $qty_in_stock , // for tracking purpose recording the qty before operation effected
                 'qty_af_trans' => $qty_afer_transaction,
-                'trans_date' => date('Y-m-d H:i:s')
+                'trans_date' => date('Y-m-d H:i:s'),
+                'outlet_id' => $outlet_id
             );
 
             $this->saveSaleTransaction(new Inventory,$inventory_data);

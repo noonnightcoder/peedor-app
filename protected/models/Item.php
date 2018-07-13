@@ -855,7 +855,7 @@ class Item extends CActiveRecord
 
     public function itemInventoryHistory($id)
     {
-        $sql = "select trans_items, trans_user, trans_date, trans_comment, trans_inventory, trans_qty, qty_b4_trans, qty_af_trans, supplier, from_outlet, to_outlet, outlet
+        $sql = "select trans_items, trans_user, trans_date, trans_comment, trans_inventory, trans_qty, qty_b4_trans, qty_af_trans, qty_af_trans - qty_b4_trans as qty_change, supplier, from_outlet, to_outlet, outlet
         from v_inventory_history
         WHERE trans_items = :id";
 
@@ -915,14 +915,20 @@ class Item extends CActiveRecord
                 'filter' => '',
             ),
             array(
+                'name' => 'Opening Quantity',
+                'value' => '$data["qty_b4_trans"]',
+                'type' => 'raw',
+                'filter' => '',
+            ),
+            array(
                 'name' => 'Tansaction Quantity',
                 'value' => '$data["trans_qty"]',
                 'type' => 'raw',
                 'filter' => '',
             ),
             array(
-                'name' => 'Quantity',
-                'value' => '$data["qty_b4_trans"]',
+                'name' => 'Quantity Change',
+                'value' => '$data["qty_change"]',
                 'type' => 'raw',
                 'filter' => '',
             ),

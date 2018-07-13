@@ -811,11 +811,7 @@ class SaleItemController extends Controller
             //s$data['total_due'] = 0 ;
             $data['payment_term'] = '';
             if($sale_payment_term){
-                foreach($payment_term as $key=>$value){
-                    if($key==$sale_payment_term->payment_term){
-                        $data['payment_term'] = $value;
-                    }
-                }    
+                $data['payment_term'] = $payment_term[$sale_payment_term->payment_term];
             }
 
         }

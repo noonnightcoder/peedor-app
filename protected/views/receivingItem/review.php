@@ -1,6 +1,6 @@
 <?php
 $this->breadcrumbs=array(
-    $_GET['tran_type']==1 ? 'Receiving Item' : 'Return Item' ,
+    isset($_GET['tran_type']) && $_GET['tran_type'] ==1 ? 'Receiving Item' : 'Return Item' ,
     'List',
 );
 ?>
@@ -11,8 +11,9 @@ $this->breadcrumbs=array(
     'header_tab' => $header_tab,
     'status' => $tran_type,
     'user_id' => $user_id,
+    'tran_mode' => isset($tran_mode) ? $tran_mode : '',
     'title' => $title,
-    'url' => Yii::app()->createUrl('receivingItem/index',array('trans_mode'=>$tran_type==1 ? 'receive' : 'return'))
+    'url' => isset($url) ? $url : Yii::app()->createUrl('receivingItem/index',array('trans_mode'=>$tran_type==1 ? 'receive' : 'return'))
 )); ?>
 
 <br />

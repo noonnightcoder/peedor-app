@@ -1472,6 +1472,77 @@ class Report extends CFormModel
         return $dataProvider; // Return as array object
     }
 
+    public function ItemCountList()
+    {
+
+        if ($this->search_id !== '') {
+            $sql= " select icd.count_id, ic.name, created_date counted_at, (select outlet_name from outlet o where o.id = ic.outlet_id) outlet,
+             sum(expected) expected, sum(counted) counted, sum(unit) unit, sum(cost) cost
+             from inventory_count ic join inventory_count_detail icd
+             on ic.id = icd.count_id
+             WHERE created_date = :search_id
+             group by icd.count_id, ic.name, created_date, outlet_id";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':search_id' => $this->search_id,
+                )
+            );
+
+        } else {
+            $sql= " select icd.count_id, ic.name, created_date counted_at, (select outlet_name from outlet o where o.id = ic.outlet_id) outlet,
+             sum(expected) expected, sum(counted) counted, sum(unit) unit, sum(cost) cost
+             from inventory_count ic join inventory_count_detail icd
+             on ic.id = icd.count_id
+             WHERE created_date>=str_to_date(:from_date,'%d-%m-%Y')
+             AND created_date<=date_add(str_to_date(:to_date,'%d-%m-%Y'),INTERVAL 1 DAY)
+             group by icd.count_id, ic.name, created_date, outlet_id";
+
+            $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(
+                    ':from_date' => $this->from_date,
+                    ':to_date' => $this->to_date,
+                )
+            );
+        }
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'count_id',
+            'sort' => array(
+                'attributes' => array(
+                    'count_id', 'counted_at',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+
+    }
+
+    public function getItemCountDetail($count_id)
+    {
+        $sql = "select io.item_id, incd.count_id,io.name,expected,counted,unit,cost
+                 from inventory_count inc join inventory_count_detail incd
+                 on inc.id = incd.count_id join v_item_outlet io
+                 on incd.item_id = io.item_id
+                 and inc.outlet_id = io.outlet_id 
+                 WHERE (incd.count_id = :count_id)";
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true, array(':count_id' => $count_id));
+
+        $dataProvider = new CArrayDataProvider($rawData, array(
+            'keyField' => 'count_id',
+            'sort' => array(
+                'attributes' => array(
+                    'count_id',
+                ),
+            ),
+            'pagination' => false,
+        ));
+
+        return $dataProvider; // Return as array object
+
+    }
+
     public function renderStatus()
     {
         return "test";
