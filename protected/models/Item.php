@@ -399,6 +399,7 @@ class Item extends CActiveRecord
                   AND cl.id=:client_id JOIN price_book pb 
                   ON cg.id=pb.group_id JOIN pricings pr
                   ON pb.id=pr.price_book_id
+                  and pb.outlet_id = :outlet_id
                   AND pb.status=:status RIGHT JOIN v_item_outlet i
                 ON pr.item_id=i.item_id
                   AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 
@@ -464,6 +465,7 @@ class Item extends CActiveRecord
                     ON cl.price_tier_id=cg.id JOIN price_book pb 
                     ON cg.id=pb.group_id JOIN pricings pr
                     ON pb.id=pr.price_book_id
+                    and pb.outlet_id = :outlet_id
                     AND pb.status=:status RIGHT JOIN v_item_outlet i
                     ON pr.item_id=i.item_id
                     AND :quantity BETWEEN min_unit AND max_unit LEFT JOIN unit_measurable um 

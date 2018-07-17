@@ -255,7 +255,9 @@ class EmployeeController extends Controller
                             }
 
                             $transaction->commit();
-                            Yii::app()->session['employee_outlet']=$outlet_id;//update outlet name for nav menue
+
+                            Yii::app()->session['employee_outlet'] = $id == getEmployeeId() ? $outlet_id : Yii::app()->session['employee_outlet'];//update outlet name for nav menue
+
                             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS, 'Employee : <strong>' . ucwords($model->last_name . ' ' . $model->first_name) . '</strong> have been saved successfully!');
                             $this->redirect(array('admin'));
                         } else {

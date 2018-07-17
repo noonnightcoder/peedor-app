@@ -323,12 +323,12 @@ class SaleItemController extends Controller
             Yii::app()->user->setFlash('warning', "There is no item in cart");
             $this->redirect(array('saleItem/index',array('tran_type' => getTransType())));
         } else {
-                
+
             $data['sale_id'] = Sale::model()->saveSale($data['session_sale_id'], $data['items'], $data['payments'],
             $data['payment_received'], $data['customer_id'], $data['employee_id'], $data['sub_total'], $data['total'],
             $data['comment'], $data['tran_type'], $data['discount_amt'],$data['discount_symbol'],
             $data['total_gst'],$data['salerep_id'],$data['qtytotal'],$data['cust_term'],$data['employee_outlet']);
-                
+
             if (substr($data['sale_id'], 0, 2) == '-1') {
                 Yii::app()->user->setFlash('warning', $data['sale_id']);
                 $this->redirect(Yii::app()->user->returnUrl);
@@ -340,7 +340,7 @@ class SaleItemController extends Controller
 
                 }else{
                     $this->renderRecipe($data);
-                    Yii::app()->shoppingCart->clearAll();    
+                    Yii::app()->shoppingCart->clearAll();
                 }
             }
         }
