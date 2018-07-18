@@ -147,18 +147,31 @@ class Dashboard extends CFormModel
 
     public function dashtopProductbyAmount()
     {
-
+        /*
         $sql = "SELECT  @ROW := @ROW + 1 AS rank,item_name,qty,amount
                 FROM (
                 SELECT (SELECT NAME FROM item i WHERE i.id=si.item_id) item_name,SUM(si.quantity) qty,SUM(price*si.quantity) amount
                 FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id
                      AND sale_time between DATE_FORMAT(NOW() ,'%Y') AND NOW()
-                     AND IFNULL(s.status,'1')='1'
+                     AND s.status=:status
                 GROUP BY item_name
                 ORDER BY amount DESC LIMIT 10
                 ) t1, (SELECT @ROW := 0) r";
+        */
 
-        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true);
+        $sql = "SELECT @ROW := @ROW + 1 AS `rank`,item_name,qty,amount
+                FROM (
+                 SELECT (SELECT NAME FROM item i WHERE i.id=si.item_id) item_name,SUM(si.quantity) qty,SUM(price*si.quantity) amount
+                 FROM sale_item si INNER JOIN sale s ON s.id=si.sale_id
+                     AND sale_time between DATE_FORMAT(NOW() ,'%Y') AND NOW()
+                     AND s.status=:status
+                 GROUP BY item_name
+                ORDER BY amount DESC LIMIT 10
+                ) t1, (SELECT @ROW := 0) r";
+
+        $rawData = Yii::app()->db->createCommand($sql)->queryAll(true,array(
+            ':status'=> Yii::app()->params['active_status'])
+        );
 
         $dataProvider = new CArrayDataProvider($rawData, array(
             'keyField' => 'rank',
@@ -170,13 +183,13 @@ class Dashboard extends CFormModel
             'pagination' => false,
         ));
 
-        return $dataProvider; // Return as array object
+        return $dataProvider;
     }
 
     public function dbBestCustomer()
     {
 
-        $sql = "SELECT  @ROW := @ROW + 1 AS rank,customer_name,amount amount
+        $sql = "SELECT  @ROW := @ROW + 1 AS `rank`,customer_name,amount amount
                 FROM (
                     SELECT CONCAT(c.first_name,' ',last_name) customer_name,SUM(s.sub_total) amount
                     FROM sale s ,`client` c
