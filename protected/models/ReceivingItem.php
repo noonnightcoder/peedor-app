@@ -157,15 +157,20 @@ class ReceivingItem extends CActiveRecord
     public function getTransferItem($receive_id)
     {
 
+        $countlet_id = Yii::app()->session['employee_outlet'];
+
         $sql = "
-            SELECT receive_id,item_id,employee_id,`status`,reference_name,delivery_due_date,quantity,cost_price,unit_price,price,
+            SELECT receive_id,io.item_id,employee_id,`status`,reference_name,delivery_due_date,io.quantity current_quantity, ri.quantity,ri.cost_price,ri.unit_price,price,
                 from_outlet,to_outlet,trans_type
             FROM receiving r JOIN receiving_item ri
-            ON r.id=ri.receive_id
-            WHERE receive_id=:receive_id";
+            ON r.id=ri.receive_id join item_outlet io
+            on (r.from_outlet = io.outlet_id or r.to_outlet = io.outlet_id)
+            WHERE receive_id=:receive_id
+            and io.outlet_id = :outlet_id";
 
          $result = Yii::app()->db->createCommand($sql)->queryAll(true, array(
-                    ':receive_id' => $receive_id
+                    ':receive_id' => $receive_id,
+                    ':outlet_id' => $countlet_id
             ));
 
         return $result;

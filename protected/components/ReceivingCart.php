@@ -486,7 +486,15 @@ class ReceivingCart extends CApplicationComponent
     {
         $this->setSession(Yii::app()->session);
         //Get all items in the cart so far...
-        $outlet_id = Yii::app()->receivingCart->getTransferHeader('from_outlet') > 0 ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session['employee_outlet'];
+
+        if(Yii::app()->receivingCart->getTransferHeader('from_outlet') == Yii::app()->session['employee_outlet']){
+            $outlet_id = Yii::app()->receivingCart->getTransferHeader('from_outlet') > 0 ? Yii::app()->receivingCart->getTransferHeader('from_outlet') : Yii::app()->session['employee_outlet'];
+        }else{
+
+            $outlet_id = Yii::app()->session['employee_outlet'];
+        }
+
+
         $items = $this->getItemToTransfer();
 
         $models=ItemOutlet::model()->findAll(array('condition'=>'`item_id`=:item_id and (`outlet_id`=:outlet_id)','params'=>array(':item_id'=>$item_id,':outlet_id'=>$outlet_id)));

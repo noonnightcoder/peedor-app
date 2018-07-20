@@ -132,7 +132,7 @@ class ClientController extends Controller
                         if ($sale_mode == 'Y') {
                             Yii::app()->shoppingCart->setCustomer($client_id);
                             Yii::app()->shoppingCart->setPriceTier($price_tier_id);
-                            $this->redirect(array('saleItem/create','tran_type'=>param('sale_submit_status')));
+                            $this->redirect(array('saleItem/index'));
                         } else {
                             Yii::app()->user->setFlash(TbHtml::ALERT_COLOR_SUCCESS,
                                 '<strong>' . ucfirst($model->first_name) . '</strong> have been saved successfully!');

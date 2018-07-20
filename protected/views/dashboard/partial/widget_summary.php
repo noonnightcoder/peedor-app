@@ -5,7 +5,7 @@
                 <i class="ace-icon fa fa-money"></i>
             </div>
             <div class="infobox-data">
-                <span class="infobox-data-number"><?=  $report->totalSaleSPD(); ?></span>
+                <span class="infobox-data-number"><?=  number_format($report->totalSaleSPD(),Common::getDecimalPlace(), ".", ","); ?></span>
                 <div class="infobox-content"><?= CHtml::link('Today\'s Sale', Yii::app()->createUrl("report/SaleDaily")); ?></div>
             </div>
         </div>
@@ -16,7 +16,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number"><?= $report->totalSale2Date('WEEK'),Common::getDecimalPlace(); ?></span>
+                <span class="infobox-data-number"><?= number_format($report->totalSale2Date('WEEK'),Common::getDecimalPlace(), ".", ","); ?></span>
 
                 <div class="infobox-content">This Week Sales</div>
             </div>
@@ -28,7 +28,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number"><?= $report->totalSale2Date('MONTH'),Common::getDecimalPlace(); ?></span>
+                <span class="infobox-data-number"><?= number_format($report->totalSale2Date('MONTH'),Common::getDecimalPlace(), ".", ","); ?></span>
 
                 <div class="infobox-content">This Month Sales</div>
             </div>
@@ -40,7 +40,7 @@
             </div>
 
             <div class="infobox-data">
-                <span class="infobox-data-number"><?= $report->totalSale2Y(),Common::getDecimalPlace(); ?></span>
+                <span class="infobox-data-number"><?= number_format($report->totalSale2Y(),Common::getDecimalPlace(), ".", ","); ?></span>
 
                 <div class="infobox-content">This Year Sales</div>
             </div>

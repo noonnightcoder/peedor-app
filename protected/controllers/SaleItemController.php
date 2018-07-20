@@ -46,7 +46,11 @@ class SaleItemController extends Controller
     /** To remove change using CRUD name convension List, Create, Update, Delete */
     public function actionIndex($tran_type='1')
     {
-        authorized('sale.read') || authorized('sale.create');
+        if($tran_type == 1 && !ckacc('invoice.create')){
+            $this->redirect(array('saleItem/create','tran_type'=>2));
+        }else{
+            authorized('sale.read') || authorized('sale.create');
+        }
 
         Yii::app()->shoppingCart->setMode($tran_type);
 
